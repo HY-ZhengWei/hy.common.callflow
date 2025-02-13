@@ -1,8 +1,6 @@
 package org.hy.common.callflow.enums;
 
-
-
-
+import org.hy.common.MethodReflect;
 
 /**
  * 比较器的枚举
@@ -14,7 +12,7 @@ package org.hy.common.callflow.enums;
 public enum Comparer
 {
     
-    Equal("=" ,"等于") {
+    Equal("==" ,"等于") {
         @Override
         public <V extends Comparable<V>> boolean compare(V i_A ,V i_B)
         {
@@ -56,7 +54,7 @@ public enum Comparer
         }
     },
     
-    NotEqual("!=" ,"不等于") {
+    EqualNot("!=" ,"不等于") {
         @Override
         public <V extends Comparable<V>> boolean compare(V i_A ,V i_B)
         {
@@ -119,6 +117,7 @@ public enum Comparer
             }
         }
         
+        @SuppressWarnings("unchecked")
         @Override
         public boolean compare(Object i_A ,Object i_B)
         {
@@ -143,6 +142,13 @@ public enum Comparer
             }
             else
             {
+                if ( i_A.getClass().equals(i_B.getClass()) )
+                {
+                    if ( MethodReflect.isExtendImplement(i_A ,Comparable.class) )
+                    {
+                        return ((Comparable<Object>)i_A).compareTo(i_B) > 0;
+                    }
+                }
                 return i_A.hashCode() > i_B.hashCode();
             }
         }
@@ -169,6 +175,7 @@ public enum Comparer
             }
         }
         
+        @SuppressWarnings("unchecked")
         @Override
         public boolean compare(Object i_A ,Object i_B)
         {
@@ -193,6 +200,13 @@ public enum Comparer
             }
             else
             {
+                if ( i_A.getClass().equals(i_B.getClass()) )
+                {
+                    if ( MethodReflect.isExtendImplement(i_A ,Comparable.class) )
+                    {
+                        return ((Comparable<Object>)i_A).compareTo(i_B) >= 0;
+                    }
+                }
                 return i_A.hashCode() >= i_B.hashCode();
             }
         }
@@ -219,6 +233,7 @@ public enum Comparer
             }
         }
         
+        @SuppressWarnings("unchecked")
         @Override
         public boolean compare(Object i_A ,Object i_B)
         {
@@ -243,6 +258,13 @@ public enum Comparer
             }
             else
             {
+                if ( i_A.getClass().equals(i_B.getClass()) )
+                {
+                    if ( MethodReflect.isExtendImplement(i_A ,Comparable.class) )
+                    {
+                        return ((Comparable<Object>)i_A).compareTo(i_B) < 0;
+                    }
+                }
                 return i_A.hashCode() < i_B.hashCode();
             }
         }
@@ -269,6 +291,7 @@ public enum Comparer
             }
         }
         
+        @SuppressWarnings("unchecked")
         @Override
         public boolean compare(Object i_A ,Object i_B)
         {
@@ -293,6 +316,13 @@ public enum Comparer
             }
             else
             {
+                if ( i_A.getClass().equals(i_B.getClass()) )
+                {
+                    if ( MethodReflect.isExtendImplement(i_A ,Comparable.class) )
+                    {
+                        return ((Comparable<Object>)i_A).compareTo(i_B) <= 0;
+                    }
+                }
                 return i_A.hashCode() <= i_B.hashCode();
             }
         }
