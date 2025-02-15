@@ -7,6 +7,9 @@ import java.util.Map;
 import org.hy.common.Help;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.enums.Logical;
+import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.execute.IExecute;
+import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.xml.log.Logger;
 
 
@@ -21,7 +24,7 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  * @param <V>
  */
-public class Condition implements IfElse ,XJavaID
+public class Condition implements IExecute ,IfElse ,XJavaID
 {
     
     private static final Logger $Logger = new Logger(Condition.class);
@@ -40,11 +43,33 @@ public class Condition implements IfElse ,XJavaID
     /** 条件项或嵌套条件逻辑 */
     private List<IfElse> items;
     
+    /** 路由 */
+    private RouteConfig  route;
+    
     
     
     public Condition()
     {
         this.items = new ArrayList<>();
+        this.route = new RouteConfig();
+    }
+    
+    
+    /**
+     * 执行
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-15
+     * @version     v1.0
+     *
+     * @param i_IndexNo   本方法要执行的执行序号。下标从1开始
+     * @param io_Default  默认值类型的变量信息
+     * @param io_Context  上下文类型的变量信息
+     * @return
+     */
+    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Default ,Map<String ,Object> io_Context)
+    {
+        return null;
     }
     
     
@@ -219,6 +244,26 @@ public class Condition implements IfElse ,XJavaID
     }
     
     
+    /**
+     * 获取：路由
+     */
+    public RouteConfig getRoute()
+    {
+        return route;
+    }
+
+    
+    /**
+     * 设置：路由
+     * 
+     * @param i_Route 路由
+     */
+    public void setRoute(RouteConfig i_Route)
+    {
+        this.route = i_Route;
+    }
+
+
     /**
      * 获取：全局惟一标识ID
      */
