@@ -89,8 +89,8 @@ public class ConditionItem implements IfElse ,XJavaID
             return false;
         }
         
-        Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,i_Default ,i_Context);
-        Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,i_Default ,i_Context);
+        Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,i_Default ,i_Context);
+        Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,String.class ,i_Default ,i_Context);
         
         return this.comparer.compare(v_ValueA ,v_ValueB);
     }

@@ -40,10 +40,14 @@ public class ValueHelp
      * @param i_Context  上下文类型的变量信息
      * @return
      */
-    public static Object getValue(String i_ValueXID ,Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
+    public static Object getValue(String i_ValueXID ,Class<?> i_ValueClass ,Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
     {
         Object v_Value = i_ValueXID;
-        if ( i_ValueXID.startsWith(DBSQL.$Placeholder) )
+        if ( i_ValueXID == null )
+        {
+            // Nothing.
+        }
+        else if ( i_ValueXID.startsWith(DBSQL.$Placeholder) )
         {
             String v_ValueID = i_ValueXID.trim().substring(DBSQL.$Placeholder.length());
             String v_YYYZZZ  = null;
@@ -104,6 +108,10 @@ public class ValueHelp
                     return v_Value;
                 }
             }
+        }
+        else
+        {
+            v_Value = Help.toObject(i_ValueClass ,i_ValueXID);
         }
         
         return v_Value;
