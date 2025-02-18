@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.Total;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.route.RouteConfig;
-import org.hy.common.xml.log.Logger;
 
 
 
@@ -24,12 +25,8 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  * @param <V>
  */
-public class Condition implements IExecute ,IfElse ,XJavaID
+public class Condition extends Total implements IExecute ,IfElse ,XJavaID
 {
-    
-    private static final Logger $Logger = new Logger(Condition.class);
-    
-    
     
     /** 全局惟一标识ID */
     private String       xid;
@@ -43,6 +40,9 @@ public class Condition implements IExecute ,IfElse ,XJavaID
     /** 条件项或嵌套条件逻辑 */
     private List<IfElse> items;
     
+    /** 为返回值定义的变量ID */
+    private String       returnID;
+    
     /** 路由 */
     private RouteConfig  route;
     
@@ -50,6 +50,23 @@ public class Condition implements IExecute ,IfElse ,XJavaID
     
     public Condition()
     {
+        this(0L ,0L);
+    }
+    
+    
+    /**
+     * 构造器
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-18
+     * @version     v1.0
+     *
+     * @param i_RequestTotal  累计的执行次数
+     * @param i_SuccessTotal  累计的执行成功次数
+     */
+    public Condition(long i_RequestTotal ,long i_SuccessTotal)
+    {
+        super(i_RequestTotal ,i_SuccessTotal);
         this.items = new ArrayList<>();
         this.route = new RouteConfig();
     }
@@ -69,7 +86,26 @@ public class Condition implements IExecute ,IfElse ,XJavaID
      */
     public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Default ,Map<String ,Object> io_Context)
     {
-        return null;
+        ExecuteResult v_Result = new ExecuteResult(i_IndexNo ,this.xid);
+        
+        try
+        {
+            long    v_BeginTime = this.request().getTime();
+            boolean v_ExceRet   = this.allow(io_Default ,io_Context);
+            
+            if ( !Help.isNull(this.returnID) )
+            {
+                io_Context.put(this.returnID ,v_ExceRet);
+            }
+            
+            this.success(Date.getNowTime().getTime() - v_BeginTime);
+            v_Result.setResult(v_ExceRet);
+            return v_Result;
+        }
+        catch (Exception exce)
+        {
+            return v_Result.setException(exce);
+        }
     }
     
     
@@ -82,19 +118,17 @@ public class Condition implements IExecute ,IfElse ,XJavaID
      *
      * @param i_Default  默认值类型的变量信息
      * @param i_Context  上下文类型的变量信息
-     * @return
+     * @return           返回判定结果或抛出异常
      */
     public boolean allow(Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
     {
         if ( this.logical == null )
         {
-            $Logger.warn("Condition logical [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
-            return false;
+            throw new NullPointerException("Condition logical [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
         }
         if ( Help.isNull(this.items) )
         {
-            $Logger.warn("Condition items [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
-            return false;
+            throw new NullPointerException("Condition items [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
         }
         
         // 与
@@ -104,7 +138,7 @@ public class Condition implements IExecute ,IfElse ,XJavaID
             {
                 if ( v_Item == null )
                 {
-                    $Logger.warn("Condition list element [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
+                    throw new NullPointerException("Condition list element [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
                 }
                 else
                 {
@@ -123,7 +157,7 @@ public class Condition implements IExecute ,IfElse ,XJavaID
             {
                 if ( v_Item == null )
                 {
-                    $Logger.warn("Condition list element [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
+                    throw new NullPointerException("Condition list element [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
                 }
                 else
                 {
@@ -147,9 +181,9 @@ public class Condition implements IExecute ,IfElse ,XJavaID
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param i_Default
-     * @param i_Context
-     * @return
+     * @param i_Default  默认值类型的变量信息
+     * @param i_Context  上下文类型的变量信息
+     * @return           返回判定结果或抛出异常
      */
     public boolean reject(Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
     {
@@ -244,6 +278,26 @@ public class Condition implements IExecute ,IfElse ,XJavaID
     }
     
     
+    /**
+     * 获取：为返回值定义的变量ID
+     */
+    public String getReturnID()
+    {
+        return returnID;
+    }
+
+    
+    /**
+     * 设置：为返回值定义的变量ID
+     * 
+     * @param i_ReturnID 为返回值定义的变量ID
+     */
+    public void setReturnID(String i_ReturnID)
+    {
+        this.returnID = i_ReturnID;
+    }
+
+
     /**
      * 获取：路由
      */

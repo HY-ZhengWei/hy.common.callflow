@@ -6,7 +6,6 @@ import org.hy.common.Help;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.Comparer;
-import org.hy.common.xml.log.Logger;
 
 
 
@@ -22,10 +21,6 @@ import org.hy.common.xml.log.Logger;
  */
 public class ConditionItem implements IfElse ,XJavaID
 {
-    
-    private static final Logger $Logger = new Logger(ConditionItem.class);
-    
-    
     
     /** 全局惟一标识ID */
     private String   xid;
@@ -69,24 +64,21 @@ public class ConditionItem implements IfElse ,XJavaID
      *
      * @param i_Default  默认值类型的变量信息
      * @param i_Context  上下文类型的变量信息
-     * @return
+     * @return           返回判定结果或抛出异常
      */
     public boolean allow(Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
     {
         if ( this.comparer == null )
         {
-            $Logger.warn("ConditionItem comparer [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
-            return false;
+            throw new NullPointerException("ConditionItem comparer [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
         }
         if ( this.valueXIDA == null )
         {
-            $Logger.warn("ConditionItem valueA [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
-            return false;
+            throw new NullPointerException("ConditionItem valueA [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
         }
         if ( this.valueXIDB == null )
         {
-            $Logger.warn("ConditionItem valueB [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
-            return false;
+            throw new NullPointerException("ConditionItem valueB [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
         }
         
         Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,i_Default ,i_Context);
@@ -103,9 +95,9 @@ public class ConditionItem implements IfElse ,XJavaID
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param i_Default
-     * @param i_Context
-     * @return
+     * @param i_Default  默认值类型的变量信息
+     * @param i_Context  上下文类型的变量信息
+     * @return           返回判定结果或抛出异常
      */
     public boolean reject(Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
     {
