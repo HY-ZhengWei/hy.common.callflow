@@ -45,6 +45,9 @@ public class NodeConfig implements IExecute ,XJavaID
     /** 执行方法对象（仅内部使用） */
     private Method          callMethodObject;
     
+    /** 是否初始化 */
+    private boolean         isInit;
+    
     /** 执行方法的参数 */
     private List<NodeParam> callParams;
     
@@ -92,13 +95,9 @@ public class NodeConfig implements IExecute ,XJavaID
     
     public NodeConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
-        this.route             = new RouteConfig();
-        this.requestTotal      = i_RequestTotal;
-        this.successTotal      = i_SuccessTotal;
-        this.requestCount      = 0L;
-        this.successCount      = 0L;
-        this.successTimeLen    = 0D;
-        this.successTimeLenMax = 0D;
+        this.route  = new RouteConfig();
+        this.isInit = false;
+        this.reset(i_RequestTotal ,i_SuccessTotal);
     }
     
     
@@ -132,13 +131,11 @@ public class NodeConfig implements IExecute ,XJavaID
         
         // 获取及实时解析方法的执行参数
         Object [] v_ParamValues = null;
-        int v_ParamCount = 0;
         if ( !Help.isNull(this.callParams) )
         {
-            v_ParamCount  = this.callParams.size();
-            v_ParamValues = new Object[v_ParamCount];
+            v_ParamValues = new Object[this.callParams.size()];
             
-            for (int x=0; x<v_ParamCount; x++)
+            for (int x=0; x<v_ParamValues.length; x++)
             {
                 NodeParam v_NodeParam  = this.callParams.get(x);
                 v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,io_Default ,io_Context);
@@ -146,82 +143,16 @@ public class NodeConfig implements IExecute ,XJavaID
         }
         else
         {
-            v_ParamValues = new Object[v_ParamCount];
+            v_ParamValues = new Object[0];
         }
         
-        // 用于匹配执行方法
-        // 仅在首次或关键成员属性改变时才执行
-        if ( this.requestCount == 0 )
+        try
         {
-            if ( Help.isNull(this.callMehod) )
-            {
-                return v_Result.setException(new NullPointerException("XID[" + this.xid + "]'s CallMethod is null."));
-            }
-            
-            List<Method> v_CallMethods = MethodReflect.getMethods(v_CallObject.getClass() ,this.callMehod ,v_ParamCount);
-            if ( Help.isNull(v_CallMethods) )
-            {
-                return v_Result.setException(new NullPointerException("XID[" + this.xid + "]'s CallMethod[" + this.callMehod + "] is not find."));
-            }
-            
-            if ( v_CallMethods.size() == 1 )
-            {
-                this.callMethodObject = v_CallMethods.get(0);
-            }
-            else
-            {
-                // 参照 MethodReflect.getMethodsBest() 方法配对到最佳方法
-                Map<Integer ,Method> v_Bests = new HashMap<Integer ,Method>();
-                for (Method v_Method : v_CallMethods)
-                {
-                    int         v_BestValue    = 0;
-                    Class<?> [] v_MPClassTypes = v_Method.getParameterTypes();
-                    for (int y=v_MPClassTypes.length - 1; y>=0; y--)
-                    {
-                        if ( v_ParamValues[y] == null )
-                        {
-                            // Nothing.
-                        }
-                        else if ( v_ParamValues[y].getClass() == v_MPClassTypes[y] )                       // 3级：完全配对
-                        {
-                            v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y) * 3;
-                        }
-                        else if ( v_MPClassTypes[y] == Object.class )                                      // 1级：模糊配对
-                        {
-                            v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y);
-                        }
-                        else if ( MethodReflect.isExtendImplement(v_ParamValues[y] ,v_MPClassTypes[y]) )   // 2级：继承配对 或 接口实现配对
-                        {
-                            v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y) * 2;
-                        }
-                    }
-                    
-                    if ( v_BestValue > 0 )
-                    {
-                        v_Bests.put(v_BestValue ,v_Method);
-                    }
-                }
-                
-                if ( !Help.isNull(v_Bests) )
-                {
-                    v_CallMethods.clear();
-                    v_CallMethods = Help.toList(Help.toReverse(v_Bests));
-                    v_Bests.clear();
-                    
-                    if ( v_CallMethods.size() == 1 )
-                    {
-                        this.callMethodObject = v_CallMethods.get(0);
-                    }
-                    else
-                    {
-                        return v_Result.setException(new NullPointerException("XID[" + this.xid + "]'s CallMethod[" + this.callMehod + "](" + v_ParamCount + ") is find " + v_CallMethods.size() + " methods."));
-                    }
-                }
-                else
-                {
-                    return v_Result.setException(new NullPointerException("XID[" + this.xid + "]'s CallMethod[" + this.callMehod + "](" + v_ParamCount + ") is not find."));
-                }
-            }
+            this.init(v_CallObject ,v_ParamValues);
+        }
+        catch (Exception exce)
+        {
+            return v_Result.setException(exce);
         }
         
         try
@@ -235,6 +166,148 @@ public class NodeConfig implements IExecute ,XJavaID
         catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException exce)
         {
             return v_Result.setException(exce);
+        }
+    }
+    
+    
+    /**
+     * 手动初始化。
+     * 因预先做了初始动作，可加速执行用时，统计数据精准。
+     * 
+     * 注：初始未成功时，会抛出异常
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-18
+     * @version     v1.0
+     *
+     * @param io_Default  默认值类型的变量信息
+     * @param io_Context  上下文类型的变量信息
+     */
+    public synchronized void init(Map<String ,Object> io_Default ,Map<String ,Object> io_Context)
+    {
+        if ( Help.isNull(this.callXID) )
+        {
+            throw new NullPointerException("XID[" + this.xid + "]'s CallXID is null.");
+        }
+        
+        // 获取执行对象
+        Object v_CallObject = XJava.getObject(this.callXID);
+        if ( v_CallObject == null )
+        {
+            throw new NullPointerException("XID[" + this.xid + "]'s CallXID[" + this.callXID + "] is not find.");
+        }
+        
+        // 获取及实时解析方法的执行参数
+        Object [] v_ParamValues = null;
+        if ( !Help.isNull(this.callParams) )
+        {
+            v_ParamValues = new Object[this.callParams.size()];
+            
+            for (int x=0; x<v_ParamValues.length; x++)
+            {
+                NodeParam v_NodeParam  = this.callParams.get(x);
+                v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,io_Default ,io_Context);
+            }
+        }
+        else
+        {
+            v_ParamValues = new Object[0];
+        }
+        
+        this.init(v_CallObject ,v_ParamValues);
+    }
+    
+    
+    /**
+     * 自动初始化。
+     * 用于匹配执行方法。仅在首次或关键成员属性改变时才执行。
+     * 
+     * 注：初始未成功时，会抛出异常
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-18
+     * @version     v1.0
+     *
+     * @param i_CallObject   执行对象的实例
+     * @param i_ParamValues  方法的执行参数
+     */
+    private synchronized void init(Object i_CallObject ,Object [] i_ParamValues)
+    {
+        if ( this.isInit )
+        {
+            return;
+        }
+        
+        if ( Help.isNull(this.callMehod) )
+        {
+            throw new NullPointerException("XID[" + this.xid + "]'s CallMethod is null.");
+        }
+        
+        List<Method> v_CallMethods = MethodReflect.getMethods(i_CallObject.getClass() ,this.callMehod ,i_ParamValues.length);
+        if ( Help.isNull(v_CallMethods) )
+        {
+            throw new NullPointerException("XID[" + this.xid + "]'s CallMethod[" + this.callMehod + "] is not find.");
+        }
+        
+        if ( v_CallMethods.size() == 1 )
+        {
+            this.isInit           = true;
+            this.callMethodObject = v_CallMethods.get(0);
+        }
+        else
+        {
+            // 参照 MethodReflect.getMethodsBest() 方法配对到最佳方法
+            Map<Integer ,Method> v_Bests = new HashMap<Integer ,Method>();
+            for (Method v_Method : v_CallMethods)
+            {
+                int         v_BestValue    = 0;
+                Class<?> [] v_MPClassTypes = v_Method.getParameterTypes();
+                for (int y=v_MPClassTypes.length - 1; y>=0; y--)
+                {
+                    if ( i_ParamValues[y] == null )
+                    {
+                        // Nothing.
+                    }
+                    else if ( i_ParamValues[y].getClass() == v_MPClassTypes[y] )                       // 3级：完全配对
+                    {
+                        v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y) * 3;
+                    }
+                    else if ( v_MPClassTypes[y] == Object.class )                                      // 1级：模糊配对
+                    {
+                        v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y);
+                    }
+                    else if ( MethodReflect.isExtendImplement(i_ParamValues[y] ,v_MPClassTypes[y]) )   // 2级：继承配对 或 接口实现配对
+                    {
+                        v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y) * 2;
+                    }
+                }
+                
+                if ( v_BestValue > 0 )
+                {
+                    v_Bests.put(v_BestValue ,v_Method);
+                }
+            }
+            
+            if ( !Help.isNull(v_Bests) )
+            {
+                v_CallMethods.clear();
+                v_CallMethods = Help.toList(Help.toReverse(v_Bests));
+                v_Bests.clear();
+                
+                if ( v_CallMethods.size() == 1 )
+                {
+                    this.isInit           = true;
+                    this.callMethodObject = v_CallMethods.get(0);
+                }
+                else
+                {
+                    throw new NullPointerException("XID[" + this.xid + "]'s CallMethod[" + this.callMehod + "](" + i_ParamValues.length + ") is find " + v_CallMethods.size() + " methods.");
+                }
+            }
+            else
+            {
+                throw new NullPointerException("XID[" + this.xid + "]'s CallMethod[" + this.callMehod + "](" + i_ParamValues.length + ") is not find.");
+            }
         }
     }
     
@@ -277,6 +350,43 @@ public class NodeConfig implements IExecute ,XJavaID
     
     
     /**
+     * 重置统计。即统计归零
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-18
+     * @version     v1.0
+     *
+     * @param i_RequestTotal
+     * @param i_SuccessTotal
+     */
+    public synchronized void reset()
+    {
+        this.reset(0L ,0L);
+    }
+    
+    
+    /**
+     * 重置统计
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-18
+     * @version     v1.0
+     *
+     * @param i_RequestTotal  累计的执行次数
+     * @param i_SuccessTotal  累计的执行成功次数
+     */
+    public synchronized void reset(long i_RequestTotal ,long i_SuccessTotal)
+    {
+        this.requestTotal      = i_RequestTotal;
+        this.successTotal      = i_SuccessTotal;
+        this.requestCount      = 0L;
+        this.successCount      = 0L;
+        this.successTimeLen    = 0D;
+        this.successTimeLenMax = 0D;
+    }
+    
+    
+    /**
      * 获取：执行对象的XID
      */
     public String getCallXID()
@@ -292,8 +402,9 @@ public class NodeConfig implements IExecute ,XJavaID
      */
     public void setCallXID(String i_CallXID)
     {
-        this.callXID     = i_CallXID;
-        this.requestCount   = 0L;
+        this.callXID      = i_CallXID;
+        this.isInit       = false;
+        this.requestCount = 0L;
         this.successCount = 0L;
     }
 
@@ -314,8 +425,9 @@ public class NodeConfig implements IExecute ,XJavaID
      */
     public void setCallMehod(String i_CallMehod)
     {
-        this.callMehod   = i_CallMehod;
-        this.requestCount   = 0L;
+        this.callMehod    = i_CallMehod;
+        this.isInit       = false;
+        this.requestCount = 0L;
         this.successCount = 0L;
     }
 
@@ -336,8 +448,9 @@ public class NodeConfig implements IExecute ,XJavaID
      */
     public void setCallParams(List<NodeParam> i_CallParams)
     {
-        this.callParams  = i_CallParams;
-        this.requestCount   = 0L;
+        this.callParams   = i_CallParams;
+        this.isInit       = false;
+        this.requestCount = 0L;
         this.successCount = 0L;
     }
 
@@ -392,17 +505,6 @@ public class NodeConfig implements IExecute ,XJavaID
 
     
     /**
-     * 设置：累计的执行次数
-     * 
-     * @param i_RequestTotal 累计的执行次数
-     */
-    public void setRequestTotal(long i_RequestTotal)
-    {
-        this.requestTotal = i_RequestTotal;
-    }
-
-
-    /**
      * 获取：累计的执行成功次数
      */
     public long getSuccessTotal()
@@ -412,20 +514,9 @@ public class NodeConfig implements IExecute ,XJavaID
 
     
     /**
-     * 设置：累计的执行成功次数
-     * 
-     * @param i_SuccessTotal 累计的执行成功次数
-     */
-    public void setSuccessTotal(long i_SuccessTotal)
-    {
-        this.successTotal = i_SuccessTotal;
-    }
-
-
-    /**
      * 获取：执行的次数
      */
-    public Long getRequestCount()
+    public long getRequestCount()
     {
         return requestCount;
     }
@@ -434,7 +525,7 @@ public class NodeConfig implements IExecute ,XJavaID
     /**
      * 获取：执行的成功次数
      */
-    public Long getSuccessCount()
+    public long getSuccessCount()
     {
         return successCount;
     }
@@ -478,7 +569,7 @@ public class NodeConfig implements IExecute ,XJavaID
         return this.executeTime;
     }
     
-    
+
     /**
      * 获取：全局惟一标识ID
      */
