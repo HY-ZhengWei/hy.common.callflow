@@ -2,6 +2,7 @@ package org.hy.common.callflow.node;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -235,7 +236,7 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
         List<Method> v_CallMethods = MethodReflect.getMethods(i_CallObject.getClass() ,this.callMehod ,i_ParamValues.length);
         if ( Help.isNull(v_CallMethods) )
         {
-            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "] is not find.");
+            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "(" + i_ParamValues.length + ")] is not find.");
         }
         
         if ( v_CallMethods.size() == 1 )
@@ -290,12 +291,12 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
                 }
                 else
                 {
-                    throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "](" + i_ParamValues.length + ") is find " + v_CallMethods.size() + " methods.");
+                    throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "(" + i_ParamValues.length + ")] is find " + v_CallMethods.size() + " methods.");
                 }
             }
             else
             {
-                throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "](" + i_ParamValues.length + ") is not find.");
+                throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "(" + i_ParamValues.length + ")] is not find.");
             }
         }
     }
@@ -341,6 +342,31 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     {
         this.callMehod = i_CallMehod;
         this.isInit    = false;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+    }
+    
+    
+    /**
+     * 添加执行方法的参数
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-19
+     * @version     v1.0
+     *
+     * @param i_Param  执行方法的参数
+     */
+    public void setCallParam(NodeParam i_Param)
+    {
+        synchronized (this)
+        {
+            if ( this.callParams == null )
+            {
+                this.callParams = new ArrayList<NodeParam>();
+            }
+        }
+        
+        this.callParams.add(i_Param);
+        this.isInit = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
 

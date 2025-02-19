@@ -1,6 +1,8 @@
 package org.hy.common.callflow.node;
 
+import org.hy.common.Help;
 import org.hy.common.XJavaID;
+import org.hy.common.db.DBSQL;
 
 
 
@@ -27,6 +29,47 @@ public class NodeParam implements XJavaID
     /** 参数数值。可以是数值、变量、XID标识 */
     private String   value;
     
+    
+    
+    public NodeParam()
+    {
+        this(null);
+    }
+    
+    
+    public NodeParam(String i_Value)
+    {
+        this(i_Value ,null);
+    }
+    
+    
+    public NodeParam(String i_Value ,Class<?> i_ValueClass)
+    {
+        if ( Help.isNull(i_Value) )
+        {
+            throw new NullPointerException("NodeParam's value is null.");
+        }
+        
+        // 是占位符时，参数类型应为空
+        if ( i_Value.startsWith(DBSQL.$Placeholder) )
+        {
+            if ( i_ValueClass != null )
+            {
+                throw new NullPointerException("NodeParam's valueClass is not null, but value is Placeholder.");
+            }
+        }
+        // 是数值时，参数类型必须有
+        else
+        {
+            if ( i_ValueClass == null )
+            {
+                throw new NullPointerException("NodeParam's valueClass is null, but value is not Placeholder.");
+            }
+        }
+        
+        this.value      = i_Value;
+        this.valueClass = i_ValueClass;
+    }
     
     
     /**

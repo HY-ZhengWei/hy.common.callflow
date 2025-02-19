@@ -201,7 +201,7 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      * @param <V>
      * @param i_Item
      */
-    public boolean add(ConditionItem i_Item)
+    public boolean setItem(ConditionItem i_Item)
     {
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         
@@ -226,7 +226,7 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      *
      * @param i_Item
      */
-    public boolean add(Condition i_Item)
+    public boolean setItem(Condition i_Item)
     {
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         
