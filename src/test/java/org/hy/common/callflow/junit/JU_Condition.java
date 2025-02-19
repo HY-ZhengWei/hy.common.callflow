@@ -1,10 +1,8 @@
 package org.hy.common.callflow.junit;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.hy.common.Date;
 import org.hy.common.callflow.enums.Comparer;
+import org.hy.common.callflow.enums.Logical;
+import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.ifelse.ConditionItem;
 import org.junit.Test;
 
@@ -12,85 +10,104 @@ import org.junit.Test;
 
 
 
+/**
+ * 测试单元：条件逻辑
+ *
+ * @author      ZhengWei(HY)
+ * @createDate  2025-02-18
+ * @version     v1.0
+ */
 public class JU_Condition
 {
     
+    /**
+     * 逻辑与
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-18
+     * @version     v1.0
+     *
+     */
     @Test
-    public void test_ConditionItem()
+    public void test_And()
     {
-        Map<String ,Object> v_Default = new HashMap<String ,Object>();
-        v_Default.put("VNumber" ,123);
-        v_Default.put("V100"    ,100);
-        v_Default.put("VNumStr" ,"123");
+        Condition v_Condition = new Condition();
+        v_Condition.setLogical(Logical.And);
         
-        Map<String ,Object> v_Context = new HashMap<String ,Object>();
-        v_Context.put("C20250213" ,new Date("2025-02-13 00:00:00"));
-        v_Context.put("C20250214" ,new Date("2025-02-14 00:00:00"));
+        v_Condition.setComment("123 == 123");
+        v_Condition.add(new ConditionItem(Comparer.Equal ,"123" ,"123"));
+        System.out.println(v_Condition.toString() + " ? " + v_Condition.allow(null ,null));
         
-        String        v_A        = "";
-        String        v_B        = "";
-        Comparer      v_Comparer = null;
-        ConditionItem v_CItem    = null;
+        v_Condition.setComment("123 == 123 AND 123 == 456");
+        v_Condition.add(new ConditionItem(Comparer.Equal ,"123" ,"123"));
+        v_Condition.add(new ConditionItem(Comparer.Equal ,"123" ,"456"));
+        System.out.println(v_Condition.toString() + " ? " + v_Condition.allow(null ,null));
+    }
+    
+    
+    
+    /**
+     * 逻辑或
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-18
+     * @version     v1.0
+     *
+     */
+    @Test
+    public void test_Or()
+    {
+        Condition v_Condition = new Condition();
+        v_Condition.setLogical(Logical.Or);
         
-        v_A        = "123";
-        v_B        = "123";
-        v_Comparer = Comparer.Equal;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
+        v_Condition.setComment("123 == 123");
+        v_Condition.add(new ConditionItem(Comparer.Equal ,"123" ,"123"));
+        System.out.println(v_Condition.getSuccessTimeLen() + "\t" + v_Condition.toString() + " ? " + v_Condition.allow(null ,null));
         
-        v_A        = "123";
-        v_B        = "123";
-        v_Comparer = Comparer.EqualNot;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
+        v_Condition.setComment("123 == 123 OR 123 == 456");
+        v_Condition.add(new ConditionItem(Comparer.Equal ,"123" ,"123"));
+        v_Condition.add(new ConditionItem(Comparer.Equal ,"123" ,"456"));
+        System.out.println(v_Condition.getSuccessTimeLen()+ "\t" + v_Condition.toString() + " ? " + v_Condition.allow(null ,null));
+    }
+    
+    
+    
+    /**
+     * 逻辑与或的组合
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-19
+     * @version     v1.0
+     *
+     */
+    @Test
+    public void test_AndOr()
+    {
+        Condition v_CChild = new Condition();
+        v_CChild.setLogical(Logical.Or);
         
-        v_A        = "123";
-        v_B        = "456";
-        v_Comparer = Comparer.EqualNot;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
+        // 123 == 123 OR 123 == 456
+        v_CChild.add(new ConditionItem(Comparer.Equal ,"123" ,"123"));
+        v_CChild.add(new ConditionItem(Comparer.Equal ,"123" ,"456"));
         
-        v_A        = ":VNumber";
-        v_B        = ":VNumStr";
-        v_Comparer = Comparer.Equal;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
         
-        v_A        = ":VNumStr";
-        v_B        = ":VNumStr";
-        v_Comparer = Comparer.Equal;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
         
-        v_A        = ":VNumber";
-        v_B        = ":VNumber";
-        v_Comparer = Comparer.Greater;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
+        Condition v_CFather = new Condition();
+        v_CFather.setLogical(Logical.And);
         
-        v_A        = ":VNumber";
-        v_B        = ":V100";
-        v_Comparer = Comparer.GreaterEqual;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
+        // 123 == 123 AND (123 == 123 OR 123 == 456)
+        v_CFather.add(new ConditionItem(Comparer.Equal ,"123" ,"123"));
+        v_CFather.add(v_CChild);
+        System.out.println(v_CFather.getSuccessTimeLen() + "\t" + v_CFather.toString() + " ? " + v_CFather.allow(null ,null));
         
-        v_A        = ":VNumber";
-        v_B        = ":VNumber";
-        v_Comparer = Comparer.Less;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
         
-        v_A        = ":VNumber";
-        v_B        = ":V100";
-        v_Comparer = Comparer.LessEqual;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
         
-        v_A        = ":C20250213";
-        v_B        = ":C20250214";
-        v_Comparer = Comparer.LessEqual;
-        v_CItem    = new ConditionItem(v_Comparer ,v_A ,v_B);
-        System.out.println(v_A + " " + v_Comparer.getValue() + " " + v_B + " ? " + v_CItem.allow(v_Default ,v_Context));
+        // (123 == 123 And (123 == 123 Or 123 == 456)) And ABC == ABC
+        Condition v_Super = new Condition();
+        v_Super.setLogical(Logical.And);
+        v_Super.add(v_CFather);
+        v_Super.add(new ConditionItem(Comparer.Equal ,"ABC" ,"ABC"));
+        System.out.println(v_Super.getSuccessTimeLen() + "\t" + v_Super.toString() + " ? " + v_Super.allow(null ,null));
     }
     
 }
