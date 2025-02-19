@@ -203,6 +203,8 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      */
     public boolean add(ConditionItem i_Item)
     {
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        
         if ( i_Item != null )
         {
             this.items.add(i_Item);
@@ -226,6 +228,8 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      */
     public boolean add(Condition i_Item)
     {
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        
         if ( i_Item != null  )
         {
             this.items.add(i_Item);
@@ -255,6 +259,7 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
     public void setLogical(Logical i_Logical)
     {
         this.logical = i_Logical;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
     
     
@@ -275,6 +280,7 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
     public void setItems(List<IfElse> i_Items)
     {
         this.items = i_Items;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
     
     
@@ -379,6 +385,45 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
     public String getComment()
     {
         return this.comment;
+    }
+    
+    
+    /**
+     * 转为表达式
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-19
+     * @version     v1.0
+     *
+     * @return
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( this.logical != null && !Help.isNull(this.items) )
+        {
+            for (int x=0; x<this.items.size(); x++)
+            {
+                if ( x >= 1 )
+                {
+                    v_Builder.append(" ").append(this.logical.getValue()).append(" ");
+                }
+                
+                IfElse v_Item = this.items.get(x);
+                if ( v_Item instanceof Condition )
+                {
+                    v_Builder.append("(").append(v_Item.toString()).append(")");
+                }
+                else
+                {
+                    v_Builder.append(v_Item.toString());
+                }
+            }
+        }
+        
+        return v_Builder.toString();
     }
     
 }

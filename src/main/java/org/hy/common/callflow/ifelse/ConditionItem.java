@@ -228,5 +228,30 @@ public class ConditionItem implements IfElse ,XJavaID
     {
         return this.comment;
     }
+
+
+    /**
+     * 转为表达式
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-19
+     * @version     v1.0
+     *
+     * @return
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( this.comparer != null )
+        {
+            v_Builder.append(this.valueXIDA == null ? "NULL" : this.valueXIDA);
+            v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
+            v_Builder.append(this.valueXIDA == null ? "NULL" : this.valueXIDB);
+        }
+        
+        return v_Builder.toString();
+    }
     
 }
