@@ -1,6 +1,5 @@
 package org.hy.common.callflow.node;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import org.hy.common.MethodReflect;
 import org.hy.common.Total;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.route.RouteConfig;
@@ -62,6 +62,9 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     /** 为返回值定义的变量ID */
     private String          returnID;
     
+    /** 执行状态定义的变量ID */
+    private String          statusID;
+    
     /** 路由 */
     private RouteConfig     route;
     
@@ -105,17 +108,22 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Context)
     {
         ExecuteResult v_Result = new ExecuteResult(i_IndexNo ,this.xid);
+        this.refreshStatus(io_Context ,v_Result.getStatus());
         
         if ( Help.isNull(this.callXID) )
         {
-            return v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID is null."));
+            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID is null."));
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
         }
         
         // 获取执行对象
         Object v_CallObject = XJava.getObject(this.callXID);
         if ( v_CallObject == null )
         {
-            return v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID[" + this.callXID + "] is not find."));
+            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID[" + this.callXID + "] is not find."));
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
         }
         
         // 获取及实时解析方法的执行参数
@@ -134,7 +142,9 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
             }
             catch (Exception exce)
             {
-                return v_Result.setException(exce);
+                v_Result.setException(exce);
+                this.refreshStatus(io_Context ,v_Result.getStatus());
+                return v_Result;
             }
         }
         else
@@ -148,7 +158,9 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
         }
         catch (Exception exce)
         {
-            return v_Result.setException(exce);
+            v_Result.setException(exce);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
         }
         
         try
@@ -163,11 +175,14 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
             
             this.success(Date.getNowTime().getTime() - v_BeginTime);
             v_Result.setResult(v_ExceRet);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
         }
-        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException exce)
+        catch (Exception exce)
         {
-            return v_Result.setException(exce);
+            v_Result.setException(exce);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
         }
     }
     
@@ -341,6 +356,25 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     
     
     /**
+     * 刷新执行状态
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param i_Status    执行状态
+     */
+    private void refreshStatus(Map<String ,Object> io_Context ,ExecuteStatus i_Status)
+    {
+        if ( !Help.isNull(this.statusID) )
+        {
+            io_Context.put(this.statusID ,i_Status.getValue());
+        }
+    }
+    
+    
+    /**
      * 获取：执行对象的XID
      */
     public String getCallXID()
@@ -451,6 +485,26 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     }
     
     
+    /**
+     * 获取：执行状态定义的变量ID
+     */
+    public String getStatusID()
+    {
+        return statusID;
+    }
+
+    
+    /**
+     * 设置：执行状态定义的变量ID
+     * 
+     * @param i_StatusID 执行状态定义的变量ID
+     */
+    public void setStatusID(String i_StatusID)
+    {
+        this.statusID = i_StatusID;
+    }
+
+
     /**
      * 获取：路由
      */

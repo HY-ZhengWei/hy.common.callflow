@@ -1,6 +1,10 @@
 package org.hy.common.callflow.execute;
 
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.TimeoutException;
+
 import org.hy.common.Date;
+import org.hy.common.callflow.enums.ExecuteStatus;
 
 
 
@@ -17,25 +21,28 @@ public class ExecuteResult
 {
     
     /** 执行序号。下标从1开始 */
-    private Integer   indexNo;
+    private Integer       indexNo;
     
     /** 执行对象的全局惟一标识ID */
-    private String    executeXID;
+    private String        executeXID;
+    
+    /** 执行状态 */
+    private ExecuteStatus status;
     
     /** 执行结果（方法编排中的最后一个结果数据） */
-    private Object    result;
+    private Object        result;
     
     /** 执行结果是否成功 */
-    private boolean   success;
+    private boolean       success;
     
     /** 为异常对象 */
-    private Exception exception;
+    private Exception     exception;
     
     /** 执行开始时间 */
-    private Date      beginTime;
+    private Date          beginTime;
     
     /** 执行结束时间 */
-    private Date      endTime;
+    private Date          endTime;
     
     
     
@@ -47,9 +54,61 @@ public class ExecuteResult
     
     public ExecuteResult(Integer i_IndexNo ,String i_ExecuteXID)
     {
+        this.beginTime  = new Date();
+        this.success    = false;
         this.indexNo    = i_IndexNo;
         this.executeXID = i_ExecuteXID;
-        this.beginTime  = new Date();
+        this.status     = ExecuteStatus.Started;
+    }
+    
+    
+    /**
+     * 执行超时
+     * 
+     * @param i_Exception 为异常对象
+     */
+    public ExecuteResult setTimeout()
+    {
+        // 所有状态类的setter方法仅允许执行一次
+        synchronized ( this )
+        {
+            if ( this.success || this.exception != null )
+            {
+                return this;
+            }
+        }
+        
+        this.endTime   = new Date();
+        this.exception = new TimeoutException();
+        this.success   = false;
+        this.status    = ExecuteStatus.Timeout;
+        
+        return this;
+    }
+    
+    
+    /**
+     * 取消执行
+     * 
+     * @param i_Exception 为异常对象
+     */
+    public ExecuteResult setCancel()
+    {
+        // 所有状态类的setter方法仅允许执行一次
+        synchronized ( this )
+        {
+            if ( this.success || this.exception != null )
+            {
+                return this;
+            }
+        }
+        
+        this.endTime   = new Date();
+        this.exception = new CancellationException();
+        this.success   = false;
+        this.status    = ExecuteStatus.Canceled;
+        
+        return this;
     }
     
     
@@ -69,9 +128,19 @@ public class ExecuteResult
      */
     public ExecuteResult setResult(Object i_Result)
     {
+        // 所有状态类的setter方法仅允许执行一次
+        synchronized ( this )
+        {
+            if ( this.success || this.exception != null )
+            {
+                return this;
+            }
+        }
+        
         this.endTime = new Date();
         this.success = true;
         this.result  = i_Result;
+        this.status  = ExecuteStatus.Finished;
         
         return this;
     }
@@ -93,9 +162,19 @@ public class ExecuteResult
      */
     public ExecuteResult setException(Exception i_Exception)
     {
+        // 所有状态类的setter方法仅允许执行一次
+        synchronized ( this )
+        {
+            if ( this.success || this.exception != null )
+            {
+                return this;
+            }
+        }
+        
+        this.endTime   = new Date();
         this.exception = i_Exception;
         this.success   = false;
-        this.endTime   = new Date();
+        this.status    = ExecuteStatus.Exception;
         
         return this;
     }
@@ -167,6 +246,15 @@ public class ExecuteResult
     public Date getEndTime()
     {
         return endTime;
+    }
+
+    
+    /**
+     * 获取：执行状态
+     */
+    public ExecuteStatus getStatus()
+    {
+        return status;
     }
     
 }
