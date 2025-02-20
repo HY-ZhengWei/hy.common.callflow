@@ -80,18 +80,17 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      * @version     v1.0
      *
      * @param i_IndexNo   本方法要执行的执行序号。下标从1开始
-     * @param io_Default  默认值类型的变量信息
      * @param io_Context  上下文类型的变量信息
      * @return
      */
-    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Default ,Map<String ,Object> io_Context)
+    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Context)
     {
         ExecuteResult v_Result = new ExecuteResult(i_IndexNo ,this.xid);
         
         try
         {
             long    v_BeginTime = this.request().getTime();
-            boolean v_ExceRet   = this.allow(io_Default ,io_Context);
+            boolean v_ExceRet   = this.allow(io_Context);
             
             if ( !Help.isNull(this.returnID) )
             {
@@ -116,11 +115,10 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param i_Default  默认值类型的变量信息
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean allow(Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
+    public boolean allow(Map<String ,Object> i_Context)
     {
         if ( this.logical == null )
         {
@@ -142,7 +140,7 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
                 }
                 else
                 {
-                    boolean v_ChildRet = v_Item.allow(i_Default ,i_Context);
+                    boolean v_ChildRet = v_Item.allow(i_Context);
                     if ( !v_ChildRet )
                     {
                         return false;
@@ -161,7 +159,7 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
                 }
                 else
                 {
-                    boolean v_ChildRet = v_Item.allow(i_Default ,i_Context);
+                    boolean v_ChildRet = v_Item.allow(i_Context);
                     if ( v_ChildRet )
                     {
                         return true;
@@ -181,13 +179,12 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param i_Default  默认值类型的变量信息
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean reject(Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
+    public boolean reject(Map<String ,Object> i_Context)
     {
-        return !allow(i_Default ,i_Context);
+        return !allow(i_Context);
     }
     
     

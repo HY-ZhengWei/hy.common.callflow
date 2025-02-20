@@ -31,10 +31,10 @@ public class ConditionItem implements IfElse ,XJavaID
     /** 比较器 */
     private Comparer comparer;
     
-    /** 数值A、变量A、XID标识A（支持xxx.yyy.www） */
+    /** 数值A、上下文变量A、XID标识A（支持xxx.yyy.www） */
     private String   valueXIDA;
     
-    /** 数值B、变量B、XID标识B（支持xxx.yyy.www） */
+    /** 数值B、上下文变量B、XID标识B（支持xxx.yyy.www） */
     private String   valueXIDB;
     
     
@@ -62,11 +62,10 @@ public class ConditionItem implements IfElse ,XJavaID
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param i_Default  默认值类型的变量信息
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean allow(Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
+    public boolean allow(Map<String ,Object> i_Context)
     {
         if ( this.comparer == null )
         {
@@ -81,11 +80,12 @@ public class ConditionItem implements IfElse ,XJavaID
             throw new NullPointerException("ConditionItem valueB [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
         }
         
-        Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,i_Default ,i_Context);
-        Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,String.class ,i_Default ,i_Context);
+        Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,null ,i_Context);
+        Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,String.class ,null ,i_Context);
         
         return this.comparer.compare(v_ValueA ,v_ValueB);
     }
+    
     
     
     /**
@@ -95,13 +95,12 @@ public class ConditionItem implements IfElse ,XJavaID
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param i_Default  默认值类型的变量信息
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean reject(Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
+    public boolean reject(Map<String ,Object> i_Context)
     {
-        return !allow(i_Default ,i_Context);
+        return !allow(i_Context);
     }
     
     
@@ -147,7 +146,7 @@ public class ConditionItem implements IfElse ,XJavaID
 
     
     /**
-     * 获取：数值A、变量A、XID标识A（支持xxx.yyy.www）
+     * 获取：数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
      */
     public String getValueXIDA()
     {
@@ -158,7 +157,7 @@ public class ConditionItem implements IfElse ,XJavaID
     /**
      * 设置：数值A、变量A、XID标识A（支持xxx.yyy.www）
      * 
-     * @param i_ValueXIDA 数值A、变量A、XID标识A（支持xxx.yyy.www）
+     * @param i_ValueXIDA 数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
      */
     public void setValueXIDA(String i_ValueXIDA)
     {
@@ -167,7 +166,7 @@ public class ConditionItem implements IfElse ,XJavaID
 
     
     /**
-     * 获取：数值B、变量B、XID标识B（支持xxx.yyy.www）
+     * 获取：数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
      */
     public String getValueXIDB()
     {
@@ -176,9 +175,9 @@ public class ConditionItem implements IfElse ,XJavaID
 
     
     /**
-     * 设置：数值B、变量B、XID标识B（支持xxx.yyy.www）
+     * 设置：数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
      * 
-     * @param i_ValueXIDB 数值B、变量B、XID标识B（支持xxx.yyy.www）
+     * @param i_ValueXIDB 数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
      */
     public void setValueXIDB(String i_ValueXIDB)
     {

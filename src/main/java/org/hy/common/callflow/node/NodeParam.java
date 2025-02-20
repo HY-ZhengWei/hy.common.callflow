@@ -3,6 +3,7 @@ package org.hy.common.callflow.node;
 import org.hy.common.Help;
 import org.hy.common.XJavaID;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xml.XJSON;
 
 
 
@@ -23,11 +24,17 @@ public class NodeParam implements XJavaID
     /** 注释。可用于日志的输出等帮助性的信息 */
     private String   comment;
     
-    /** 参数类型。仅为数值类型时才生效 */
+    /** 参数类型。参数为数值类型时生效；或参数有默认值时生效 */
     private Class<?> valueClass;
     
-    /** 参数数值。可以是数值、变量、XID标识 */
+    /** 参数数值。可以是数值、上下文变量、XID标识 */
     private String   value;
+    
+    /** 参数默认值的字符形式（参数为上下文变量、XID标识时生效） */
+    private String   valueDefault;
+    
+    /** 参数默认值的实例对象 */
+    private Object   valueDefaultObject;
     
     
     
@@ -50,7 +57,7 @@ public class NodeParam implements XJavaID
             throw new NullPointerException("NodeParam's value is null.");
         }
         
-        // 是占位符时，参数类型应为空
+        // 是上下文变量、XID标识时，参数类型应为空
         if ( i_Value.startsWith(DBSQL.$Placeholder) )
         {
             if ( i_ValueClass != null )
@@ -73,7 +80,41 @@ public class NodeParam implements XJavaID
     
     
     /**
-     * 获取：参数类型。仅为数值类型时才生效
+     * 参数默认值的实例对象
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @return
+     * @throws Exception
+     */
+    public synchronized Object getValueDefaultObject() throws Exception
+    {
+        if ( this.valueDefault == null || this.valueClass == null )
+        {
+            return null;
+        }
+        
+        if ( this.valueDefaultObject == null )
+        {
+            if ( Help.isBasicDataType(this.valueClass) )
+            {
+                this.valueDefaultObject = Help.toObject(this.valueClass ,this.valueDefault);
+            }
+            else
+            {
+                XJSON v_XJson = new XJSON();
+                this.valueDefaultObject = v_XJson.toJava(this.valueDefault ,this.valueClass);
+            }
+        }
+        
+        return valueDefaultObject;
+    }
+
+
+    /**
+     * 获取：参数类型。参数为数值类型时生效；或参数有默认值时生效
      */
     public Class<?> getValueClass()
     {
@@ -82,18 +123,26 @@ public class NodeParam implements XJavaID
 
     
     /**
-     * 设置：参数类型。仅为数值类型时才生效
+     * 设置：参数类型。参数为数值类型时生效；或参数有默认值时生效
      * 
      * @param i_ValueClass 参数类型。仅为数值类型时才生效
      */
     public void setValueClass(Class<?> i_ValueClass)
     {
-        this.valueClass = i_ValueClass;
+        if ( Void.class.equals(i_ValueClass) )
+        {
+            this.valueClass = null;
+        }
+        else
+        {
+            this.valueClass = i_ValueClass;
+        }
+        this.valueDefaultObject = null;
     }
 
     
     /**
-     * 获取：参数数值。可以是数值、变量、XID标识
+     * 获取：参数数值。可以是数值、上下文变量、XID标识
      */
     public String getValue()
     {
@@ -102,16 +151,37 @@ public class NodeParam implements XJavaID
 
     
     /**
-     * 设置：参数数值。可以是数值、变量、XID标识
+     * 设置：参数数值。可以是数值、上下文变量、XID标识
      * 
-     * @param i_Value 参数数值。可以是数值、变量、XID标识
+     * @param i_Value 参数数值。可以是数值、上下文变量、XID标识
      */
     public void setValue(String i_Value)
     {
         this.value = i_Value;
     }
 
+    
+    /**
+     * 获取：参数默认值的字符形式（参数为上下文变量、XID标识时生效）
+     */
+    public String getValueDefault()
+    {
+        return valueDefault;
+    }
 
+    
+    /**
+     * 设置：参数默认值的字符形式（参数为上下文变量、XID标识时生效）
+     * 
+     * @param i_ValueDefault 参数默认值的字符形式（参数为上下文变量、XID标识时生效）
+     */
+    public void setValueDefault(String i_ValueDefault)
+    {
+        this.valueDefault       = i_ValueDefault;
+        this.valueDefaultObject = null;
+    }
+
+    
     /**
      * 获取：全局惟一标识ID
      */

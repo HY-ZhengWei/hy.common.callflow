@@ -36,12 +36,12 @@ public class JU_Condition
         
         v_Condition.setComment("123 == 123");
         v_Condition.setItem(new ConditionItem(Comparer.Equal ,"123" ,"123"));
-        System.out.println(v_Condition.toString() + " ? " + v_Condition.allow(null ,null));
+        System.out.println(v_Condition.getSuccessTimeLen()+ "\t" + v_Condition.toString() + " ? " + v_Condition.allow(null));
         
         v_Condition.setComment("123 == 123 AND 123 == 456");
         v_Condition.setItem(new ConditionItem(Comparer.Equal ,"123" ,"123"));
         v_Condition.setItem(new ConditionItem(Comparer.Equal ,"123" ,"456"));
-        System.out.println(v_Condition.toString() + " ? " + v_Condition.allow(null ,null));
+        System.out.println(v_Condition.getSuccessTimeLen()+ "\t" + v_Condition.toString() + " ? " + v_Condition.allow(null));
     }
     
     
@@ -62,12 +62,12 @@ public class JU_Condition
         
         v_Condition.setComment("123 == 123");
         v_Condition.setItem(new ConditionItem(Comparer.Equal ,"123" ,"123"));
-        System.out.println(v_Condition.getSuccessTimeLen() + "\t" + v_Condition.toString() + " ? " + v_Condition.allow(null ,null));
+        System.out.println(v_Condition.getSuccessTimeLen() + "\t" + v_Condition.toString() + " ? " + v_Condition.allow(null));
         
         v_Condition.setComment("123 == 123 OR 123 == 456");
         v_Condition.setItem(new ConditionItem(Comparer.Equal ,"123" ,"123"));
         v_Condition.setItem(new ConditionItem(Comparer.Equal ,"123" ,"456"));
-        System.out.println(v_Condition.getSuccessTimeLen()+ "\t" + v_Condition.toString() + " ? " + v_Condition.allow(null ,null));
+        System.out.println(v_Condition.getSuccessTimeLen()+ "\t" + v_Condition.toString() + " ? " + v_Condition.allow(null));
     }
     
     
@@ -98,7 +98,7 @@ public class JU_Condition
         // 123 == 123 AND (123 == 123 OR 123 == 456)
         v_CFather.setItem(new ConditionItem(Comparer.Equal ,"123" ,"123"));
         v_CFather.setItem(v_CChild);
-        System.out.println(v_CFather.getSuccessTimeLen() + "\t" + v_CFather.toString() + " ? " + v_CFather.allow(null ,null));
+        System.out.println(v_CFather.getSuccessTimeLen() + "\t" + v_CFather.toString() + " ? " + v_CFather.allow(null));
         
         
         
@@ -107,7 +107,7 @@ public class JU_Condition
         v_Super.setLogical(Logical.And);
         v_Super.setItem(v_CFather);
         v_Super.setItem(new ConditionItem(Comparer.Equal ,"ABC" ,"ABC"));
-        System.out.println(v_Super.getSuccessTimeLen() + "\t" + v_Super.toString() + " ? " + v_Super.allow(null ,null));
+        System.out.println(v_Super.getSuccessTimeLen() + "\t" + v_Super.toString() + " ? " + v_Super.allow(null));
     }
     
 }

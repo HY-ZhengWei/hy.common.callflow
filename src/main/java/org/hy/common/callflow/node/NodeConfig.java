@@ -17,6 +17,7 @@ import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.xml.XJava;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -31,6 +32,10 @@ import org.hy.common.xml.XJava;
  */
 public class NodeConfig extends Total implements IExecute ,XJavaID
 {
+    
+    private static final Logger $Logger = new Logger(NodeConfig.class);
+    
+    
     
     /** 全局惟一标识ID */
     private String          xid;
@@ -93,11 +98,10 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
      * @version     v1.0
      *
      * @param i_IndexNo   本方法要执行的执行序号。下标从1开始
-     * @param io_Default  默认值类型的变量信息
      * @param io_Context  上下文类型的变量信息
      * @return
      */
-    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Default ,Map<String ,Object> io_Context)
+    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Context)
     {
         ExecuteResult v_Result = new ExecuteResult(i_IndexNo ,this.xid);
         
@@ -119,10 +123,17 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
         {
             v_ParamValues = new Object[this.callParams.size()];
             
-            for (int x=0; x<v_ParamValues.length; x++)
+            try
             {
-                NodeParam v_NodeParam  = this.callParams.get(x);
-                v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,io_Default ,io_Context);
+                for (int x=0; x<v_ParamValues.length; x++)
+                {
+                    NodeParam v_NodeParam  = this.callParams.get(x);
+                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,v_NodeParam.getValueDefaultObject() ,io_Context);
+                }
+            }
+            catch (Exception exce)
+            {
+                return v_Result.setException(exce);
             }
         }
         else
@@ -177,14 +188,18 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     {
         if ( Help.isNull(this.callXID) )
         {
-            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID is null.");
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
         }
         
         // 获取执行对象
         Object v_CallObject = XJava.getObject(this.callXID);
         if ( v_CallObject == null )
         {
-            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID[" + this.callXID + "] is not find.");
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID[" + this.callXID + "] is not find.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
         }
         
         // 获取及实时解析方法的执行参数
@@ -193,10 +208,18 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
         {
             v_ParamValues = new Object[this.callParams.size()];
             
-            for (int x=0; x<v_ParamValues.length; x++)
+            try
             {
-                NodeParam v_NodeParam  = this.callParams.get(x);
-                v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,io_Default ,io_Context);
+                for (int x=0; x<v_ParamValues.length; x++)
+                {
+                    NodeParam v_NodeParam  = this.callParams.get(x);
+                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,v_NodeParam.getValueDefaultObject() ,io_Context);
+                }
+            }
+            catch (Exception exce)
+            {
+                $Logger.error(exce);
+                throw new RuntimeException(exce);
             }
         }
         else

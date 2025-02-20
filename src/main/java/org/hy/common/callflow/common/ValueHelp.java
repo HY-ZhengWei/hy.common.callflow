@@ -13,7 +13,9 @@ import org.hy.common.xml.log.Logger;
 
 
 /**
- * 从默认值区、上下文区、全局区三个区中取值
+ * 从上下文区、全局区、默认值区三个区中取值
+ * 
+ * 优先级为：上下文区 > 全局区 > 默认值区
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-13
@@ -29,18 +31,18 @@ public class ValueHelp
     
     
     /**
-     * 从默认值区、上下文区、全局区三个区中取值
+     * 从上下文区、全局区、默认值区三个区中取值
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param i_ValueXID 数值、变量、XID标识（支持xxx.yyy.www）
-     * @param i_Default  默认值类型的变量信息
+     * @param i_ValueXID 数值、上下文变量、XID标识（支持xxx.yyy.www）
+     * @param i_Default  默认值
      * @param i_Context  上下文类型的变量信息
      * @return
      */
-    public static Object getValue(String i_ValueXID ,Class<?> i_ValueClass ,Map<String ,Object> i_Default ,Map<String ,Object> i_Context)
+    public static Object getValue(String i_ValueXID ,Class<?> i_ValueClass ,Object i_Default ,Map<String ,Object> i_Context)
     {
         Object v_Value = i_ValueXID;
         if ( i_ValueXID == null )
@@ -59,23 +61,6 @@ public class ValueHelp
                     v_YYYZZZ = v_ValueID.substring(v_Index + 1);
                 }
                 v_ValueID = v_ValueID.substring(0 ,v_Index);
-            }
-            
-            // 尝试从默认值区取值
-            if ( !Help.isNull(i_Default) )
-            {
-                v_Value = i_Default.get(v_ValueID);
-                if ( v_Value != null )
-                {
-                    if ( v_YYYZZZ != null )
-                    {
-                        return getYYYZZZ(v_Value ,v_YYYZZZ);
-                    }
-                    else
-                    {
-                        return v_Value;
-                    }
-                }
             }
             
             // 尝试从上下文区取值
@@ -107,6 +92,12 @@ public class ValueHelp
                 {
                     return v_Value;
                 }
+            }
+            
+            // 尝试从默认值区取值
+            if ( v_Value == null )
+            {
+                v_Value = i_Default;
             }
         }
         else

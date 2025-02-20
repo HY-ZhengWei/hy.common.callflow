@@ -26,11 +26,10 @@ public interface IExecute
      * @version     v1.0
      *
      * @param i_IndexNo   本方法要执行的执行序号。下标从1开始
-     * @param io_Default  默认值类型的变量信息
      * @param io_Context  上下文类型的变量信息
      * @return
      */
-    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Default ,Map<String ,Object> io_Context);
+    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Context);
     
     
     

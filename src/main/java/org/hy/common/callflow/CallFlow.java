@@ -35,7 +35,7 @@ public class CallFlow
      * @param io_Context    上下文类型的变量信息
      * @return
      */
-    public static ExecuteResult execute(IExecute i_ExecObject ,Map<String ,Object> io_Default ,Map<String ,Object> io_Context)
+    public static ExecuteResult execute(IExecute i_ExecObject ,Map<String ,Object> io_Context)
     {
         ExecuteResult v_Result = new ExecuteResult();
         if ( i_ExecObject == null )
@@ -43,11 +43,10 @@ public class CallFlow
             return v_Result.setException(new NullPointerException("ExecObject is null."));
         }
         
-        Map<String ,Object> v_Default = io_Default == null ? new HashMap<String ,Object>() : io_Default;
         Map<String ,Object> v_Context = io_Context == null ? new HashMap<String ,Object>() : io_Context;
         int                 v_IndexNo = 0;
         
-        ExecuteResult v_NodeResult = CallFlow.execute(v_IndexNo + 1 ,i_ExecObject ,v_Default ,v_Context);
+        ExecuteResult v_NodeResult = CallFlow.execute(v_IndexNo + 1 ,i_ExecObject ,v_Context);
         v_Result.setIndexNo(v_NodeResult.getIndexNo());
         v_Result.setExecuteXID(v_NodeResult.getExecuteXID());
         
@@ -72,13 +71,12 @@ public class CallFlow
      *
      * @param i_IndexNo     本方法要执行的执行序号。下标从1开始
      * @param i_ExecObject  执行对象（节点或条件逻辑）
-     * @param io_Default    默认值类型的变量信息
      * @param io_Context    上下文类型的变量信息
      * @return
      */
-    private static ExecuteResult execute(int i_IndexNo ,IExecute i_ExecObject ,Map<String ,Object> io_Default ,Map<String ,Object> io_Context)
+    private static ExecuteResult execute(int i_IndexNo ,IExecute i_ExecObject ,Map<String ,Object> io_Context)
     {
-        ExecuteResult  v_Result = i_ExecObject.execute(i_IndexNo ,io_Default ,io_Context);
+        ExecuteResult  v_Result = i_ExecObject.execute(i_IndexNo ,io_Context);
         List<IExecute> v_Nexts  = null;
         
         if ( v_Result.isSuccess() )
@@ -105,7 +103,7 @@ public class CallFlow
         {
             for (IExecute v_Next : v_Nexts)
             {
-                v_Result = CallFlow.execute(i_IndexNo + 1 ,v_Next ,io_Default ,io_Context);
+                v_Result = CallFlow.execute(i_IndexNo + 1 ,v_Next ,io_Context);
                 if ( !v_Result.isSuccess() )
                 {
                     return v_Result;
