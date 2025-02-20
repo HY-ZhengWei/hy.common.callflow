@@ -42,4 +42,18 @@ public interface IfElse
      */
     public boolean reject(Map<String ,Object> i_Context);
     
+    
+    
+    /**
+     * 解析为实时运行时的逻辑判定表达式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public String toString(Map<String ,Object> i_Context);
+    
 }

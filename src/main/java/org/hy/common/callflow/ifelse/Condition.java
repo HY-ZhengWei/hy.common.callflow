@@ -386,7 +386,46 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
     
     
     /**
-     * 转为表达式
+     * 解析为实时运行时的逻辑判定表达式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public String toString(Map<String ,Object> i_Context)
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( this.logical != null && !Help.isNull(this.items) )
+        {
+            for (int x=0; x<this.items.size(); x++)
+            {
+                if ( x >= 1 )
+                {
+                    v_Builder.append(" ").append(this.logical.getValue()).append(" ");
+                }
+                
+                IfElse v_Item = this.items.get(x);
+                if ( v_Item instanceof Condition )
+                {
+                    v_Builder.append("(").append(v_Item.toString(i_Context)).append(")");
+                }
+                else
+                {
+                    v_Builder.append(v_Item.toString(i_Context));
+                }
+            }
+        }
+        
+        return v_Builder.toString();
+    }
+    
+    
+    /**
+     * 解析为逻辑表达式
      *
      * @author      ZhengWei(HY)
      * @createDate  2025-02-19

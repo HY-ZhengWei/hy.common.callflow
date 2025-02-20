@@ -8,6 +8,7 @@ import org.hy.common.xml.XJSON;
 
 
 
+
 /**
  * 节点参数
  *
@@ -44,12 +45,31 @@ public class NodeParam implements XJavaID
     }
     
     
+    /**
+     * （主要用于：上下文变量、XID标识，但没有默认值时）
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Value  参数数值。可以是数值、上下文变量、XID标识
+     */
     public NodeParam(String i_Value)
     {
         this(i_Value ,null);
     }
     
     
+    /**
+     * 构造器（主要用于：参数类型是数值时）
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Value       参数数值。可以是数值、上下文变量、XID标识
+     * @param i_ValueClass  参数类型
+     */
     public NodeParam(String i_Value ,Class<?> i_ValueClass)
     {
         if ( Help.isNull(i_Value) )
@@ -57,16 +77,8 @@ public class NodeParam implements XJavaID
             throw new NullPointerException("NodeParam's value is null.");
         }
         
-        // 是上下文变量、XID标识时，参数类型应为空
-        if ( i_Value.startsWith(DBSQL.$Placeholder) )
-        {
-            if ( i_ValueClass != null )
-            {
-                throw new NullPointerException("NodeParam's valueClass is not null, but value is Placeholder.");
-            }
-        }
         // 是数值时，参数类型必须有
-        else
+        if ( !i_Value.startsWith(DBSQL.$Placeholder) )
         {
             if ( i_ValueClass == null )
             {
@@ -74,8 +86,50 @@ public class NodeParam implements XJavaID
             }
         }
         
-        this.value      = i_Value;
-        this.valueClass = i_ValueClass;
+        this.setValue(     i_Value);
+        this.setValueClass(i_ValueClass);
+    }
+    
+    
+    /**
+     * 构造器（主要用于：上下文变量、XID标识带默认值时）
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Value         参数数值。可以是数值、上下文变量、XID标识
+     * @param i_ValueClass    参数类型
+     * @param i_ValueDefault  参数默认值的字符形式（参数为上下文变量、XID标识时生效）
+     */
+    public NodeParam(String i_Value ,Class<?> i_ValueClass ,String i_ValueDefault)
+    {
+        if ( Help.isNull(i_Value) )
+        {
+            throw new NullPointerException("NodeParam's value is null.");
+        }
+        
+        // 是数值时，参数类型必须有
+        if ( !i_Value.startsWith(DBSQL.$Placeholder) )
+        {
+            if ( i_ValueClass == null )
+            {
+                throw new NullPointerException("NodeParam's valueClass is null, but value is not Placeholder.");
+            }
+        }
+        // 是上下文变量、XID标识
+        else 
+        {
+            // 有默认值时，参数类型必须存在
+            if ( i_ValueDefault != null && i_ValueClass == null )
+            {
+                throw new NullPointerException("NodeParam's value is Placeholder and valueClass is null, but valueDefault is not null.");
+            }
+        }
+        
+        this.setValue(       i_Value);
+        this.setValueClass(  i_ValueClass);
+        this.setValueDefault(i_ValueDefault);
     }
     
     

@@ -227,10 +227,94 @@ public class ConditionItem implements IfElse ,XJavaID
     {
         return this.comment;
     }
+    
+    
+    /**
+     * 解析为实时运行时的逻辑判定表达式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public String toString(Map<String ,Object> i_Context)
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( this.comparer != null )
+        {
+            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,null ,i_Context);
+            Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,String.class ,null ,i_Context);
+            
+            if ( v_ValueA == null )
+            {
+                v_Builder.append("NULL");
+            }
+            else if ( v_ValueA.getClass().equals(String.class) )
+            {
+                v_Builder.append("\"").append(v_ValueA).append("\"");
+            }
+            else if ( v_ValueA.getClass().equals(Character.class) )
+            {
+                v_Builder.append("'").append(v_ValueA).append("'");
+            }
+            else if ( v_ValueA.getClass().equals(Long.class) )
+            {
+                v_Builder.append(v_ValueA).append("L");
+            }
+            else if ( v_ValueA.getClass().equals(Float.class) )
+            {
+                v_Builder.append(v_ValueA).append("F");
+            }
+            else if ( v_ValueA.getClass().equals(Double.class) )
+            {
+                v_Builder.append(v_ValueA).append("D");
+            }
+            else
+            {
+                v_Builder.append(v_ValueA);
+            }
+            
+            v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
+            
+            if ( v_ValueB == null )
+            {
+                v_Builder.append("NULL");
+            }
+            else if ( v_ValueB.getClass().equals(String.class) )
+            {
+                v_Builder.append("\"").append(v_ValueB).append("\"");
+            }
+            else if ( v_ValueB.getClass().equals(Character.class) )
+            {
+                v_Builder.append("'").append(v_ValueB).append("'");
+            }
+            else if ( v_ValueB.getClass().equals(Long.class) )
+            {
+                v_Builder.append(v_ValueB).append("L");
+            }
+            else if ( v_ValueB.getClass().equals(Float.class) )
+            {
+                v_Builder.append(v_ValueB).append("F");
+            }
+            else if ( v_ValueB.getClass().equals(Double.class) )
+            {
+                v_Builder.append(v_ValueB).append("D");
+            }
+            else
+            {
+                v_Builder.append(v_ValueB);
+            }
+        }
+        
+        return v_Builder.toString();
+    }
 
 
     /**
-     * 转为表达式
+     * 解析为逻辑表达式
      *
      * @author      ZhengWei(HY)
      * @createDate  2025-02-19
