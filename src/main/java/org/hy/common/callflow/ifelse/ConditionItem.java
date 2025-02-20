@@ -237,6 +237,8 @@ public class ConditionItem implements IfElse ,XJavaID
     /**
      * 解析为实时运行时的逻辑判定表达式
      * 
+     * 注：禁止在此真的执行逻辑判定
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-20
      * @version     v1.0
@@ -273,65 +275,9 @@ public class ConditionItem implements IfElse ,XJavaID
                 v_ValueB = "?";
             }
             
-            if ( v_ValueA == null )
-            {
-                v_Builder.append("NULL");
-            }
-            else if ( v_ValueA.getClass().equals(String.class) )
-            {
-                v_Builder.append("\"").append(v_ValueA).append("\"");
-            }
-            else if ( v_ValueA.getClass().equals(Character.class) )
-            {
-                v_Builder.append("'").append(v_ValueA).append("'");
-            }
-            else if ( v_ValueA.getClass().equals(Long.class) )
-            {
-                v_Builder.append(v_ValueA).append("L");
-            }
-            else if ( v_ValueA.getClass().equals(Float.class) )
-            {
-                v_Builder.append(v_ValueA).append("F");
-            }
-            else if ( v_ValueA.getClass().equals(Double.class) )
-            {
-                v_Builder.append(v_ValueA).append("D");
-            }
-            else
-            {
-                v_Builder.append(v_ValueA);
-            }
-            
+            v_Builder.append(ValueHelp.getExpression(v_ValueA));
             v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
-            
-            if ( v_ValueB == null )
-            {
-                v_Builder.append("NULL");
-            }
-            else if ( v_ValueB.getClass().equals(String.class) )
-            {
-                v_Builder.append("\"").append(v_ValueB).append("\"");
-            }
-            else if ( v_ValueB.getClass().equals(Character.class) )
-            {
-                v_Builder.append("'").append(v_ValueB).append("'");
-            }
-            else if ( v_ValueB.getClass().equals(Long.class) )
-            {
-                v_Builder.append(v_ValueB).append("L");
-            }
-            else if ( v_ValueB.getClass().equals(Float.class) )
-            {
-                v_Builder.append(v_ValueB).append("F");
-            }
-            else if ( v_ValueB.getClass().equals(Double.class) )
-            {
-                v_Builder.append(v_ValueB).append("D");
-            }
-            else
-            {
-                v_Builder.append(v_ValueB);
-            }
+            v_Builder.append(ValueHelp.getExpression(v_ValueB));
         }
         
         return v_Builder.toString();
@@ -340,6 +286,8 @@ public class ConditionItem implements IfElse ,XJavaID
 
     /**
      * 解析为逻辑表达式
+     * 
+     * 注：禁止在此真的执行逻辑判定
      *
      * @author      ZhengWei(HY)
      * @createDate  2025-02-19

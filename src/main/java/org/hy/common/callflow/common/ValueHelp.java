@@ -140,4 +140,76 @@ public class ValueHelp
         }
     }
     
+    
+    /**
+     * 生成数值的表达式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Value  数值
+     * @return
+     */
+    public static String getExpression(Object i_Value)
+    {
+        if ( i_Value == null )
+        {
+            return getExpression(null ,null);
+        }
+        else
+        {
+            return getExpression(i_Value.toString() ,i_Value.getClass());
+        }
+    }
+    
+    
+    
+    /**
+     * 生成数值的表达式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Value       数值的字符形式
+     * @param i_ValueClass  数值的类型
+     * @return
+     */
+    public static String getExpression(String i_Value ,Class<?> i_ValueClass)
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( i_Value == null )
+        {
+            v_Builder.append("NULL");
+        }
+        else if ( i_ValueClass.equals(String.class) )
+        {
+            v_Builder.append("\"").append(i_Value).append("\"");
+        }
+        else if ( i_ValueClass.equals(Character.class) )
+        {
+            v_Builder.append("'").append(i_Value).append("'");
+        }
+        else if ( i_ValueClass.equals(Long.class) )
+        {
+            v_Builder.append(i_Value).append("L");
+        }
+        else if ( i_ValueClass.equals(Float.class) )
+        {
+            v_Builder.append(i_Value).append("F");
+        }
+        else if ( i_ValueClass.equals(Double.class) )
+        {
+            v_Builder.append(i_Value).append("D");
+        }
+        else
+        {
+            v_Builder.append(i_Value);
+        }
+        
+        return v_Builder.toString();
+    }
+    
 }

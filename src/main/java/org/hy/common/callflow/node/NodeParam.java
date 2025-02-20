@@ -1,9 +1,13 @@
 package org.hy.common.callflow.node;
 
+import java.util.Map;
+
 import org.hy.common.Help;
 import org.hy.common.XJavaID;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJSON;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -18,6 +22,10 @@ import org.hy.common.xml.XJSON;
  */
 public class NodeParam implements XJavaID
 {
+    
+    private static final Logger $Logger = new Logger(NodeParam.class);
+    
+    
     
     /** 全局惟一标识ID */
     private String   xid;
@@ -301,6 +309,35 @@ public class NodeParam implements XJavaID
     
     
     /**
+     * 解析为实时运行时的执行表达式
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public String toString(Map<String ,Object> i_Context)
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        Object        v_Value   = null;
+        
+        try
+        {
+            v_Value = ValueHelp.getValue(this.value ,this.valueClass ,this.getValueDefaultObject() ,i_Context);
+        }
+        catch (Exception exce)
+        {
+            $Logger.error("NodeParam[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s value[" + this.value + "] getValue error." ,exce);
+        }
+        
+        v_Builder.append(ValueHelp.getExpression(v_Value));
+        return v_Builder.toString();
+    }
+    
+    
+    /**
      * 解析为执行表达式
      *
      * @author      ZhengWei(HY)
@@ -328,30 +365,7 @@ public class NodeParam implements XJavaID
         }
         else if ( this.valueClass != null )
         {
-            if ( this.valueClass.equals(String.class) )
-            {
-                v_Builder.append("\"").append(this.value).append("\"");
-            }
-            else if ( this.valueClass.equals(Character.class) )
-            {
-                v_Builder.append("'").append(this.value).append("'");
-            }
-            else if ( this.valueClass.equals(Long.class) )
-            {
-                v_Builder.append(this.value).append("L");
-            }
-            else if ( this.valueClass.equals(Float.class) )
-            {
-                v_Builder.append(this.value).append("F");
-            }
-            else if ( this.valueClass.equals(Double.class) )
-            {
-                v_Builder.append(this.value).append("D");
-            }
-            else
-            {
-                v_Builder.append(this.value);
-            }
+            v_Builder.append(ValueHelp.getExpression(this.value ,this.valueClass));
         }
         else
         {

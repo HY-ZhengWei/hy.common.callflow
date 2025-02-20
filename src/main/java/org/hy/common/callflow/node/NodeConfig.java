@@ -182,11 +182,15 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
      * @createDate  2025-02-18
      * @version     v1.0
      *
-     * @param io_Default  默认值类型的变量信息
      * @param io_Context  上下文类型的变量信息
      */
-    public synchronized void init(Map<String ,Object> io_Default ,Map<String ,Object> io_Context)
+    public synchronized void init(Map<String ,Object> io_Context)
     {
+        if ( this.isInit )
+        {
+            return;
+        }
+        
         if ( Help.isNull(this.callXID) )
         {
             NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID is null.");
@@ -528,6 +532,76 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     public String getComment()
     {
         return this.comment;
+    }
+    
+    
+    /**
+     * 解析为实时运行时的执行表达式
+     * 
+     * 注：禁止在此真的执行方法
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public String toString(Map<String ,Object> i_Context)
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Builder.append(DBSQL.$Placeholder).append(this.returnID).append(" = ");
+        }
+        
+        v_Builder.append(DBSQL.$Placeholder);
+        if ( !Help.isNull(this.callXID) )
+        {
+            v_Builder.append(this.callXID);
+            if ( XJava.getObject(this.callXID) == null )
+            {
+                v_Builder.append(" is NULL");
+            }
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        v_Builder.append(ValueHelp.$Split);
+        
+        if ( !Help.isNull(this.callMehod) )
+        {
+            v_Builder.append(this.callMehod);
+            this.init(i_Context);
+            if ( this.callMethodObject == null )
+            {
+                v_Builder.append(" not find");
+            }
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        
+        v_Builder.append("(");
+        
+        if ( !Help.isNull(this.callParams) )
+        {
+            for (int x=0; x<this.callParams.size(); x++)
+            {
+                if ( x >= 1 )
+                {
+                    v_Builder.append(" ,");
+                }
+                v_Builder.append(this.callParams.get(x).toString(i_Context));
+            }
+        }
+        
+        v_Builder.append(")");
+        
+        return v_Builder.toString();
     }
     
     

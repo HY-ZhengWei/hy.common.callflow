@@ -388,6 +388,8 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
     /**
      * 解析为实时运行时的逻辑判定表达式
      * 
+     * 注：禁止在此真的执行逻辑判定
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-20
      * @version     v1.0
@@ -426,6 +428,8 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
     
     /**
      * 解析为逻辑表达式
+     * 
+     * 注：禁止在此真的执行逻辑判定
      *
      * @author      ZhengWei(HY)
      * @createDate  2025-02-19
