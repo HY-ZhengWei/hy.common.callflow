@@ -118,7 +118,7 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean allow(Map<String ,Object> i_Context)
+    public boolean allow(Map<String ,Object> i_Context) throws Exception
     {
         if ( this.logical == null )
         {
@@ -182,7 +182,7 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean reject(Map<String ,Object> i_Context)
+    public boolean reject(Map<String ,Object> i_Context) throws Exception
     {
         return !allow(i_Context);
     }

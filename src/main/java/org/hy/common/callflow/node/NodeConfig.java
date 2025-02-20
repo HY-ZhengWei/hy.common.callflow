@@ -16,6 +16,7 @@ import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.route.RouteConfig;
+import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
 
@@ -155,7 +156,7 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
             long   v_BeginTime = this.request().getTime();
             Object v_ExceRet   = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
             
-            if ( !Help.isNull(this.returnID) )
+            if ( !Help.isNull(this.returnID) && io_Context != null )
             {
                 io_Context.put(this.returnID ,v_ExceRet);
             }
@@ -277,19 +278,29 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
                 Class<?> [] v_MPClassTypes = v_Method.getParameterTypes();
                 for (int y=v_MPClassTypes.length - 1; y>=0; y--)
                 {
+                    Class<?> v_ParamValueClass = null;
                     if ( i_ParamValues[y] == null )
+                    {
+                        v_ParamValueClass = this.callParams.get(y).getValueClass();
+                    }
+                    else
+                    {
+                        v_ParamValueClass = i_ParamValues[y].getClass();
+                    }
+                    
+                    if ( v_ParamValueClass == null )
                     {
                         // Nothing.
                     }
-                    else if ( i_ParamValues[y].getClass() == v_MPClassTypes[y] )                       // 3级：完全配对
+                    else if ( v_ParamValueClass == v_MPClassTypes[y] )                                  // 3级：完全配对
                     {
                         v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y) * 3;
                     }
-                    else if ( v_MPClassTypes[y] == Object.class )                                      // 1级：模糊配对
+                    else if ( v_MPClassTypes[y] == Object.class )                                       // 1级：模糊配对
                     {
                         v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y);
                     }
-                    else if ( MethodReflect.isExtendImplement(i_ParamValues[y] ,v_MPClassTypes[y]) )   // 2级：继承配对 或 接口实现配对
+                    else if ( MethodReflect.isExtendImplement(v_ParamValueClass ,v_MPClassTypes[y]) )   // 2级：继承配对 或 接口实现配对
                     {
                         v_BestValue += Math.pow(1 ,v_MPClassTypes.length - y) * 2;
                     }
@@ -517,6 +528,65 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     public String getComment()
     {
         return this.comment;
+    }
+    
+    
+    /**
+     * 解析为执行表达式
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @return
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Builder.append(DBSQL.$Placeholder).append(this.returnID).append(" = ");
+        }
+        
+        v_Builder.append(DBSQL.$Placeholder);
+        if ( !Help.isNull(this.callXID) )
+        {
+            v_Builder.append(this.callXID);
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        v_Builder.append(ValueHelp.$Split);
+        
+        if ( !Help.isNull(this.callMehod) )
+        {
+            v_Builder.append(this.callMehod);
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        
+        v_Builder.append("(");
+        
+        if ( !Help.isNull(this.callParams) )
+        {
+            for (int x=0; x<this.callParams.size(); x++)
+            {
+                if ( x >= 1 )
+                {
+                    v_Builder.append(" ,");
+                }
+                v_Builder.append(this.callParams.get(x).toString());
+            }
+        }
+        
+        v_Builder.append(")");
+        
+        return v_Builder.toString();
     }
     
 }

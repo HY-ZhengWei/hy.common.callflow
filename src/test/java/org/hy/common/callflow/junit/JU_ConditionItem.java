@@ -23,7 +23,7 @@ public class JU_ConditionItem
 {
     
     @Test
-    public void test_ConditionItem()
+    public void test_ConditionItem() throws Exception
     {
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         v_Context.put("VNumber" ,123);

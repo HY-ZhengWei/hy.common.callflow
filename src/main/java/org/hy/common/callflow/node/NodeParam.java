@@ -299,4 +299,66 @@ public class NodeParam implements XJavaID
         return this.comment;
     }
     
+    
+    /**
+     * 解析为执行表达式
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @return
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( this.value == null )
+        {
+            v_Builder.append("NULL");
+        }
+        else if ( this.value.startsWith(DBSQL.$Placeholder) )
+        {
+            v_Builder.append(this.value);
+            if ( this.valueDefault != null )
+            {
+                v_Builder.append(" default");
+            }
+        }
+        else if ( this.valueClass != null )
+        {
+            if ( this.valueClass.equals(String.class) )
+            {
+                v_Builder.append("\"").append(this.value).append("\"");
+            }
+            else if ( this.valueClass.equals(Character.class) )
+            {
+                v_Builder.append("'").append(this.value).append("'");
+            }
+            else if ( this.valueClass.equals(Long.class) )
+            {
+                v_Builder.append(this.value).append("L");
+            }
+            else if ( this.valueClass.equals(Float.class) )
+            {
+                v_Builder.append(this.value).append("F");
+            }
+            else if ( this.valueClass.equals(Double.class) )
+            {
+                v_Builder.append(this.value).append("D");
+            }
+            else
+            {
+                v_Builder.append(this.value);
+            }
+        }
+        else
+        {
+            v_Builder.append(this.value).append("::?");
+        }
+        
+        return v_Builder.toString();
+    }
+    
 }

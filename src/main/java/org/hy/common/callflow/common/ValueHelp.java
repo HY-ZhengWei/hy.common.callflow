@@ -5,6 +5,7 @@ import java.util.Map;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xml.XJSON;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
 
@@ -26,7 +27,7 @@ public class ValueHelp
     
     private static final Logger $Logger = new Logger(ValueHelp.class);
     
-    private static final String $Split  = ".";
+    public  static final String $Split  = ".";
     
     
     
@@ -42,7 +43,7 @@ public class ValueHelp
      * @param i_Context  上下文类型的变量信息
      * @return
      */
-    public static Object getValue(String i_ValueXID ,Class<?> i_ValueClass ,Object i_Default ,Map<String ,Object> i_Context)
+    public static Object getValue(String i_ValueXID ,Class<?> i_ValueClass ,Object i_Default ,Map<String ,Object> i_Context) throws Exception
     {
         Object v_Value = i_ValueXID;
         if ( i_ValueXID == null )
@@ -100,9 +101,14 @@ public class ValueHelp
                 v_Value = i_Default;
             }
         }
-        else
+        else if ( Help.isBasicDataType(i_ValueClass) )
         {
             v_Value = Help.toObject(i_ValueClass ,i_ValueXID);
+        }
+        else
+        {
+            XJSON v_XJson = new XJSON();
+            v_Value = v_XJson.toJava(i_ValueXID ,i_ValueClass);
         }
         
         return v_Value;

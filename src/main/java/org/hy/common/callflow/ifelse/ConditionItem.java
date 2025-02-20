@@ -6,6 +6,7 @@ import org.hy.common.Help;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.Comparer;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -21,6 +22,9 @@ import org.hy.common.callflow.enums.Comparer;
  */
 public class ConditionItem implements IfElse ,XJavaID
 {
+    private static final Logger $Logger = new Logger(ConditionItem.class);
+    
+    
     
     /** 全局惟一标识ID */
     private String   xid;
@@ -64,8 +68,9 @@ public class ConditionItem implements IfElse ,XJavaID
      *
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
+     * @throws Exception 
      */
-    public boolean allow(Map<String ,Object> i_Context)
+    public boolean allow(Map<String ,Object> i_Context) throws Exception
     {
         if ( this.comparer == null )
         {
@@ -98,7 +103,7 @@ public class ConditionItem implements IfElse ,XJavaID
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean reject(Map<String ,Object> i_Context)
+    public boolean reject(Map<String ,Object> i_Context) throws Exception
     {
         return !allow(i_Context);
     }
@@ -245,8 +250,28 @@ public class ConditionItem implements IfElse ,XJavaID
         
         if ( this.comparer != null )
         {
-            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,null ,i_Context);
-            Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,String.class ,null ,i_Context);
+            Object v_ValueA = null;
+            Object v_ValueB = null;
+            
+            try
+            {
+                v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,null ,i_Context);
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ConditionItem[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s valueXIDA[" + this.valueXIDA + "] getValue error." ,exce);
+                v_ValueA = "?";
+            }
+            
+            try
+            {
+                v_ValueB = ValueHelp.getValue(this.valueXIDB ,String.class ,null ,i_Context);
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ConditionItem[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s valueXIDB[" + this.valueXIDB + "] getValue error." ,exce);
+                v_ValueB = "?";
+            }
             
             if ( v_ValueA == null )
             {

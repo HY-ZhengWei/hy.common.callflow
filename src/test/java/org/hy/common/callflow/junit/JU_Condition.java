@@ -26,10 +26,10 @@ public class JU_Condition
      * @author      ZhengWei(HY)
      * @createDate  2025-02-18
      * @version     v1.0
-     *
+     * @throws Exception 
      */
     @Test
-    public void test_And()
+    public void test_And() throws Exception
     {
         Condition v_Condition = new Condition();
         v_Condition.setLogical(Logical.And);
@@ -52,10 +52,10 @@ public class JU_Condition
      * @author      ZhengWei(HY)
      * @createDate  2025-02-18
      * @version     v1.0
-     *
+     * @throws Exception 
      */
     @Test
-    public void test_Or()
+    public void test_Or() throws Exception
     {
         Condition v_Condition = new Condition();
         v_Condition.setLogical(Logical.Or);
@@ -78,10 +78,10 @@ public class JU_Condition
      * @author      ZhengWei(HY)
      * @createDate  2025-02-19
      * @version     v1.0
-     *
+     * @throws Exception 
      */
     @Test
-    public void test_AndOr()
+    public void test_AndOr() throws Exception
     {
         Condition v_CChild = new Condition();
         v_CChild.setLogical(Logical.Or);

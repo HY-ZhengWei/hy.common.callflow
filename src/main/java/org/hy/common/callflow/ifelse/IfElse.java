@@ -26,7 +26,7 @@ public interface IfElse
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean allow(Map<String ,Object> i_Context);
+    public boolean allow(Map<String ,Object> i_Context) throws Exception;
     
     
     
@@ -40,7 +40,7 @@ public interface IfElse
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean reject(Map<String ,Object> i_Context);
+    public boolean reject(Map<String ,Object> i_Context) throws Exception;
     
     
     
