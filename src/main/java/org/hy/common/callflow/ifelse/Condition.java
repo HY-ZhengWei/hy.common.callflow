@@ -7,7 +7,7 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.Total;
-import org.hy.common.XJavaID;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
@@ -25,7 +25,7 @@ import org.hy.common.callflow.route.RouteConfig;
  * @version     v1.0
  * @param <V>
  */
-public class Condition extends Total implements IExecute ,IfElse ,XJavaID
+public class Condition extends Total implements IExecute ,IfElse
 {
     
     /** 全局惟一标识ID */
@@ -297,6 +297,10 @@ public class Condition extends Total implements IExecute ,IfElse ,XJavaID
      */
     public void setReturnID(String i_ReturnID)
     {
+        if ( CallFlow.$WorkID.equals(i_ReturnID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_ReturnID + "] equals " + CallFlow.$WorkID);
+        }
         this.returnID = i_ReturnID;
     }
 

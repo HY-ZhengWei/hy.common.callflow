@@ -2,6 +2,7 @@ package org.hy.common.callflow.execute;
 
 import java.util.Map;
 
+import org.hy.common.XJavaID;
 import org.hy.common.callflow.route.RouteConfig;
 
 
@@ -15,7 +16,7 @@ import org.hy.common.callflow.route.RouteConfig;
  * @createDate  2025-02-15
  * @version     v1.0
  */
-public interface IExecute
+public interface IExecute extends XJavaID
 {
     
     /**

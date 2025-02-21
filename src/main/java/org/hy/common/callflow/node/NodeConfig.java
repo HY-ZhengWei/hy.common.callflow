@@ -10,7 +10,7 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.Total;
-import org.hy.common.XJavaID;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -31,7 +31,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-11
  * @version     v1.0
  */
-public class NodeConfig extends Total implements IExecute ,XJavaID
+public class NodeConfig extends Total implements IExecute
 {
     
     private static final Logger $Logger = new Logger(NodeConfig.class);
@@ -168,13 +168,9 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
             long   v_BeginTime = this.request().getTime();
             Object v_ExceRet   = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
             
-            if ( !Help.isNull(this.returnID) && io_Context != null )
-            {
-                io_Context.put(this.returnID ,v_ExceRet);
-            }
-            
-            this.success(Date.getNowTime().getTime() - v_BeginTime);
             v_Result.setResult(v_ExceRet);
+            this.success(Date.getNowTime().getTime() - v_BeginTime);
+            this.refreshReturn(io_Context ,v_ExceRet);
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
         }
@@ -356,6 +352,25 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
     
     
     /**
+     * 刷新返回值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-21
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param i_Return    返回值
+     */
+    private void refreshReturn(Map<String ,Object> io_Context ,Object i_Return)
+    {
+        if ( !Help.isNull(this.returnID) && io_Context != null )
+        {
+            io_Context.put(this.returnID ,i_Return);
+        }
+    }
+    
+    
+    /**
      * 刷新执行状态
      * 
      * @author      ZhengWei(HY)
@@ -367,7 +382,7 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
      */
     private void refreshStatus(Map<String ,Object> io_Context ,ExecuteStatus i_Status)
     {
-        if ( !Help.isNull(this.statusID) )
+        if ( !Help.isNull(this.statusID) && io_Context != null )
         {
             io_Context.put(this.statusID ,i_Status.getValue());
         }
@@ -481,6 +496,10 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
      */
     public void setReturnID(String i_ReturnID)
     {
+        if ( CallFlow.$WorkID.equals(i_ReturnID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_ReturnID + "] equals " + CallFlow.$WorkID);
+        }
         this.returnID = i_ReturnID;
     }
     
@@ -501,6 +520,10 @@ public class NodeConfig extends Total implements IExecute ,XJavaID
      */
     public void setStatusID(String i_StatusID)
     {
+        if ( CallFlow.$WorkID.equals(i_StatusID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_StatusID + "] equals " + CallFlow.$WorkID);
+        }
         this.statusID = i_StatusID;
     }
 

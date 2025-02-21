@@ -97,7 +97,9 @@ public class ExecuteResult
         // 所有状态类的setter方法仅允许执行一次
         synchronized ( this )
         {
-            if ( this.success || this.exception != null )
+            // 可以在执行完成后，再取消，此时的取消是中断后续操作的取消
+            // 所以成功标记与取消标记可以同时存在
+            if ( this.exception != null )
             {
                 return this;
             }
@@ -105,7 +107,6 @@ public class ExecuteResult
         
         this.endTime   = new Date();
         this.exception = new CancellationException();
-        this.success   = false;
         this.status    = ExecuteStatus.Canceled;
         
         return this;
