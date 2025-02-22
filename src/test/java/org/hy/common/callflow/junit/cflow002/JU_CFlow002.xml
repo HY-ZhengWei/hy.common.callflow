@@ -26,15 +26,15 @@
         
         <xcondition id="XCondition_CF002_002">
             <comment>第二个环节，条件逻辑，按第一个环节的执行结果（真、假）控制编排的走向</comment>
-            <logical>AND</logical>
+            <logical>AND</logical>                          <!-- 判定逻辑 -->
             <conditionItem>
-                <valueXIDA>T</valueXIDA>
-                <comparer><![CDATA[==]]></comparer>
-                <valueXIDB>:IfElse</valueXIDB>
+                <valueXIDA>T</valueXIDA>                    <!-- 默认值 -->
+                <comparer><![CDATA[==]]></comparer>         <!-- 判定比较器 -->
+                <valueXIDB>:IfElse</valueXIDB>              <!-- 变量 -->
             </conditionItem>
             <route>
-                <if   ref="XNode_CF002_003" />
-                <else ref="XNode_CF002_004" />
+                <if   ref="XNode_CF002_003" />              <!-- 真时的路由 -->
+                <else ref="XNode_CF002_004" />              <!-- 假时的路由 -->
             </route>
         </xcondition>
         
@@ -44,11 +44,11 @@
             <callXID>XProgram</callXID>
             <callMehod>method_First</callMehod>
             <CallParam>
-                <valueClass>java.lang.Integer</valueClass>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义身入参类型 -->
                 <value>:NumParam</value>                    <!-- 定义入参变量名称 -->
                 <valueDefault>-1</valueDefault>             <!-- 定义入参默认值 -->
             </CallParam>
-            <returnID>IfElse</returnID>
+            <returnID>IfElse</returnID>                     <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed ref="XCondition_CF002_002" />
             </route>
