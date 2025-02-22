@@ -41,7 +41,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void addSucceed(IExecute i_Execute)
+    public synchronized void setSucceed(IExecute i_Execute)
     {
         synchronized ( this )
         {
@@ -64,7 +64,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void addFailed(IExecute i_Execute)
+    public synchronized void setFailed(IExecute i_Execute)
     {
         synchronized ( this )
         {
@@ -87,7 +87,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void addException(IExecute i_Execute)
+    public synchronized void setException(IExecute i_Execute)
     {
         synchronized ( this )
         {

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig" class="java.util.ArrayList" />
+    <import name="xnode"   class="org.hy.common.callflow.node.NodeConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+        
+        <xnode id="XNode_002">
+            <callXID>XProgram</callXID>
+            <callMehod>method002</callMehod>
+        </xnode>
+        
+        
+        <xnode id="XNode_001">
+            <callXID>XProgram</callXID>
+            <callMehod>method001</callMehod>
+            <route>
+                <succeed ref="XNode_002" />
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
