@@ -45,11 +45,11 @@ public class ExecuteResult
     /** 为异常对象 */           
     private Exception           exception;
                                 
-    /** 执行开始时间 */         
-    private Date                beginTime;
+    /** 执行开始时间（精度：纳秒） */         
+    private Long                beginTime;
                                 
-    /** 执行结束时间 */         
-    private Date                endTime;
+    /** 执行结束时间（精度：纳秒） */         
+    private Long                endTime;
                                 
     /** 执行链：双向链表：前一个 */       
     private ExecuteResult       previous;
@@ -73,7 +73,7 @@ public class ExecuteResult
     
     public ExecuteResult(Integer i_IndexNo ,String i_ExecuteXID ,ExecuteResult i_Previous)
     {
-        this.beginTime  = new Date();
+        this.beginTime  = Date.getTimeNano();
         this.success    = false;
         this.indexNo    = i_IndexNo;
         this.executeXID = i_ExecuteXID;
@@ -100,7 +100,7 @@ public class ExecuteResult
             }
         }
         
-        this.endTime   = new Date();
+        this.endTime   = Date.getTimeNano();
         this.exception = new TimeoutException();
         this.success   = false;
         this.status    = ExecuteStatus.Timeout;
@@ -129,7 +129,7 @@ public class ExecuteResult
             }
         }
         
-        this.endTime   = new Date();
+        this.endTime   = Date.getTimeNano();
         this.exception = new CancellationException();
         this.status    = ExecuteStatus.Canceled;
         
@@ -164,7 +164,7 @@ public class ExecuteResult
             }
         }
         
-        this.endTime = new Date();
+        this.endTime = Date.getTimeNano();
         this.success = true;
         this.result  = i_Result;
         this.status  = ExecuteStatus.Finished;
@@ -203,7 +203,7 @@ public class ExecuteResult
             }
         }
         
-        this.endTime   = new Date();
+        this.endTime   = Date.getTimeNano();
         this.exception = i_Exception;
         this.success   = false;
         this.status    = ExecuteStatus.Exception;
@@ -330,20 +330,38 @@ public class ExecuteResult
 
     
     /**
-     * 获取：执行开始时间
+     * 获取：执行开始时间（精度：纳秒）
      */
-    public Date getBeginTime()
+    public Long getBeginTime()
     {
         return beginTime;
+    }
+    
+    
+    /**
+     * 获取：执行开始时间（精度：毫秒）
+     */
+    public Date getBeginDate()
+    {
+        return Date.nanoToDate(this.beginTime);
     }
 
     
     /**
      * 获取：执行结束时间
      */
-    public Date getEndTime()
+    public Long getEndTime()
     {
         return endTime;
+    }
+    
+    
+    /**
+     * 获取：执行结束时间（精度：毫秒）
+     */
+    public Date getEndDate()
+    {
+        return Date.nanoToDate(this.endTime);
     }
 
     

@@ -26,10 +26,10 @@
         
         <xcondition id="XCondition_CF002_002">
             <comment>第二个环节，条件逻辑，按第一个环节的执行结果（真、假）控制编排的走向</comment>
-            <logical>AND</logical>                          <!-- 判定逻辑 -->
+            <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
             <conditionItem>
                 <valueXIDA>T</valueXIDA>                    <!-- 默认值 -->
-                <comparer><![CDATA[==]]></comparer>         <!-- 判定比较器 -->
+                <comparer><![CDATA[==]]></comparer>         <!-- 判定比较器（可以不用显式定义。默认为==） -->
                 <valueXIDB>:IfElse</valueXIDB>              <!-- 变量 -->
             </conditionItem>
             <route>

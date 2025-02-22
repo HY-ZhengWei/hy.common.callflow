@@ -3,6 +3,7 @@ package org.hy.common.callflow.junit.cflow001;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hy.common.Date;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -49,6 +50,15 @@ public class JU_CFlow001
     @Test
     public void test_CFlow001()
     {
+        test_CFlow001_Inner();
+        System.out.println("\n");
+        test_CFlow001_Inner();
+    }
+    
+    
+    
+    private void test_CFlow001_Inner()
+    {
         // 初始化被编排的执行程序
         XJava.putObject("XProgram" ,new Program());
         
@@ -71,7 +81,14 @@ public class JU_CFlow001
         ExecuteResult v_NodeResult = v_Result;
         do
         {
-            System.out.println(StringHelp.lpad(v_NodeResult.getIndexNo() ,3 ," ") + " " + v_NodeResult.getBeginTime() + " callXID=" + v_NodeResult.getExecuteXID() + " is " + v_NodeResult.isSuccess());
+            System.out.println(StringHelp.lpad(v_NodeResult.getIndexNo() ,3 ," ") 
+                             + " " 
+                             + Date.toTimeLenNano(v_NodeResult.getBeginTime()) 
+                             + " ~ "
+                             + Date.toTimeLenNano(v_NodeResult.getEndTime()) 
+                             + " "
+                             + Date.toTimeLenNano(v_NodeResult.getEndTime() - v_NodeResult.getBeginTime())
+                             + " callXID=" + v_NodeResult.getExecuteXID() + " is " + v_NodeResult.isSuccess());
             v_NodeResult = v_NodeResult.getPrevious();
         }
         while ( v_NodeResult != null );

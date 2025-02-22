@@ -9,7 +9,7 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
-import org.hy.common.Total;
+import org.hy.common.TotalNano;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
@@ -31,7 +31,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-11
  * @version     v1.0
  */
-public class NodeConfig extends Total implements IExecute
+public class NodeConfig extends TotalNano implements IExecute
 {
     
     private static final Logger $Logger = new Logger(NodeConfig.class);
@@ -165,7 +165,7 @@ public class NodeConfig extends Total implements IExecute
         
         try
         {
-            long   v_BeginTime = this.request().getTime();
+            long   v_BeginTime = this.request();
             Object v_ExceRet   = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
             
             v_Result.setResult(v_ExceRet);

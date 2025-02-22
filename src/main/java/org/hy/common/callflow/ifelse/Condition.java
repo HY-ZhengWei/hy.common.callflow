@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
-import org.hy.common.Total;
+import org.hy.common.TotalNano;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -24,7 +24,7 @@ import org.hy.common.callflow.route.RouteConfig;
  * @createDate  2025-02-12
  * @version     v1.0
  */
-public class Condition extends Total implements IExecute ,IfElse
+public class Condition extends TotalNano implements IExecute ,IfElse
 {
     
     /** 全局惟一标识ID */
@@ -89,7 +89,7 @@ public class Condition extends Total implements IExecute ,IfElse
         
         try
         {
-            long    v_BeginTime = this.request().getTime();
+            long    v_BeginTime = this.request();
             boolean v_ExceRet   = this.allow(io_Context);
             
             if ( !Help.isNull(this.returnID) )
