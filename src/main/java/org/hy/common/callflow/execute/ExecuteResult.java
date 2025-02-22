@@ -1,10 +1,13 @@
 package org.hy.common.callflow.execute;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
 import org.hy.common.callflow.enums.ExecuteStatus;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -20,29 +23,39 @@ import org.hy.common.callflow.enums.ExecuteStatus;
 public class ExecuteResult
 {
     
+    private static final Logger $Logger = new Logger(ExecuteResult.class);
+    
+    
+    
     /** 执行序号。下标从1开始 */
-    private Integer       indexNo;
+    private Integer             indexNo;
     
     /** 执行对象的全局惟一标识ID */
-    private String        executeXID;
-    
-    /** 执行状态 */
-    private ExecuteStatus status;
+    private String              executeXID;
+                                
+    /** 执行状态 */             
+    private ExecuteStatus       status;
     
     /** 执行结果（方法编排中的最后一个结果数据） */
-    private Object        result;
-    
+    private Object              result;
+                                
     /** 执行结果是否成功 */
-    private boolean       success;
+    private boolean             success;
+                                
+    /** 为异常对象 */           
+    private Exception           exception;
+                                
+    /** 执行开始时间 */         
+    private Date                beginTime;
+                                
+    /** 执行结束时间 */         
+    private Date                endTime;
+                                
+    /** 执行链：双向链表：前一个 */       
+    private ExecuteResult       previous;
     
-    /** 为异常对象 */
-    private Exception     exception;
-    
-    /** 执行开始时间 */
-    private Date          beginTime;
-    
-    /** 执行结束时间 */
-    private Date          endTime;
+    /** 执行链：双向链表：其后多个 */
+    private List<ExecuteResult> nexts;
     
     
     
@@ -54,11 +67,18 @@ public class ExecuteResult
     
     public ExecuteResult(Integer i_IndexNo ,String i_ExecuteXID)
     {
+        this(i_IndexNo ,i_ExecuteXID ,null);
+    }
+    
+    
+    public ExecuteResult(Integer i_IndexNo ,String i_ExecuteXID ,ExecuteResult i_Previous)
+    {
         this.beginTime  = new Date();
         this.success    = false;
         this.indexNo    = i_IndexNo;
         this.executeXID = i_ExecuteXID;
         this.status     = ExecuteStatus.Started;
+        this.previous   = i_Previous;
     }
     
     
@@ -74,7 +94,9 @@ public class ExecuteResult
         {
             if ( this.success || this.exception != null )
             {
-                return this;
+                IllegalArgumentException v_Exce = new IllegalArgumentException("All state setter methods are only allowed to be executed once.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
             }
         }
         
@@ -101,7 +123,9 @@ public class ExecuteResult
             // 所以成功标记与取消标记可以同时存在
             if ( this.exception != null )
             {
-                return this;
+                IllegalArgumentException v_Exce = new IllegalArgumentException("All state setter methods are only allowed to be executed once.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
             }
         }
         
@@ -134,7 +158,9 @@ public class ExecuteResult
         {
             if ( this.success || this.exception != null )
             {
-                return this;
+                IllegalArgumentException v_Exce = new IllegalArgumentException("All state setter methods are only allowed to be executed once.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
             }
         }
         
@@ -168,7 +194,12 @@ public class ExecuteResult
         {
             if ( this.success || this.exception != null )
             {
-                return this;
+                if ( this.success || this.exception != null )
+                {
+                    IllegalArgumentException v_Exce = new IllegalArgumentException("All state setter methods are only allowed to be executed once.");
+                    $Logger.error(v_Exce);
+                    throw v_Exce;
+                }
             }
         }
         
@@ -179,8 +210,74 @@ public class ExecuteResult
         
         return this;
     }
+    
+    
+    /**
+     * 获取：执行链：前一个
+     */
+    public ExecuteResult getPrevious()
+    {
+        return previous;
+    }
 
     
+    /**
+     * 设置：执行链：前一个
+     * 
+     * @param i_Previous 执行链：前一个
+     */
+    public ExecuteResult setPrevious(ExecuteResult i_Previous)
+    {
+        // 前一个仅允许被设置一次
+        synchronized ( this )
+        {
+            if ( this.previous != null )
+            {
+                if ( this.success || this.exception != null )
+                {
+                    IllegalArgumentException v_Exce = new IllegalArgumentException("The setPrevious method of A can only be called once.");
+                    $Logger.error(v_Exce);
+                    throw v_Exce;
+                }
+            }
+        }
+        
+        this.previous = i_Previous;
+        return this;
+    }
+    
+    
+    /**
+     * 获取：执行链：双向链表：其后多个
+     */
+    public List<ExecuteResult> getNexts()
+    {
+        return nexts;
+    }
+    
+    
+    /**
+     * 添加执行链：双向链表中的其后一个
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-21
+     * @version     v1.0
+     *
+     * @param i_Next  其后一个执行结果
+     * @return
+     */
+    public synchronized ExecuteResult addNext(ExecuteResult i_Next)
+    {
+        if ( this.nexts == null )
+        {
+            this.nexts = new ArrayList<ExecuteResult>();
+        }
+        
+        this.nexts.add(i_Next);
+        return this;
+    }
+
+
     /**
      * 获取：执行序号。下标从1开始
      */
