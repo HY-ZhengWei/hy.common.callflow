@@ -83,6 +83,7 @@ public class CallFlow
         
         ExecuteResult v_NodeResult = CallFlow.execute(v_IndexNo + 1 ,i_ExecObject ,v_Context ,null ,i_Event);
         v_LastResult.setPrevious(v_NodeResult);
+        v_LastResult.setIndexNo(v_NodeResult.getIndexNo() + 1);
         
         if ( v_NodeResult.isSuccess() )
         {
