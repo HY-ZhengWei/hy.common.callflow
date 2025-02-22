@@ -33,6 +33,36 @@ public class RouteConfig
     
     
     /**
+     * setSucceed方法的别名，主要用于 "条件逻辑" 判定结果为真时路由配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-15
+     * @version     v1.0
+     *
+     * @param i_Execute  执行对象。节点或判定条件
+     */
+    public synchronized void setIf(IExecute i_Execute)
+    {
+        this.setSucceed(i_Execute);
+    }
+    
+    
+    /**
+     * setFailed方法的别名，主要用于 "条件逻辑" 判定结果为假时路由配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-15
+     * @version     v1.0
+     *
+     * @param i_Execute  执行对象。节点或判定条件
+     */
+    public synchronized void setElse(IExecute i_Execute)
+    {
+        this.setFailed(i_Execute);
+    }
+    
+    
+    /**
      * 添加执行成功后的路由
      * 
      * @author      ZhengWei(HY)
@@ -68,7 +98,7 @@ public class RouteConfig
     {
         synchronized ( this )
         {
-            if ( Help.isNull(this.succeeds) )
+            if ( Help.isNull(this.faileds) )
             {
                 this.faileds = new ArrayList<IExecute>();
             }
@@ -91,7 +121,7 @@ public class RouteConfig
     {
         synchronized ( this )
         {
-            if ( Help.isNull(this.succeeds) )
+            if ( Help.isNull(this.exceptions) )
             {
                 this.exceptions = new ArrayList<IExecute>();
             }

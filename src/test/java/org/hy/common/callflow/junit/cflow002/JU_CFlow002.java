@@ -1,4 +1,4 @@
-package org.hy.common.callflow.junit.cflow001;
+package org.hy.common.callflow.junit.cflow002;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.junit.cflow001.program.Program;
+import org.hy.common.callflow.junit.cflow002.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
@@ -20,7 +20,7 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎001：仅有两个节点的测试
+ * 测试单元：编排引擎002：两个节点与一个条件逻辑的测试
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-22
@@ -28,14 +28,14 @@ import org.junit.runners.MethodSorters;
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow001
+public class JU_CFlow002
 {
     
     private static boolean $isInit = false;
     
     
     
-    public JU_CFlow001() throws Exception
+    public JU_CFlow002() throws Exception
     {
         if ( !$isInit )
         {
@@ -47,14 +47,17 @@ public class JU_CFlow001
     
     
     @Test
-    public void test_CFlow001()
+    public void test_CFlow002()
     {
         // 初始化被编排的执行程序
         XJava.putObject("XProgram" ,new Program());
         
         // 启动编排
-        NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_001");
+        NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF002_001");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+        
+        // 传值 9 或 传值 -1 或 不传值
+        v_Context.put("NumParam" ,9);
         
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
         if ( v_Result.isSuccess() )

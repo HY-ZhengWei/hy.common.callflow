@@ -49,7 +49,7 @@ public class NodeParam implements XJavaID
     
     public NodeParam()
     {
-        this(null);
+        
     }
     
     

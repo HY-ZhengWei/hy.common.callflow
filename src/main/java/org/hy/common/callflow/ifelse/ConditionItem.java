@@ -18,7 +18,6 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-12
  * @version     v1.0
- * @param <V>
  */
 public class ConditionItem implements IfElse ,XJavaID
 {
@@ -45,7 +44,7 @@ public class ConditionItem implements IfElse ,XJavaID
     
     public ConditionItem()
     {
-        
+        this(Comparer.Equal ,null ,null);
     }
     
     

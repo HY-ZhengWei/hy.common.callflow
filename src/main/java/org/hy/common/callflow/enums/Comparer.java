@@ -387,9 +387,10 @@ public enum Comparer
             return null;
         }
         
+        String v_Value = i_Value.trim();
         for (Comparer v_Enum : Comparer.values())
         {
-            if ( v_Enum.value.equals(i_Value) )
+            if ( v_Enum.value.equals(v_Value) )
             {
                 return v_Enum;
             }

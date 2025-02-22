@@ -14,9 +14,9 @@ package org.hy.common.callflow.enums;
 public enum Logical
 {
     
-    And("And" ,"与"),
+    And("AND" ,"与"),
     
-    Or ("Or"  ,"或"),
+    Or ("OR"  ,"或"),
     
     ;
     
@@ -47,9 +47,10 @@ public enum Logical
             return null;
         }
         
+        String v_Value = i_Value.trim();
         for (Logical v_Enum : Logical.values())
         {
-            if ( v_Enum.value.equals(i_Value) )
+            if ( v_Enum.value.equalsIgnoreCase(v_Value) )
             {
                 return v_Enum;
             }

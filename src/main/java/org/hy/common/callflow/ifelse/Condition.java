@@ -23,7 +23,6 @@ import org.hy.common.callflow.route.RouteConfig;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-12
  * @version     v1.0
- * @param <V>
  */
 public class Condition extends Total implements IExecute ,IfElse
 {
@@ -67,8 +66,9 @@ public class Condition extends Total implements IExecute ,IfElse
     public Condition(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.items = new ArrayList<>();
-        this.route = new RouteConfig();
+        this.logical = Logical.And;
+        this.items   = new ArrayList<>();
+        this.route   = new RouteConfig();
     }
     
     
@@ -192,10 +192,39 @@ public class Condition extends Total implements IExecute ,IfElse
      * 添加条件项
      * 
      * @author      ZhengWei(HY)
+     * @createDate  2025-02-22
+     * @version     v1.0
+     *
+     * @param i_ConditionItem  条件项
+     */
+    public boolean setConditionItem(ConditionItem i_ConditionItem)
+    {
+        return this.setItem(i_ConditionItem);
+    }
+    
+    
+    /**
+     * 添加条件逻辑
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-22
+     * @version     v1.0
+     *
+     * @param i_Condition  条件逻辑
+     */
+    public boolean setCondition(Condition i_Condition)
+    {
+        return this.setItem(i_Condition);
+    }
+    
+    
+    /**
+     * 添加条件项
+     * 
+     * @author      ZhengWei(HY)
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param <V>
      * @param i_Item
      */
     public boolean setItem(ConditionItem i_Item)

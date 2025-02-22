@@ -10,17 +10,19 @@
     <!-- CFlow编排引擎配置 -->
     <xconfig>
         
-        <xnode id="XNode_002">
+        <xnode id="XNode_CF001_002">
+            <comment>节点002，后面节点配置在XML前</comment>
             <callXID>XProgram</callXID>
             <callMehod>method002</callMehod>
         </xnode>
         
         
-        <xnode id="XNode_001">
-            <callXID>XProgram</callXID>
-            <callMehod>method001</callMehod>
+        <xnode id="XNode_CF001_001">
+            <comment>节点001</comment>
+            <callXID>XProgram</callXID>            <!-- 定义执行对象 -->
+            <callMehod>method001</callMehod>       <!-- 定义执行方法 -->
             <route>
-                <succeed ref="XNode_002" />
+                <succeed ref="XNode_CF001_002" />  <!-- 关联后置节点 -->
             </route>
         </xnode>
         

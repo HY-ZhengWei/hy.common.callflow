@@ -52,9 +52,10 @@ public enum ParamFrom
             return null;
         }
         
+        String v_Value = i_Value.trim();
         for (ParamFrom v_Enum : ParamFrom.values())
         {
-            if ( v_Enum.value.equals(i_Value) )
+            if ( v_Enum.value.equalsIgnoreCase(v_Value) )
             {
                 return v_Enum;
             }
