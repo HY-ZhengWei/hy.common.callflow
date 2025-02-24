@@ -28,7 +28,7 @@
             <comment>第三个环节，条件逻辑，变量不等于NULL判定</comment>
             <logical>AND</logical>
             <conditionItem>
-                <comparer><![CDATA[!=]]></comparer>         <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                <comparer>!=</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
                 <valueXIDA>:NULLValue</valueXIDA>
             </conditionItem>
             <route>
@@ -55,11 +55,11 @@
             <comment>第一个环节，有一个参数，有返回结果</comment>
             <callXID>XProgram</callXID>
             <callMehod>method_First</callMehod>
-            <CallParam>
-                <valueClass>java.lang.Integer</valueClass>  <!-- 定义身入参类型 -->
+            <callParam>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:NumParam</value>                    <!-- 定义入参变量名称 -->
                 <valueDefault>-1</valueDefault>             <!-- 定义入参默认值 -->
-            </CallParam>
+            </callParam>
             <returnID>IfElse</returnID>                     <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed ref="XCondition_CF003_002" />

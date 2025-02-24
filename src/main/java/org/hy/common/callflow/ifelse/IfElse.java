@@ -2,6 +2,8 @@ package org.hy.common.callflow.ifelse;
 
 import java.util.Map;
 
+import org.hy.common.callflow.file.IToXml;
+
 
 
 
@@ -13,7 +15,7 @@ import java.util.Map;
  * @createDate  2025-02-12
  * @version     v1.0
  */
-public interface IfElse
+public interface IfElse extends IToXml
 {
     
     /**

@@ -105,7 +105,7 @@ public class ValueHelp
         {
             v_Value = Help.toObject(i_ValueClass ,i_ValueXID);
         }
-        else
+        else if ( i_ValueClass != null )
         {
             XJSON v_XJson = new XJSON();
             v_Value = v_XJson.toJava(i_ValueXID ,i_ValueClass);

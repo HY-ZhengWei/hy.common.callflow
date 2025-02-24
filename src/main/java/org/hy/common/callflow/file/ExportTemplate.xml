@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+:Content
+        
+    </xconfig>
+    
+</config>

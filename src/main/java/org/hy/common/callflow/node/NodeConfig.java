@@ -9,11 +9,14 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.execute.IExecute;
+import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
@@ -162,7 +165,7 @@ public class NodeConfig extends ExecuteElement
             Object v_ExceRet   = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
             
             v_Result.setResult(v_ExceRet);
-            this.success(Date.getNowTime().getTime() - v_BeginTime);
+            this.success(Date.getTimeNano() - v_BeginTime);
             this.refreshReturn(io_Context ,v_ExceRet);
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
@@ -538,6 +541,112 @@ public class NodeConfig extends ExecuteElement
     public void setRoute(RouteConfig i_Route)
     {
         this.route = i_Route;
+    }
+    
+    
+    /**
+     * 转为Xml格式的内容
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-24
+     * @version     v1.0
+     *
+     * @param i_Level  层级。最小下标从0开始。
+     *                   0表示每行前面有0个空格；
+     *                   1表示每行前面有4个空格；
+     *                   2表示每行前面有8个空格；
+     *                  
+     * @return
+     */
+    public String toXml(int i_Level)
+    {
+        StringBuilder v_Xml    = new StringBuilder();
+        String        v_Level1 = "    ";
+        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_XName  = "xnode";
+        
+        if ( !Help.isNull(this.getXJavaID()) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(IToXml.toBeginID(v_XName ,this.getXJavaID()));
+        }
+        else
+        {
+            v_Xml.append("\n").append(v_LevelN).append(IToXml.toBegin(v_XName));
+        }
+        
+        v_Xml.append(super.toXml(i_Level));
+        
+        if ( !Help.isNull(this.callXID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callXID" ,this.callXID));
+        }
+        if ( !Help.isNull(this.callMehod) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callMehod" ,this.callMehod));
+        }
+        if ( !Help.isNull(this.callParams) )
+        {
+            for (NodeParam v_Param : this.callParams)
+            {
+                v_Xml.append(v_Param.toXml(i_Level + 1));
+            }
+        }
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
+        }
+        if ( !Help.isNull(this.statusID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("statusID" ,this.statusID));
+        }
+        if ( !Help.isNull(this.route.getSucceeds()) 
+          || !Help.isNull(this.route.getExceptions()) )
+        {
+            int v_MaxLpad = 0;
+            if ( !Help.isNull(this.route.getSucceeds()) )
+            {
+                v_MaxLpad = 7;
+            }
+            
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
+            
+            // 成功路由
+            if ( !Help.isNull(this.route.getSucceeds()) )
+            {
+                for (IExecute v_Item : this.route.getSucceeds())
+                {
+                    if ( !Help.isNull(v_Item.getXJavaID()) )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("succeed" ,v_Item.getXJavaID()));
+                    }
+                    else
+                    {
+                        v_Xml.append(v_Item.toXml(i_Level + 1));
+                    }
+                }
+            }
+            // 异常路由
+            if ( !Help.isNull(this.route.getExceptions()) )
+            {
+                for (IExecute v_Item : this.route.getExceptions())
+                {
+                    if ( !Help.isNull(v_Item.getXJavaID()) )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("error" ,v_Item.getXJavaID() ,v_MaxLpad - 5));
+                    }
+                    else
+                    {
+                        v_Xml.append(v_Item.toXml(i_Level + 1));
+                    }
+                }
+            }
+            
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));
+        }
+        
+        v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));
+        
+        return v_Xml.toString();
     }
     
     

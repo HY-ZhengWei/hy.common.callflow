@@ -3,9 +3,11 @@ package org.hy.common.callflow.ifelse;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.StringHelp;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.Comparer;
+import org.hy.common.callflow.file.IToXml;
 import org.hy.common.xml.log.Logger;
 
 
@@ -343,6 +345,63 @@ public class ConditionItem implements IfElse ,XJavaID
     public String getComment()
     {
         return this.comment;
+    }
+    
+    
+    /**
+     * 转为Xml格式的内容
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-24
+     * @version     v1.0
+     *
+     * @param i_Level  层级。最小下标从0开始。
+     *                   0表示每行前面有0个空格；
+     *                   1表示每行前面有4个空格；
+     *                   2表示每行前面有8个空格；
+     *                  
+     * @return
+     */
+    public String toXml(int i_Level)
+    {
+        StringBuilder v_Xml    = new StringBuilder();
+        String        v_Level1 = "    ";
+        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_XName  = "conditionItem";
+        
+        if ( !Help.isNull(this.getXJavaID()) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(IToXml.toBeginID(v_XName ,this.getXJavaID()));
+        }
+        else
+        {
+            v_Xml.append("\n").append(v_LevelN).append(IToXml.toBegin(v_XName));
+        }
+        
+        if ( !Help.isNull(this.comment) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
+        }
+        if ( this.valueClass != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueClass" ,this.valueClass.getName()));
+        }
+        if ( !Help.isNull(this.valueXIDA) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDA" ,this.valueXIDA));
+        }
+        if ( this.comparer != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comparer" ,this.comparer.getValue()));
+        }
+        if ( !Help.isNull(this.valueXIDB) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDB" ,this.valueXIDB));
+        }
+        
+        v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));
+        
+        return v_Xml.toString();
     }
     
     

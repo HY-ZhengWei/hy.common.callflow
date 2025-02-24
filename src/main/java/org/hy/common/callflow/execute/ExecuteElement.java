@@ -1,7 +1,10 @@
 package org.hy.common.callflow.execute;
 
 import org.hy.common.Date;
+import org.hy.common.Help;
+import org.hy.common.StringHelp;
 import org.hy.common.TotalNano;
+import org.hy.common.callflow.file.IToXml;
 
 
 
@@ -686,4 +689,126 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     {
         this.isDel = i_IsDel;
     }
+    
+    
+    /**
+     * 转为Xml格式的内容
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-24
+     * @version     v1.0
+     *
+     * @param i_Level  层级。最小下标从0开始。
+     *                   0表示每行前面有0个空格；
+     *                   1表示每行前面有4个空格；
+     *                   2表示每行前面有8个空格；
+     *                  
+     * @return
+     */
+    public String toXml(int i_Level)
+    {
+        StringBuilder v_Xml    = new StringBuilder();
+        String        v_Level1 = "    ";
+        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        
+        if ( !Help.isNull(this.id) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("id" ,this.id));
+        }
+        if ( !Help.isNull(this.comment) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
+        }
+        if ( !Help.isNull(this.styleName) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("styleName" ,this.styleName));
+        }
+        if ( this.x != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("x" ,this.x));
+        }
+        if ( this.y != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("y" ,this.y));
+        }
+        if ( this.z != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("z" ,this.z));
+        }
+        if ( this.height != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("height" ,this.height));
+        }
+        if ( this.width != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("width" ,this.width));
+        }
+        if ( !Help.isNull(this.iconURL) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("iconURL" ,this.iconURL));
+        }
+        if ( this.opacity != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("opacity" ,this.opacity));
+        }
+        if ( !Help.isNull(this.backgroudColor) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("backgroudColor" ,this.backgroudColor));
+        }
+        if ( !Help.isNull(this.lineStyle) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineStyle" ,this.lineStyle));
+        }
+        if ( !Help.isNull(this.lineColor) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineColor" ,this.lineColor));
+        }
+        if ( !Help.isNull(this.lineSize) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineSize" ,this.lineSize));
+        }
+        if ( !Help.isNull(this.fontColor) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontColor" ,this.fontColor));
+        }
+        if ( !Help.isNull(this.fontFamily) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontFamily" ,this.fontFamily));
+        }
+        if ( !Help.isNull(this.fontWeight) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontWeight" ,this.fontWeight));
+        }
+        if ( !Help.isNull(this.fontSize) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontSize" ,this.fontSize));
+        }
+        if ( !Help.isNull(this.fontAlign) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontAlign" ,this.fontAlign));
+        }
+        if ( !Help.isNull(this.createUserID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createUserID" ,this.createUserID));
+        }
+        if ( !Help.isNull(this.updateUserID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateUserID" ,this.updateUserID));
+        }
+        if ( this.createTime != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
+        }
+        if ( this.updateTime != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
+        }
+        if ( this.isDel != null )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("isDel" ,this.isDel));
+        }
+        
+        return v_Xml.toString();
+    }
+    
 }

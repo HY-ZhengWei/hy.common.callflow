@@ -9,6 +9,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.cflow003.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
+import org.hy.common.xml.XJSON;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -48,7 +49,7 @@ public class JU_CFlow003
     
     
     @Test
-    public void test_CFlow003()
+    public void test_CFlow003() throws Exception
     {
         this.test_CFlow003_Inner();
         System.out.println("\n");
@@ -57,7 +58,7 @@ public class JU_CFlow003
     
     
     
-    private void test_CFlow003_Inner()
+    private void test_CFlow003_Inner() throws Exception
     {
         // 初始化被编排的执行程序
         XJava.putObject("XProgram" ,new Program());
@@ -97,6 +98,21 @@ public class JU_CFlow003
             v_NodeResult = v_NodeResult.getPrevious();
         }
         while ( v_NodeResult != null );
+        
+        test_ToJson();
+    }
+    
+    
+    
+    @Test
+    public void test_ToJson() throws Exception
+    {
+        NodeConfig v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF003_001");
+        XJSON      v_XJson     = new XJSON();
+        
+        v_XJson.setReturnNVL(false);
+        
+        System.out.println(v_XJson.toJson(v_FirstNode).toJSONString());
     }
     
 }
