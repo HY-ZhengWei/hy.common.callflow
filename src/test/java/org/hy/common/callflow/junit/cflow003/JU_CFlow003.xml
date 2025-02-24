@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF003_005">
+            <comment>五个环节，为假时的走向</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_False</callMehod>
+        </xnode>
+        
+        <xnode id="XNode_CF003_004">
+            <comment>第四个环节，为真时的走向</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_True</callMehod>
+        </xnode>
+        
+        
+        <xcondition id="XCondition_CF003_003">
+            <comment>第三个环节，条件逻辑，变量不等于NULL判定</comment>
+            <logical>AND</logical>
+            <conditionItem>
+                <comparer><![CDATA[!=]]></comparer>         <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                <valueXIDA>:NULLValue</valueXIDA>
+            </conditionItem>
+            <route>
+                <if   ref="XNode_CF003_004" />
+                <else ref="XNode_CF003_005" />
+            </route>
+        </xcondition>
+        
+        
+        <xcondition id="XCondition_CF003_002">
+            <comment>第二个环节，条件逻辑，按第一个环节的执行结果（真、假）控制编排的走向</comment>
+            <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
+            <conditionItem>
+                <valueXIDA>:IfElse</valueXIDA>              <!-- 变量 -->
+            </conditionItem>
+            <route>
+                <if   ref="XCondition_CF003_003" />         <!-- 真时的路由 -->
+                <else ref="XNode_CF003_005" />              <!-- 假时的路由 -->
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF003_001">
+            <comment>第一个环节，有一个参数，有返回结果</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_First</callMehod>
+            <CallParam>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义身入参类型 -->
+                <value>:NumParam</value>                    <!-- 定义入参变量名称 -->
+                <valueDefault>-1</valueDefault>             <!-- 定义入参默认值 -->
+            </CallParam>
+            <returnID>IfElse</returnID>                     <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed ref="XCondition_CF003_002" />
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>

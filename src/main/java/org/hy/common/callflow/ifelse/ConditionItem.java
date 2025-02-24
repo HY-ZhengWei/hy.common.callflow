@@ -14,6 +14,10 @@ import org.hy.common.xml.log.Logger;
 
 /**
  * 条件项
+ * 
+ * 支持两种形式：
+ *      if ( A == B ) 的形式
+ *      if ( A )      的形式。即NULL值的判定，或逻辑值的判定
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-12
@@ -34,6 +38,9 @@ public class ConditionItem implements IfElse ,XJavaID
     /** 比较器 */
     private Comparer comparer;
     
+    /** 参数类型。参数为数值类型时生效 */
+    private Class<?> valueClass;
+    
     /** 数值A、上下文变量A、XID标识A（支持xxx.yyy.www） */
     private String   valueXIDA;
     
@@ -44,16 +51,61 @@ public class ConditionItem implements IfElse ,XJavaID
     
     public ConditionItem()
     {
-        this(Comparer.Equal ,null ,null);
+        this(Comparer.Equal ,null ,null ,null);
     }
     
     
     
+    /**
+     * 构造器（主要用于判定对象是否为NULL；或Boolean类型的真假）
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-12
+     * @version     v1.0
+     *
+     * @param i_ValueXIDA   数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
+     */
+    public ConditionItem(String i_ValueXIDA)
+    {
+        this(Comparer.Equal ,null ,i_ValueXIDA ,null);
+    }
+    
+    
+    /**
+     * 构造器（主要用于两个变量、XID标识时）
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-12
+     * @version     v1.0
+     *
+     * @param i_Comparer    比较器
+     * @param i_ValueXIDA   数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
+     * @param i_ValueXIDB   数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
+     */
     public ConditionItem(Comparer i_Comparer ,String i_ValueXIDA ,String i_ValueXIDB)
     {
-        this.comparer  = i_Comparer;
-        this.valueXIDA = i_ValueXIDA;
-        this.valueXIDB = i_ValueXIDB;
+        this(i_Comparer ,null ,i_ValueXIDA ,i_ValueXIDB);
+    }
+    
+    
+    /**
+     * 构造器（主要用于有数值类的）
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-12
+     * @version     v1.0
+     *
+     * @param i_Comparer    比较器
+     * @param i_ValueClass  参数类型。参数为数值类型时生效
+     * @param i_ValueXIDA   数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
+     * @param i_ValueXIDB   数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
+     */
+    public ConditionItem(Comparer i_Comparer ,Class<?> i_ValueClass ,String i_ValueXIDA ,String i_ValueXIDB)
+    {
+        this.comparer   = i_Comparer;
+        this.valueClass = i_ValueClass;
+        this.valueXIDA  = i_ValueXIDA;
+        this.valueXIDB  = i_ValueXIDB;
     }
     
     
@@ -79,15 +131,56 @@ public class ConditionItem implements IfElse ,XJavaID
         {
             throw new NullPointerException("ConditionItem valueA [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
         }
+        
+        // B可以为空，表示判定A是否为空，或判定A是否为Boolean类型的真假
         if ( this.valueXIDB == null )
         {
-            throw new NullPointerException("ConditionItem valueB [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
+            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.valueClass ,null ,i_Context);
+            
+            if ( Comparer.Equal.equals(this.comparer) )
+            {
+                if ( v_ValueA == null )
+                {
+                    // 等于NULL
+                    return true;
+                }
+                else if ( Boolean.class.equals(v_ValueA.getClass()) )
+                {
+                    return (Boolean) v_ValueA;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if ( Comparer.EqualNot.equals(this.comparer) )
+            {
+                if ( v_ValueA == null )
+                {
+                    // 不等于NULL
+                    return false;
+                }
+                else if ( Boolean.class.equals(v_ValueA.getClass()) )
+                {
+                    return (Boolean) v_ValueA;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return v_ValueA != null;
+            }
         }
-        
-        Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,null ,i_Context);
-        Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,String.class ,null ,i_Context);
-        
-        return this.comparer.compare(v_ValueA ,v_ValueB);
+        else
+        {
+            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.valueClass ,null ,i_Context);
+            Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.valueClass ,null ,i_Context);
+            
+            return this.comparer.compare(v_ValueA ,v_ValueB);
+        }
     }
     
     
@@ -130,25 +223,25 @@ public class ConditionItem implements IfElse ,XJavaID
     
     
     /**
-     * 获取：全局惟一标识ID
+     * 获取：参数类型。参数为数值类型时生效
      */
-    public String getXid()
+    public Class<?> getValueClass()
     {
-        return xid;
+        return valueClass;
     }
 
     
     /**
-     * 设置：全局惟一标识ID
+     * 设置：参数类型。参数为数值类型时生效
      * 
-     * @param i_Xid 全局惟一标识ID
+     * @param i_ValueClass 参数类型。参数为数值类型时生效
      */
-    public void setXid(String i_Xid)
+    public void setValueClass(Class<?> i_ValueClass)
     {
-        this.xid = i_Xid;
+        this.valueClass = i_ValueClass;
     }
 
-    
+
     /**
      * 获取：数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
      */
@@ -188,6 +281,26 @@ public class ConditionItem implements IfElse ,XJavaID
         this.valueXIDB = i_ValueXIDB;
     }
 
+    
+    /**
+     * 获取：全局惟一标识ID
+     */
+    public String getXid()
+    {
+        return xid;
+    }
+
+    
+    /**
+     * 设置：全局惟一标识ID
+     * 
+     * @param i_Xid 全局惟一标识ID
+     */
+    public void setXid(String i_Xid)
+    {
+        this.xid = i_Xid;
+    }
+    
 
     /**
      * 设置XJava池中对象的ID标识。此方法不用用户调用设置值，是自动的。
