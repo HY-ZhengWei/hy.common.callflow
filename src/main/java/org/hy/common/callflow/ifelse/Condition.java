@@ -6,11 +6,10 @@ import java.util.Map;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
-import org.hy.common.TotalNano;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.enums.Logical;
+import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.route.RouteConfig;
 
 
@@ -24,14 +23,8 @@ import org.hy.common.callflow.route.RouteConfig;
  * @createDate  2025-02-12
  * @version     v1.0
  */
-public class Condition extends TotalNano implements IExecute ,IfElse
+public class Condition extends ExecuteElement implements IfElse
 {
-    
-    /** 全局惟一标识ID */
-    private String       xid;
-    
-    /** 注释。可用于日志的输出等帮助性的信息 */
-    private String       comment;
     
     /** 逻辑 */
     private Logical      logical;
@@ -353,70 +346,6 @@ public class Condition extends TotalNano implements IExecute ,IfElse
         this.route = i_Route;
     }
 
-
-    /**
-     * 获取：全局惟一标识ID
-     */
-    public String getXid()
-    {
-        return xid;
-    }
-
-    
-    /**
-     * 设置：全局惟一标识ID
-     * 
-     * @param i_Xid 全局惟一标识ID
-     */
-    public void setXid(String i_Xid)
-    {
-        this.xid = i_Xid;
-    }
-
-
-    /**
-     * 设置XJava池中对象的ID标识。此方法不用用户调用设置值，是自动的。
-     * 
-     * @param i_XJavaID
-     */
-    public void setXJavaID(String i_XJavaID)
-    {
-        this.xid = i_XJavaID;
-    }
-    
-    
-    /**
-     * 获取XJava池中对象的ID标识。
-     * 
-     * @return
-     */
-    public String getXJavaID()
-    {
-        return this.xid;
-    }
-    
-    
-    /**
-     * 注释。可用于日志的输出等帮助性的信息
-     * 
-     * @param i_Comment
-     */
-    public void setComment(String i_Comment)
-    {
-        this.comment = i_Comment;
-    }
-    
-    
-    /**
-     * 注释。可用于日志的输出等帮助性的信息
-     *
-     * @return
-     */
-    public String getComment()
-    {
-        return this.comment;
-    }
-    
     
     /**
      * 解析为实时运行时的逻辑判定表达式

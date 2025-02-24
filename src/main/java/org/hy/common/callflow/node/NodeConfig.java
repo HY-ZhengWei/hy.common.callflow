@@ -9,12 +9,11 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
-import org.hy.common.TotalNano;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
+import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
@@ -31,18 +30,12 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-11
  * @version     v1.0
  */
-public class NodeConfig extends TotalNano implements IExecute
+public class NodeConfig extends ExecuteElement
 {
     
     private static final Logger $Logger = new Logger(NodeConfig.class);
     
     
-    
-    /** 全局惟一标识ID */
-    private String          xid;
-    
-    /** 注释。可用于日志的输出等帮助性的信息 */
-    private String          comment;
     
     /** 执行对象的XID */
     private String          callXID;
@@ -545,70 +538,6 @@ public class NodeConfig extends TotalNano implements IExecute
     public void setRoute(RouteConfig i_Route)
     {
         this.route = i_Route;
-    }
-    
-    
-    /**
-     * 获取：全局惟一标识ID
-     */
-    public String getXid()
-    {
-        return xid;
-    }
-
-    
-    /**
-     * 设置：全局惟一标识ID
-     * 
-     * @param i_Xid 全局惟一标识ID
-     */
-    public void setXid(String i_Xid)
-    {
-        this.xid = i_Xid;
-    }
-
-
-    /**
-     * 设置XJava池中对象的ID标识。此方法不用用户调用设置值，是自动的。
-     * 
-     * @param i_XJavaID
-     */
-    public void setXJavaID(String i_XJavaID)
-    {
-        this.xid = i_XJavaID;
-    }
-    
-    
-    /**
-     * 获取XJava池中对象的ID标识。
-     * 
-     * @return
-     */
-    public String getXJavaID()
-    {
-        return this.xid;
-    }
-    
-    
-    /**
-     * 注释。可用于日志的输出等帮助性的信息
-     * 
-     * @param i_Comment
-     */
-    public void setComment(String i_Comment)
-    {
-        this.comment = i_Comment;
-    }
-    
-    
-    /**
-     * 注释。可用于日志的输出等帮助性的信息
-     *
-     * @return
-     */
-    public String getComment()
-    {
-        return this.comment;
     }
     
     

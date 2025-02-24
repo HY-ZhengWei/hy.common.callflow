@@ -109,6 +109,21 @@ public class RouteConfig
     
     
     /**
+     * setException方法的别名，添加执行异常后的路由
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-24
+     * @version     v1.0
+     *
+     * @param i_Execute  执行对象。节点或判定条件
+     */
+    public synchronized void setError(IExecute i_Execute)
+    {
+        this.setException(i_Execute);
+    }
+    
+    
+    /**
      * 添加执行异常后的路由
      * 
      * @author      ZhengWei(HY)
