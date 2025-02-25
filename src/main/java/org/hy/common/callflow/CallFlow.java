@@ -275,7 +275,7 @@ public class CallFlow
         // 事件：执行前
         if ( i_Event != null && !i_Event.before(i_ExecObject ,io_Context) )
         {
-            return (new ExecuteResult(i_ExecObject.getTreeID() ,i_ExecObject.getXJavaID() ,i_Previous)).setCancel();
+            return (new ExecuteResult(i_ExecObject.getTreeID() ,i_ExecObject.getXJavaID() ,"" ,i_Previous)).setCancel();
         }
         
         ExecuteResult v_Result = i_ExecObject.execute(io_Context);

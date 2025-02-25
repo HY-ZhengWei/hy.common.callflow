@@ -428,7 +428,7 @@ public class ConditionItem implements IfElse ,XJavaID
             
             try
             {
-                v_ValueA = ValueHelp.getValue(this.valueXIDA ,String.class ,null ,i_Context);
+                v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.valueClass ,null ,i_Context);
             }
             catch (Exception exce)
             {
@@ -438,7 +438,7 @@ public class ConditionItem implements IfElse ,XJavaID
             
             try
             {
-                v_ValueB = ValueHelp.getValue(this.valueXIDB ,String.class ,null ,i_Context);
+                v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.valueClass ,null ,i_Context);
             }
             catch (Exception exce)
             {

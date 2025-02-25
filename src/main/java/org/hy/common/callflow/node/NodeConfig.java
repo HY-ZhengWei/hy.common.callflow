@@ -103,7 +103,7 @@ public class NodeConfig extends ExecuteElement
      */
     public ExecuteResult execute(Map<String ,Object> io_Context)
     {
-        ExecuteResult v_Result = new ExecuteResult(this.getTreeID() ,this.xid);
+        ExecuteResult v_Result = new ExecuteResult(this.getTreeID() ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
         if ( Help.isNull(this.callXID) )
@@ -162,7 +162,15 @@ public class NodeConfig extends ExecuteElement
         try
         {
             long   v_BeginTime = this.request();
-            Object v_ExceRet   = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+            Object v_ExceRet   = Void.TYPE;
+            if ( Void.TYPE.equals(this.callMethodObject.getReturnType()) )
+            {
+                this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+            }
+            else
+            {
+                v_ExceRet = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+            }
             
             v_Result.setResult(v_ExceRet);
             this.success(Date.getTimeNano() - v_BeginTime);

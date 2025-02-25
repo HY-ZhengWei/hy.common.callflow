@@ -80,7 +80,7 @@ public class Condition extends ExecuteElement implements IfElse
      */
     public ExecuteResult execute(Map<String ,Object> io_Context)
     {
-        ExecuteResult v_Result = new ExecuteResult(this.getTreeID() ,this.xid);
+        ExecuteResult v_Result = new ExecuteResult(this.getTreeID() ,this.xid ,this.toString(io_Context));
         
         try
         {

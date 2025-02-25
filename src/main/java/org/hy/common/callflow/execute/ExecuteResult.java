@@ -32,6 +32,9 @@ public class ExecuteResult
     
     /** 执行对象的全局惟一标识ID */
     private String              executeXID;
+    
+    /** 执行逻辑的表达式 */
+    private String              executeLogic;
                                 
     /** 执行状态 */             
     private ExecuteStatus       status;
@@ -61,22 +64,23 @@ public class ExecuteResult
     
     public ExecuteResult()
     {
-        this("" ,null);
+        this("" ,"" ,"");
     }
     
     
-    public ExecuteResult(String i_ExecuteTreeID ,String i_ExecuteXID)
+    public ExecuteResult(String i_ExecuteTreeID ,String i_ExecuteXID ,String i_ExecuteLogic)
     {
-        this(i_ExecuteTreeID ,i_ExecuteXID ,null);
+        this(i_ExecuteTreeID ,i_ExecuteXID ,i_ExecuteLogic ,null);
     }
     
     
-    public ExecuteResult(String i_ExecuteTreeID ,String i_ExecuteXID ,ExecuteResult i_Previous)
+    public ExecuteResult(String i_ExecuteTreeID ,String i_ExecuteXID ,String i_ExecuteLogic ,ExecuteResult i_Previous)
     {
         this.beginTime     = Date.getTimeNano();
         this.success       = false;
         this.executeTreeID = i_ExecuteTreeID;
         this.executeXID    = i_ExecuteXID;
+        this.executeLogic  = i_ExecuteLogic;
         this.status        = ExecuteStatus.Started;
         this.previous      = i_Previous;
     }
@@ -288,35 +292,20 @@ public class ExecuteResult
 
     
     /**
-     * 设置：执行树ID
-     * 
-     * @param i_ExecuteTreeID 执行序号。下标从1开始
-     */
-    public ExecuteResult setExecuteTreeID(String i_ExecuteTreeID)
-    {
-        this.executeTreeID = i_ExecuteTreeID;
-        return this;
-    }
-
-    
-    /**
      * 获取：执行对象的全局惟一标识ID
      */
     public String getExecuteXID()
     {
         return executeXID;
     }
-
+    
     
     /**
-     * 设置：执行对象的全局惟一标识ID
-     * 
-     * @param i_ExecuteXID 执行对象的全局惟一标识ID
+     * 获取：执行逻辑的表达式
      */
-    public ExecuteResult setExecuteXID(String i_ExecuteXID)
+    public String getExecuteLogic()
     {
-        this.executeXID = i_ExecuteXID;
-        return this;
+        return executeLogic;
     }
 
 

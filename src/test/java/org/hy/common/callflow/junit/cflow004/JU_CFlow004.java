@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Date;
+import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -117,7 +118,9 @@ public class JU_CFlow004
                              + Date.toTimeLenNano(v_NodeResult.getEndTime()) 
                              + " "
                              + Date.toTimeLenNano(v_NodeResult.getEndTime() - v_NodeResult.getBeginTime())
-                             + " callXID=" + v_NodeResult.getExecuteXID() + " is " + v_NodeResult.isSuccess());
+                             + " " + v_NodeResult.getExecuteLogic()
+                             + " " + Help.NVL(v_NodeResult.getResult())
+                             + " " + v_NodeResult.isSuccess());
             v_NodeResult = v_NodeResult.getPrevious();
         }
         while ( v_NodeResult != null );
