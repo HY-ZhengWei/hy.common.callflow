@@ -117,6 +117,79 @@ public class CallFlow
     
     
     /**
+     * 用树ID定位某个编排中的元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-25
+     * @version     v1.0
+     *
+     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_TreeID      树ID
+     * @return 
+     */
+    public static IExecute findTreeID(IExecute i_ExecObject ,String i_TreeID)
+    {
+        if ( i_ExecObject == null )
+        {
+            throw new NullPointerException("ExecObject is null.");
+        }
+        if ( Help.isNull(i_TreeID) )
+        {
+            throw new NullPointerException("TreeID is null.");
+        }
+        
+        if ( i_TreeID.equals(i_ExecObject.getTreeID()) )
+        {
+            return i_ExecObject;
+        }
+        
+        List<IExecute> v_Childs  = null;
+        
+        v_Childs = i_ExecObject.getRoute().getSucceeds();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
+                if ( v_Ret != null )
+                {
+                    return v_Ret;
+                }
+            }
+        }
+        
+        v_Childs = i_ExecObject.getRoute().getFaileds();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
+                if ( v_Ret != null )
+                {
+                    return v_Ret;
+                }
+            }
+        }
+        
+        v_Childs = i_ExecObject.getRoute().getExceptions();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
+                if ( v_Ret != null )
+                {
+                    return v_Ret;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    
+    /**
      * 首个节点或条件逻辑的执行
      * 
      * @author      ZhengWei(HY)

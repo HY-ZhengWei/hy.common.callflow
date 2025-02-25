@@ -1,7 +1,12 @@
 package org.hy.common.callflow.junit;
 
 import org.hy.common.Help;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.TreeIDHelp;
+import org.hy.common.callflow.execute.IExecute;
+import org.hy.common.callflow.junit.cflow004.JU_CFlow004;
+import org.hy.common.callflow.node.NodeConfig;
+import org.hy.common.xml.XJava;
 import org.junit.Test;
 
 
@@ -17,6 +22,26 @@ import org.junit.Test;
  */
 public class JU_TreeID
 {
+    
+    @Test
+    public void test_FindTreeID() throws Exception
+    {
+        new JU_CFlow004();
+        
+        NodeConfig v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_001");
+        CallFlow.calcTree(v_FirstNode);
+        IExecute v_Execute = CallFlow.findTreeID(v_FirstNode ,"1-1-2-2");
+        if ( v_Execute != null )
+        {
+            System.out.println(v_Execute.getXJavaID() + " : " + v_Execute.getComment());
+        }
+        else
+        {
+            System.out.println("Not find.");
+        }
+    }
+    
+    
     
     @Test
     public void test_TreeID()
