@@ -10,7 +10,14 @@ import org.junit.Test;
 
 
 
-public class JU_ExportXml
+/**
+ * 测试单元：转为XML文件内容
+ *
+ * @author      ZhengWei(HY)
+ * @createDate  2025-02-24
+ * @version     v1.0
+ */
+public class JU_ToXml
 {
     
     @Test
