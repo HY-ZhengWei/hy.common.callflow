@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF004_006">
+            <comment>第六个环节，大于等于10的走向</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_Less_10</callMehod>
+        </xnode>
+    
+    
+        <xnode id="XNode_CF004_005">
+            <comment>第五个环节，大于等于10的走向</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_Greater_10</callMehod>
+        </xnode>
+        
+        
+        <xcondition id="XCondition_CF004_004">
+            <comment>第四个环节，条件逻辑，变量不等于NULL判定</comment>
+            <logical>AND</logical>
+            <conditionItem>
+                <valueClass>java.lang.Double</valueClass>
+                <valueXIDA>:ObjectRet.doubleValue</valueXIDA>
+                <comparer><![CDATA[>=]]></comparer>
+                <valueXIDB>10</valueXIDB>
+            </conditionItem>
+            <route>
+                <if   ref="XNode_CF004_005" />
+                <else ref="XNode_CF004_006" />
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF004_003">
+            <comment>第三个环节，默认值或空值的走向</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_Default_Null</callMehod>
+        </xnode>
+        
+        
+        <xcondition id="XCondition_CF004_002">
+            <comment>第二个环节，条件逻辑，按第一个环节的执行结果控制编排的走向</comment>
+            <logical>OR</logical>                               <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
+            <condition>
+                <logical>OR</logical>
+                <conditionItem>
+                    <valueXIDA>:ObjectRet.timeValue</valueXIDA> <!-- 面向对象的变量 -->
+                </conditionItem>
+                <conditionItem>
+                    <valueXIDA>:ObjectRet.doubleValue</valueXIDA>
+                </conditionItem>
+            </condition>
+            
+            <condition>
+                <logical>AND</logical>
+                <conditionItem>
+                    <valueClass>org.hy.common.Date</valueClass> <!-- 定义入参类型 -->
+                    <valueXIDA>:ObjectRet.timeValue</valueXIDA> <!-- 面向对象的变量 -->
+                    <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                    <valueXIDB>2025-02-25</valueXIDB>           <!-- 数值常量 -->
+                </conditionItem>
+                <conditionItem>
+                    <valueClass>java.lang.Double</valueClass>
+                    <valueXIDA>:ObjectRet.doubleValue</valueXIDA>
+                    <comparer>==</comparer>
+                    <valueXIDB>3.1415926</valueXIDB>
+                </conditionItem>
+            </condition>
+            
+            <route>
+                <if   ref="XNode_CF004_003" />         <!-- 真时的路由 -->
+                <else ref="XCondition_CF004_004" />    <!-- 假时的路由 -->
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF004_001">
+            <comment>第一个环节，有一个参数，有返回结果</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_First</callMehod>
+            <callParam>
+                <valueClass>org.hy.common.Date</valueClass> <!-- 定义入参01类型 -->
+                <value>:TimeParam</value>                   <!-- 定义入参01变量名称 -->
+                <valueDefault>2025-02-25</valueDefault>     <!-- 定义入参01默认值 -->
+            </callParam>
+            <callParam>
+                <valueClass>java.lang.Double</valueClass>   <!-- 定义入参02类型 -->
+                <value>:DoubleParam</value>                 <!-- 定义入参02变量名称 -->
+            </callParam>
+            <returnID>ObjectRet</returnID>                  <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed ref="XCondition_CF004_002" />
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>

@@ -143,6 +143,8 @@ public class Condition extends ExecuteElement implements IfElse
                     }
                 }
             }
+            
+            return true;
         }
         // 或
         else if ( Logical.Or.equals(this.logical) )
@@ -162,9 +164,11 @@ public class Condition extends ExecuteElement implements IfElse
                     }
                 }
             }
+            
+            return false;
         }
         
-        return true;
+        return false;
     }
     
     

@@ -54,7 +54,7 @@ public class ValueHelp
         {
             String v_ValueID = i_ValueXID.trim().substring(DBSQL.$Placeholder.length());
             String v_YYYZZZ  = null;
-            int    v_Index   = v_ValueID.indexOf("\\" + $Split);
+            int    v_Index   = v_ValueID.indexOf($Split);
             if ( v_Index > 0 )
             {
                 if ( v_Index + 1 < v_ValueID.length() )
@@ -183,6 +183,10 @@ public class ValueHelp
         if ( i_Value == null )
         {
             v_Builder.append("NULL");
+        }
+        else if ( i_ValueClass == null )
+        {
+            v_Builder.append(i_Value);
         }
         else if ( i_ValueClass.equals(String.class) )
         {

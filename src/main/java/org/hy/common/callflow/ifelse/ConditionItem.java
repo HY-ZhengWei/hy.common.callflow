@@ -473,9 +473,9 @@ public class ConditionItem implements IfElse ,XJavaID
         
         if ( this.comparer != null )
         {
-            v_Builder.append(this.valueXIDA == null ? "NULL" : this.valueXIDA);
+            v_Builder.append(this.valueXIDA == null ? "NULL" : ValueHelp.getExpression(this.valueXIDA ,this.valueClass));
             v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
-            v_Builder.append(this.valueXIDA == null ? "NULL" : this.valueXIDB);
+            v_Builder.append(this.valueXIDA == null ? "NULL" : ValueHelp.getExpression(this.valueXIDB ,this.valueClass));
         }
         
         return v_Builder.toString();
