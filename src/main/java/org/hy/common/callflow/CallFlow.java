@@ -239,16 +239,33 @@ public class CallFlow
             v_Context.put($WorkID ,"CFW" + StringHelp.getUUID9n());
         }
         
-        ExecuteResult v_NodeResult = CallFlow.execute(i_ExecObject ,v_Context ,null ,i_Event);
-        v_LastResult.setPrevious(v_NodeResult);
-        
-        if ( v_NodeResult.isSuccess() )
+        // 事件：启动前
+        if ( i_Event != null && !i_Event.start(i_ExecObject ,io_Context) )
         {
-            return v_LastResult.setResult(v_NodeResult.getResult());
+            return (new ExecuteResult(i_ExecObject.getTreeID() ,i_ExecObject.getXJavaID() ,"" ,null)).setCancel();
         }
-        else
+        
+        try
         {
-            return v_LastResult.setException(v_NodeResult.getException());
+            ExecuteResult v_NodeResult = CallFlow.execute(i_ExecObject ,v_Context ,null ,i_Event);
+            v_LastResult.setPrevious(v_NodeResult);
+            
+            if ( v_NodeResult.isSuccess() )
+            {
+                return v_LastResult.setResult(v_NodeResult.getResult());
+            }
+            else
+            {
+                return v_LastResult.setException(v_NodeResult.getException());
+            }
+        }
+        finally
+        {
+            // 事件：完成后
+            if ( i_Event != null )
+            {
+                i_Event.finish(i_ExecObject ,io_Context ,v_LastResult);
+            }
         }
     }
     

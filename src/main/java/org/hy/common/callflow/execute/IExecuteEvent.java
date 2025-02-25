@@ -17,7 +17,37 @@ public interface IExecuteEvent
 {
     
     /**
-     * 执行前
+     * 编排实例启动前：编排整体执行前触发，对于一个编排执行实例，仅只触发一次。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-25
+     * @version     v1.0
+     *
+     * @param i_FirstExec  执行对象（节点或条件逻辑）（编排中的首个执行元素）
+     * @param io_Context   上下文类型的变量信息
+     * @return             是否允许执行，否则中断
+     */
+    public boolean start(IExecute i_FirstExec ,Map<String ,Object> io_Context);
+    
+    
+    
+    /**
+     * 编排实例完成后：编排整体执行后触发（异常时也触发），对于一个编排执行实例，仅只触发一次。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-25
+     * @version     v1.0
+     *
+     * @param i_FirstExec   执行对象（节点或条件逻辑）（编排中的首个执行元素）
+     * @param io_Context    上下文类型的变量信息
+     * @param i_LastResult  最终的执行结果 
+     */
+    public void finish(IExecute i_FirstExec ,Map<String ,Object> io_Context ,ExecuteResult i_LastResult);
+    
+    
+    
+    /**
+     * 执行前：每个编排元素在执行前触发
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-21
@@ -32,7 +62,7 @@ public interface IExecuteEvent
     
     
     /**
-     * 异常时（包括异常、取消和超时三种情况）
+     * 异常时（包括异常、取消和超时三种情况）：每个编排元素在异常时触发
      * 
      * 注：error() 触在 before() 之后执行。
      * 
@@ -50,7 +80,7 @@ public interface IExecuteEvent
     
     
     /**
-     * 执行成功
+     * 执行成功：每个编排元素在执行成功时触发
      * 
      * 注：success() 触在 before() 之后执行。
      * 
@@ -68,7 +98,7 @@ public interface IExecuteEvent
     
     
     /**
-     * 执行后
+     * 执行后：每个编排元素在执行后时触发
      * 
      * 注1：after() 触在 before() 之后执行。
      * 注2：当执行异常时，先触发 error()   方法，在最后再触发 after() 方法。
