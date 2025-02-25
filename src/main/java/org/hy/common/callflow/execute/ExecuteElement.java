@@ -4,6 +4,7 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.TotalNano;
+import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.file.IToXml;
 
 
@@ -22,11 +23,24 @@ import org.hy.common.callflow.file.IToXml;
 public abstract class ExecuteElement extends TotalNano implements IExecute
 {
     
+    public static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);
+    
+    
+    
     /** 主键标识 */
     protected String  id;
     
     /** 全局惟一标识ID */
     protected String  xid;
+    
+    /** 层级树ID */
+    protected String  treeID;
+    
+    /** 树层级 */
+    protected Integer treeLevel;
+    
+    /** 树中同层同父的序号编号 */
+    protected Integer treeNo;
     
     /** 注释。可用于日志的输出等帮助性的信息 */
     protected String  comment;
@@ -204,6 +218,76 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     public void setId(String i_Id)
     {
         this.id = i_Id;
+    }
+    
+    
+    
+    /**
+     * 获取：层级树ID
+     */
+    public String getTreeID()
+    {
+        return treeID;
+    }
+    
+    
+    
+    /**
+     * 生成本次树ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-24
+     * @version     v1.0
+     *
+     * @param i_SuperTreeID  上级树ID
+     * @param i_IndexNo      本节点在上级树中的排列序号
+     */
+    public void setTreeID(String i_SuperTreeID ,int i_IndexNo)
+    {
+        this.setTreeID($TreeID.getTreeID(i_SuperTreeID ,i_IndexNo));
+    }
+
+
+    
+    /**
+     * 设置：层级树ID
+     * 
+     * @param i_TreeID 层级树ID
+     */
+    public void setTreeID(String i_TreeID)
+    {
+        if ( Help.isNull(i_TreeID) )
+        {
+            this.treeID    = null;
+            this.treeLevel = null;
+            this.treeNo    = null;
+        }
+        else
+        {
+            this.treeLevel = $TreeID.getLevel(  i_TreeID);
+            this.treeNo    = $TreeID.getIndexNo(i_TreeID);
+            this.treeID    = i_TreeID;
+        }
+    }
+
+
+    
+    /**
+     * 获取：树层级
+     */
+    public Integer getTreeLevel()
+    {
+        return treeLevel;
+    }
+
+
+    
+    /**
+     * 获取：树中同层同父的序号编号
+     */
+    public Integer getTreeNo()
+    {
+        return treeNo;
     }
 
 
@@ -714,6 +798,10 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         if ( !Help.isNull(this.id) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("id" ,this.id));
+        }
+        if ( !Help.isNull(this.treeID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("treeID" ,this.treeID));
         }
         if ( !Help.isNull(this.comment) )
         {

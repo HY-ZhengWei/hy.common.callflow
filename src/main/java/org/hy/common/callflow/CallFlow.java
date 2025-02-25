@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.execute.IExecuteEvent;
@@ -27,6 +28,91 @@ public class CallFlow
     
     /** 编排实例的变量ID名称 */
     public static final String $WorkID = "CallFlowWorkID";
+    
+    
+    
+    /**
+     * 计算树结构。包括树层级、同级同父序列编号、树ID。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-25
+     * @version     v1.0
+     *
+     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     */
+    public static void calcTree(IExecute io_ExecObject)
+    {
+        if ( io_ExecObject == null )
+        {
+            throw new NullPointerException("ExecObject is null.");
+        }
+        
+        io_ExecObject.setTreeID(null ,ExecuteElement.$TreeID.getMinIndexNo());
+        calcTreeToChilds(io_ExecObject);
+    }
+    
+    
+    
+    /**
+     * （递归）计算树结构。包括树层级、同级同父序列编号、树ID。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-25
+     * @version     v1.0
+     *
+     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_SuperTreeID  上级树ID
+     * @param i_IndexNo      本节点在上级树中的排列序号
+     */
+    private static void calcTree(IExecute io_ExecObject ,String i_SuperTreeID ,int i_IndexNo)
+    {
+        io_ExecObject.setTreeID(i_SuperTreeID ,i_IndexNo);
+        calcTreeToChilds(io_ExecObject);
+    }
+    
+    
+    
+    /**
+     * （递归）计算树结构。包括树层级、同级同父序列编号、树ID。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-25
+     * @version     v1.0
+     *
+     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     */
+    private static void calcTreeToChilds(IExecute io_ExecObject)
+    {
+        int            v_IndexNo = ExecuteElement.$TreeID.getMinIndexNo();
+        List<IExecute> v_Childs  = null;
+        
+        v_Childs = io_ExecObject.getRoute().getSucceeds();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                calcTree(v_Child ,io_ExecObject.getTreeID() ,v_IndexNo++);
+            }
+        }
+        
+        v_Childs = io_ExecObject.getRoute().getFaileds();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                calcTree(v_Child ,io_ExecObject.getTreeID() ,v_IndexNo++);
+            }
+        }
+        
+        v_Childs = io_ExecObject.getRoute().getExceptions();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                calcTree(v_Child ,io_ExecObject.getTreeID() ,v_IndexNo++);
+            }
+        }
+    }
     
     
     
