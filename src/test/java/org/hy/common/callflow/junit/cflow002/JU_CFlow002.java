@@ -66,6 +66,8 @@ public class JU_CFlow002
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF002_001");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
+        CallFlow.calcTree(v_FirstNode);
+        
         // 传值 9 或 传值 -1 或 不传值
         v_Context.put("NumParam" ,9);
         
@@ -84,7 +86,7 @@ public class JU_CFlow002
         ExecuteResult v_NodeResult = v_Result;
         do
         {
-            System.out.println(StringHelp.lpad(v_NodeResult.getIndexNo() ,3 ," ") 
+            System.out.println(StringHelp.rpad(v_NodeResult.getExecuteTreeID() ,9 ," ") 
                              + " " 
                              + Date.toTimeLenNano(v_NodeResult.getBeginTime()) 
                              + " ~ "

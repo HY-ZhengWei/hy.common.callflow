@@ -27,8 +27,8 @@ public class ExecuteResult
     
     
     
-    /** 执行序号。下标从1开始 */
-    private Integer             indexNo;
+    /** 执行树ID */
+    private String              executeTreeID;
     
     /** 执行对象的全局惟一标识ID */
     private String              executeXID;
@@ -61,24 +61,24 @@ public class ExecuteResult
     
     public ExecuteResult()
     {
-        this(0 ,null);
+        this("" ,null);
     }
     
     
-    public ExecuteResult(Integer i_IndexNo ,String i_ExecuteXID)
+    public ExecuteResult(String i_ExecuteTreeID ,String i_ExecuteXID)
     {
-        this(i_IndexNo ,i_ExecuteXID ,null);
+        this(i_ExecuteTreeID ,i_ExecuteXID ,null);
     }
     
     
-    public ExecuteResult(Integer i_IndexNo ,String i_ExecuteXID ,ExecuteResult i_Previous)
+    public ExecuteResult(String i_ExecuteTreeID ,String i_ExecuteXID ,ExecuteResult i_Previous)
     {
-        this.beginTime  = Date.getTimeNano();
-        this.success    = false;
-        this.indexNo    = i_IndexNo;
-        this.executeXID = i_ExecuteXID;
-        this.status     = ExecuteStatus.Started;
-        this.previous   = i_Previous;
+        this.beginTime     = Date.getTimeNano();
+        this.success       = false;
+        this.executeTreeID = i_ExecuteTreeID;
+        this.executeXID    = i_ExecuteXID;
+        this.status        = ExecuteStatus.Started;
+        this.previous      = i_Previous;
     }
     
     
@@ -279,22 +279,22 @@ public class ExecuteResult
 
 
     /**
-     * 获取：执行序号。下标从1开始
+     * 获取：执行树ID
      */
-    public Integer getIndexNo()
+    public String getExecuteTreeID()
     {
-        return indexNo;
+        return executeTreeID;
     }
 
     
     /**
-     * 设置：执行序号。下标从1开始
+     * 设置：执行树ID
      * 
-     * @param i_IndexNo 执行序号。下标从1开始
+     * @param i_ExecuteTreeID 执行序号。下标从1开始
      */
-    public ExecuteResult setIndexNo(Integer i_IndexNo)
+    public ExecuteResult setExecuteTreeID(String i_ExecuteTreeID)
     {
-        this.indexNo = i_IndexNo;
+        this.executeTreeID = i_ExecuteTreeID;
         return this;
     }
 

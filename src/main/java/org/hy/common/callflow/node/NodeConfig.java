@@ -101,9 +101,9 @@ public class NodeConfig extends ExecuteElement
      * @param io_Context  上下文类型的变量信息
      * @return
      */
-    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Context)
+    public ExecuteResult execute(Map<String ,Object> io_Context)
     {
-        ExecuteResult v_Result = new ExecuteResult(i_IndexNo ,this.xid);
+        ExecuteResult v_Result = new ExecuteResult(this.getTreeID() ,this.xid);
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
         if ( Help.isNull(this.callXID) )

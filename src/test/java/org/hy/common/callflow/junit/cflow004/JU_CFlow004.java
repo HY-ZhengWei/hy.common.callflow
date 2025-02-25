@@ -93,6 +93,8 @@ public class JU_CFlow004
         // 启动编排
         NodeConfig v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_001");
         
+        CallFlow.calcTree(v_FirstNode);
+        
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,i_Context);
         if ( v_Result.isSuccess() )
         {
@@ -108,7 +110,7 @@ public class JU_CFlow004
         ExecuteResult v_NodeResult = v_Result;
         do
         {
-            System.out.println(StringHelp.lpad(v_NodeResult.getIndexNo() ,3 ," ") 
+            System.out.println(StringHelp.rpad(v_NodeResult.getExecuteTreeID() ,9 ," ") 
                              + " " 
                              + Date.toTimeLenNano(v_NodeResult.getBeginTime()) 
                              + " ~ "

@@ -23,12 +23,11 @@ public interface IExecuteEvent
      * @createDate  2025-02-21
      * @version     v1.0
      *
-     * @param i_IndexNo     本方法要执行的执行序号。下标从1开始
      * @param i_ExecObject  执行对象（节点或条件逻辑）
      * @param io_Context    上下文类型的变量信息
      * @return              是否允许执行，否则中断
      */
-    public boolean before(int i_IndexNo ,IExecute i_ExecObject ,Map<String ,Object> io_Context);
+    public boolean before(IExecute i_ExecObject ,Map<String ,Object> io_Context);
     
     
     
@@ -41,13 +40,12 @@ public interface IExecuteEvent
      * @createDate  2025-02-21
      * @version     v1.0
      *
-     * @param i_IndexNo     本方法要执行的执行序号。下标从1开始
      * @param i_ExecObject  执行对象（节点或条件逻辑）
      * @param io_Context    上下文类型的变量信息
      * @param i_Result      执行结果 
      * @return              是否允许后续流程的执行，否则中断
      */
-    public boolean error(int i_IndexNo ,IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
+    public boolean error(IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
     
     
     
@@ -60,13 +58,12 @@ public interface IExecuteEvent
      * @createDate  2025-02-21
      * @version     v1.0
      *
-     * @param i_IndexNo     本方法要执行的执行序号。下标从1开始
      * @param i_ExecObject  执行对象（节点或条件逻辑）
      * @param i_Context     上下文类型的变量信息
      * @param i_Result      执行结果 
      * @return              是否允许后续流程的执行，否则中断
      */
-    public boolean success(int i_IndexNo ,IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
+    public boolean success(IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
     
     
     
@@ -81,12 +78,11 @@ public interface IExecuteEvent
      * @createDate  2025-02-21
      * @version     v1.0
      *
-     * @param i_IndexNo     本方法要执行的执行序号。下标从1开始
      * @param i_ExecObject  执行对象（节点或条件逻辑）
      * @param io_Context    上下文类型的变量信息
      * @param i_Result      执行结果 
      * @return              是否允许后续流程的执行，否则中断
      */
-    public boolean after(int i_IndexNo ,IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
+    public boolean after(IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
     
 }

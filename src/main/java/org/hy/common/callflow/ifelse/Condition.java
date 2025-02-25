@@ -75,13 +75,12 @@ public class Condition extends ExecuteElement implements IfElse
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_IndexNo   本方法要执行的执行序号。下标从1开始
      * @param io_Context  上下文类型的变量信息
      * @return
      */
-    public ExecuteResult execute(int i_IndexNo ,Map<String ,Object> io_Context)
+    public ExecuteResult execute(Map<String ,Object> io_Context)
     {
-        ExecuteResult v_Result = new ExecuteResult(i_IndexNo ,this.xid);
+        ExecuteResult v_Result = new ExecuteResult(this.getTreeID() ,this.xid);
         
         try
         {
