@@ -14,13 +14,13 @@ import org.junit.Test;
 
 
 /**
- * 测试单元：转为XML文件内容
+ * 测试单元：导出
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-24
  * @version     v1.0
  */
-public class JU_ToXml
+public class JU_Export
 {
     
     @Test
@@ -45,6 +45,18 @@ public class JU_ToXml
         CallFlow.calcTree(v_Node);
         
         System.out.println(ExportXml.export(v_Node));
+    }
+    
+    
+    
+    @Test
+    public void test_SaveXml() throws Exception
+    {
+        new JU_CFlow004();
+        NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF004_001");
+        String v_SaveName = CallFlow.save(v_Node);
+        
+        System.out.println(v_SaveName);
     }
     
 }

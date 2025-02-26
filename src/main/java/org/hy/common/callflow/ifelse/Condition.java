@@ -21,6 +21,12 @@ import org.hy.common.callflow.route.RouteConfig;
 
 /**
  * 条件逻辑
+ * 
+ * 注：不建议条件逻辑共用，即使两个编排调用相同的条件逻辑也建议配置两个条件逻辑，使条件逻辑唯一隶属于一个编排中。
+ *    原因1是考虑到后期升级维护编排，在共享条件逻辑下，无法做到升级时百分百的正确。
+ *    原因2是在共享条件逻辑时，统计方面也无法独立区分出来。
+ *    
+ *    如果要共享，建议采用子编排的方式共享。
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-12
@@ -372,14 +378,16 @@ public class Condition extends ExecuteElement implements IfElse
         StringBuilder v_Xml    = new StringBuilder();
         String        v_Level1 = "    ";
         String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = "xcondition";
+        String        v_XName  = null;
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
+            v_XName = "xcondition";
             v_Xml.append("\n").append(v_LevelN).append(IToXml.toBeginID(v_XName ,this.getXJavaID()));
         }
         else
         {
+            v_XName = "condition";
             v_Xml.append("\n").append(v_LevelN).append(IToXml.toBegin(v_XName));
         }
         

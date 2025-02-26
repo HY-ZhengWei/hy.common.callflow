@@ -1,5 +1,6 @@
 package org.hy.common.callflow;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.execute.IExecuteEvent;
+import org.hy.common.callflow.file.ExportXml;
 import org.hy.common.callflow.ifelse.Condition;
 
 
@@ -25,6 +27,9 @@ import org.hy.common.callflow.ifelse.Condition;
  */
 public class CallFlow
 {
+    
+    /** 编排XML配置文件的保存路径 */
+    public static       String $SavePath           = Help.getSysTempPath();
     
     /** 变量ID名称：编排执行实例ID */
     public static final String $WorkID             = "CallFlowWorkID";
@@ -430,6 +435,7 @@ public class CallFlow
     
     
     /**
+     * getFirstResult()方法的别名。
      * 定位某个编排实例执行结果中的首个结果元素
      * 
      * @author      ZhengWei(HY)
@@ -437,7 +443,24 @@ public class CallFlow
      * @version     v1.0
      *
      * @param i_ExecResult  执行结果
-     * @return 
+     * @return              返回结果一定是入参关系中最顶级的首个。但不一定是TreeLevel和TreeNo都是顶级参数。
+     */
+    public static ExecuteResult findFirst(ExecuteResult i_ExecResult)
+    {
+        return getFirstResult(i_ExecResult);
+    }
+    
+    
+    
+    /**
+     * 定位某个编排实例执行结果中的首个结果元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param i_ExecResult  执行结果
+     * @return              返回结果一定是入参关系中最顶级的首个。但不一定是TreeLevel和TreeNo都是顶级参数。
      */
     public static ExecuteResult getFirstResult(ExecuteResult i_ExecResult)
     {
@@ -465,6 +488,69 @@ public class CallFlow
         {
             return getFirstResult(v_Previous);
         }
+    }
+    
+    
+    
+    /**
+     * 保存编排为文件
+     * 
+     * 注：同一天保存多次，如果编排配置没有发生改变时，只生成一份保存文件。
+     * 注：没有XID时会自动生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_SavePath     保存目录
+     * @return               返回保存文件的全路径
+     * @throws IOException 
+     */
+    public static String save(IExecute io_ExecObject) throws IOException
+    {
+        return ExportXml.save(io_ExecObject ,$SavePath);
+    }
+    
+    
+    
+    /**
+     * 保存编排为文件
+     * 
+     * 注：同一天保存多次，如果编排配置没有发生改变时，只生成一份保存文件。
+     * 注：没有XID时会自动生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_SavePath     保存目录
+     * @return               返回保存文件的全路径
+     * @throws IOException 
+     */
+    public static String save(IExecute io_ExecObject ,String i_SavePath) throws IOException
+    {
+        return ExportXml.save(io_ExecObject ,i_SavePath);
+    }
+    
+    
+    
+    /**
+     * 导出为XML格式
+     * 
+     * 注：当执行对象没有XID时，会自动生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @return
+     */
+    public static String exportXml(IExecute i_ExecObject)
+    {
+        return ExportXml.export(i_ExecObject);
     }
     
     
