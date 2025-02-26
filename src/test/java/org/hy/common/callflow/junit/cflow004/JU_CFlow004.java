@@ -23,7 +23,7 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎003：组合条件逻辑，方法返回结果为对象
+ * 测试单元：编排引擎004：组合条件逻辑，方法返回结果为对象
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-25
@@ -92,11 +92,8 @@ public class JU_CFlow004
         XJava.putObject("XProgram" ,new Program());
         
         // 启动编排
-        NodeConfig v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_001");
-        
-        CallFlow.calcTree(v_FirstNode);
-        
-        ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,i_Context);
+        NodeConfig    v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_001");
+        ExecuteResult v_Result    = CallFlow.execute(v_FirstNode ,i_Context);
         if ( v_Result.isSuccess() )
         {
             System.out.println("Success");
@@ -112,6 +109,8 @@ public class JU_CFlow004
         do
         {
             System.out.println(StringHelp.rpad(v_NodeResult.getExecuteTreeID() ,9 ," ") 
+                             + " " 
+                             + StringHelp.rpad(v_NodeResult.getTreeID() ,9 ," ") 
                              + " " 
                              + Date.toTimeLenNano(v_NodeResult.getBeginTime()) 
                              + " ~ "

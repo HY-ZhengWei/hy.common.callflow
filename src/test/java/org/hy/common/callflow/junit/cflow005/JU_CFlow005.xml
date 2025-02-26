@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF005_1_2">
+            <comment>1.2节点</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_1_2</callMehod>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF005_1_1_2">
+            <comment>1.1.2节点</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_1_1_2</callMehod>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF005_1_1_1">
+            <comment>1.1.1节点</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_1_1_1</callMehod>
+        </xnode>
+    
+    
+        <xnode id="XNode_CF005_1_1">
+            <comment>1.1节点</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_1_1</callMehod>
+            <route>
+                <succeed ref="XNode_CF005_1_1_1" />
+                <succeed ref="XNode_CF005_1_1_2" />
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF005_1">
+            <comment>1节点</comment>
+            <callXID>XProgram</callXID>
+            <callMehod>method_1</callMehod>
+            <route>
+                <succeed ref="XNode_CF005_1_1" />
+                <succeed ref="XNode_CF005_1_2" />
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
