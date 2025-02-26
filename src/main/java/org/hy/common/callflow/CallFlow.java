@@ -286,6 +286,79 @@ public class CallFlow
     
     
     /**
+     * 用执行对象的树ID定位某个编排实例执行结果中的结果元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param i_ExecResult     执行结果
+     * @param i_ExecuteTreeID  执行对象的树ID
+     * @return 
+     */
+    public static ExecuteResult findExecuteTreeID(ExecuteResult i_ExecResult ,String i_ExecuteTreeID)
+    {
+        if ( i_ExecResult == null )
+        {
+            throw new NullPointerException("ExecuteResult is null.");
+        }
+        if ( Help.isNull(i_ExecuteTreeID) )
+        {
+            throw new NullPointerException("ExecuteTreeID is null.");
+        }
+        
+        ExecuteResult v_FirstResult = getFirstResult(i_ExecResult);
+        if ( v_FirstResult == null )
+        {
+            return null;
+        }
+        else
+        {
+            return findExecuteTreeID_Inner(v_FirstResult ,i_ExecuteTreeID);
+        }
+    }
+    
+    
+    
+    /**
+     * 用执行对象的树ID定位某个编排实例执行结果中的结果元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param i_ExecResult  执行结果
+     * @param i_TreeID      树ID
+     * @return 
+     */
+    private static ExecuteResult findExecuteTreeID_Inner(ExecuteResult i_ExecResult ,String i_TreeID)
+    {
+        if ( i_TreeID.equals(i_ExecResult.getExecuteTreeID()) )
+        {
+            return i_ExecResult;
+        }
+        
+        List<ExecuteResult> v_Childs = null;
+        
+        v_Childs = i_ExecResult.getNexts();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (ExecuteResult v_Child : v_Childs)
+            {
+                ExecuteResult v_Ret = findExecuteTreeID_Inner(v_Child ,i_TreeID);
+                if ( v_Ret != null )
+                {
+                    return v_Ret;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    
+    /**
      * 用树ID定位某个编排实例执行结果中的结果元素
      * 
      * @author      ZhengWei(HY)
@@ -338,14 +411,12 @@ public class CallFlow
             return i_ExecResult;
         }
         
-        List<ExecuteResult> v_Childs = null;
-        
-        v_Childs = i_ExecResult.getNexts();
+        List<ExecuteResult> v_Childs = i_ExecResult.getNexts();
         if ( !Help.isNull(v_Childs) )
         {
             for (ExecuteResult v_Child : v_Childs)
             {
-                ExecuteResult v_Ret = findTreeID(v_Child ,i_TreeID);
+                ExecuteResult v_Ret = findTreeID_Inner(v_Child ,i_TreeID);
                 if ( v_Ret != null )
                 {
                     return v_Ret;
@@ -377,7 +448,7 @@ public class CallFlow
         
         if ( i_ExecResult.getTreeLevel() == null || i_ExecResult.getTreeNo() == null )
         {
-            return null;
+            throw new NullPointerException("ExecuteResult's TreeLevel or TreeNo is null.");
         }
         else if ( ExecuteResult.$TreeID.getRootLevel()  == i_ExecResult.getTreeLevel() 
                && ExecuteResult.$TreeID.getMinIndexNo() == i_ExecResult.getTreeNo() )
@@ -388,7 +459,7 @@ public class CallFlow
         ExecuteResult v_Previous = i_ExecResult.getPrevious();
         if ( v_Previous == null )
         {
-            return null;
+            return i_ExecResult;
         }
         else
         {
