@@ -4,6 +4,7 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.TotalNano;
+import org.hy.common.callflow.common.ITreeID;
 import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.file.IToXml;
 
@@ -20,7 +21,7 @@ import org.hy.common.callflow.file.IToXml;
  * @createDate  2025-02-24
  * @version     v1.0
  */
-public abstract class ExecuteElement extends TotalNano implements IExecute
+public abstract class ExecuteElement extends TotalNano implements IExecute ,ITreeID
 {
     
     public static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);

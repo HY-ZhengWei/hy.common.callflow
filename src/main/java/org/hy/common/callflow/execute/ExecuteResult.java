@@ -6,6 +6,9 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
+import org.hy.common.Help;
+import org.hy.common.callflow.common.ITreeID;
+import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.xml.log.Logger;
 
@@ -20,14 +23,25 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-15
  * @version     v1.0
  */
-public class ExecuteResult
+public class ExecuteResult implements ITreeID
 {
     
-    private static final Logger $Logger = new Logger(ExecuteResult.class);
+    private static final Logger     $Logger = new Logger(ExecuteResult.class);
+    
+    public  static final TreeIDHelp $TreeID = new TreeIDHelp("." ,1 ,1);
     
     
     
-    /** 执行树ID */
+    /** 结果树ID */
+    private String              treeID;
+    
+    /** 结果树层级 */
+    private Integer             treeLevel;
+    
+    /** 结果树中同层同父的序号编号 */
+    private Integer             treeNo;
+    
+    /** 执行对象的树ID */
     private String              executeTreeID;
     
     /** 执行对象的全局惟一标识ID */
@@ -247,6 +261,19 @@ public class ExecuteResult
         }
         
         this.previous = i_Previous;
+        if ( this.previous == null )
+        {
+            this.setTreeID(null ,$TreeID.getMinIndexNo());
+        }
+        else
+        {
+            int v_IndexNo = 1;
+            if ( this.previous.getNexts() != null )
+            {
+                v_IndexNo = this.previous.getNexts().size() + 1;
+            }
+            this.setTreeID(this.previous.getTreeID() ,v_IndexNo);
+        }
         return this;
     }
     
@@ -280,17 +307,95 @@ public class ExecuteResult
         this.nexts.add(i_Next);
         return this;
     }
+    
+    
+    /**
+     * 获取：层级树ID
+     */
+    public String getTreeID()
+    {
+        return treeID;
+    }
+    
+    
+    /**
+     * 生成本次树ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-25
+     * @version     v1.0
+     *
+     * @param i_SuperTreeID  上级树ID
+     * @param i_IndexNo      本节点在上级树中的排列序号
+     */
+    private ExecuteResult setTreeID(String i_SuperTreeID ,int i_IndexNo)
+    {
+        return this.setTreeID($TreeID.getTreeID(i_SuperTreeID ,i_IndexNo));
+    }
+
+    
+    /**
+     * 设置：层级树ID
+     * 
+     * @param i_TreeID 层级树ID
+     */
+    private ExecuteResult setTreeID(String i_TreeID)
+    {
+        if ( Help.isNull(i_TreeID) )
+        {
+            this.treeID    = null;
+            this.treeLevel = null;
+            this.treeNo    = null;
+        }
+        else
+        {
+            this.treeLevel = $TreeID.getLevel(  i_TreeID);
+            this.treeNo    = $TreeID.getIndexNo(i_TreeID);
+            this.treeID    = i_TreeID;
+        }
+        return this;
+    }
+
+    
+    /**
+     * 获取：树层级
+     */
+    public Integer getTreeLevel()
+    {
+        return treeLevel;
+    }
+
+    
+    /**
+     * 获取：树中同层同父的序号编号
+     */
+    public Integer getTreeNo()
+    {
+        return treeNo;
+    }
 
 
     /**
-     * 获取：执行树ID
+     * 获取：执行对象的树ID
      */
     public String getExecuteTreeID()
     {
         return executeTreeID;
     }
-
     
+    
+    /**
+     * 设置：执行对象的树ID
+     * 
+     * @param i_ExecuteTreeID 执行对象的树ID
+     */
+    public ExecuteResult setExecuteTreeID(String i_ExecuteTreeID)
+    {
+        this.executeTreeID = i_ExecuteTreeID;
+        return this;
+    }
+
+
     /**
      * 获取：执行对象的全局惟一标识ID
      */
@@ -301,11 +406,35 @@ public class ExecuteResult
     
     
     /**
+     * 设置：执行对象的全局惟一标识ID
+     * 
+     * @param i_ExecuteXID 执行对象的全局惟一标识ID
+     */
+    public ExecuteResult setExecuteXID(String i_ExecuteXID)
+    {
+        this.executeXID = i_ExecuteXID;
+        return this;
+    }
+
+
+    /**
      * 获取：执行逻辑的表达式
      */
     public String getExecuteLogic()
     {
         return executeLogic;
+    }
+
+    
+    /**
+     * 设置：执行逻辑的表达式
+     * 
+     * @param i_ExecuteLogic 执行逻辑的表达式
+     */
+    public ExecuteResult setExecuteLogic(String i_ExecuteLogic)
+    {
+        this.executeLogic = i_ExecuteLogic;
+        return this;
     }
 
 

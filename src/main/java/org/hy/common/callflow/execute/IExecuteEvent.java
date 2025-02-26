@@ -19,6 +19,9 @@ public interface IExecuteEvent
     /**
      * 编排实例启动前：编排整体执行前触发，对于一个编排执行实例，仅只触发一次。
      * 
+     * 注1：触发前编排执行实例ID已生成。
+     * 注2：触发前编排树ID已生成。
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-25
      * @version     v1.0
