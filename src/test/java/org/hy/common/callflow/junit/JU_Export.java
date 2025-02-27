@@ -42,8 +42,6 @@ public class JU_Export
         new JU_CFlow004();
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF004_001");
         
-        CallFlow.calcTree(v_Node);
-        
         System.out.println(ExportXml.export(v_Node));
     }
     

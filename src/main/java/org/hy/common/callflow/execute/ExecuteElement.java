@@ -1,12 +1,21 @@
 package org.hy.common.callflow.execute;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.KVKLinkMap;
 import org.hy.common.StringHelp;
 import org.hy.common.TotalNano;
-import org.hy.common.callflow.common.ITreeID;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.route.RouteConfig;
 
 
 
@@ -21,7 +30,7 @@ import org.hy.common.callflow.file.IToXml;
  * @createDate  2025-02-24
  * @version     v1.0
  */
-public abstract class ExecuteElement extends TotalNano implements IExecute ,ITreeID
+public abstract class ExecuteElement extends TotalNano implements IExecute
 {
     
     public static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);
@@ -29,88 +38,97 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,ITre
     
     
     /** 主键标识 */
-    protected String  id;
+    protected String                     id;
+                                         
+    /** 全局惟一标识ID */                
+    protected String                     xid;
     
-    /** 全局惟一标识ID */
-    protected String  xid;
+    /** 层级树ID。Map.key为本级树ID，Map.value为上级树ID */
+    protected KVKLinkMap<String ,String> treeIDs;
     
-    /** 层级树ID */
-    protected String  treeID;
+    /** 树层级。Map.key为本级树ID，Map.value为层次 */
+    protected Map<String ,Integer>       treeLevels;
     
-    /** 树层级 */
-    protected Integer treeLevel;
-    
-    /** 树中同层同父的序号编号 */
-    protected Integer treeNo;
+    /** 树中同层同父的序号编号。Map.key为本级树ID，Map.value为序号编号 */
+    protected Map<String ,Integer>       treeNos;
     
     /** 注释。可用于日志的输出等帮助性的信息 */
-    protected String  comment;
-    
-    /** 整体样式名称 */
-    protected String  styleName;
-    
-    /** 位置x坐标值 */
-    protected Double  x;
-    
-    /** 位置y坐标值 */
-    protected Double  y;
-    
-    /** 位置z坐标值 */
-    protected Double  z;
-    
-    /** 图标高度 */
-    protected Double  height;
-    
-    /** 图标宽度 */
-    protected Double  width;
-    
-    /** 图标路径 */
-    protected String  iconURL;
-    
-    /** 透明度 */
-    protected Double  opacity;
-    
-    /** 背景色 */
-    protected String  backgroudColor;
-    
-    /** 边框西样式 */
-    protected String  lineStyle;
-    
-    /** 边框线颜色 */
-    protected String  lineColor;
-    
-    /** 边框线粗细 */
-    protected Double  lineSize;
-    
-    /** 文字颜色 */
-    protected String  fontColor;
-    
-    /** 文字名称 */
-    protected String  fontFamily;
-    
-    /** 文字粗体 */
-    protected String  fontWeight;
-    
-    /** 文字大小 */
-    protected Double  fontSize;
-    
-    /** 文字对齐方式 */
-    protected String  fontAlign;
-    
-    /** 创建人编号 */
-    protected String  createUserID;
-    
-    /** 修改者编号 */
-    protected String  updateUserID;
-    
-    /** 创建时间 */
-    protected Date    createTime;
-    
-    /** 最后修改时间 */
-    protected Date    updateTime;
-    
-    /** 删除标记。1删除；0未删除 */
-    protected Integer isDel;
+    protected String                     comment;
+                                         
+    /** 整体样式名称 */                  
+    protected String                     styleName;
+                                         
+    /** 位置x坐标值 */                   
+    protected Double                     x;
+                                         
+    /** 位置y坐标值 */                   
+    protected Double                     y;
+                                         
+    /** 位置z坐标值 */                   
+    protected Double                     z;
+                                         
+    /** 图标高度 */                      
+    protected Double                     height;
+                                         
+    /** 图标宽度 */                      
+    protected Double                     width;
+                                         
+    /** 图标路径 */                      
+    protected String                     iconURL;
+                                         
+    /** 透明度 */                        
+    protected Double                     opacity;
+                                         
+    /** 背景色 */                        
+    protected String                     backgroudColor;
+                                         
+    /** 边框西样式 */                    
+    protected String                     lineStyle;
+                                         
+    /** 边框线颜色 */                    
+    protected String                     lineColor;
+                                         
+    /** 边框线粗细 */                    
+    protected Double                     lineSize;
+                                         
+    /** 文字颜色 */                      
+    protected String                     fontColor;
+                                         
+    /** 文字名称 */                      
+    protected String                     fontFamily;
+                                         
+    /** 文字粗体 */                      
+    protected String                     fontWeight;
+                                         
+    /** 文字大小 */                      
+    protected Double                     fontSize;
+                                         
+    /** 文字对齐方式 */                  
+    protected String                     fontAlign;
+                                         
+    /** 创建人编号 */                    
+    protected String                     createUserID;
+                                         
+    /** 修改者编号 */                    
+    protected String                     updateUserID;
+                                         
+    /** 创建时间 */                      
+    protected Date                       createTime;
+                                         
+    /** 最后修改时间 */                  
+    protected Date                       updateTime;
+                                         
+    /** 删除标记。1删除；0未删除 */      
+    protected Integer                    isDel;
+                                         
+    /** 为返回值定义的变量ID */          
+    protected String                     returnID;
+                                         
+    /** 执行链：双向链表：前几个 */             
+    protected List<IExecute>             previous;
+                                         
+    /** 执行链：双向链表：其后多个路由 */
+    protected RouteConfig                route;
     
     
     
@@ -127,6 +145,10 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,ITre
     public ExecuteElement(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
+        
+        this.treeIDs    = new KVKLinkMap   <String ,String>();
+        this.treeLevels = new LinkedHashMap<String ,Integer>();
+        this.treeNos    = new LinkedHashMap<String ,Integer>();
     }
     
     
@@ -224,16 +246,6 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,ITre
     
     
     /**
-     * 获取：层级树ID
-     */
-    public String getTreeID()
-    {
-        return treeID;
-    }
-    
-    
-    
-    /**
      * 生成本次树ID
      * 
      * @author      ZhengWei(HY)
@@ -242,16 +254,20 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,ITre
      *
      * @param i_SuperTreeID  上级树ID
      * @param i_IndexNo      本节点在上级树中的排列序号
+     * @return               返回生成的树ID
      */
-    public void setTreeID(String i_SuperTreeID ,int i_IndexNo)
+    public String setTreeID(String i_SuperTreeID ,int i_IndexNo)
     {
-        this.setTreeID($TreeID.getTreeID(i_SuperTreeID ,i_IndexNo));
+        String v_TreeID = $TreeID.getTreeID(i_SuperTreeID ,i_IndexNo);
+        this.setTreeID(v_TreeID);
+        return v_TreeID;
     }
 
 
     
     /**
-     * 设置：层级树ID
+     * 设置：层级树ID。
+     * 注：当入参为空或NULL时将做清理动作
      * 
      * @param i_TreeID 层级树ID
      */
@@ -259,36 +275,132 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,ITre
     {
         if ( Help.isNull(i_TreeID) )
         {
-            this.treeID    = null;
-            this.treeLevel = null;
-            this.treeNo    = null;
+            this.treeIDs   .clear();
+            this.treeLevels.clear();
+            this.treeNos   .clear();
         }
         else
         {
-            this.treeLevel = $TreeID.getLevel(  i_TreeID);
-            this.treeNo    = $TreeID.getIndexNo(i_TreeID);
-            this.treeID    = i_TreeID;
+            String v_SuperTreeID = $TreeID.getSuperTreeID(i_TreeID);
+            if ( this.treeIDs.getReverse(v_SuperTreeID) != null )
+            {
+                throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s SuperTreeID[" + v_SuperTreeID + "] is exists for TreeID[" + i_TreeID + "].");
+            }
+            
+            this.treeIDs   .put(i_TreeID ,v_SuperTreeID);
+            this.treeLevels.put(i_TreeID ,$TreeID.getLevel(  i_TreeID));
+            this.treeNos   .put(i_TreeID ,$TreeID.getIndexNo(i_TreeID));
         }
+    }
+    
+    
+    
+    /**
+     * 获取：层级树ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-27
+     * @version     v1.0
+     *
+     * @return  树ID顺序按先后添加次序返回
+     */
+    public Collection<String> getTreeIDs()
+    {
+        return this.treeIDs.keySet();
+    }
+    
+    
+    
+    /**
+     * 获取：层级树ID
+     * 
+     * @param i_SuperTreeID  上级树ID
+     */
+    public String getTreeID(String i_SuperTreeID)
+    {
+        return Help.NVL(this.treeIDs.getReverse(Help.NVL(i_SuperTreeID)));
     }
 
 
     
     /**
      * 获取：树层级
+     * 
+     * @param i_TreeID  本级树ID
      */
-    public Integer getTreeLevel()
+    public Integer getTreeLevel(String i_TreeID)
     {
-        return treeLevel;
+        return this.treeLevels.get(Help.NVL(i_TreeID));
     }
 
 
     
     /**
      * 获取：树中同层同父的序号编号
+     * 
+     * @param i_TreeID  本级树ID
      */
-    public Integer getTreeNo()
+    public Integer getTreeNo(String i_TreeID)
     {
-        return treeNo;
+        return this.treeNos.get(Help.NVL(i_TreeID));
+    }
+    
+    
+    
+    /**
+     * 获取最大的树ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-27
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String getMaxTreeID()
+    {
+        if ( this.treeIDs.size() <= 0 )
+        {
+            return "";
+        }
+        else if ( this.treeIDs.size() == 1 )
+        {
+            return this.treeIDs.keySet().iterator().next();
+        }
+        else
+        {
+            String [] v_TreeIDs = this.treeIDs.keySet().toArray(new String[] {});
+            Arrays.sort(v_TreeIDs ,$TreeID);
+            return v_TreeIDs[v_TreeIDs.length - 1];
+        }
+    }
+    
+    
+    
+    /**
+     * 获取最小的树ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-27
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String getMinTreeID()
+    {
+        if ( this.treeIDs.size() <= 0 )
+        {
+            return "";
+        }
+        else if ( this.treeIDs.size() == 1 )
+        {
+            return this.treeIDs.keySet().iterator().next();
+        }
+        else
+        {
+            String [] v_TreeIDs = this.treeIDs.keySet().toArray(new String[] {});
+            Arrays.sort(v_TreeIDs ,$TreeID);
+            return v_TreeIDs[0];
+        }
     }
 
 
@@ -777,6 +889,80 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,ITre
     
     
     /**
+     * 获取：为返回值定义的变量ID
+     */
+    public String getReturnID()
+    {
+        return returnID;
+    }
+
+    
+    
+    /**
+     * 设置：为返回值定义的变量ID
+     * 
+     * @param i_ReturnID 为返回值定义的变量ID
+     */
+    public void setReturnID(String i_ReturnID)
+    {
+        if ( CallFlow.$WorkID.equals(i_ReturnID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_ReturnID + "] equals " + CallFlow.$WorkID);
+        }
+        this.returnID = i_ReturnID;
+    }
+    
+    
+    
+    /**
+     * 获取：执行链：双向链表：前几个
+     */
+    public List<IExecute> getPrevious()
+    {
+        return previous;
+    }
+
+
+    
+    /**
+     * 设置：执行链：双向链表：前一个
+     * 
+     * @param i_Previous 执行链：双向链表：前一个
+     */
+    public synchronized void setPrevious(ExecuteElement i_Previous)
+    {
+        if ( Help.isNull(this.previous) )
+        {
+            this.previous = new ArrayList<IExecute>();
+        }
+        this.previous.add(i_Previous);
+    }
+
+
+    
+    /**
+     * 获取：执行链：双向链表：其后多个路由
+     */
+    public RouteConfig getRoute()
+    {
+        return route;
+    }
+
+
+    
+    /**
+     * 设置：执行链：双向链表：其后多个路由
+     * 
+     * @param i_Route 执行链：双向链表：其后多个路由
+     */
+    public void setRoute(RouteConfig i_Route)
+    {
+        this.route = i_Route;
+    }
+
+
+
+    /**
      * 转为Xml格式的内容
      * 
      * @author      ZhengWei(HY)
@@ -800,9 +986,12 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,ITre
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("id" ,this.id));
         }
-        if ( !Help.isNull(this.treeID) )
+        if ( !Help.isNull(this.treeIDs) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("treeID" ,this.treeID));
+            for (String v_TreeID : this.treeIDs.keySet())
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("treeID" ,v_TreeID));
+            }
         }
         if ( !Help.isNull(this.comment) )
         {

@@ -61,14 +61,8 @@ public class NodeConfig extends ExecuteElement
     /** 执行方法的参数 */
     private List<NodeParam> callParams;
     
-    /** 为返回值定义的变量ID */
-    private String          returnID;
-    
     /** 执行状态定义的变量ID */
     private String          statusID;
-    
-    /** 路由 */
-    private RouteConfig     route;
     
     
     
@@ -103,13 +97,13 @@ public class NodeConfig extends ExecuteElement
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_IndexNo   本方法要执行的执行序号。下标从1开始
-     * @param io_Context  上下文类型的变量信息
+     * @param i_SuperTreeID  父级执行对象的树ID
+     * @param io_Context     上下文类型的变量信息
      * @return
      */
-    public ExecuteResult execute(Map<String ,Object> io_Context)
+    public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
-        ExecuteResult v_Result = new ExecuteResult(this.getTreeID() ,this.xid ,this.toString(io_Context));
+        ExecuteResult v_Result = new ExecuteResult(this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
         if ( Help.isNull(this.callXID) )
@@ -491,30 +485,6 @@ public class NodeConfig extends ExecuteElement
 
     
     /**
-     * 获取：为返回值定义的变量ID
-     */
-    public String getReturnID()
-    {
-        return returnID;
-    }
-
-    
-    /**
-     * 设置：为返回值定义的变量ID
-     * 
-     * @param i_ReturnID 为返回值定义的变量ID
-     */
-    public void setReturnID(String i_ReturnID)
-    {
-        if ( CallFlow.$WorkID.equals(i_ReturnID) )
-        {
-            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_ReturnID + "] equals " + CallFlow.$WorkID);
-        }
-        this.returnID = i_ReturnID;
-    }
-    
-    
-    /**
      * 获取：执行状态定义的变量ID
      */
     public String getStatusID()
@@ -539,41 +509,32 @@ public class NodeConfig extends ExecuteElement
 
 
     /**
-     * 获取：路由
-     */
-    public RouteConfig getRoute()
-    {
-        return route;
-    }
-
-    
-    /**
-     * 设置：路由
-     * 
-     * @param i_Route 路由
-     */
-    public void setRoute(RouteConfig i_Route)
-    {
-        this.route = i_Route;
-    }
-    
-    
-    /**
      * 转为Xml格式的内容
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-24
      * @version     v1.0
      *
-     * @param i_Level  层级。最小下标从0开始。
-     *                   0表示每行前面有0个空格；
-     *                   1表示每行前面有4个空格；
-     *                   2表示每行前面有8个空格；
-     *                  
+     * @param i_Level        层级。最小下标从0开始。
+     *                           0表示每行前面有0个空格；
+     *                           1表示每行前面有4个空格；
+     *                           2表示每行前面有8个空格；
+     * @param i_SuperTreeID  上级树ID
      * @return
      */
-    public String toXml(int i_Level)
+    public String toXml(int i_Level ,String i_SuperTreeID)
     {
+        String v_TreeID = this.getTreeID(i_SuperTreeID);
+        if ( this.getTreeIDs().size() >= 2 )
+        {
+            String v_MinTreeID = this.getMinTreeID();
+            if ( !v_TreeID.equals(v_MinTreeID) )
+            {
+                // 不等于最小的树ID，不生成Xml内容。防止重复生成
+                return "";
+            }
+        }
+        
         StringBuilder v_Xml    = new StringBuilder();
         String        v_Level1 = "    ";
         String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
@@ -602,7 +563,7 @@ public class NodeConfig extends ExecuteElement
         {
             for (NodeParam v_Param : this.callParams)
             {
-                v_Xml.append(v_Param.toXml(i_Level + 1));
+                v_Xml.append(v_Param.toXml(i_Level + 1 ,v_TreeID));
             }
         }
         if ( !Help.isNull(this.returnID) )
@@ -635,7 +596,7 @@ public class NodeConfig extends ExecuteElement
                     }
                     else
                     {
-                        v_Xml.append(v_Item.toXml(i_Level + 1));
+                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
                     }
                 }
             }
@@ -650,7 +611,7 @@ public class NodeConfig extends ExecuteElement
                     }
                     else
                     {
-                        v_Xml.append(v_Item.toXml(i_Level + 1));
+                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
                     }
                 }
             }

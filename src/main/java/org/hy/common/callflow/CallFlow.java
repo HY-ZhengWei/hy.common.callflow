@@ -9,6 +9,7 @@ import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.execute.ExecuteTreeHelp;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.execute.IExecuteEvent;
 import org.hy.common.callflow.file.ExportXml;
@@ -133,159 +134,17 @@ public class CallFlow
     
     
     /**
-     * 计算树结构。包括树层级、同级同父序列编号、树ID。
+     * 集成：执行对象的树ID的相关操作类（注：有向图结构）
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-25
+     * @createDate  2025-02-27
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @return
      */
-    public static void calcTree(IExecute io_ExecObject)
+    public static ExecuteTreeHelp getExecuteTree()
     {
-        if ( io_ExecObject == null )
-        {
-            throw new NullPointerException("ExecObject is null.");
-        }
-        
-        io_ExecObject.setTreeID(null ,ExecuteElement.$TreeID.getMinIndexNo());
-        calcTreeToChilds(io_ExecObject);
-    }
-    
-    
-    
-    /**
-     * （递归）计算树结构。包括树层级、同级同父序列编号、树ID。
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-25
-     * @version     v1.0
-     *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
-     * @param i_SuperTreeID  上级树ID
-     * @param i_IndexNo      本节点在上级树中的排列序号
-     */
-    private static void calcTree(IExecute io_ExecObject ,String i_SuperTreeID ,int i_IndexNo)
-    {
-        io_ExecObject.setTreeID(i_SuperTreeID ,i_IndexNo);
-        calcTreeToChilds(io_ExecObject);
-    }
-    
-    
-    
-    /**
-     * （递归）计算树结构。包括树层级、同级同父序列编号、树ID。
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-25
-     * @version     v1.0
-     *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
-     */
-    private static void calcTreeToChilds(IExecute io_ExecObject)
-    {
-        int            v_IndexNo = ExecuteElement.$TreeID.getMinIndexNo();
-        List<IExecute> v_Childs  = null;
-        
-        v_Childs = io_ExecObject.getRoute().getSucceeds();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                calcTree(v_Child ,io_ExecObject.getTreeID() ,v_IndexNo++);
-            }
-        }
-        
-        v_Childs = io_ExecObject.getRoute().getFaileds();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                calcTree(v_Child ,io_ExecObject.getTreeID() ,v_IndexNo++);
-            }
-        }
-        
-        v_Childs = io_ExecObject.getRoute().getExceptions();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                calcTree(v_Child ,io_ExecObject.getTreeID() ,v_IndexNo++);
-            }
-        }
-    }
-    
-    
-    
-    /**
-     * 用树ID定位某个编排中的元素
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-25
-     * @version     v1.0
-     *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
-     * @param i_TreeID      树ID
-     * @return 
-     */
-    public static IExecute findTreeID(IExecute i_ExecObject ,String i_TreeID)
-    {
-        if ( i_ExecObject == null )
-        {
-            throw new NullPointerException("ExecObject is null.");
-        }
-        if ( Help.isNull(i_TreeID) )
-        {
-            throw new NullPointerException("TreeID is null.");
-        }
-        
-        if ( i_TreeID.equals(i_ExecObject.getTreeID()) )
-        {
-            return i_ExecObject;
-        }
-        
-        List<IExecute> v_Childs  = null;
-        
-        v_Childs = i_ExecObject.getRoute().getSucceeds();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
-                if ( v_Ret != null )
-                {
-                    return v_Ret;
-                }
-            }
-        }
-        
-        v_Childs = i_ExecObject.getRoute().getFaileds();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
-                if ( v_Ret != null )
-                {
-                    return v_Ret;
-                }
-            }
-        }
-        
-        v_Childs = i_ExecObject.getRoute().getExceptions();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
-                if ( v_Ret != null )
-                {
-                    return v_Ret;
-                }
-            }
-        }
-        
-        return null;
+        return ExecuteTreeHelp.getInstance();
     }
     
     
@@ -430,6 +289,59 @@ public class CallFlow
         }
         
         return null;
+    }
+    
+    
+    
+    /**
+     * 定位某个编排实例中的首个元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @return               返回元素一定是入参关系中最顶级的首个。但不一定是TreeLevel和TreeNo都是顶级参数。
+     */
+    public static IExecute findFirst(IExecute i_ExecObject)
+    {
+        if ( i_ExecObject == null )
+        {
+            throw new NullPointerException("ExecObject is null.");
+        }
+        
+        if ( Help.isNull(i_ExecObject.getTreeIDs()) )
+        {
+            throw new NullPointerException("ExecObject's TreeIDs is null.");
+        }
+        else if ( i_ExecObject.getTreeIDs().size() == 1 )
+        {
+            String v_TreeID = i_ExecObject.getTreeIDs().iterator().next();
+            if ( ExecuteElement.$TreeID.getRootLevel()  == i_ExecObject.getTreeLevel(v_TreeID)
+              && ExecuteElement.$TreeID.getMinIndexNo() == i_ExecObject.getTreeNo(   v_TreeID) )
+            {
+                return i_ExecObject;
+            }
+        }
+        
+        List<IExecute> v_PreviousList = i_ExecObject.getPrevious();
+        if ( Help.isNull(v_PreviousList) )
+        {
+            return i_ExecObject;
+        }
+        else
+        {
+            for (IExecute v_Previous : v_PreviousList)
+            {
+                IExecute v_SuperRet = findFirst(v_Previous);
+                if ( v_SuperRet != null )
+                {
+                    return v_SuperRet;
+                }
+            }
+            
+            return null;
+        }
     }
     
     
@@ -608,20 +520,20 @@ public class CallFlow
             v_Context.put($WorkID ,"CFW" + StringHelp.getUUID9n());
         }
         
-        if ( Help.isNull(i_ExecObject.getTreeID()) )
+        if ( Help.isNull(i_ExecObject.getTreeIDs()) )
         {
-            CallFlow.calcTree(i_ExecObject);
+            CallFlow.getExecuteTree().calcTree(i_ExecObject);
         }
         
         // 事件：启动前
         if ( i_Event != null && !i_Event.start(i_ExecObject ,io_Context) )
         {
-            return CallFlow.putError(io_Context ,(new ExecuteResult(i_ExecObject.getTreeID() ,i_ExecObject.getXJavaID() ,"" ,null)).setCancel());
+            return CallFlow.putError(io_Context ,(new ExecuteResult(i_ExecObject.getTreeIDs().iterator().next() ,i_ExecObject.getXJavaID() ,"" ,null)).setCancel());
         }
         
         try
         {
-            ExecuteResult v_NodeResult = CallFlow.execute(i_ExecObject ,v_Context ,null ,i_Event);
+            ExecuteResult v_NodeResult = CallFlow.execute(i_ExecObject ,v_Context ,i_ExecObject.getTreeIDs().iterator().next() ,null ,i_Event);
             v_LastResult.setPrevious(v_NodeResult);
             
             if ( !CallFlow.getExecuteIsError(io_Context) )
@@ -656,31 +568,33 @@ public class CallFlow
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
-     * @param io_Context    上下文类型的变量信息
-     * @param i_Previous    执行链：前一个
-     * @param i_Event       执行监听事件
+     * @param i_ExecObject      执行对象（节点或条件逻辑）
+     * @param io_Context        上下文类型的变量信息
+     * @param i_SuperTreeID     执行链：前一个执行对象的树ID
+     * @param i_PreviousResult  执行链：前一个执行结果
+     * @param i_Event           执行监听事件
      * @return
      */
     private static ExecuteResult execute(IExecute            i_ExecObject 
                                         ,Map<String ,Object> io_Context 
-                                        ,ExecuteResult       i_Previous 
+                                        ,String              i_SuperTreeID
+                                        ,ExecuteResult       i_PreviousResult 
                                         ,IExecuteEvent       i_Event)
     {
         // 事件：执行前
         if ( i_Event != null && !i_Event.before(i_ExecObject ,io_Context) )
         {
-            ExecuteResult v_Result = (new ExecuteResult(i_ExecObject.getTreeID() ,i_ExecObject.getXJavaID() ,"" ,i_Previous)).setCancel();
-            if ( i_Previous == null )
+            ExecuteResult v_Result = (new ExecuteResult(i_ExecObject.getTreeID(i_SuperTreeID) ,i_ExecObject.getXJavaID() ,"" ,i_PreviousResult)).setCancel();
+            if ( i_PreviousResult == null )
             {
                 io_Context.put($FirstExecuteResult ,v_Result);
             }
             return CallFlow.putError(io_Context ,v_Result);
         }
         
-        ExecuteResult v_Result = i_ExecObject.execute(io_Context);
-        v_Result.setPrevious(i_Previous);
-        if ( i_Previous == null )
+        ExecuteResult v_Result = i_ExecObject.execute(i_SuperTreeID ,io_Context);
+        v_Result.setPrevious(i_PreviousResult);
+        if ( i_PreviousResult == null )
         {
             io_Context.put($FirstExecuteResult ,v_Result);
         }
@@ -731,7 +645,7 @@ public class CallFlow
         {
             for (IExecute v_Next : v_Nexts)
             {
-                ExecuteResult v_NextResult = CallFlow.execute(v_Next ,io_Context ,v_Result ,i_Event);
+                ExecuteResult v_NextResult = CallFlow.execute(v_Next ,io_Context ,i_ExecObject.getTreeID(i_SuperTreeID) ,v_Result ,i_Event);
                 v_Result.addNext(v_NextResult);
                 if ( !v_NextResult.isSuccess() )
                 {

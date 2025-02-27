@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org</groupId>
             <artifactId>hy.common.base</artifactId>
-            <version>1.0.192</version>
+            <version>1.0.193</version>
             <scope>provided</scope>
         </dependency>
 

@@ -57,6 +57,13 @@ public class ImportXML
     
     
     
+    public static void upgrade(IExecute i_ExecObject ,String i_Xml)
+    {
+        
+    }
+    
+    
+    
     private ImportXML()
     {
         // Nothing.

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Date;
+import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -66,7 +67,10 @@ public class JU_CFlow001
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_001");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
-        CallFlow.calcTree(v_FirstNode);
+        if ( Help.isNull(v_FirstNode.getTreeIDs()) )
+        {
+            CallFlow.getExecuteTree().calcTree(v_FirstNode);
+        }
         
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
         if ( v_Result.isSuccess() )

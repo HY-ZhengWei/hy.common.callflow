@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hy.common.Help;
+import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
 
 
@@ -20,6 +21,8 @@ import org.hy.common.callflow.execute.IExecute;
 public class RouteConfig
 {
     
+    /** 归属者（仅对外开放setter方法，为防止死循环）（内部使用） */
+    private ExecuteElement owner;
     
     /** 执行成功后的路由 */
     private List<IExecute> succeeds;
@@ -29,7 +32,22 @@ public class RouteConfig
     
     /** 执行异常后的路由（可选） */
     private List<IExecute> exceptions;
-
+    
+    
+    
+    /**
+     * 归属者（仅对外开放setter方法，为防止死循环）（内部使用）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-27
+     * @version     v1.0
+     *
+     * @param i_Owner
+     */
+    public void setOwner(ExecuteElement i_Owner)
+    {
+        this.owner = i_Owner;
+    }
     
     
     /**
@@ -41,7 +59,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setIf(IExecute i_Execute)
+    public synchronized void setIf(ExecuteElement i_Execute)
     {
         this.setSucceed(i_Execute);
     }
@@ -56,7 +74,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setElse(IExecute i_Execute)
+    public synchronized void setElse(ExecuteElement i_Execute)
     {
         this.setFailed(i_Execute);
     }
@@ -71,7 +89,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setSucceed(IExecute i_Execute)
+    public synchronized void setSucceed(ExecuteElement i_Execute)
     {
         synchronized ( this )
         {
@@ -81,6 +99,7 @@ public class RouteConfig
             }
         }
         
+        i_Execute.setPrevious(this.owner);
         this.succeeds.add(i_Execute);
     }
     
@@ -94,7 +113,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setFailed(IExecute i_Execute)
+    public synchronized void setFailed(ExecuteElement i_Execute)
     {
         synchronized ( this )
         {
@@ -104,6 +123,7 @@ public class RouteConfig
             }
         }
         
+        i_Execute.setPrevious(this.owner);
         this.faileds.add(i_Execute);
     }
     
@@ -117,7 +137,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setError(IExecute i_Execute)
+    public synchronized void setError(ExecuteElement i_Execute)
     {
         this.setException(i_Execute);
     }
@@ -132,7 +152,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setException(IExecute i_Execute)
+    public synchronized void setException(ExecuteElement i_Execute)
     {
         synchronized ( this )
         {
@@ -142,6 +162,7 @@ public class RouteConfig
             }
         }
         
+        i_Execute.setPrevious(this.owner);
         this.exceptions.add(i_Execute);
     }
     

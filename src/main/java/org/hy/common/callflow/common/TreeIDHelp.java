@@ -1,5 +1,7 @@
 package org.hy.common.callflow.common;
 
+import java.util.Comparator;
+
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 
@@ -27,7 +29,7 @@ import org.hy.common.StringHelp;
  * @createDate  2025-02-24
  * @version     v1.0
  */
-public class TreeIDHelp
+public class TreeIDHelp implements Comparator<String>
 {
     
     /** 每层树ID的分隔 */
@@ -225,6 +227,37 @@ public class TreeIDHelp
     
     
     
+    /**
+     * 从树ID中解析上级父级的树ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-27
+     * @version     v1.0
+     *
+     * @param i_TreeID  树ID
+     * @return          顶级树ID的父级树ID为空字符串
+     */
+    public String getSuperTreeID(String i_TreeID)
+    {
+        if ( Help.isNull(i_TreeID) )
+        {
+            throw new NullPointerException("TreeID is null.");
+        }
+        
+        String v_TreeID = i_TreeID.trim();
+        int    v_Index  = v_TreeID.lastIndexOf(this.split);
+        if ( v_Index <= 0 )
+        {
+            // 顶级树ID的父级树ID为空字符串
+            return "";
+        }
+        else
+        {
+            return v_TreeID.substring(0 ,v_Index);
+        }
+    }
+    
+    
     
     /**
      * 获取：每层树ID的分隔
@@ -277,6 +310,68 @@ public class TreeIDHelp
     public int getMinIndexNo()
     {
         return minIndexNo;
+    }
+    
+    
+    
+    /**
+     * 比较两个树ID的大小。
+     * 
+     * 算法为：从最小层级逐一层级的序号比较；同级序号越大，比较结果越大；
+     *       同级序号相同时，比较下一层级的序号大小。
+     * 
+     * 比较举例
+     *      1.3 == 1.3
+     *      1.3 <  1.3.2
+     *      1.3 >  1
+     *      1.3 <  1.5
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-27
+     * @version     v1.0
+     *
+     * @param i_ATreeID  A的树ID
+     * @param i_BTreeID  B的树ID
+     * @return
+     */
+    @Override
+    public int compare(String i_ATreeID ,String i_BTreeID)
+    {
+        if ( i_ATreeID == null )
+        {
+            return i_BTreeID == null ? 0 : -1;
+        }
+        else if ( i_BTreeID == null )
+        {
+            return 1;
+        }
+        else if ( i_ATreeID.equals(i_BTreeID) )
+        {
+            return 0;
+        }
+        else
+        {
+            String [] v_ATreeID = StringHelp.split(i_ATreeID ,this.split);
+            String [] v_BTreeID = StringHelp.split(i_BTreeID ,this.split);
+            int       v_Size    = Help.min(v_ATreeID.length ,v_BTreeID.length);
+            
+            for (int x=0; x<v_Size; x++)
+            {
+                Integer v_ANo       = Integer.valueOf(v_ATreeID[x]);
+                Integer v_BNo       = Integer.valueOf(v_BTreeID[x]);
+                int     v_CompareTo = v_ANo.compareTo(v_BNo);
+                if ( v_CompareTo == 0 )
+                {
+                    continue;
+                }
+                else
+                {
+                    return v_CompareTo;
+                }
+            }
+            
+            return Integer.compare(v_ATreeID.length ,v_BTreeID.length);
+        }
     }
     
 }

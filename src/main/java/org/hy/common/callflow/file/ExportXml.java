@@ -8,6 +8,7 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.node.NodeConfig;
@@ -37,8 +38,9 @@ public class ExportXml
     /**
      * 保存编排为文件
      * 
-     * 注：同一天保存多次，如果编排配置没有发生改变时，只生成一份保存文件。
-     * 注：没有XID时会自动生成
+     * 注1：同一天保存多次，如果编排配置没有发生改变时，只生成一份保存文件。
+     * 注2：当执行对象没有XID时，会自动生成
+     * 注3：没有XID时会自动生成
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-26
@@ -66,9 +68,9 @@ public class ExportXml
             throw new IllegalArgumentException("SavePath[" + i_SavePath + "] is not Directory.");
         }
         
-        if ( Help.isNull(io_ExecObject.getTreeID()) )
+        if ( Help.isNull(io_ExecObject.getTreeIDs()) )
         {
-            CallFlow.calcTree(io_ExecObject);
+            CallFlow.getExecuteTree().calcTree(io_ExecObject);
         }
         
         FileHelp v_FileHelp   = new FileHelp();
@@ -95,7 +97,8 @@ public class ExportXml
     /**
      * 导出为XML格式
      * 
-     * 注：当执行对象没有XID时，会自动生成
+     * 注1：当没有树ID时，会自动生成
+     * 注2：当执行对象没有XID时，会自动生成
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-25
@@ -111,7 +114,12 @@ public class ExportXml
             throw new NullPointerException("ExecObject is null.");
         }
         
-        String v_Content  = exportToChild(i_ExecObject);
+        if ( Help.isNull(i_ExecObject.getTreeIDs()) )
+        {
+            CallFlow.getExecuteTree().calcTree(i_ExecObject);
+        }
+        
+        String v_Content  = exportToChild(i_ExecObject ,i_ExecObject.getTreeIDs().iterator().next());
         String v_Template = getTemplateXml();
         
         while ( v_Content.startsWith("\n") )
@@ -132,9 +140,10 @@ public class ExportXml
      * @version     v1.0
      *
      * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_TreeID      执行对象的树ID
      * @return
      */
-    private static String exportToChild(IExecute i_ExecObject)
+    private static String exportToChild(IExecute i_ExecObject ,String i_TreeID)
     {
         StringBuilder  v_Xml    = new StringBuilder();
         List<IExecute> v_Childs = null;
@@ -144,7 +153,7 @@ public class ExportXml
         {
             for (IExecute v_Child : v_Childs)
             {
-                v_Xml.append(exportToChild(v_Child));
+                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
             }
         }
         
@@ -153,7 +162,7 @@ public class ExportXml
         {
             for (IExecute v_Child : v_Childs)
             {
-                v_Xml.append(exportToChild(v_Child));
+                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
             }
         }
         
@@ -162,7 +171,7 @@ public class ExportXml
         {
             for (IExecute v_Child : v_Childs)
             {
-                v_Xml.append(exportToChild(v_Child));
+                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
             }
         }
         
@@ -179,7 +188,11 @@ public class ExportXml
             }
         }
         
-        v_Xml.append("\n\n").append(i_ExecObject.toXml(2));
+        String v_ExecXml = i_ExecObject.toXml(2 ,ExecuteElement.$TreeID.getSuperTreeID(i_TreeID));
+        if ( !Help.isNull(v_ExecXml) )
+        {
+            v_Xml.append("\n\n").append(v_ExecXml);
+        }
         
         return v_Xml.toString();
     }
