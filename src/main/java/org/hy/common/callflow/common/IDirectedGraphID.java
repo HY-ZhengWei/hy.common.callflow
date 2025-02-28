@@ -35,6 +35,15 @@ public interface IDirectedGraphID
      * @param i_SuperTreeID  上级树ID
      */
     public String getTreeID(String i_SuperTreeID);
+    
+    
+    
+    /**
+     * 获取：上级树ID
+     * 
+     * @param i_TreeID  本级树ID
+     */
+    public String getTreeSuperID(String i_TreeID);
 
 
     

@@ -25,14 +25,14 @@ public class JU_CalcTree
     {
         new JU_CFlow003();
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF003_001");
-        CallFlow.getExecuteTree().calcTree(v_Node);
+        CallFlow.getExecuteHelp().calcTree(v_Node);
         System.out.println(v_Node.toXml(1));
         
         NodeConfig v_v_Node2 = (NodeConfig) XJava.getObject("XNode_CF003_005");
         System.out.println(v_v_Node2.toXml(1));
         
         System.out.println("");
-        System.out.println(CallFlow.getExportXml().export(v_Node));
+        System.out.println(CallFlow.getExportHelp().export(v_Node));
     }
     
 }

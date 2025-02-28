@@ -8,7 +8,6 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
-import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.node.NodeConfig;
@@ -110,7 +109,7 @@ public class ExportXml
         
         if ( Help.isNull(io_ExecObject.getTreeIDs()) )
         {
-            CallFlow.getExecuteTree().calcTree(io_ExecObject);
+            CallFlow.getExecuteHelp().calcTree(io_ExecObject);
         }
         
         FileHelp v_FileHelp   = new FileHelp();
@@ -156,7 +155,7 @@ public class ExportXml
         
         if ( Help.isNull(i_ExecObject.getTreeIDs()) )
         {
-            CallFlow.getExecuteTree().calcTree(i_ExecObject);
+            CallFlow.getExecuteHelp().calcTree(i_ExecObject);
         }
         
         String v_Content  = exportToChild(i_ExecObject ,i_ExecObject.getTreeIDs().iterator().next());
@@ -228,7 +227,7 @@ public class ExportXml
             }
         }
         
-        String v_ExecXml = i_ExecObject.toXml(2 ,ExecuteElement.$TreeID.getSuperTreeID(i_TreeID));
+        String v_ExecXml = i_ExecObject.toXml(2 ,i_ExecObject.getTreeSuperID(i_TreeID));
         if ( !Help.isNull(v_ExecXml) )
         {
             v_Xml.append("\n\n").append(v_ExecXml);

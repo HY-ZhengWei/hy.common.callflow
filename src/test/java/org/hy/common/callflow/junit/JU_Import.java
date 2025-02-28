@@ -27,7 +27,7 @@ public class JU_Import
     {
         new JU_CFlow004();
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF004_001");
-        String     v_Xml  = CallFlow.getExportXml().export(v_Node);
+        String     v_Xml  = CallFlow.getExportHelp().export(v_Node);
         
         System.out.println(v_Xml);
         

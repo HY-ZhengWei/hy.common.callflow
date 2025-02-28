@@ -164,7 +164,7 @@ public class ConditionItem implements IfElse ,XJavaID
                 }
                 else if ( Boolean.class.equals(v_ValueA.getClass()) )
                 {
-                    return (Boolean) v_ValueA;
+                    return !(Boolean) v_ValueA;
                 }
                 else
                 {
@@ -436,19 +436,64 @@ public class ConditionItem implements IfElse ,XJavaID
                 v_ValueA = "?";
             }
             
-            try
+            // B可以为空，表示判定A是否为空，或判定A是否为Boolean类型的真假
+            if ( this.valueXIDB == null )
             {
-                v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.valueClass ,null ,i_Context);
+                v_Builder.append(ValueHelp.getExpression(v_ValueA));
+                
+                if ( Comparer.Equal.equals(this.comparer) )
+                {
+                    if ( v_ValueA == null )
+                    {
+                        // 等于NULL
+                        v_Builder.append(" ").append(this.comparer.getValue()).append(" NULL");
+                    }
+                    else if ( Boolean.class.equals(v_ValueA.getClass()) )
+                    {
+                        v_Builder.append(" ").append(this.comparer.getValue()).append(" TRUE");
+                    }
+                    else
+                    {
+                        v_Builder.append(" ").append(this.comparer.getValue()).append(" NULL");
+                    }
+                }
+                else if ( Comparer.EqualNot.equals(this.comparer) )
+                {
+                    if ( v_ValueA == null )
+                    {
+                        // 不等于NULL
+                        v_Builder.append(" ").append(this.comparer.getValue()).append(" NULL");
+                    }
+                    else if ( Boolean.class.equals(v_ValueA.getClass()) )
+                    {
+                        v_Builder.append(" ").append(this.comparer.getValue()).append(" TRUE");
+                    }
+                    else
+                    {
+                        v_Builder.append(" ").append(this.comparer.getValue()).append(" NULL");
+                    }
+                }
+                else
+                {
+                    v_Builder.append(" != NULL");
+                }
             }
-            catch (Exception exce)
+            else
             {
-                $Logger.error("ConditionItem[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s valueXIDB[" + this.valueXIDB + "] getValue error." ,exce);
-                v_ValueB = "?";
+                try
+                {
+                    v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.valueClass ,null ,i_Context);
+                }
+                catch (Exception exce)
+                {
+                    $Logger.error("ConditionItem[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s valueXIDB[" + this.valueXIDB + "] getValue error." ,exce);
+                    v_ValueB = "?";
+                }
+                
+                v_Builder.append(ValueHelp.getExpression(v_ValueA));
+                v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
+                v_Builder.append(ValueHelp.getExpression(v_ValueB));
             }
-            
-            v_Builder.append(ValueHelp.getExpression(v_ValueA));
-            v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
-            v_Builder.append(ValueHelp.getExpression(v_ValueB));
         }
         
         return v_Builder.toString();

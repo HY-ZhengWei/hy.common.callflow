@@ -320,6 +320,18 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     {
         return Help.NVL(this.treeIDs.getReverse(Help.NVL(i_SuperTreeID)));
     }
+    
+    
+    
+    /**
+     * 获取：上级树ID
+     * 
+     * @param i_TreeID  本级树ID
+     */
+    public String getTreeSuperID(String i_TreeID)
+    {
+        return Help.NVL(this.treeIDs.get(Help.NVL(i_TreeID)));
+    }
 
 
     

@@ -8,6 +8,7 @@ import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.junit.cflow003.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJSON;
@@ -67,10 +68,12 @@ public class JU_CFlow003
         // 启动编排
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF003_001");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+        ExecuteResult       v_ER        = null;
+        IExecute            v_E         = null;
         
         if ( Help.isNull(v_FirstNode.getTreeIDs()) )
         {
-            CallFlow.getExecuteTree().calcTree(v_FirstNode);
+            CallFlow.getExecuteHelp().calcTree(v_FirstNode);
         }
         
         // 传值 9 或 传值 -1 或 不传值
@@ -90,22 +93,67 @@ public class JU_CFlow003
         }
         
         // 打印执行路径
-        ExecuteResult v_NodeResult = v_Result;
-        do
+        ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
+        this.println(v_FirstResult);
+        
+        System.out.println();
+        
+        // 第二种方法获取首个执行结果
+        v_FirstResult = CallFlow.getExecuteHelp().getFirstResult(v_Result);
+        this.println(v_FirstResult);
+        
+        System.out.println();
+        // 在走第一个判定为真，第二个判定为假时，否则不存此路径
+        v_ER = CallFlow.getExecuteHelp().findExecuteTreeID(v_Result ,"1-1-1-2");
+        if ( v_ER != null )
         {
-            System.out.println(StringHelp.rpad(v_NodeResult.getExecuteTreeID() ,9 ," ") 
-                             + " " 
-                             + Date.toTimeLenNano(v_NodeResult.getBeginTime()) 
-                             + " ~ "
-                             + Date.toTimeLenNano(v_NodeResult.getEndTime()) 
-                             + " "
-                             + Date.toTimeLenNano(v_NodeResult.getEndTime() - v_NodeResult.getBeginTime())
-                             + " callXID=" + v_NodeResult.getExecuteXID() + " is " + v_NodeResult.isSuccess());
-            v_NodeResult = v_NodeResult.getPrevious();
+            System.out.println("1-1-1-2 的执行逻辑 " + v_ER.getExecuteLogic());
+            v_E = CallFlow.getExecuteHelp().findTreeID(v_FirstNode ,"1-1-2");
+            System.out.println("1-1-2   的执行逻辑 " + v_E.toString());
         }
-        while ( v_NodeResult != null );
+        
+        // 在走第一个判定假时，否则不存此路径
+        v_ER = CallFlow.getExecuteHelp().findExecuteTreeID(v_Result ,"1-1-2");
+        if ( v_ER != null )
+        {
+            System.out.println("1-1-2   的执行逻辑 " + CallFlow.getExecuteHelp().findExecuteTreeID(v_Result ,"1-1-2")  .getExecuteLogic());
+            v_E = CallFlow.getExecuteHelp().findTreeID(v_FirstNode ,"1-1-1-2");
+            System.out.println("1-1-1-2 的执行逻辑 " + v_E.toString());
+        }
+        System.out.println();
         
         test_ToJson();
+    }
+    
+    
+    
+    /**
+     * 打印执行路径
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param i_Result
+     */
+    private void println(ExecuteResult i_Result)
+    {
+        System.out.println(StringHelp.rpad(i_Result.getExecuteTreeID() ,9 ," ") 
+                         + " " 
+                         + StringHelp.rpad(i_Result.getTreeID() ,9 ," ") 
+                         + " " 
+                         + Date.toTimeLenNano(i_Result.getEndTime() - i_Result.getBeginTime())
+                         + " " + i_Result.getExecuteLogic()
+                         + " " + Help.NVL(i_Result.getResult())
+                         + " " + i_Result.isSuccess());
+        
+        if ( !Help.isNull(i_Result.getNexts()) )
+        {
+            for (ExecuteResult v_Item : i_Result.getNexts())
+            {
+                this.println(v_Item);
+            }
+        }
     }
     
     
