@@ -35,6 +35,13 @@ public class RouteConfig
     
     
     
+    public RouteConfig(ExecuteElement i_Owner)
+    {
+        this.setOwner(i_Owner);
+    }
+    
+    
+    
     /**
      * 归属者（仅对外开放setter方法，为防止死循环）（内部使用）
      * 
@@ -60,7 +67,11 @@ public class RouteConfig
      */
     private void checkSelfLink(ExecuteElement i_Execute)
     {
-        if ( this.owner.equals(i_Execute) )
+        if ( i_Execute == null )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(owner.getXid()) + ":" + Help.NVL(owner.getComment()) + "] add next route Element is null.");
+        }
+        else if ( this.owner.equals(i_Execute) )
         {
             throw new IllegalArgumentException("XID[" + Help.NVL(i_Execute.getXid()) + ":" + Help.NVL(i_Execute.getComment()) + "] Not allowed to self link.");
         }

@@ -39,7 +39,57 @@ public class ExecuteTreeHelp
     
     
     /**
-     * 计算树结构。包括树层级、同级同父序列编号、树ID。
+     * 清空树ID及寻址相关的信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-28
+     * @version     v1.0
+     *
+     * @param io_ExecObject
+     */
+    public void clearTree(ExecuteElement io_ExecObject)
+    {
+        if ( io_ExecObject == null )
+        {
+            throw new NullPointerException("ExecObject is null.");
+        }
+        
+        io_ExecObject.setTreeID(null);
+        
+        List<IExecute> v_Childs = null;
+        
+        v_Childs = io_ExecObject.getRoute().getSucceeds();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                clearTree((ExecuteElement) v_Child);
+            }
+        }
+        
+        v_Childs = io_ExecObject.getRoute().getFaileds();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                clearTree((ExecuteElement) v_Child);
+            }
+        }
+        
+        v_Childs = io_ExecObject.getRoute().getExceptions();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                clearTree((ExecuteElement) v_Child);
+            }
+        }
+    }
+    
+    
+    
+    /**
+     * 计算树ID及寻址相关的信息。包括树层级、同级同父序列编号、树ID。
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-25
@@ -61,7 +111,7 @@ public class ExecuteTreeHelp
     
     
     /**
-     * （递归）计算树结构。包括树层级、同级同父序列编号、树ID。
+     * （递归）计算树ID及寻址相关的信息。包括树层级、同级同父序列编号、树ID。
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-25
@@ -80,7 +130,7 @@ public class ExecuteTreeHelp
     
     
     /**
-     * （递归）计算树结构。包括树层级、同级同父序列编号、树ID。
+     * （递归）计算树ID及寻址相关的信息。包括树层级、同级同父序列编号、树ID。
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-25

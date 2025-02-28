@@ -149,6 +149,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         this.treeIDs    = new KVKLinkMap   <String ,String>();
         this.treeLevels = new LinkedHashMap<String ,Integer>();
         this.treeNos    = new LinkedHashMap<String ,Integer>();
+        this.route      = new RouteConfig(this);
     }
     
     
@@ -970,6 +971,10 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     public void setRoute(RouteConfig i_Route)
     {
         this.route = i_Route;
+        if ( this.route != null )
+        {
+            this.route.setOwner(this);
+        }
     }
 
 

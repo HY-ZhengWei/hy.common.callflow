@@ -17,7 +17,6 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
-import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
@@ -85,7 +84,6 @@ public class NodeConfig extends ExecuteElement
     public NodeConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.route  = new RouteConfig();
         this.isInit = false;
     }
     

@@ -70,10 +70,11 @@ public class JU_CFlow006
         ExecuteResult       v_ER        = null;
         IExecute            v_E         = null;
         
-        if ( Help.isNull(v_FirstNode.getTreeIDs()) )
+        if ( !Help.isNull(v_FirstNode.getTreeIDs()) )
         {
-            CallFlow.getHelpExecute().calcTree(v_FirstNode);
+            CallFlow.getHelpExecute().clearTree(v_FirstNode);
         }
+        CallFlow.getHelpExecute().calcTree(v_FirstNode);
         
         // 传值 9 或 传值 -1 或 不传值
         v_Context.put("NumParam"  ,9);
@@ -102,23 +103,10 @@ public class JU_CFlow006
         this.println(v_FirstResult);
         
         System.out.println();
-        // 在走第一个判定为真，第二个判定为假时，否则不存此路径
-        v_ER = CallFlow.getHelpExecute().findExecuteTreeID(v_Result ,"1-1-1-2");
-        if ( v_ER != null )
-        {
-            System.out.println("1-1-1-2 的执行逻辑 " + v_ER.getExecuteLogic());
-            v_E = CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-2");
-            System.out.println("1-1-2   的执行逻辑 " + v_E.toString());
-        }
-        
-        // 在走第一个判定假时，否则不存此路径
-        v_ER = CallFlow.getHelpExecute().findExecuteTreeID(v_Result ,"1-1-2");
-        if ( v_ER != null )
-        {
-            System.out.println("1-1-2   的执行逻辑 " + CallFlow.getHelpExecute().findExecuteTreeID(v_Result ,"1-1-2")  .getExecuteLogic());
-            v_E = CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-1-2");
-            System.out.println("1-1-1-2 的执行逻辑 " + v_E.toString());
-        }
+        v_E  = CallFlow.getHelpExecute().findTreeID(       v_FirstNode ,"1-1-2-1");
+        System.out.println("1-1-2-1   的执行逻辑 " + CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-2-1")  .toString());
+        System.out.println("1-1-1-2-1 的执行逻辑 " + CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-1-2-1").toString());
+        System.out.println("1-1-1-1-1 的执行逻辑 " + CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-1-1-1").toString());
         System.out.println();
         
         // 导出

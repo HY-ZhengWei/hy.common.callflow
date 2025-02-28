@@ -12,7 +12,6 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
-import org.hy.common.callflow.route.RouteConfig;
 
 
 
@@ -63,7 +62,6 @@ public class Condition extends ExecuteElement implements IfElse
         super(i_RequestTotal ,i_SuccessTotal);
         this.logical = Logical.And;
         this.items   = new ArrayList<>();
-        this.route   = new RouteConfig();
     }
     
     
