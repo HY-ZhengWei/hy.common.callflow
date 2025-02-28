@@ -1,6 +1,6 @@
 package org.hy.common.callflow.junit;
 
-import org.hy.common.callflow.file.ExportXml;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.junit.cflow004.JU_CFlow004;
 import org.hy.common.callflow.node.NodeConfig;
@@ -27,7 +27,7 @@ public class JU_Import
     {
         new JU_CFlow004();
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF004_001");
-        String     v_Xml  = ExportXml.export(v_Node);
+        String     v_Xml  = CallFlow.getExportXml().export(v_Node);
         
         System.out.println(v_Xml);
         

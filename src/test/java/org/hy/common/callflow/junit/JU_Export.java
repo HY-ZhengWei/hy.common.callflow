@@ -1,7 +1,6 @@
 package org.hy.common.callflow.junit;
 
 import org.hy.common.callflow.CallFlow;
-import org.hy.common.callflow.file.ExportXml;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.junit.cflow003.JU_CFlow003;
 import org.hy.common.callflow.junit.cflow004.JU_CFlow004;
@@ -42,7 +41,7 @@ public class JU_Export
         new JU_CFlow004();
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF004_001");
         
-        System.out.println(ExportXml.export(v_Node));
+        System.out.println(CallFlow.getExportXml().export(v_Node));
     }
     
     
@@ -52,7 +51,7 @@ public class JU_Export
     {
         new JU_CFlow004();
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF004_001");
-        String v_SaveName = CallFlow.save(v_Node);
+        String v_SaveName = CallFlow.getExportXml().save(v_Node);
         
         System.out.println(v_SaveName);
     }

@@ -1,6 +1,5 @@
 package org.hy.common.callflow;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -405,64 +404,17 @@ public class CallFlow
     
     
     /**
-     * 保存编排为文件
-     * 
-     * 注：同一天保存多次，如果编排配置没有发生改变时，只生成一份保存文件。
-     * 注：没有XID时会自动生成
+     * 集成：编排配置导出为XML
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-26
+     * @createDate  2025-02-27
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
-     * @param i_SavePath     保存目录
-     * @return               返回保存文件的全路径
-     * @throws IOException 
-     */
-    public static String save(IExecute io_ExecObject) throws IOException
-    {
-        return ExportXml.save(io_ExecObject ,$SavePath);
-    }
-    
-    
-    
-    /**
-     * 保存编排为文件
-     * 
-     * 注：同一天保存多次，如果编排配置没有发生改变时，只生成一份保存文件。
-     * 注：没有XID时会自动生成
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-26
-     * @version     v1.0
-     *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
-     * @param i_SavePath     保存目录
-     * @return               返回保存文件的全路径
-     * @throws IOException 
-     */
-    public static String save(IExecute io_ExecObject ,String i_SavePath) throws IOException
-    {
-        return ExportXml.save(io_ExecObject ,i_SavePath);
-    }
-    
-    
-    
-    /**
-     * 导出为XML格式
-     * 
-     * 注：当执行对象没有XID时，会自动生成
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-26
-     * @version     v1.0
-     *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
      * @return
      */
-    public static String exportXml(IExecute i_ExecObject)
+    public static ExportXml getExportXml()
     {
-        return ExportXml.export(i_ExecObject);
+        return ExportXml.getInstance();
     }
     
     

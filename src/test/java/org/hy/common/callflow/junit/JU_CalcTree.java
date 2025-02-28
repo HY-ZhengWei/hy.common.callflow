@@ -32,7 +32,7 @@ public class JU_CalcTree
         System.out.println(v_v_Node2.toXml(1));
         
         System.out.println("");
-        System.out.println(CallFlow.exportXml(v_Node));
+        System.out.println(CallFlow.getExportXml().export(v_Node));
     }
     
 }

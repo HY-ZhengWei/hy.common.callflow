@@ -30,8 +30,48 @@ import org.hy.common.license.IHash;
 public class ExportXml
 {
     
+    private static final ExportXml $Instance = new ExportXml();
+    
     /** 文件数字ID的加密算法 */
     public static final IHash $Hash = new Hash();
+    
+    
+    
+    /**
+     * 获取单例编排配置导出为XML
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-27
+     * @version     v1.0
+     *
+     * @return
+     */
+    public static ExportXml getInstance()
+    {
+        return $Instance;
+    }
+    
+    
+    
+    /**
+     * 保存编排为文件
+     * 
+     * 注1：同一天保存多次，如果编排配置没有发生改变时，只生成一份保存文件。
+     * 注2：当执行对象没有XID时，会自动生成
+     * 注3：没有XID时会自动生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *
+     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @return               返回保存文件的全路径
+     * @throws IOException 
+     */
+    public String save(IExecute io_ExecObject) throws IOException
+    {
+        return save(io_ExecObject ,CallFlow.$SavePath);
+    }
     
     
     
@@ -51,7 +91,7 @@ public class ExportXml
      * @return               返回保存文件的全路径
      * @throws IOException 
      */
-    public static String save(IExecute io_ExecObject ,String i_SavePath) throws IOException
+    public String save(IExecute io_ExecObject ,String i_SavePath) throws IOException
     {
         if ( Help.isNull(io_ExecObject.getXJavaID()) )
         {
@@ -74,7 +114,7 @@ public class ExportXml
         }
         
         FileHelp v_FileHelp   = new FileHelp();
-        String   v_XmlContent = ExportXml.export(io_ExecObject);
+        String   v_XmlContent = export(io_ExecObject);
         String   v_Signature  = $Hash.encrypt(v_XmlContent);
         String   v_SaveName   = v_SavePath.getPath() 
                               + Help.getSysPathSeparator()
@@ -107,7 +147,7 @@ public class ExportXml
      * @param i_ExecObject  执行对象（节点或条件逻辑）
      * @return
      */
-    public static String export(IExecute i_ExecObject)
+    public String export(IExecute i_ExecObject)
     {
         if ( i_ExecObject == null )
         {
@@ -143,7 +183,7 @@ public class ExportXml
      * @param i_TreeID      执行对象的树ID
      * @return
      */
-    private static String exportToChild(IExecute i_ExecObject ,String i_TreeID)
+    private String exportToChild(IExecute i_ExecObject ,String i_TreeID)
     {
         StringBuilder  v_Xml    = new StringBuilder();
         List<IExecute> v_Childs = null;
@@ -208,7 +248,7 @@ public class ExportXml
      *
      * @return
      */
-    private static String getTemplateXml() 
+    private String getTemplateXml() 
     {
         TemplateFile Template = new TemplateFile();
         return Template.getTemplateContent("ExportTemplate.xml" ,ExportXml.class.getPackageName());
