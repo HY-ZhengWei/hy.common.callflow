@@ -37,11 +37,17 @@ public class CallFlow
     /** 变量ID名称：编排执行实例的首个执行对象的执行结果 */
     public static final String $FirstExecuteResult = "CallFlowFirstExecuteResult";
     
+    /** 变量ID名称：编排执行实例的最后执行对象的执行结果（但不包括异常的） */
+    public static final String $LastExecuteResult = "CallFlowLastExecuteResult";
+    
     /** 变量ID名称：编排执行实例是否异常 */
     public static final String $ExecuteIsError     = "CallFlowExecuteIsError";
     
     /** 变量ID名称：编排执行实例异常的结果 */
     public static final String $ErrorResult        = "CallFlowErrorResult";
+    
+    /** 变量ID名称：编排执行实例的监听事件（事件可以传递到嵌套子编排中去） */
+    public static final String $ExecuteEvent       = "CallFlowExecuteEvent";
     
     
     
@@ -65,6 +71,11 @@ public class CallFlow
     /**
      * 从执行上下文中，获取首个执行对象的执行结果
      * 
+     * 当有嵌套时，此方法仅能返回顶层流程编排中的首个执行对象。
+     * 要返回全量首个执行对象应当用：CallFlow.getHelpExecute().getFirstResult() 方法。
+     * 
+     * 上面的差异仅在A编排的首个元素嵌套着B编排时才能看出区别。参见 JU_CFlow007
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-25
      * @version     v1.0
@@ -75,6 +86,40 @@ public class CallFlow
     public static ExecuteResult getFirstResult(Map<String ,Object> i_Context)
     {
         return (ExecuteResult) i_Context.get($FirstExecuteResult);
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，获取最后执行对象的执行结果
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-28
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public static ExecuteResult getLastResult(Map<String ,Object> i_Context)
+    {
+        return (ExecuteResult) i_Context.get($LastExecuteResult);
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，获取执行事件监听器
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-28
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public static IExecuteEvent getExecuteEvent(Map<String ,Object> i_Context)
+    {
+        return (IExecuteEvent) i_Context.get($ExecuteEvent);
     }
     
     
@@ -211,9 +256,9 @@ public class CallFlow
      * @param i_ExecObject  执行对象（节点或条件逻辑）
      * @param io_Context    上下文类型的变量信息
      * @param i_Event       执行监听事件
-     * @return              返回编排执行链中的最后的执行结果
-     *                          1.最后执行结果的开始时间beginTime，也是整个编排的最早起始时间
-     *                          2.最后执行结果的结束时间endTime  ，也是整个编排的最晚结束时间
+     * @return              返回编排执行链中的首个执行对象的执行结果
+     *                          1.返回值的beginTime，是整个编排的最早起始时间
+     *                          2.返回值的endTime  ，是整个编排的最晚结束时间
      *                          3.异常时，最后执行结果重复描述一次异常信息
      */
     public static ExecuteResult execute(IExecute i_ExecObject ,Map<String ,Object> io_Context ,IExecuteEvent i_Event)
@@ -236,6 +281,12 @@ public class CallFlow
         if ( Help.isNull(i_ExecObject.getTreeIDs()) )
         {
             CallFlow.getHelpExecute().calcTree(i_ExecObject);
+        }
+        
+        // 上下文中压入事件监听器
+        if ( i_Event != null )
+        {
+            v_Context.put($ExecuteEvent ,i_Event);
         }
         
         // 事件：启动前
@@ -307,10 +358,14 @@ public class CallFlow
         }
         
         ExecuteResult v_Result = i_ExecObject.execute(i_SuperTreeID ,io_Context);
-        v_Result.setPrevious(i_PreviousResult);
+        io_Context.put($LastExecuteResult ,v_Result);
         if ( i_PreviousResult == null )
         {
             io_Context.put($FirstExecuteResult ,v_Result);
+        }
+        else
+        {
+            v_Result.setPrevious(i_PreviousResult);
         }
         
         List<IExecute> v_Nexts  = null;

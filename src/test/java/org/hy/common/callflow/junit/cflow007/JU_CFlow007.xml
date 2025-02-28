@@ -12,7 +12,11 @@
     <!-- CFlow编排引擎配置 -->
     <xconfig>
     
-:Content
+        <xnesting id="XNesting_CF007_1">
+            <comment>1</comment>
+            <callFlowXID>XNode_CF006_1</callFlowXID>  <!-- 子编排的XID -->
+            <returnID>CF006</returnID>                <!-- 定义返回结果的变量名称 -->
+        </xnesting>
         
     </xconfig>
     

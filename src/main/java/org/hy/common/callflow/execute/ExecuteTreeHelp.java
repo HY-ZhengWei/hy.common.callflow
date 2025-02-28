@@ -502,6 +502,11 @@ public class ExecuteTreeHelp
      * getFirstResult()方法的别名。
      * 定位某个编排实例执行结果中的首个结果元素
      * 
+     * 当有嵌套时，此方法将全量编排看做一个整体，返回其中的首个执行对象。
+     * 仅要返回顶层流程编排中的首个执行对象应当用：CallFlow.getHelpExecute().getFirstResult() 方法。
+     * 
+     * 上面的差异仅在A编排的首个元素嵌套着B编排时才能看出区别。参见 JU_CFlow007
+     * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-26
      * @version     v1.0
@@ -518,6 +523,11 @@ public class ExecuteTreeHelp
     
     /**
      * 定位某个编排实例执行结果中的首个结果元素
+     * 
+     * 当有嵌套时，此方法将全量编排看做一个整体，返回其中的首个执行对象。
+     * 仅要返回顶层流程编排中的首个执行对象应当用：CallFlow.getHelpExecute().getFirstResult() 方法。
+     * 
+     * 上面的差异仅在A编排的首个元素嵌套着B编排时才能看出区别。参见 JU_CFlow007
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-26

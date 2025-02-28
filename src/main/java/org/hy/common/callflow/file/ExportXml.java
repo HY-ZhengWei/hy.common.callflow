@@ -10,6 +10,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.ifelse.Condition;
+import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.file.FileHelp;
 import org.hy.common.license.Hash;
@@ -224,6 +225,14 @@ public class ExportXml
             else if ( i_ExecObject instanceof Condition )
             {
                 i_ExecObject.setXJavaID("XCondition_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof NestingConfig )
+            {
+                i_ExecObject.setXJavaID("XNesting_" + StringHelp.getUUID9n());
+            }
+            else
+            {
+                throw new RuntimeException("Unknown type[" + i_ExecObject.getClass().getName() + "] of exception");
             }
         }
         
