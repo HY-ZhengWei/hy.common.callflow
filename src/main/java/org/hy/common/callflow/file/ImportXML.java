@@ -21,7 +21,25 @@ import org.hy.common.xml.log.Logger;
 public class ImportXML
 {
     
-    private static final Logger $Logger = new Logger(ImportXML.class);
+    private static final Logger    $Logger   = new Logger(ImportXML.class);
+    
+    private static final ImportXML $Instance = new ImportXML();
+    
+    
+    
+    /**
+     * 获取单例导入XML格式的编排配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-28
+     * @version     v1.0
+     *
+     * @return
+     */
+    public static ImportXML getInstance()
+    {
+        return $Instance;
+    }
     
     
     
@@ -36,7 +54,7 @@ public class ImportXML
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static List<IExecute> imports(String i_Xml)
+    public List<IExecute> imports(String i_Xml)
     {
         if ( Help.isNull(i_Xml) )
         {
@@ -57,7 +75,7 @@ public class ImportXML
     
     
     
-    public static void upgrade(IExecute i_ExecObject ,String i_Xml)
+    public void upgrade(IExecute i_ExecObject ,String i_Xml)
     {
         
     }

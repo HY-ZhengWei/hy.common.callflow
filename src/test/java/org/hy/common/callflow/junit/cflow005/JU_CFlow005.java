@@ -67,12 +67,12 @@ public class JU_CFlow005
         System.out.println();
         
         // 第二种方法获取首个执行结果
-        v_FirstResult = CallFlow.getExecuteHelp().getFirstResult(v_Result);
+        v_FirstResult = CallFlow.getHelpExecute().getFirstResult(v_Result);
         this.println(v_FirstResult);
         
         System.out.println();
-        System.out.println("1.1.1 的执行逻辑 " + CallFlow.getExecuteHelp().findTreeID       (v_Result ,"1.1.1").getExecuteLogic());
-        System.out.println("1-1-1 的执行逻辑 " + CallFlow.getExecuteHelp().findExecuteTreeID(v_Result ,"1-1-1").getExecuteLogic());
+        System.out.println("1.1.1 的执行逻辑 " + CallFlow.getHelpExecute().findTreeID       (v_Result ,"1.1.1").getExecuteLogic());
+        System.out.println("1-1-1 的执行逻辑 " + CallFlow.getHelpExecute().findExecuteTreeID(v_Result ,"1-1-1").getExecuteLogic());
         System.out.println();
         
         if ( v_Result.isSuccess() )

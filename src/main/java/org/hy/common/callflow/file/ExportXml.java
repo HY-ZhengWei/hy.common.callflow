@@ -32,7 +32,7 @@ public class ExportXml
     private static final ExportXml $Instance = new ExportXml();
     
     /** 文件数字ID的加密算法 */
-    public static final IHash $Hash = new Hash();
+    public  static final IHash     $Hash = new Hash();
     
     
     
@@ -109,7 +109,7 @@ public class ExportXml
         
         if ( Help.isNull(io_ExecObject.getTreeIDs()) )
         {
-            CallFlow.getExecuteHelp().calcTree(io_ExecObject);
+            CallFlow.getHelpExecute().calcTree(io_ExecObject);
         }
         
         FileHelp v_FileHelp   = new FileHelp();
@@ -155,7 +155,7 @@ public class ExportXml
         
         if ( Help.isNull(i_ExecObject.getTreeIDs()) )
         {
-            CallFlow.getExecuteHelp().calcTree(i_ExecObject);
+            CallFlow.getHelpExecute().calcTree(i_ExecObject);
         }
         
         String v_Content  = exportToChild(i_ExecObject ,i_ExecObject.getTreeIDs().iterator().next());

@@ -11,6 +11,7 @@ import org.hy.common.callflow.execute.ExecuteTreeHelp;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.execute.IExecuteEvent;
 import org.hy.common.callflow.file.ExportXml;
+import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.ifelse.Condition;
 
 
@@ -140,7 +141,7 @@ public class CallFlow
      *
      * @return
      */
-    public static ExecuteTreeHelp getExecuteHelp()
+    public static ExecuteTreeHelp getHelpExecute()
     {
         return ExecuteTreeHelp.getInstance();
     }
@@ -156,9 +157,25 @@ public class CallFlow
      *
      * @return
      */
-    public static ExportXml getExportHelp()
+    public static ExportXml getHelpExport()
     {
         return ExportXml.getInstance();
+    }
+    
+    
+    
+    /**
+     * 集成：导入XML格式的编排配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-28
+     * @version     v1.0
+     *
+     * @return
+     */
+    public static ImportXML getHelpImport()
+    {
+        return ImportXML.getInstance();
     }
     
     
@@ -218,7 +235,7 @@ public class CallFlow
         
         if ( Help.isNull(i_ExecObject.getTreeIDs()) )
         {
-            CallFlow.getExecuteHelp().calcTree(i_ExecObject);
+            CallFlow.getHelpExecute().calcTree(i_ExecObject);
         }
         
         // 事件：启动前

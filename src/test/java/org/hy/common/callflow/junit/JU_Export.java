@@ -41,7 +41,7 @@ public class JU_Export
         new JU_CFlow004();
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF004_001");
         
-        System.out.println(CallFlow.getExportHelp().export(v_Node));
+        System.out.println(CallFlow.getHelpExport().export(v_Node));
     }
     
     
@@ -51,7 +51,7 @@ public class JU_Export
     {
         new JU_CFlow004();
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF004_001");
-        String v_SaveName = CallFlow.getExportHelp().save(v_Node);
+        String v_SaveName = CallFlow.getHelpExport().save(v_Node);
         
         System.out.println(v_SaveName);
     }

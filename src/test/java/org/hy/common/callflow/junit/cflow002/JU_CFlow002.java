@@ -69,7 +69,7 @@ public class JU_CFlow002
         
         if ( Help.isNull(v_FirstNode.getTreeIDs()) )
         {
-            CallFlow.getExecuteHelp().calcTree(v_FirstNode);
+            CallFlow.getHelpExecute().calcTree(v_FirstNode);
         }
         
         // 传值 9 或 传值 -1 或 不传值

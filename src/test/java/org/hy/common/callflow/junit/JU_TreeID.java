@@ -29,8 +29,8 @@ public class JU_TreeID
         new JU_CFlow004();
         
         NodeConfig v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_001");
-        CallFlow.getExecuteHelp().calcTree(v_FirstNode);
-        IExecute v_Execute = CallFlow.getExecuteHelp().findTreeID(v_FirstNode ,"1-1-2-2");
+        CallFlow.getHelpExecute().calcTree(v_FirstNode);
+        IExecute v_Execute = CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-2-2");
         if ( v_Execute != null )
         {
             System.out.println(v_Execute.getXJavaID() + " : " + v_Execute.getComment());
