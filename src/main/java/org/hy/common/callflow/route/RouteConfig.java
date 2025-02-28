@@ -51,6 +51,23 @@ public class RouteConfig
     
     
     /**
+     * 检查自循环，禁止自循环
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-28
+     * @version     v1.0
+     *
+     */
+    private void checkSelfLink(ExecuteElement i_Execute)
+    {
+        if ( this.owner.equals(i_Execute) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(i_Execute.getXid()) + ":" + Help.NVL(i_Execute.getComment()) + "] Not allowed to self link.");
+        }
+    }
+    
+    
+    /**
      * setSucceed方法的别名，主要用于 "条件逻辑" 判定结果为真时路由配置
      * 
      * @author      ZhengWei(HY)
@@ -59,7 +76,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setIf(ExecuteElement i_Execute)
+    public void setIf(ExecuteElement i_Execute)
     {
         this.setSucceed(i_Execute);
     }
@@ -74,7 +91,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setElse(ExecuteElement i_Execute)
+    public void setElse(ExecuteElement i_Execute)
     {
         this.setFailed(i_Execute);
     }
@@ -89,7 +106,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setSucceed(ExecuteElement i_Execute)
+    public void setSucceed(ExecuteElement i_Execute)
     {
         synchronized ( this )
         {
@@ -99,6 +116,7 @@ public class RouteConfig
             }
         }
         
+        this.checkSelfLink(i_Execute);
         i_Execute.setPrevious(this.owner);
         this.succeeds.add(i_Execute);
     }
@@ -113,7 +131,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setFailed(ExecuteElement i_Execute)
+    public void setFailed(ExecuteElement i_Execute)
     {
         synchronized ( this )
         {
@@ -123,6 +141,7 @@ public class RouteConfig
             }
         }
         
+        this.checkSelfLink(i_Execute);
         i_Execute.setPrevious(this.owner);
         this.faileds.add(i_Execute);
     }
@@ -137,7 +156,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setError(ExecuteElement i_Execute)
+    public void setError(ExecuteElement i_Execute)
     {
         this.setException(i_Execute);
     }
@@ -152,7 +171,7 @@ public class RouteConfig
      *
      * @param i_Execute  执行对象。节点或判定条件
      */
-    public synchronized void setException(ExecuteElement i_Execute)
+    public void setException(ExecuteElement i_Execute)
     {
         synchronized ( this )
         {
@@ -162,6 +181,7 @@ public class RouteConfig
             }
         }
         
+        this.checkSelfLink(i_Execute);
         i_Execute.setPrevious(this.owner);
         this.exceptions.add(i_Execute);
     }
@@ -181,9 +201,19 @@ public class RouteConfig
      * 
      * @param i_Succeeds 执行成功后的路由
      */
-    public void setSucceeds(List<IExecute> i_Succeeds)
+    public void setSucceeds(List<ExecuteElement> i_Succeeds)
     {
-        this.succeeds = i_Succeeds;
+        if ( Help.isNull(i_Succeeds) )
+        {
+            this.succeeds = null;
+        }
+        else
+        {
+            for (ExecuteElement v_Item : i_Succeeds)
+            {
+                this.setSucceed(v_Item);
+            }
+        }
     }
 
     
@@ -201,9 +231,19 @@ public class RouteConfig
      * 
      * @param i_Faileds 执行失败后的路由（可选）
      */
-    public void setFaileds(List<IExecute> i_Faileds)
+    public void setFaileds(List<ExecuteElement> i_Faileds)
     {
-        this.faileds = i_Faileds;
+        if ( Help.isNull(i_Faileds) )
+        {
+            this.faileds = null;
+        }
+        else
+        {
+            for (ExecuteElement v_Item : i_Faileds)
+            {
+                this.setFailed(v_Item);
+            }
+        }
     }
 
     
@@ -221,9 +261,19 @@ public class RouteConfig
      * 
      * @param i_Exceptions 执行异常后的路由（可选）
      */
-    public void setExceptions(List<IExecute> i_Exceptions)
+    public void setExceptions(List<ExecuteElement> i_Exceptions)
     {
-        this.exceptions = i_Exceptions;
+        if ( Help.isNull(i_Exceptions) )
+        {
+            this.exceptions = null;
+        }
+        else
+        {
+            for (ExecuteElement v_Item : i_Exceptions)
+            {
+                this.setException(v_Item);
+            }
+        }
     }
     
 }
