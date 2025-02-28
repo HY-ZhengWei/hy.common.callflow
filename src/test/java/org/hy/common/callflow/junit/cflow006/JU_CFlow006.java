@@ -8,7 +8,6 @@ import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.junit.cflow006.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
@@ -67,8 +66,6 @@ public class JU_CFlow006
         // 启动编排
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF006_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
-        ExecuteResult       v_ER        = null;
-        IExecute            v_E         = null;
         
         if ( !Help.isNull(v_FirstNode.getTreeIDs()) )
         {
@@ -103,7 +100,6 @@ public class JU_CFlow006
         this.println(v_FirstResult);
         
         System.out.println();
-        v_E  = CallFlow.getHelpExecute().findTreeID(       v_FirstNode ,"1-1-2-1");
         System.out.println("1-1-2-1   的执行逻辑 " + CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-2-1")  .toString());
         System.out.println("1-1-1-2-1 的执行逻辑 " + CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-1-2-1").toString());
         System.out.println("1-1-1-1-1 的执行逻辑 " + CallFlow.getHelpExecute().findTreeID(v_FirstNode ,"1-1-1-1-1").toString());

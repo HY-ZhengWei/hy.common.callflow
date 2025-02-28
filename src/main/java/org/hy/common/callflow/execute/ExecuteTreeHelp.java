@@ -3,6 +3,7 @@ package org.hy.common.callflow.execute;
 import java.util.List;
 
 import org.hy.common.Help;
+import org.hy.common.xml.XJava;
 
 
 
@@ -39,13 +40,66 @@ public class ExecuteTreeHelp
     
     
     /**
+     * 从对象池中删除自己及子级的元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-28
+     * @version     v1.0
+     *
+     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     */
+    public void removeMySelf(ExecuteElement i_ExecObject)
+    {
+        if ( i_ExecObject == null )
+        {
+            throw new NullPointerException("ExecObject is null.");
+        }
+        
+        List<IExecute> v_Childs = null;
+        
+        v_Childs = i_ExecObject.getRoute().getSucceeds();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                removeMySelf((ExecuteElement) v_Child);
+            }
+        }
+        
+        v_Childs = i_ExecObject.getRoute().getFaileds();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                removeMySelf((ExecuteElement) v_Child);
+            }
+        }
+        
+        v_Childs = i_ExecObject.getRoute().getExceptions();
+        if ( !Help.isNull(v_Childs) )
+        {
+            for (IExecute v_Child : v_Childs)
+            {
+                removeMySelf((ExecuteElement) v_Child);
+            }
+        }
+        
+        if ( !Help.isNull(i_ExecObject.getXJavaID()) )
+        {
+            XJava.remove(i_ExecObject.getXJavaID());
+        }
+    }
+    
+    
+    
+    /**
      * 清空树ID及寻址相关的信息
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-28
      * @version     v1.0
      *
-     * @param io_ExecObject
+     * @param io_ExecObject  执行对象（节点或条件逻辑）
      */
     public void clearTree(ExecuteElement io_ExecObject)
     {
