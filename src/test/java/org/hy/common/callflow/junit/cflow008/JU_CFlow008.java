@@ -103,6 +103,7 @@ public class JU_CFlow008
         // 第二种方法获取首个执行结果
         v_FirstResult = CallFlow.getHelpExecute().getFirstResult(v_Result);
         this.println(v_FirstResult);
+        System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
         
         // 导出
         System.out.println(CallFlow.getHelpExport().export(v_Nesting));
@@ -126,6 +127,7 @@ public class JU_CFlow008
                          + StringHelp.rpad(i_Result.getTreeID() ,16 ," ") 
                          + " " 
                          + Date.toTimeLenNano(i_Result.getEndTime() - i_Result.getBeginTime())
+                         + StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")
                          + " " + i_Result.getExecuteLogic()
                          + " " + Help.NVL(i_Result.getResult())
                          + " " + i_Result.isSuccess());

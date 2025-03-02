@@ -102,7 +102,7 @@ public class NodeConfig extends ExecuteElement
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime = this.request();
-        ExecuteResult v_Result    = new ExecuteResult(this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
         if ( Help.isNull(this.callXID) )

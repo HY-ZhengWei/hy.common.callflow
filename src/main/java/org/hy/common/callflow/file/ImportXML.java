@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.xml.XJava;
@@ -86,23 +87,25 @@ public class ImportXML
      *
      * @param i_ExecObject  执行对象（节点或条件逻辑）（允许为NULL）
      * @param i_Xml         XML格式的编排配置
-     * @return
+     * @return              返回.getParamStr() 如果有升级的话，是备份文件的全路径
+     *                      返回.getParamObj() 导入的最新编制配置
      * @throws IOException
      */
-    public List<ExecuteElement> upgrade(ExecuteElement i_ExecObject ,String i_Xml) throws IOException
+    public Return<List<ExecuteElement>> upgrade(ExecuteElement i_ExecObject ,String i_Xml) throws IOException
     {
         if ( Help.isNull(i_Xml) )
         {
             throw new NullPointerException("Xml is null.");
         }
         
+        Return<List<ExecuteElement>> v_Ret = new Return<List<ExecuteElement>>();
         if ( i_ExecObject != null )
         {
-            CallFlow.getHelpExport().save(i_ExecObject);           // 先备份
-            CallFlow.getHelpExecute().removeMySelf(i_ExecObject);  // 后删除对象池关系
+            v_Ret.setParamStr(CallFlow.getHelpExport().save(i_ExecObject));  // 先备份
+            CallFlow.getHelpExecute().removeMySelf(i_ExecObject);            // 后删除对象池关系
         }
         
-        return imports(i_Xml);                                     // 再导入
+        return v_Ret.setParamObj(imports(i_Xml));                            // 再导入
     }
     
     

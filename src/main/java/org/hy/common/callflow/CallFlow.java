@@ -44,6 +44,9 @@ public class CallFlow
     /** 变量ID名称：编排执行实例的最后执行嵌套的开始部分的结果（瞬息间的值，用完就即时释放了） */
     public static final String $LastNestingBeginResult  = "CallFlowLastNestingBeginResult";
     
+    /** 变量ID名称：编排执行实例的嵌套层次 */
+    public static final String $NestingLevel            = "CallFlowNestingLevel";
+    
     /** 变量ID名称：编排执行实例是否异常 */
     public static final String $ExecuteIsError          = "CallFlowExecuteIsError";
     
@@ -107,6 +110,23 @@ public class CallFlow
     public static ExecuteResult getLastResult(Map<String ,Object> i_Context)
     {
         return (ExecuteResult) i_Context.get($LastExecuteResult);
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，获取嵌套层次
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-02
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public static Integer getNestingLevel(Map<String ,Object> i_Context)
+    {
+        return (Integer) i_Context.get($NestingLevel);
     }
     
     
@@ -282,6 +302,13 @@ public class CallFlow
             v_Context.put($WorkID ,"CFW" + StringHelp.getUUID9n());
         }
         
+        // 嵌套层次一般不用外界定义
+        // 在主编排中初始化为0，在每进一级嵌套，此值累加
+        if ( v_Context.get($NestingLevel) == null )
+        {
+            v_Context.put($NestingLevel ,0);
+        }
+        
         if ( Help.isNull(i_ExecObject.getTreeIDs()) )
         {
             CallFlow.getHelpExecute().calcTree(i_ExecObject);
@@ -297,7 +324,7 @@ public class CallFlow
         String v_TreeID = i_ExecObject.getTreeIDs().iterator().next();
         if ( i_Event != null && !i_Event.start(i_ExecObject ,io_Context) )
         {
-            return CallFlow.putError(io_Context ,(new ExecuteResult(i_ExecObject.getTreeIDs().iterator().next() ,i_ExecObject.getXJavaID() ,"" ,null)).setCancel());
+            return CallFlow.putError(io_Context ,(new ExecuteResult(CallFlow.getNestingLevel(v_Context) ,v_TreeID ,i_ExecObject.getXJavaID() ,"" ,null)).setCancel());
         }
         
         try
@@ -353,7 +380,7 @@ public class CallFlow
         // 事件：执行前
         if ( i_Event != null && !i_Event.before(i_ExecObject ,io_Context) )
         {
-            ExecuteResult v_Result = (new ExecuteResult(i_ExecObject.getTreeID(i_SuperTreeID) ,i_ExecObject.getXJavaID() ,"" ,i_PreviousResult)).setCancel();
+            ExecuteResult v_Result = (new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,i_ExecObject.getTreeID(i_SuperTreeID) ,i_ExecObject.getXJavaID() ,"" ,i_PreviousResult)).setCancel();
             if ( i_PreviousResult == null )
             {
                 io_Context.put($FirstExecuteResult ,v_Result);

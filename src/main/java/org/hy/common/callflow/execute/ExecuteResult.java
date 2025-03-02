@@ -41,6 +41,9 @@ public class ExecuteResult implements ITreeID
     /** 结果树中同层同父的序号编号 */
     private Integer             treeNo;
     
+    /** 嵌套层次。下标从0开始 */
+    private Integer             nestingLevel;
+    
     /** 执行对象的树ID */
     private String              executeTreeID;
     
@@ -78,19 +81,20 @@ public class ExecuteResult implements ITreeID
     
     public ExecuteResult()
     {
-        this("" ,"" ,"");
+        this(1 ,"" ,"" ,"");
     }
     
     
-    public ExecuteResult(String i_ExecuteTreeID ,String i_ExecuteXID ,String i_ExecuteLogic)
+    public ExecuteResult(Integer i_NestingLevel ,String i_ExecuteTreeID ,String i_ExecuteXID ,String i_ExecuteLogic)
     {
-        this(i_ExecuteTreeID ,i_ExecuteXID ,i_ExecuteLogic ,null);
+        this(i_NestingLevel ,i_ExecuteTreeID ,i_ExecuteXID ,i_ExecuteLogic ,null);
     }
     
     
-    public ExecuteResult(String i_ExecuteTreeID ,String i_ExecuteXID ,String i_ExecuteLogic ,ExecuteResult i_Previous)
+    public ExecuteResult(Integer i_NestingLevel ,String i_ExecuteTreeID ,String i_ExecuteXID ,String i_ExecuteLogic ,ExecuteResult i_Previous)
     {
         this.beginTime     = Date.getTimeNano();
+        this.nestingLevel  = i_NestingLevel;
         this.success       = false;
         this.executeTreeID = i_ExecuteTreeID;
         this.executeXID    = i_ExecuteXID;
@@ -374,6 +378,14 @@ public class ExecuteResult implements ITreeID
         return treeNo;
     }
 
+    
+    /**
+     * 获取：嵌套层次。下标从0开始
+     */
+    public Integer getNestingLevel()
+    {
+        return nestingLevel;
+    }
 
 
     /**

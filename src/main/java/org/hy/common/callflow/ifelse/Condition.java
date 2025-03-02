@@ -7,6 +7,7 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -79,7 +80,7 @@ public class Condition extends ExecuteElement implements IfElse
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime = this.request();
-        ExecuteResult v_Result    = new ExecuteResult(this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         
         try
         {

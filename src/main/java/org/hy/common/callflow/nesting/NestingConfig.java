@@ -75,8 +75,9 @@ public class NestingConfig extends ExecuteElement
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime    = this.request();
-        ExecuteResult v_NestingBegin = new ExecuteResult(this.getTreeID(i_SuperTreeID)     ,this.xid ,this.toString(io_Context) + " BEGIN ");
-        ExecuteResult v_NestingEnd   = new ExecuteResult(v_NestingBegin.getExecuteTreeID() ,this.xid ,this.toString(io_Context) + " END ");
+        Integer       v_NestingLevel = CallFlow.getNestingLevel(io_Context);
+        ExecuteResult v_NestingBegin = new ExecuteResult(v_NestingLevel ,this.getTreeID(i_SuperTreeID)     ,this.xid ,this.toString(io_Context) + " BEGIN ");
+        ExecuteResult v_NestingEnd   = new ExecuteResult(v_NestingLevel ,v_NestingBegin.getExecuteTreeID() ,this.xid ,this.toString(io_Context) + " END ");
         this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
         
         if ( Help.isNull(this.callFlowXID) )
@@ -118,19 +119,28 @@ public class NestingConfig extends ExecuteElement
         }
         v_NestingBegin.setResult(true);
         
-        // 最后执行的嵌套对象（自己），为已编排生成树ID用
-        io_Context.put(CallFlow.$LastNestingBeginResult ,v_NestingBegin);
+        synchronized ( this )
+        {
+            // 最后执行的嵌套对象（自己），为已编排生成树ID用
+            io_Context.put(CallFlow.$LastNestingBeginResult ,v_NestingBegin);
+            io_Context.put(CallFlow.$NestingLevel           ,v_NestingLevel + 1);  // 嵌套层级++
+        }
         
         ExecuteElement v_CallFlow = (ExecuteElement) v_CallObject;
         ExecuteResult  v_ExceRet  = CallFlow.execute(v_CallFlow ,io_Context ,CallFlow.getExecuteEvent(io_Context));
         
         this.refreshStatus(io_Context ,v_ExceRet.getStatus());             // 子编排的状态就是我的状态
         
-        // 还原：原始父级的首个执行对象的结果
-        if ( v_SuperFirstResult != null )
+        synchronized ( this )
         {
-            io_Context.put(CallFlow.$FirstExecuteResult ,v_SuperFirstResult);
+            // 还原：原始父级的首个执行对象的结果
+            if ( v_SuperFirstResult != null )
+            {
+                io_Context.put(CallFlow.$FirstExecuteResult ,v_SuperFirstResult);
+            }
+            io_Context.put(CallFlow.$NestingLevel ,v_NestingLevel);
         }
+        
         
         if ( !CallFlow.getExecuteIsError(io_Context) )
         {
