@@ -74,61 +74,86 @@ public class NestingConfig extends ExecuteElement
     @Override
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
-        ExecuteResult v_Result = new ExecuteResult(this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
-        this.refreshStatus(io_Context ,v_Result.getStatus());
+        long          v_BeginTime    = this.request();
+        ExecuteResult v_NestingBegin = new ExecuteResult(this.getTreeID(i_SuperTreeID)     ,this.xid ,this.toString(io_Context) + " BEGIN ");
+        ExecuteResult v_NestingEnd   = new ExecuteResult(v_NestingBegin.getExecuteTreeID() ,this.xid ,this.toString(io_Context) + " END ");
+        this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
         
         if ( Help.isNull(this.callFlowXID) )
         {
-            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID is null."));
-            this.refreshStatus(io_Context ,v_Result.getStatus());
-            return v_Result;
+            v_NestingBegin.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID is null."));
+            this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
+            return v_NestingBegin;
         }
         
         // 获取执行对象
         Object v_CallObject = XJava.getObject(this.callFlowXID);
         if ( v_CallObject == null )
         {
-            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + this.callFlowXID + "] is not find."));
-            this.refreshStatus(io_Context ,v_Result.getStatus());
-            return v_Result;
+            v_NestingBegin.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + this.callFlowXID + "] is not find."));
+            this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
+            return v_NestingBegin;
         }
         // 禁止嵌套直接套嵌套，做无用功
         if ( !(v_CallObject instanceof NodeConfig)
           && !(v_CallObject instanceof Condition) )
         {
-            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + this.callFlowXID + "] is not NodeConfig or Condition."));
-            this.refreshStatus(io_Context ,v_Result.getStatus());
-            return v_Result;
+            v_NestingBegin.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + this.callFlowXID + "] is not NodeConfig or Condition."));
+            this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
+            return v_NestingBegin;
         }
         
-        long           v_BeginTime = this.request();
-        ExecuteElement v_CallFlow  = (ExecuteElement) v_CallObject;
-        ExecuteResult  v_ExceRet   = CallFlow.execute(v_CallFlow ,io_Context ,CallFlow.getExecuteEvent(io_Context));
+        ExecuteResult v_SuperFirstResult = CallFlow.getFirstResult(io_Context);  // 备份父级首个执行结果 
+        ExecuteResult v_SuperLastResult  = CallFlow.getLastResult( io_Context);  // 备份父级最后执行结果 
         
-        this.success(Date.getTimeNano() - v_BeginTime);
-        this.refreshStatus(io_Context ,v_ExceRet.getStatus());         // 子编排的状态就是我的状态
+        // 将父级的最后结果与子级的首个结果相关联
+        if ( v_SuperLastResult != null )
+        {
+            v_NestingBegin.setPrevious(v_SuperLastResult);
+        }
+        else
+        {
+            // 嵌套是主编排的首个执行对象
+            v_NestingBegin.setPrevious(null);
+        }
+        v_NestingBegin.setResult(true);
+        
+        // 最后执行的嵌套对象（自己），为已编排生成树ID用
+        io_Context.put(CallFlow.$LastNestingBeginResult ,v_NestingBegin);
+        
+        ExecuteElement v_CallFlow = (ExecuteElement) v_CallObject;
+        ExecuteResult  v_ExceRet  = CallFlow.execute(v_CallFlow ,io_Context ,CallFlow.getExecuteEvent(io_Context));
+        
+        this.refreshStatus(io_Context ,v_ExceRet.getStatus());             // 子编排的状态就是我的状态
+        
+        // 还原：原始父级的首个执行对象的结果
+        if ( v_SuperFirstResult != null )
+        {
+            io_Context.put(CallFlow.$FirstExecuteResult ,v_SuperFirstResult);
+        }
         
         if ( !CallFlow.getExecuteIsError(io_Context) )
         {
             ExecuteResult v_LastResult = CallFlow.getLastResult(io_Context);
-            v_Result.setPrevious(v_LastResult);                        // 关联最后执行对象的结果
-            v_LastResult.addNext(v_Result);                            // 子编排完成后的下一步关联到本层编排的嵌套配置
-            
-            this.refreshReturn(io_Context ,v_ExceRet.getResult());     // 这里用 returnID 返回是的执行结果的原始信息，而不是ExecuteResult对象。
-            return v_Result.setResult(v_ExceRet.getResult());          // 子编排的结果就是我的结果
+            v_LastResult.addNext(v_NestingEnd);                            // 子编排完成后的下一步关联到本层编排的嵌套配置
+            v_NestingEnd.setPrevious(v_LastResult);                        // 关联最后执行对象的结果
+            v_NestingEnd.setResult(v_ExceRet.getResult());                 // 子编排的结果就是我的结果
+            this.refreshReturn(io_Context ,v_ExceRet.getResult());         // 这里用 returnID 返回是的执行结果的原始信息，而不是ExecuteResult对象。
         }
         else
         {
             // 不能改写为异常的元素的执行XID和树ID。嵌套就是一个相对独立的元素
-            // 如果将子嵌套的执行XID和树ID拿到本编排流程中，是没有意义的，也无法定位
+            // 如果将子嵌套的执行XID和树ID拿到本编排流程中，是无法定位
             // 子编排错了，就是本编排流程的嵌套对象错了。
             ExecuteResult v_ErrorResult = CallFlow.getErrorResult(io_Context);
-            v_Result.setPrevious( v_ErrorResult);
-            v_ErrorResult.addNext(v_Result);
-            
-            v_Result.setExecuteLogic(    v_ErrorResult.getExecuteLogic());
-            return v_Result.setException(v_ErrorResult.getException());
+            v_ErrorResult.addNext(v_NestingEnd);
+            v_NestingEnd.setPrevious( v_ErrorResult);
+            v_NestingEnd.setExecuteLogic(v_ErrorResult.getExecuteLogic());
+            v_NestingEnd.setException(   v_ErrorResult.getException());
         }
+        
+        this.success(Date.getTimeNano() - v_BeginTime);
+        return v_NestingBegin;
     }
     
     

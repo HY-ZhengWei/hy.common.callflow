@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnesting id="XNesting_CF008_1_2">
+            <comment>1</comment>
+            <callFlowXID>XNode_CF003_001</callFlowXID>
+            <returnID>CF003</returnID>
+        </xnesting>
+        
+        
+        <xnesting id="XNesting_CF008_1">
+            <comment>1</comment>
+            <callFlowXID>XNode_CF006_1</callFlowXID>  <!-- 子编排的XID -->
+            <route>
+                <succeed ref="XNesting_CF008_1_2" />
+            </route>
+            <returnID>CF006</returnID>                <!-- 定义返回结果的变量名称 -->
+        </xnesting>
+        
+    </xconfig>
+    
+</config>

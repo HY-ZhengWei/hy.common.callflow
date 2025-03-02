@@ -78,20 +78,20 @@ public class Condition extends ExecuteElement implements IfElse
      */
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
-        ExecuteResult v_Result = new ExecuteResult(this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        long          v_BeginTime = this.request();
+        ExecuteResult v_Result    = new ExecuteResult(this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         
         try
         {
-            long    v_BeginTime = this.request();
-            boolean v_ExceRet   = this.allow(io_Context);
+            boolean v_ExceRet = this.allow(io_Context);
             
             if ( !Help.isNull(this.returnID) )
             {
                 io_Context.put(this.returnID ,v_ExceRet);
             }
             
-            this.success(Date.getTimeNano() - v_BeginTime);
             v_Result.setResult(v_ExceRet);
+            this.success(Date.getTimeNano() - v_BeginTime);
             return v_Result;
         }
         catch (Exception exce)

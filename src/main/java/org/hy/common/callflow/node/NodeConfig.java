@@ -101,7 +101,8 @@ public class NodeConfig extends ExecuteElement
      */
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
-        ExecuteResult v_Result = new ExecuteResult(this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        long          v_BeginTime = this.request();
+        ExecuteResult v_Result    = new ExecuteResult(this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
         if ( Help.isNull(this.callXID) )
@@ -159,8 +160,7 @@ public class NodeConfig extends ExecuteElement
         
         try
         {
-            long   v_BeginTime = this.request();
-            Object v_ExceRet   = Void.TYPE;
+            Object v_ExceRet = Void.TYPE;
             if ( Void.TYPE.equals(this.callMethodObject.getReturnType()) )
             {
                 this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
@@ -171,9 +171,9 @@ public class NodeConfig extends ExecuteElement
             }
             
             v_Result.setResult(v_ExceRet);
-            this.success(Date.getTimeNano() - v_BeginTime);
             this.refreshReturn(io_Context ,v_ExceRet);
             this.refreshStatus(io_Context ,v_Result.getStatus());
+            this.success(Date.getTimeNano() - v_BeginTime);
             return v_Result;
         }
         catch (Exception exce)

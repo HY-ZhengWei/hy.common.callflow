@@ -13,6 +13,7 @@ import org.hy.common.callflow.execute.IExecuteEvent;
 import org.hy.common.callflow.file.ExportXml;
 import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.ifelse.Condition;
+import org.hy.common.callflow.nesting.NestingConfig;
 
 
 
@@ -29,25 +30,28 @@ public class CallFlow
 {
     
     /** 编排XML配置文件的保存路径 */
-    public static       String $SavePath           = Help.getSysTempPath();
+    public static       String $SavePath                = Help.getSysTempPath();
     
     /** 变量ID名称：编排执行实例ID */
-    public static final String $WorkID             = "CallFlowWorkID";
+    public static final String $WorkID                  = "CallFlowWorkID";
     
     /** 变量ID名称：编排执行实例的首个执行对象的执行结果 */
-    public static final String $FirstExecuteResult = "CallFlowFirstExecuteResult";
+    public static final String $FirstExecuteResult      = "CallFlowFirstExecuteResult";
     
     /** 变量ID名称：编排执行实例的最后执行对象的执行结果（但不包括异常的） */
-    public static final String $LastExecuteResult = "CallFlowLastExecuteResult";
+    public static final String $LastExecuteResult       = "CallFlowLastExecuteResult";
+    
+    /** 变量ID名称：编排执行实例的最后执行嵌套的开始部分的结果（瞬息间的值，用完就即时释放了） */
+    public static final String $LastNestingBeginResult  = "CallFlowLastNestingBeginResult";
     
     /** 变量ID名称：编排执行实例是否异常 */
-    public static final String $ExecuteIsError     = "CallFlowExecuteIsError";
+    public static final String $ExecuteIsError          = "CallFlowExecuteIsError";
     
     /** 变量ID名称：编排执行实例异常的结果 */
-    public static final String $ErrorResult        = "CallFlowErrorResult";
+    public static final String $ErrorResult             = "CallFlowErrorResult";
     
     /** 变量ID名称：编排执行实例的监听事件（事件可以传递到嵌套子编排中去） */
-    public static final String $ExecuteEvent       = "CallFlowExecuteEvent";
+    public static final String $ExecuteEvent            = "CallFlowExecuteEvent";
     
     
     
@@ -358,15 +362,36 @@ public class CallFlow
         }
         
         ExecuteResult v_Result = i_ExecObject.execute(i_SuperTreeID ,io_Context);
-        io_Context.put($LastExecuteResult ,v_Result);
         if ( i_PreviousResult == null )
         {
+            // 这里须明白，当有嵌套时，子级的编排也有它自己的首个执行对象的结果
+            // 子级的编排会覆盖父级的编排，所以因为嵌套中处理，如备份处理。
             io_Context.put($FirstExecuteResult ,v_Result);
+        }
+        
+        if ( i_ExecObject instanceof NestingConfig )
+        {
+            // 嵌套配置时，因为嵌套配置已在它的内部设置了
+            // 并且嵌套的Previous前一个关联在了子编排流程中的最后执行元素上
+        }
+        // 有两种可能造成上个结果为NULL
+        //     原因1：主编排中首个执行结果
+        //     原因2：子编排中首个执行结果
+        else if ( i_PreviousResult == null )
+        {
+            // 如果嵌套的情况，也只用一次
+            ExecuteResult v_NestingBegin = (ExecuteResult) io_Context.remove($LastNestingBeginResult);
+            if ( v_NestingBegin != null )
+            {
+                v_Result.setPrevious(v_NestingBegin);
+                v_NestingBegin.addNext(v_Result);
+            }
         }
         else
         {
             v_Result.setPrevious(i_PreviousResult);
         }
+        io_Context.put($LastExecuteResult ,v_Result);
         
         List<IExecute> v_Nexts  = null;
         if ( v_Result.isSuccess() )
