@@ -5,6 +5,7 @@
     <import name="xconfig"    class="java.util.ArrayList" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
     
     

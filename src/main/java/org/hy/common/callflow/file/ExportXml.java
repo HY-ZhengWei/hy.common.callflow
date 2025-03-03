@@ -12,6 +12,7 @@ import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.NodeConfig;
+import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.file.FileHelp;
 import org.hy.common.license.Hash;
 import org.hy.common.license.IHash;
@@ -221,6 +222,10 @@ public class ExportXml
             if ( i_ExecObject instanceof NodeConfig )
             {
                 i_ExecObject.setXJavaID("XNode_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof WaitConfig )
+            {
+                i_ExecObject.setXJavaID("XWait_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof Condition )
             {

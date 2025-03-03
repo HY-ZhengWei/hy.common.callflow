@@ -1,4 +1,4 @@
-package org.hy.common.callflow.junit.cflow008;
+package org.hy.common.callflow.junit.cflow009;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,10 +8,8 @@ import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.junit.cflow003.JU_CFlow003;
-import org.hy.common.callflow.junit.cflow006.JU_CFlow006;
-import org.hy.common.callflow.junit.cflow006.program.Program;
-import org.hy.common.callflow.nesting.NestingConfig;
+import org.hy.common.callflow.junit.cflow009.program.Program;
+import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -24,22 +22,22 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎008：嵌套
+ * 测试单元：编排引擎009：等待N秒
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-02-28
+ * @createDate  2025-03-03
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow008
+public class JU_CFlow009
 {
     
     private static boolean $isInit = false;
     
     
     
-    public JU_CFlow008() throws Exception
+    public JU_CFlow009() throws Exception
     {
         if ( !$isInit )
         {
@@ -51,39 +49,30 @@ public class JU_CFlow008
     
     
     @Test
-    public void test_CFlow008() throws Exception
+    public void test_CFlow009()
     {
-        new JU_CFlow003();
-        new JU_CFlow006();
-        
-        this.test_CFlow008_Inner();
+        test_CFlow009_Inner();
         System.out.println("\n");
-        // this.test_CFlow008_Inner();
+        test_CFlow009_Inner();
     }
     
     
     
-    private void test_CFlow008_Inner() throws Exception
+    private void test_CFlow009_Inner()
     {
         // 初始化被编排的执行程序
         XJava.putObject("XProgram" ,new Program());
         
         // 启动编排
-        NestingConfig       v_Nesting = (NestingConfig) XJava.getObject("XNesting_CF008_1");
-        Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF009_1");
+        Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
-        if ( !Help.isNull(v_Nesting.getTreeIDs()) )
+        if ( Help.isNull(v_FirstNode.getTreeIDs()) )
         {
-            CallFlow.getHelpExecute().clearTree(v_Nesting);
+            CallFlow.getHelpExecute().calcTree(v_FirstNode);
         }
-        CallFlow.getHelpExecute().calcTree(v_Nesting);
         
-        // 传值 9 或 传值 -1 或 不传值
-        v_Context.put("NumParam"  ,9);
-        // 传值 null 或 不为 null
-        v_Context.put("NULLValue" ,null);
-        
-        ExecuteResult v_Result = CallFlow.execute(v_Nesting ,v_Context);
+        ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
         if ( v_Result.isSuccess() )
         {
             System.out.println("Success");
@@ -106,7 +95,7 @@ public class JU_CFlow008
         System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
         
         // 导出
-        System.out.println(CallFlow.getHelpExport().export(v_Nesting));
+        System.out.println(CallFlow.getHelpExport().export(v_FirstNode));
     }
     
     
@@ -115,7 +104,7 @@ public class JU_CFlow008
      * 打印执行路径
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-26
+     * @createDate  2025-03-03
      * @version     v1.0
      *
      * @param i_Result

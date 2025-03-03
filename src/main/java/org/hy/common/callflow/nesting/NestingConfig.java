@@ -12,8 +12,6 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
-import org.hy.common.callflow.ifelse.Condition;
-import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
 
@@ -96,8 +94,7 @@ public class NestingConfig extends ExecuteElement
             return v_NestingBegin;
         }
         // 禁止嵌套直接套嵌套，做无用功
-        if ( !(v_CallObject instanceof NodeConfig)
-          && !(v_CallObject instanceof Condition) )
+        if ( v_CallObject instanceof NestingConfig )
         {
             v_NestingBegin.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + this.callFlowXID + "] is not NodeConfig or Condition."));
             this.refreshStatus(io_Context ,v_NestingBegin.getStatus());

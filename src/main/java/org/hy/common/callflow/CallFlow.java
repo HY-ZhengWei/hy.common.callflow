@@ -394,6 +394,22 @@ public class CallFlow
             // 这里须明白，当有嵌套时，子级的编排也有它自己的首个执行对象的结果
             // 子级的编排会覆盖父级的编排，所以因为嵌套中处理，如备份处理。
             io_Context.put($FirstExecuteResult ,v_Result);
+            
+            // 有两种可能造成上个结果为NULL
+            //     原因1：主编排中首个执行结果
+            //     原因2：子编排中首个执行结果
+            ExecuteResult v_NestingBegin = (ExecuteResult) io_Context.remove($LastNestingBeginResult);
+            if ( v_NestingBegin != null )
+            {
+                // 原因2：子编排中首个执行结果。如果嵌套的情况，也只用一次
+                v_Result.setPrevious(v_NestingBegin);
+                v_NestingBegin.addNext(v_Result);
+            }
+            else
+            {
+                // 原因1：主编排中首个执行结果
+                v_Result.setPrevious(null);
+            }
         }
         
         if ( i_ExecObject instanceof NestingConfig )
@@ -401,20 +417,7 @@ public class CallFlow
             // 嵌套配置时，因为嵌套配置已在它的内部设置了
             // 并且嵌套的Previous前一个关联在了子编排流程中的最后执行元素上
         }
-        // 有两种可能造成上个结果为NULL
-        //     原因1：主编排中首个执行结果
-        //     原因2：子编排中首个执行结果
-        else if ( i_PreviousResult == null )
-        {
-            // 如果嵌套的情况，也只用一次
-            ExecuteResult v_NestingBegin = (ExecuteResult) io_Context.remove($LastNestingBeginResult);
-            if ( v_NestingBegin != null )
-            {
-                v_Result.setPrevious(v_NestingBegin);
-                v_NestingBegin.addNext(v_Result);
-            }
-        }
-        else
+        else if ( i_PreviousResult != null )
         {
             v_Result.setPrevious(i_PreviousResult);
         }
