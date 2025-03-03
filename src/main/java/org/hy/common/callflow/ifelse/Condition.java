@@ -8,6 +8,7 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -63,6 +64,21 @@ public class Condition extends ExecuteElement implements IfElse
         super(i_RequestTotal ,i_SuccessTotal);
         this.logical = Logical.And;
         this.items   = new ArrayList<>();
+    }
+    
+    
+    /**
+     * 执行元素的类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String getElementType()
+    {
+        return ElementType.Condition.getValue();
     }
     
     

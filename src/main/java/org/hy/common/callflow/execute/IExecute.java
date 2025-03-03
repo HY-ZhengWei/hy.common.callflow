@@ -24,6 +24,19 @@ public interface IExecute extends IDirectedGraphID ,IToXml ,XJavaID
 {
     
     /**
+     * 执行元素的类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String getElementType();
+    
+    
+    
+    /**
      * 执行
      * 
      * @author      ZhengWei(HY)

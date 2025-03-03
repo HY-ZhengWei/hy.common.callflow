@@ -12,6 +12,7 @@ import org.hy.common.MethodReflect;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -85,6 +86,21 @@ public class NodeConfig extends ExecuteElement
     {
         super(i_RequestTotal ,i_SuccessTotal);
         this.isInit = false;
+    }
+    
+    
+    /**
+     * 执行元素的类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String getElementType()
+    {
+        return ElementType.Node.getValue();
     }
     
     
