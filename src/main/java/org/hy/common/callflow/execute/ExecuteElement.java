@@ -171,6 +171,10 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
      */
     public void setXid(String i_Xid)
     {
+        if ( CallFlow.isSystemXID(i_Xid) )
+        {
+            throw new IllegalArgumentException("ExecuteElement's XID[" + i_Xid + "] is SystemXID.");
+        }
         this.xid = i_Xid;
     }
 
@@ -183,6 +187,10 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
      */
     public void setXJavaID(String i_XJavaID)
     {
+        if ( CallFlow.isSystemXID(i_XJavaID) )
+        {
+            throw new IllegalArgumentException("ExecuteElement's XJavaID[" + i_XJavaID + "] is SystemXID.");
+        }
         this.xid = i_XJavaID;
     }
     
@@ -918,9 +926,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
      */
     public void setReturnID(String i_ReturnID)
     {
-        if ( CallFlow.$WorkID.equals(i_ReturnID) )
+        if ( CallFlow.isSystemXID(i_ReturnID) )
         {
-            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_ReturnID + "] equals " + CallFlow.$WorkID);
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_ReturnID + "] is SystemXID.");
         }
         this.returnID = i_ReturnID;
     }

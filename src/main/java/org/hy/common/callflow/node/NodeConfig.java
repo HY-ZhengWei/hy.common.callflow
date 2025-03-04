@@ -546,9 +546,9 @@ public class NodeConfig extends ExecuteElement
      */
     public void setStatusID(String i_StatusID)
     {
-        if ( CallFlow.$WorkID.equals(i_StatusID) )
+        if ( CallFlow.isSystemXID(i_StatusID) )
         {
-            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_StatusID + "] equals " + CallFlow.$WorkID);
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s statusID[" + i_StatusID + "] is SystemXID.");
         }
         this.statusID = i_StatusID;
     }

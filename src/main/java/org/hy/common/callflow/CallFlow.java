@@ -14,6 +14,7 @@ import org.hy.common.callflow.file.ExportXml;
 import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.nesting.NestingConfig;
+import org.hy.common.db.DBSQL;
 
 
 
@@ -55,6 +56,48 @@ public class CallFlow
     
     /** 变量ID名称：编排执行实例的监听事件（事件可以传递到嵌套子编排中去） */
     public static final String $ExecuteEvent            = "CallFlowExecuteEvent";
+    
+    
+    
+    /**
+     * 是否为系统预定义的XID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-04
+     * @version     v1.0
+     *
+     * @param i_XID
+     * @return
+     */
+    public static boolean isSystemXID(String i_XID)
+    {
+        if ( Help.isNull(i_XID) )
+        {
+            return false;
+        }
+        
+        String v_XID = i_XID.trim();
+        if ( v_XID.startsWith(DBSQL.$Placeholder) )
+        {
+            v_XID = v_XID.substring(DBSQL.$Placeholder.length());
+        }
+        
+        if ( CallFlow.$WorkID                .equals(v_XID) 
+          || CallFlow.$FirstExecuteResult    .equals(v_XID) 
+          || CallFlow.$LastExecuteResult     .equals(v_XID) 
+          || CallFlow.$LastNestingBeginResult.equals(v_XID) 
+          || CallFlow.$NestingLevel          .equals(v_XID) 
+          || CallFlow.$ExecuteIsError        .equals(v_XID) 
+          || CallFlow.$ErrorResult           .equals(v_XID) 
+          || CallFlow.$ExecuteEvent          .equals(v_XID)  )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     
     
     

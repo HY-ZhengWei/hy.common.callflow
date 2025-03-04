@@ -5,6 +5,7 @@ import java.util.Map;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.XJavaID;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.Comparer;
 import org.hy.common.callflow.file.IToXml;
@@ -260,6 +261,10 @@ public class ConditionItem implements IfElse ,XJavaID
      */
     public void setValueXIDA(String i_ValueXIDA)
     {
+        if ( CallFlow.isSystemXID(i_ValueXIDA) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s ValueXIDA[" + i_ValueXIDA + "] is SystemXID.");
+        }
         this.valueXIDA = i_ValueXIDA;
     }
 
@@ -280,6 +285,10 @@ public class ConditionItem implements IfElse ,XJavaID
      */
     public void setValueXIDB(String i_ValueXIDB)
     {
+        if ( CallFlow.isSystemXID(i_ValueXIDB) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s ValueXIDB[" + i_ValueXIDB + "] is SystemXID.");
+        }
         this.valueXIDB = i_ValueXIDB;
     }
 

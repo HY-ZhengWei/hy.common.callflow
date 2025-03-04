@@ -48,6 +48,11 @@ public class SelfLoop extends ExecuteElement
             throw new IllegalArgumentException("SelfLoop's refXID[" + i_RefXID + "] is error.");
         }
         
+        if ( CallFlow.isSystemXID(i_RefXID) )
+        {
+            throw new IllegalArgumentException("SelfLoop's refXID[" + i_RefXID + "] is SystemXID.");
+        }
+        
         if ( v_RefXID.startsWith(DBSQL.$Placeholder) )
         {
             this.refXID = v_RefXID.substring(DBSQL.$Placeholder.length());
