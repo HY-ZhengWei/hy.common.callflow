@@ -2,7 +2,10 @@ package org.hy.common.callflow.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
@@ -32,10 +35,26 @@ import org.hy.common.license.IHash;
 public class ExportXml
 {
     
-    private static final ExportXml $Instance = new ExportXml();
+    /** 单实例 */
+    private static final ExportXml           $Instance    = new ExportXml();
+    
+    /** XML引用类的头信息。key为引用名称，value为引用元类 */
+    private static final Map<String ,String> $ImportHeads = new LinkedHashMap<String ,String>();
     
     /** 文件数字ID的加密算法 */
-    public  static final IHash     $Hash = new Hash();
+    public  static final IHash               $Hash        = new Hash();
+    
+    
+    
+    static 
+    {
+        // 预定义的引用类
+        getInstance().addImportHead("xconfig"    ,ArrayList.class);
+        getInstance().addImportHead("xnesting"   ,NestingConfig.class);
+        getInstance().addImportHead("xnode"      ,NodeConfig.class);
+        getInstance().addImportHead("xwait"      ,WaitConfig.class);
+        getInstance().addImportHead("xcondition" ,Condition.class);
+    }
     
     
     
@@ -51,6 +70,56 @@ public class ExportXml
     public static ExportXml getInstance()
     {
         return $Instance;
+    }
+    
+    
+    
+    /**
+     * 添加Xml内容中的import头信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-04
+     * @version     v1.0
+     *
+     * @param i_XmlImportName  Xml引用节点的名称
+     * @param i_XmlClass       Xml引用的元类
+     */
+    public void addImportHead(String i_XmlImportName ,Class<?> i_XmlClass)
+    {
+        $ImportHeads.put(i_XmlImportName ,i_XmlClass.getName());
+    }
+    
+    
+    
+    /**
+     * 生成所有引用类的Xml头信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-04
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String toXmlImportHeads()
+    {
+        StringBuilder v_Imports = new StringBuilder();
+        int           v_Max     = 0;
+        
+        for (String v_ImportName : $ImportHeads.keySet())
+        {
+            v_Max = Help.max(v_Max ,v_ImportName.length());
+        }
+        
+        v_Max += 1;
+        
+        for (Map.Entry<String ,String> v_Item : $ImportHeads.entrySet())
+        {
+            v_Imports.append("    ")
+                     .append("<import name=\"").append(v_Item.getKey()).append("\"").append(StringHelp.lpad("" ,v_Max - v_Item.getKey().length()," "))
+                     .append("class=\"").append(v_Item.getValue()).append("\" />\n");
+        }
+        
+        return v_Imports.toString();
     }
     
     
@@ -161,6 +230,7 @@ public class ExportXml
             CallFlow.getHelpExecute().calcTree(i_ExecObject);
         }
         
+        String v_Imports  = toXmlImportHeads();
         String v_Content  = exportToChild(i_ExecObject ,i_ExecObject.getTreeIDs().iterator().next());
         String v_Template = getTemplateXml();
         
@@ -169,7 +239,7 @@ public class ExportXml
             v_Content = v_Content.substring(1);
         }
         
-        return StringHelp.replaceAll(v_Template ,":Content" ,v_Content);
+        return StringHelp.replaceAll(v_Template ,new String[]{":Imports" ,":Content"} ,new String[] {v_Imports ,v_Content});
     }
     
     
