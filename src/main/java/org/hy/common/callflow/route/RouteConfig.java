@@ -79,6 +79,21 @@ public class RouteConfig
     
     
     /**
+     * 自循环的引用：setSucceed方法的别名，主要用于 "条件逻辑" 判定结果为真时路由配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @param i_RefXID  引用执行元素的XID
+     */
+    public void setIf(String i_RefXID)
+    {
+        this.setSucceed(new SelfLoop(i_RefXID));
+    }
+    
+    
+    /**
      * setSucceed方法的别名，主要用于 "条件逻辑" 判定结果为真时路由配置
      * 
      * @author      ZhengWei(HY)
@@ -94,6 +109,21 @@ public class RouteConfig
     
     
     /**
+     * 自循环的引用：setFailed方法的别名，主要用于 "条件逻辑" 判定结果为假时路由配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @param i_RefXID  引用执行元素的XID
+     */
+    public void setElse(String i_RefXID)
+    {
+        this.setFailed(new SelfLoop(i_RefXID));
+    }
+    
+    
+    /**
      * setFailed方法的别名，主要用于 "条件逻辑" 判定结果为假时路由配置
      * 
      * @author      ZhengWei(HY)
@@ -105,6 +135,21 @@ public class RouteConfig
     public void setElse(ExecuteElement i_Execute)
     {
         this.setFailed(i_Execute);
+    }
+    
+    
+    /**
+     * 自循环的引用：添加执行成功后的路由
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @param i_RefXID  引用执行元素的XID
+     */
+    public void setSucceed(String i_RefXID)
+    {
+        this.setSucceed(new SelfLoop(i_RefXID));
     }
     
     
@@ -134,6 +179,21 @@ public class RouteConfig
     
     
     /**
+     * 自循环的引用：添加执行失败后的路由
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-15
+     * @version     v1.0
+     *
+     * @param i_Execute  执行对象。节点或判定条件
+     */
+    public void setFailed(String i_RefXID)
+    {
+        this.setFailed(new SelfLoop(i_RefXID));
+    }
+    
+    
+    /**
      * 添加执行失败后的路由
      * 
      * @author      ZhengWei(HY)
@@ -159,6 +219,21 @@ public class RouteConfig
     
     
     /**
+     * 自循环的引用：setException方法的别名，添加执行异常后的路由
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @param i_RefXID  引用执行元素的XID
+     */
+    public void setError(String i_RefXID)
+    {
+        this.setException(new SelfLoop(i_RefXID));
+    }
+    
+    
+    /**
      * setException方法的别名，添加执行异常后的路由
      * 
      * @author      ZhengWei(HY)
@@ -170,6 +245,21 @@ public class RouteConfig
     public void setError(ExecuteElement i_Execute)
     {
         this.setException(i_Execute);
+    }
+    
+    
+    /**
+     * 自循环的引用：添加执行异常后的路由
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-15
+     * @version     v1.0
+     *
+     * @param i_RefXID  引用执行元素的XID
+     */
+    public void setException(String i_RefXID)
+    {
+        this.setException(new SelfLoop(i_RefXID));
     }
     
     

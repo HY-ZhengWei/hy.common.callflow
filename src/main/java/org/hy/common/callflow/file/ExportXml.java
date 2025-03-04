@@ -13,6 +13,7 @@ import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.file.FileHelp;
 import org.hy.common.license.Hash;
 import org.hy.common.license.IHash;
@@ -194,6 +195,10 @@ public class ExportXml
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
             }
         }
@@ -203,6 +208,10 @@ public class ExportXml
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
             }
         }
@@ -212,6 +221,10 @@ public class ExportXml
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
             }
         }
@@ -234,6 +247,11 @@ public class ExportXml
             else if ( i_ExecObject instanceof NestingConfig )
             {
                 i_ExecObject.setXJavaID("XNesting_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof SelfLoop )
+            {
+                // Nothing  什么都不用做。它不用自己生成XML
+                throw new RuntimeException("Not allowed to call SelfLoop.toXml().");
             }
             else
             {

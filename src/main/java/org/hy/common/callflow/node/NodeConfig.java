@@ -18,6 +18,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
@@ -604,7 +605,11 @@ public class NodeConfig extends ExecuteElement
             {
                 for (IExecute v_Item : this.route.getSucceeds())
                 {
-                    if ( !Help.isNull(v_Item.getXJavaID()) )
+                    if ( v_Item instanceof SelfLoop )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
+                    }
+                    else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {
                         v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("succeed" ,v_Item.getXJavaID()));
                     }
@@ -619,7 +624,11 @@ public class NodeConfig extends ExecuteElement
             {
                 for (IExecute v_Item : this.route.getExceptions())
                 {
-                    if ( !Help.isNull(v_Item.getXJavaID()) )
+                    if ( v_Item instanceof SelfLoop )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
+                    }
+                    else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {
                         v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("error" ,v_Item.getXJavaID() ,v_MaxLpad - 5));
                     }

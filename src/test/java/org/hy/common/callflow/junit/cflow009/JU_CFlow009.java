@@ -111,9 +111,9 @@ public class JU_CFlow009
      */
     private void println(ExecuteResult i_Result)
     {
-        System.out.println(StringHelp.rpad(i_Result.getExecuteTreeID() ,16 ," ") 
+        System.out.println(StringHelp.rpad(i_Result.getExecuteTreeID() ,20 ," ") 
                          + " " 
-                         + StringHelp.rpad(i_Result.getTreeID() ,16 ," ") 
+                         + StringHelp.rpad(i_Result.getTreeID() ,20 ," ") 
                          + " " 
                          + Date.toTimeLenNano(i_Result.getEndTime() - i_Result.getBeginTime())
                          + StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")

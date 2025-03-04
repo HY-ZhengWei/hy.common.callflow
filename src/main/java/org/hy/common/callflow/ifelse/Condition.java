@@ -14,6 +14,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.route.SelfLoop;
 
 
 
@@ -405,7 +406,11 @@ public class Condition extends ExecuteElement implements IfElse
             {
                 for (IExecute v_Item : this.route.getSucceeds())
                 {
-                    if ( !Help.isNull(v_Item.getXJavaID()) )
+                    if ( v_Item instanceof SelfLoop )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("if" ,((SelfLoop) v_Item).getRefXID()));
+                    }
+                    else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {
                         v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("if" ,v_Item.getXJavaID() ,v_MaxLpad - 2));
                     }
@@ -420,7 +425,11 @@ public class Condition extends ExecuteElement implements IfElse
             {
                 for (IExecute v_Item : this.route.getFaileds())
                 {
-                    if ( !Help.isNull(v_Item.getXJavaID()) )
+                    if ( v_Item instanceof SelfLoop )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("else" ,((SelfLoop) v_Item).getRefXID()));
+                    }
+                    else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {
                         v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("else" ,v_Item.getXJavaID() ,v_MaxLpad - 4));
                     }
@@ -435,7 +444,11 @@ public class Condition extends ExecuteElement implements IfElse
             {
                 for (IExecute v_Item : this.route.getExceptions())
                 {
-                    if ( !Help.isNull(v_Item.getXJavaID()) )
+                    if ( v_Item instanceof SelfLoop )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
+                    }
+                    else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {
                         v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("error" ,v_Item.getXJavaID()));
                     }

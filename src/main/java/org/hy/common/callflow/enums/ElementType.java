@@ -20,6 +20,8 @@ public enum ElementType
     
     Wait(     "WAIT"      ,"等待元素"),
     
+    SelfLoop( "SELFLOOP"  ,"自循环"),
+    
     Nesting(  "NESTING"   ,"嵌套子编排"),
     
     ;

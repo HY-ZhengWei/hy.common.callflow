@@ -3,6 +3,7 @@ package org.hy.common.callflow.execute;
 import java.util.List;
 
 import org.hy.common.Help;
+import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.xml.XJava;
 
 
@@ -62,6 +63,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 removeMySelf((ExecuteElement) v_Child);
             }
         }
@@ -71,6 +76,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 removeMySelf((ExecuteElement) v_Child);
             }
         }
@@ -80,6 +89,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 removeMySelf((ExecuteElement) v_Child);
             }
         }
@@ -117,6 +130,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 clearTree((ExecuteElement) v_Child);
             }
         }
@@ -126,6 +143,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 clearTree((ExecuteElement) v_Child);
             }
         }
@@ -135,6 +156,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 clearTree((ExecuteElement) v_Child);
             }
         }
@@ -203,6 +228,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 calcTree(v_Child ,i_TreeID ,v_IndexNo++);
             }
         }
@@ -212,6 +241,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 calcTree(v_Child ,i_TreeID ,v_IndexNo++);
             }
         }
@@ -221,6 +254,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 calcTree(v_Child ,i_TreeID ,v_IndexNo++);
             }
         }
@@ -262,6 +299,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
                 if ( v_Ret != null )
                 {
@@ -275,6 +316,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
                 if ( v_Ret != null )
                 {
@@ -288,6 +333,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Child : v_Childs)
             {
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
                 IExecute v_Ret = findTreeID(v_Child ,i_TreeID);
                 if ( v_Ret != null )
                 {
@@ -485,6 +534,10 @@ public class ExecuteTreeHelp
         {
             for (IExecute v_Previous : v_PreviousList)
             {
+                if ( v_Previous instanceof SelfLoop )
+                {
+                    continue;
+                }
                 IExecute v_SuperRet = findFirst(v_Previous);
                 if ( v_SuperRet != null )
                 {
