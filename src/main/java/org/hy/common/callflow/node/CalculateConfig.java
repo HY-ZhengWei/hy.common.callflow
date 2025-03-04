@@ -1,9 +1,11 @@
 package org.hy.common.callflow.node;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.PartitionMap;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
@@ -16,46 +18,86 @@ import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.log.Logger;
 
+import com.greenpineyu.fel.FelEngine;
+import com.greenpineyu.fel.FelEngineImpl;
+import com.greenpineyu.fel.context.FelContext;
+import com.greenpineyu.fel.context.MapContext;
 
 
 
 
 /**
- * 等待配置信息
+ * 计算配置信息
  * 
- * 注：不建议等待配置共用，即使两个编排调用相同的等待配置也建议配置两个等待配置，使等待配置唯一隶属于一个编排中。
- *    原因1是考虑到后期升级维护编排，在共享等待配置下，无法做到升级时百分百的正确。
+ * 注：不建议计算配置共用，即使两个编排调用相同的计算配置也建议配置两个计算配置，使计算配置唯一隶属于一个编排中。
+ *    原因1是考虑到后期升级维护编排，在共享计算配置下，无法做到升级时百分百的正确。
  *    原因2是在共享节点时，统计方面也无法独立区分出来。
  *    
  *    如果要共享，建议采用子编排的方式共享。
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-03-03
+ * @createDate  2025-03-04
  * @version     v1.0
  */
-public class WaitConfig extends ExecuteElement
+public class CalculateConfig extends ExecuteElement
 {
     
-    private static final Logger $Logger = new Logger(WaitConfig.class);
+    private static final Logger $Logger = new Logger(CalculateConfig.class);
+    
+    /**
+     * 表达式引擎的阻断符或是限定符。
+     * 阻断符最终将被替换为""空字符。
+     * 
+     * 用于阻断.点符号。
+     * 
+     * 如，表达式  :Name.indexOf("B") >= 0 ，:Name.indexOf 也可能被解释为面向对象的属性值获取方法。
+     *     而.indexOf("B")是Fel处理的，无须再加工。为了防止歧义，所以要阻断或限定一下，变成下面的样子。
+     *     {:Name}.indexOf("B") >= 0
+     */
+    private static final String [] $Fel_BlockingUp = {"{" ,"}"};
+    
+    /** 表达式引擎 */
+    private static final FelEngine $FelEngine      = new FelEngineImpl();
     
     
 
-    /** 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String waitTime;
+    /**
+     * 计算表达式
+     * 
+     * 形式为带占位符的Fel表达式，
+     *    如：:c01=='1' && :c02=='2'
+     *    如：:c01==NULL || :c01==''  判定是否为NULL对象或空字符串
+     */
+    private String                        calc;
+    
+    /**
+     * 解释出来的Fel表达式。与this.calc的区别是：它是没有占位符（仅内部使用）
+     * 
+     *    如：c01=='1' && c02=='2'
+     *    如：c01==NULL || c01==''  判定是否为NULL对象或空字符串
+     */
+    private String                        calcFel;
+    
+    /**
+     * 占位符信息的集合
+     * 
+     * Map.key    为占位符。前缀为:符号
+     * Map.Value  为占位符的顺序。下标从0开始
+     */
+    private PartitionMap<String ,Integer> placeholders;
     
     
     
-    public WaitConfig()
+    public CalculateConfig()
     {
         this(0L ,0L);
     }
     
     
     
-    public WaitConfig(long i_RequestTotal ,long i_SuccessTotal)
+    public CalculateConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.waitTime = "0";
     }
     
     
@@ -70,62 +112,63 @@ public class WaitConfig extends ExecuteElement
      */
     public String getElementType()
     {
-        return ElementType.Wait.getValue();
+        return ElementType.Calculate.getValue();
     }
     
     
-    
     /**
-     * 获取：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
-     */
-    public String getWaitTime()
-    {
-        return waitTime;
-    }
-
-
-    
-    /**
-     * 设置：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 获取：计算表达式
      * 
-     * @param i_WaitTime 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 形式为带占位符的Fel表达式，
+     *    如：:c01=='1' && :c02=='2'
+     *    如：:c01==NULL || :c01==''  判定是否为NULL对象或空字符串
      */
-    public void setWaitTime(String i_WaitTime)
+    public String getCalc()
     {
-        if ( Help.isNull(i_WaitTime) )
+        return calc;
+    }
+
+
+    /**
+     * 设置：计算表达式
+     * 
+     * 形式为带占位符的Fel表达式，
+     *    如：:c01=='1' && :c02=='2'
+     *    如：:c01==NULL || :c01==''  判定是否为NULL对象或空字符串
+     * 
+     * @param i_Calc 计算表达式
+     */
+    public void setCalc(String i_Calc)
+    {
+        this.calc         = i_Calc.trim();
+        this.calcFel      = i_Calc.trim();
+        this.placeholders = null;
+        
+        if ( !Help.isNull(this.calc) )
         {
-            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTime is null.");
-            $Logger.error(v_Exce);
-            throw v_Exce;
-        }
-        if ( Help.isNumber(i_WaitTime) )
-        {
-            Long v_WaitTime = Long.valueOf(i_WaitTime);
-            if ( v_WaitTime < 0L )
+            this.placeholders = Help.toReverse(StringHelp.parsePlaceholders(this.calc ,true));
+            
+            for (String v_Key : this.placeholders.keySet())
             {
-                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTime Less than zero.");
-                $Logger.error(v_Exce);
-                throw v_Exce;
+                this.calcFel = StringHelp.replaceAll(this.calcFel ,DBSQL.$Placeholder + v_Key ,StringHelp.replaceAll(v_Key ,"." ,"_"));
             }
-            this.waitTime = i_WaitTime.trim();
+            
+            this.calcFel = StringHelp.replaceAll(this.calcFel ,$Fel_BlockingUp ,new String[]{""});
         }
         else
         {
-            this.waitTime = i_WaitTime.trim();
-            if ( !this.waitTime.startsWith(DBSQL.$Placeholder) )
-            {
-                this.waitTime = DBSQL.$Placeholder + this.waitTime;
-            }
+            this.calc         = null;
+            this.calcFel      = null;
+            this.placeholders = null;
         }
     }
 
 
-    
     /**
      * 执行
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-04
      * @version     v1.0
      *
      * @param i_SuperTreeID  父级执行对象的树ID
@@ -140,27 +183,49 @@ public class WaitConfig extends ExecuteElement
         
         try
         {
-            Long v_WaitTime = null;
-            if ( Help.isNumber(this.waitTime) )
+            if ( Help.isNull(this.calc) )
             {
-                v_WaitTime = Long.valueOf(this.waitTime);
-            }
-            else
-            {
-                v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,0L ,io_Context);
+                return v_Result.setException(new NullPointerException("Calculate[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s calc is null"));
             }
             
-            if ( v_WaitTime > 0 )
+            FelContext v_FelContext = new MapContext();
+            for (String v_Item : this.placeholders.keySet())
             {
-                Thread.sleep(v_WaitTime);
+                String v_Key   = DBSQL.$Placeholder + v_Item;
+                Object v_Value = ValueHelp.getValue(v_Key ,null ,"" ,io_Context);
+                
+                v_Key = StringHelp.replaceAll(v_Item ,"." ,"_"); // "点" 原本就是Fel关键字，所以要替换 ZhengWei(HY) Add 2017-05-23
+                
+                v_FelContext.set(v_Key ,v_Value);
             }
             
+            Object v_CalcRet = $FelEngine.eval(this.calcFel ,v_FelContext);
+            this.refreshReturn(io_Context ,v_CalcRet);
             this.success(Date.getTimeNano() - v_BeginTime);
-            return v_Result.setResult(true);
+            return v_Result.setResult(v_CalcRet);
         }
         catch (Exception exce)
         {
             return v_Result.setException(exce);
+        }
+    }
+    
+    
+    /**
+     * 刷新返回值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-04
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param i_Return    返回值
+     */
+    private void refreshReturn(Map<String ,Object> io_Context ,Object i_Return)
+    {
+        if ( !Help.isNull(this.returnID) && io_Context != null )
+        {
+            io_Context.put(this.returnID ,i_Return);
         }
     }
 
@@ -196,7 +261,7 @@ public class WaitConfig extends ExecuteElement
         StringBuilder v_Xml    = new StringBuilder();
         String        v_Level1 = "    ";
         String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = "xwait";
+        String        v_XName  = "xcalculate";
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -209,10 +274,15 @@ public class WaitConfig extends ExecuteElement
         
         v_Xml.append(super.toXml(i_Level));
         
-        if ( !Help.isNull(this.waitTime) )
+        if ( !Help.isNull(this.calc) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("waitTime" ,this.waitTime));
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("calc" ,this.calc));
         }
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
+        }
+        
         if ( !Help.isNull(this.route.getSucceeds()) 
           || !Help.isNull(this.route.getExceptions()) )
         {
@@ -289,35 +359,44 @@ public class WaitConfig extends ExecuteElement
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Wait ");
-        if ( !Help.isNumber(this.waitTime) )
+        if ( !Help.isNull(this.returnID) )
         {
-            v_Builder.append(this.waitTime).append("=");
-            
-            Long v_WaitTime = null;
-            try
-            {
-                v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,null ,i_Context);
-                if ( v_WaitTime == null )
-                {
-                    v_Builder.append("?");
-                }
-                else
-                {
-                    v_Builder.append(v_WaitTime);
-                }
-            }
-            catch (Exception exce)
-            {
-                v_Builder.append("ERROR");
-                $Logger.error(exce);
-            }
+            v_Builder.append(DBSQL.$Placeholder).append(this.returnID).append(" = ");
+        }
+        
+        if ( Help.isNull(this.calc) )
+        {
+            v_Builder.append("?");
         }
         else
         {
-            v_Builder.append(this.waitTime);
+            Map<String ,String> v_Replaces = new LinkedHashMap<String ,String>();
+            for (String v_Item : this.placeholders.keySet())
+            {
+                try
+                {
+                    String v_Key   = DBSQL.$Placeholder + v_Item;
+                    Object v_Value = ValueHelp.getValue(v_Key ,String.class ,"?" ,i_Context);
+                    if ( v_Value == null )
+                    {
+                        v_Replaces.put(v_Key ,"?");
+                    }
+                    else
+                    {
+                        v_Replaces.put(v_Key ,v_Value.toString());
+                    }
+                }
+                catch (Exception exce)
+                {
+                    $Logger.error("Calculate[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s calc[" + this.calc + "] get[" + v_Item + "] error." ,exce);
+                    v_Replaces.put(v_Item ,"ERROR");
+                }
+            }
+            
+            v_Builder.append(StringHelp.replaceAll(this.calc ,v_Replaces ,true));
+            v_Replaces.clear();
+            v_Replaces = null;
         }
-        v_Builder.append(" ms");
         
         return v_Builder.toString();
     }
@@ -337,7 +416,19 @@ public class WaitConfig extends ExecuteElement
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Wait ").append(this.waitTime).append(" ms");
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Builder.append(DBSQL.$Placeholder).append(this.returnID).append(" = ");
+        }
+        
+        if ( Help.isNull(this.calc) )
+        {
+            v_Builder.append("?");
+        }
+        else
+        {
+            v_Builder.append(this.calc);
+        }
         
         return v_Builder.toString();
     }

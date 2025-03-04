@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF010_1_1">
+            <comment>完成</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Double</valueClass>   <!-- 定义入参类型 -->
+                <value>:CalcRet</value>                     <!-- 定义入参变量名称 -->
+            </callParam>
+        </xnode>
+    
+        
+        <xcalculate id="XCalculate_CF010_1">
+            <comment>计算表达式</comment>
+            <calc>:Value + 1</calc>
+            <returnID>CalcRet</returnID>                    <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed ref="XNode_CF010_1_1" />           <!-- 关联后置节点 -->
+            </route>
+        </xcalculate>
+        
+    </xconfig>
+    
+</config>

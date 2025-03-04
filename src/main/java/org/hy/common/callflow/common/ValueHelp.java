@@ -38,9 +38,10 @@ public class ValueHelp
      * @createDate  2025-02-12
      * @version     v1.0
      *
-     * @param i_ValueXID 数值、上下文变量、XID标识（支持xxx.yyy.www）
-     * @param i_Default  默认值
-     * @param i_Context  上下文类型的变量信息
+     * @param i_ValueXID    数值、上下文变量、XID标识（支持xxx.yyy.www）
+     * @param i_ValueClass  数值时的元类型
+     * @param i_Default     默认值
+     * @param i_Context     上下文类型的变量信息
      * @return
      */
     public static Object getValue(String i_ValueXID ,Class<?> i_ValueClass ,Object i_Default ,Map<String ,Object> i_Context) throws Exception
@@ -72,11 +73,11 @@ public class ValueHelp
                 {
                     if ( v_YYYZZZ != null )
                     {
-                        return getYYYZZZ(v_Value ,v_YYYZZZ);
+                        return toObject(getYYYZZZ(v_Value ,v_YYYZZZ) ,i_ValueClass);
                     }
                     else
                     {
-                        return v_Value;
+                        return toObject(v_Value ,i_ValueClass);
                     }
                 }
             }
@@ -87,18 +88,18 @@ public class ValueHelp
             {
                 if ( v_YYYZZZ != null )
                 {
-                    return getYYYZZZ(v_Value ,v_YYYZZZ);
+                    return toObject(getYYYZZZ(v_Value ,v_YYYZZZ) ,i_ValueClass);
                 }
                 else
                 {
-                    return v_Value;
+                    return toObject(v_Value ,i_ValueClass);
                 }
             }
             
             // 尝试从默认值区取值
             if ( v_Value == null )
             {
-                v_Value = i_Default;
+                v_Value = toObject(i_Default ,i_ValueClass);
             }
         }
         else if ( Help.isBasicDataType(i_ValueClass) )
@@ -112,6 +113,31 @@ public class ValueHelp
         }
         
         return v_Value;
+    }
+    
+    
+    /**
+     * 对上下文变量、XID标识取到的数值尝试二次进行转换
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-04
+     * @version     v1.0
+     *
+     * @param i_Value
+     * @param i_ValueClass
+     * @return
+     */
+    private static Object toObject(Object i_Value ,Class<?> i_ValueClass)
+    {
+        if ( i_Value != null && i_ValueClass != null )
+        {
+            if ( Help.isBasicDataType(i_ValueClass) )
+            {
+                return Help.toObject(i_ValueClass ,i_Value.toString());
+            }
+        }
+        
+        return i_Value;
     }
     
     

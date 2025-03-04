@@ -14,6 +14,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.nesting.NestingConfig;
+import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.route.SelfLoop;
@@ -53,6 +54,7 @@ public class ExportXml
         getInstance().addImportHead("xnesting"   ,NestingConfig.class);
         getInstance().addImportHead("xnode"      ,NodeConfig.class);
         getInstance().addImportHead("xwait"      ,WaitConfig.class);
+        getInstance().addImportHead("xcalculate" ,CalculateConfig.class);
         getInstance().addImportHead("xcondition" ,Condition.class);
     }
     
@@ -317,6 +319,10 @@ public class ExportXml
             else if ( i_ExecObject instanceof NestingConfig )
             {
                 i_ExecObject.setXJavaID("XNesting_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof CalculateConfig )
+            {
+                i_ExecObject.setXJavaID("XCalculate_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof SelfLoop )
             {
