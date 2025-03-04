@@ -572,6 +572,54 @@ public class NodeConfig extends ExecuteElement
     {
         this.timeout = i_Timeout;
     }
+    
+    
+    /**
+     * 获取XML内容中的名称，如<名称>内容</名称>
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-04
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String toXmlName()
+    {
+        return "xnode";
+    }
+    
+    
+    /**
+     * 生成或写入个性化的XML内容
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-04
+     * @version     v1.0
+     *
+     * @param io_Xml  XML内容的缓存区
+     */
+    public void toXmlContent(StringBuilder io_Xml ,int i_Level ,String i_Level1 ,String i_LevelN ,String i_SuperTreeID ,String i_TreeID)
+    {
+        if ( !Help.isNull(this.callXID) )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callXID" ,this.getCallXID()));
+        }
+        if ( !Help.isNull(this.callMehod) )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callMehod" ,this.callMehod));
+        }
+        if ( !Help.isNull(this.callParams) )
+        {
+            for (NodeParam v_Param : this.callParams)
+            {
+                io_Xml.append(v_Param.toXml(i_Level + 1 ,i_TreeID));
+            }
+        }
+    }
 
 
     /**
@@ -604,7 +652,7 @@ public class NodeConfig extends ExecuteElement
         StringBuilder v_Xml    = new StringBuilder();
         String        v_Level1 = "    ";
         String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = "xnode";
+        String        v_XName  = toXmlName();
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -617,21 +665,9 @@ public class NodeConfig extends ExecuteElement
         
         v_Xml.append(super.toXml(i_Level));
         
-        if ( !Help.isNull(this.callXID) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callXID" ,this.getCallXID()));
-        }
-        if ( !Help.isNull(this.callMehod) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callMehod" ,this.callMehod));
-        }
-        if ( !Help.isNull(this.callParams) )
-        {
-            for (NodeParam v_Param : this.callParams)
-            {
-                v_Xml.append(v_Param.toXml(i_Level + 1 ,v_TreeID));
-            }
-        }
+        // 生成或写入个性化的XML内容
+        toXmlContent(v_Xml ,i_Level ,v_Level1 ,v_LevelN ,i_SuperTreeID ,v_TreeID);
+        
         if ( !Help.isNull(this.returnID) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
@@ -703,6 +739,8 @@ public class NodeConfig extends ExecuteElement
      * 解析为实时运行时的执行表达式
      * 
      * 注：禁止在此真的执行方法
+     * 
+     * 建议：子类重写此方法
      *
      * @author      ZhengWei(HY)
      * @createDate  2025-02-20
@@ -771,6 +809,8 @@ public class NodeConfig extends ExecuteElement
     
     /**
      * 解析为执行表达式
+     * 
+     * 建议：子类重写此方法
      *
      * @author      ZhengWei(HY)
      * @createDate  2025-02-20
