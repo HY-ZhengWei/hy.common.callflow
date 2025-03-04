@@ -22,7 +22,7 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎009：等待N秒
+ * 测试单元：编排引擎009：等待N秒、自循环
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-03-03
