@@ -41,7 +41,21 @@ public class SelfLoop extends ExecuteElement
         {
             throw new NullPointerException("SelfLoop's refXID is null.");
         }
-        this.refXID = i_RefXID;
+        
+        String v_RefXID = i_RefXID.trim();
+        if ( v_RefXID.equals(DBSQL.$Placeholder) )
+        {
+            throw new IllegalArgumentException("SelfLoop's refXID[" + i_RefXID + "] is error.");
+        }
+        
+        if ( v_RefXID.startsWith(DBSQL.$Placeholder) )
+        {
+            this.refXID = v_RefXID.substring(DBSQL.$Placeholder.length());
+        }
+        else
+        {
+            this.refXID = v_RefXID;
+        }
     }
     
     
@@ -67,7 +81,7 @@ public class SelfLoop extends ExecuteElement
      */
     public String getRefXID()
     {
-        return refXID;
+        return DBSQL.$Placeholder + this.refXID;
     }
     
     

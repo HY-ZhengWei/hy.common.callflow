@@ -227,7 +227,14 @@ public class NestingConfig extends ExecuteElement
      */
     public String getCallFlowXID()
     {
-        return callFlowXID;
+        if ( Help.isNull(this.callFlowXID) )
+        {
+            return null;
+        }
+        else
+        {
+            return DBSQL.$Placeholder + this.callFlowXID;
+        }
     }
 
 
@@ -239,7 +246,27 @@ public class NestingConfig extends ExecuteElement
      */
     public void setCallFlowXID(String i_CallFlowXID)
     {
-        this.callFlowXID = i_CallFlowXID;
+        if ( Help.isNull(i_CallFlowXID) )
+        {
+            this.callFlowXID = null;
+        }
+        else
+        {
+            String v_CallFlowXID = i_CallFlowXID.trim();
+            if ( v_CallFlowXID.equals(DBSQL.$Placeholder) )
+            {
+                throw new IllegalArgumentException("NestingConfig's callFlowXID[" + i_CallFlowXID + "] is error.");
+            }
+            
+            if ( v_CallFlowXID.startsWith(DBSQL.$Placeholder) )
+            {
+                this.callFlowXID = v_CallFlowXID.substring(DBSQL.$Placeholder.length());
+            }
+            else
+            {
+                this.callFlowXID = v_CallFlowXID;
+            }
+        }
     }
 
     
@@ -290,7 +317,7 @@ public class NestingConfig extends ExecuteElement
         
         if ( !Help.isNull(this.callFlowXID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callFlowXID" ,this.callFlowXID));
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
         }
         if ( !Help.isNull(this.returnID) )
         {

@@ -15,7 +15,7 @@
     
         <xnode id="XNode_CF009_1_1_2">
             <comment>完成</comment>
-            <callXID>XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
         </xnode>
     
@@ -24,7 +24,7 @@
             <comment>等待1秒</comment>
             <waitTime>1000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
             <route>
-                <succeed>XNode_CF009_1</succeed>            <!-- 自循环 -->
+                <succeed>:XNode_CF009_1</succeed>           <!-- 自循环 -->
             </route>
         </xwait>
         
@@ -47,7 +47,7 @@
         
         <xnode id="XNode_CF009_1">
             <comment>计数器加加</comment>
-            <callXID>XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMehod>method_AddCount</callMehod>          <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->

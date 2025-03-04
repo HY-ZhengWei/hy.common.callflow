@@ -65,6 +65,9 @@ public class NodeConfig extends ExecuteElement
     /** 执行状态定义的变量ID */
     private String          statusID;
     
+    /** 执行超时时长（单位：毫秒） */
+    private Long            timeout;
+    
     
     
     public NodeConfig()
@@ -86,7 +89,8 @@ public class NodeConfig extends ExecuteElement
     public NodeConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.isInit = false;
+        this.isInit  = false;
+        this.timeout = 0L;
     }
     
     
@@ -413,7 +417,14 @@ public class NodeConfig extends ExecuteElement
      */
     public String getCallXID()
     {
-        return callXID;
+        if ( Help.isNull(this.callXID) )
+        {
+            return null;
+        }
+        else
+        {
+            return DBSQL.$Placeholder + this.callXID;
+        }
     }
 
     
@@ -424,7 +435,27 @@ public class NodeConfig extends ExecuteElement
      */
     public void setCallXID(String i_CallXID)
     {
-        this.callXID = i_CallXID;
+        if ( Help.isNull(i_CallXID) )
+        {
+            this.callXID = null;
+        }
+        else
+        {
+            String v_CallXID = i_CallXID.trim();
+            if ( v_CallXID.equals(DBSQL.$Placeholder) )
+            {
+                throw new IllegalArgumentException("NodeConfig's callXID[" + i_CallXID + "] is error.");
+            }
+            
+            if ( v_CallXID.startsWith(DBSQL.$Placeholder) )
+            {
+                this.callXID = v_CallXID.substring(DBSQL.$Placeholder.length());
+            }
+            else
+            {
+                this.callXID = v_CallXID;
+            }
+        }
         this.isInit  = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
@@ -522,6 +553,26 @@ public class NodeConfig extends ExecuteElement
         this.statusID = i_StatusID;
     }
 
+    
+    /**
+     * 获取：执行超时时长（单位：毫秒）
+     */
+    public Long getTimeout()
+    {
+        return timeout;
+    }
+
+    
+    /**
+     * 设置：执行超时时长（单位：毫秒）
+     * 
+     * @param i_Timeout 执行超时时长（单位：毫秒）
+     */
+    public void setTimeout(Long i_Timeout)
+    {
+        this.timeout = i_Timeout;
+    }
+
 
     /**
      * 转为Xml格式的内容
@@ -568,7 +619,7 @@ public class NodeConfig extends ExecuteElement
         
         if ( !Help.isNull(this.callXID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callXID" ,this.callXID));
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callXID" ,this.getCallXID()));
         }
         if ( !Help.isNull(this.callMehod) )
         {

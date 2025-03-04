@@ -13,14 +13,14 @@
     
         <xnode id="XNode_CF006_三个寻址">
             <comment>1_1_2_1 、 1_1_1_2_1 、 1_1_1_1_1</comment>
-            <callXID>XProgram</callXID>
+            <callXID>:XProgram</callXID>
             <callMehod>method_Finish</callMehod>
         </xnode>
         
     
         <xnode id="XNode_CF006_两个寻址">
             <comment>1_1_2和1_1_1_2</comment>
-            <callXID>XProgram</callXID>
+            <callXID>:XProgram</callXID>
             <callMehod>method_False</callMehod>
             <route>
                 <succeed ref="XNode_CF006_三个寻址" />
@@ -30,7 +30,7 @@
         
         <xnode id="XNode_CF006_1_1_1_1">
             <comment>1_1_1_1</comment>
-            <callXID>XProgram</callXID>
+            <callXID>:XProgram</callXID>
             <callMehod>method_True</callMehod>
             <route>
                 <succeed ref="XNode_CF006_三个寻址" />
@@ -67,7 +67,7 @@
         
         <xnode id="XNode_CF006_1">
             <comment>1</comment>
-            <callXID>XProgram</callXID>
+            <callXID>:XProgram</callXID>
             <callMehod>method_First</callMehod>
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->

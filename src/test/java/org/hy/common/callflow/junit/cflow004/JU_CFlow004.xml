@@ -13,14 +13,14 @@
     
         <xnode id="XNode_CF004_006">
             <comment>第六个环节，大于等于10的走向</comment>
-            <callXID>XProgram</callXID>
+            <callXID>:XProgram</callXID>
             <callMehod>method_Less_10</callMehod>
         </xnode>
     
     
         <xnode id="XNode_CF004_005">
             <comment>第五个环节，大于等于10的走向</comment>
-            <callXID>XProgram</callXID>
+            <callXID>:XProgram</callXID>
             <callMehod>method_Greater_10</callMehod>
         </xnode>
         
@@ -43,7 +43,7 @@
         
         <xnode id="XNode_CF004_003">
             <comment>第三个环节，默认值或空值的走向</comment>
-            <callXID>XProgram</callXID>
+            <callXID>:XProgram</callXID>
             <callMehod>method_Default_Null</callMehod>
         </xnode>
         
@@ -86,7 +86,7 @@
         
         <xnode id="XNode_CF004_001">
             <comment>第一个环节，有一个参数，有返回结果</comment>
-            <callXID>XProgram</callXID>
+            <callXID>:XProgram</callXID>
             <callMehod>method_First</callMehod>
             <callParam>
                 <valueClass>org.hy.common.Date</valueClass> <!-- 定义入参01类型 -->
