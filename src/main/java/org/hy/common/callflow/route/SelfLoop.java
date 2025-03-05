@@ -18,7 +18,7 @@ import org.hy.common.xml.XJava;
 
 
 /**
- * 自环节
+ * 自引用元素：可实现自循环、for循环
  * 
  * 注：与路由配合，隐性使用
  * 

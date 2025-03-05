@@ -28,7 +28,7 @@ import org.hy.common.xml.log.Logger;
 
 
 /**
- * 节点配置信息
+ * 执行元素：节点配置信息
  * 
  * 注：不建议节点配置共用，即使两个编排调用相同的执行方法也建议配置两个节点，使节点唯一隶属于一个编排中。
  *    原因1是考虑到后期升级维护编排，在共享节点配置下，无法做到升级时百分百的正确。
@@ -570,6 +570,14 @@ public class NodeConfig extends ExecuteElement
      */
     public void setTimeout(Long i_Timeout)
     {
+        if ( i_Timeout == null )
+        {
+            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout is null.");
+        }
+        if ( i_Timeout < 0 )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout Less than zero.");
+        }
         this.timeout = i_Timeout;
     }
     

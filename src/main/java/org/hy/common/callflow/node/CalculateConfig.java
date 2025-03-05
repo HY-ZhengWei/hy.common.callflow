@@ -27,13 +27,16 @@ import com.greenpineyu.fel.context.MapContext;
 
 
 /**
- * 计算配置信息
+ * 计算元素：计算配置信息
  * 
- * 注：不建议计算配置共用，即使两个编排调用相同的计算配置也建议配置两个计算配置，使计算配置唯一隶属于一个编排中。
- *    原因1是考虑到后期升级维护编排，在共享计算配置下，无法做到升级时百分百的正确。
- *    原因2是在共享节点时，统计方面也无法独立区分出来。
+ * 注1：计算元素也可以当作条件逻辑元素来用。
+ *     当返回值变量returnID为NULL时按条件逻辑使用。
+ *     
+ * 注2：不建议计算配置共用，即使两个编排调用相同的计算配置也建议配置两个计算配置，使计算配置唯一隶属于一个编排中。
+ *     原因1是考虑到后期升级维护编排，在共享计算配置下，无法做到升级时百分百的正确。
+ *     原因2是在共享节点时，统计方面也无法独立区分出来。
  *    
- *    如果要共享，建议采用子编排的方式共享。
+ *     如果要共享，建议采用子编排的方式共享。
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-03-04
@@ -202,7 +205,15 @@ public class CalculateConfig extends ExecuteElement
             Object v_CalcRet = $FelEngine.eval(this.calcFel ,v_FelContext);
             this.refreshReturn(io_Context ,v_CalcRet);
             this.success(Date.getTimeNano() - v_BeginTime);
-            return v_Result.setResult(v_CalcRet);
+            
+            if ( Help.isNull(this.returnID) )
+            {
+                return v_Result.setResult((Boolean) v_CalcRet);
+            }
+            else
+            {
+                return v_Result.setResult(v_CalcRet);
+            }
         }
         catch (Exception exce)
         {
@@ -294,25 +305,70 @@ public class CalculateConfig extends ExecuteElement
             
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
             
-            // 成功路由
-            if ( !Help.isNull(this.route.getSucceeds()) )
+            if ( Help.isNull(this.returnID) )
             {
-                for (IExecute v_Item : this.route.getSucceeds())
+                // 真值路由
+                if ( !Help.isNull(this.route.getSucceeds()) )
                 {
-                    if ( v_Item instanceof SelfLoop )
+                    for (IExecute v_Item : this.route.getSucceeds())
                     {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
+                        if ( v_Item instanceof SelfLoop )
+                        {
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("if" ,((SelfLoop) v_Item).getRefXID()));
+                        }
+                        else if ( !Help.isNull(v_Item.getXJavaID()) )
+                        {
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("if" ,v_Item.getXJavaID() ,v_MaxLpad - 2));
+                        }
+                        else
+                        {
+                            v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
+                        }
                     }
-                    else if ( !Help.isNull(v_Item.getXJavaID()) )
+                }
+                // 假值路由
+                if ( !Help.isNull(this.route.getFaileds()) )
+                {
+                    for (IExecute v_Item : this.route.getFaileds())
                     {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("succeed" ,v_Item.getXJavaID()));
-                    }
-                    else
-                    {
-                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
+                        if ( v_Item instanceof SelfLoop )
+                        {
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("else" ,((SelfLoop) v_Item).getRefXID()));
+                        }
+                        else if ( !Help.isNull(v_Item.getXJavaID()) )
+                        {
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("else" ,v_Item.getXJavaID() ,v_MaxLpad - 4));
+                        }
+                        else
+                        {
+                            v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
+                        }
                     }
                 }
             }
+            else
+            {
+                // 成功路由
+                if ( !Help.isNull(this.route.getSucceeds()) )
+                {
+                    for (IExecute v_Item : this.route.getSucceeds())
+                    {
+                        if ( v_Item instanceof SelfLoop )
+                        {
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
+                        }
+                        else if ( !Help.isNull(v_Item.getXJavaID()) )
+                        {
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("succeed" ,v_Item.getXJavaID()));
+                        }
+                        else
+                        {
+                            v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
+                        }
+                    }
+                }
+            }
+            
             // 异常路由
             if ( !Help.isNull(this.route.getExceptions()) )
             {
