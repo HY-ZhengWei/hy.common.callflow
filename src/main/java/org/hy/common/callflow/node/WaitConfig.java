@@ -231,7 +231,7 @@ public class WaitConfig extends ExecuteElement
                 {
                     if ( v_Item instanceof SelfLoop )
                     {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
                     }
                     else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {
@@ -250,7 +250,7 @@ public class WaitConfig extends ExecuteElement
                 {
                     if ( v_Item instanceof SelfLoop )
                     {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
                     }
                     else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {

@@ -24,7 +24,7 @@
             <comment>等待1秒</comment>
             <waitTime>1000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
             <route>
-                <succeed>:XNode_CF009_1</succeed>           <!-- 自循环 -->
+                <succeed>:XNode_CF009_1</succeed>           <!-- 自引用 -->
             </route>
         </xwait>
         

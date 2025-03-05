@@ -294,19 +294,24 @@ public class CalculateConfig extends ExecuteElement
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
         }
         
-        if ( !Help.isNull(this.route.getSucceeds()) 
+        if ( !Help.isNull(this.route.getSucceeds())
+          || !Help.isNull(this.route.getFaileds())
           || !Help.isNull(this.route.getExceptions()) )
         {
             int v_MaxLpad = 0;
-            if ( !Help.isNull(this.route.getSucceeds()) )
-            {
-                v_MaxLpad = 7;
-            }
-            
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
             
             if ( Help.isNull(this.returnID) )
             {
+                if ( !Help.isNull(this.route.getExceptions()) )
+                {
+                    v_MaxLpad = 5;
+                }
+                else if ( !Help.isNull(this.route.getFaileds()) )
+                {
+                    v_MaxLpad = 4;
+                }
+                
                 // 真值路由
                 if ( !Help.isNull(this.route.getSucceeds()) )
                 {
@@ -314,7 +319,7 @@ public class CalculateConfig extends ExecuteElement
                     {
                         if ( v_Item instanceof SelfLoop )
                         {
-                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("if" ,((SelfLoop) v_Item).getRefXID()));
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("if" ,((SelfLoop) v_Item).getRefXID()));
                         }
                         else if ( !Help.isNull(v_Item.getXJavaID()) )
                         {
@@ -333,7 +338,7 @@ public class CalculateConfig extends ExecuteElement
                     {
                         if ( v_Item instanceof SelfLoop )
                         {
-                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("else" ,((SelfLoop) v_Item).getRefXID()));
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("else" ,((SelfLoop) v_Item).getRefXID()));
                         }
                         else if ( !Help.isNull(v_Item.getXJavaID()) )
                         {
@@ -348,6 +353,11 @@ public class CalculateConfig extends ExecuteElement
             }
             else
             {
+                if ( !Help.isNull(this.route.getSucceeds()) )
+                {
+                    v_MaxLpad = 7;
+                }
+                
                 // 成功路由
                 if ( !Help.isNull(this.route.getSucceeds()) )
                 {
@@ -355,7 +365,7 @@ public class CalculateConfig extends ExecuteElement
                     {
                         if ( v_Item instanceof SelfLoop )
                         {
-                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
+                            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
                         }
                         else if ( !Help.isNull(v_Item.getXJavaID()) )
                         {
@@ -376,7 +386,7 @@ public class CalculateConfig extends ExecuteElement
                 {
                     if ( v_Item instanceof SelfLoop )
                     {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
                     }
                     else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {

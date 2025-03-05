@@ -408,7 +408,7 @@ public class Condition extends ExecuteElement implements IfElse
                 {
                     if ( v_Item instanceof SelfLoop )
                     {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("if" ,((SelfLoop) v_Item).getRefXID()));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("if" ,((SelfLoop) v_Item).getRefXID()));
                     }
                     else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {
@@ -427,7 +427,7 @@ public class Condition extends ExecuteElement implements IfElse
                 {
                     if ( v_Item instanceof SelfLoop )
                     {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("else" ,((SelfLoop) v_Item).getRefXID()));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("else" ,((SelfLoop) v_Item).getRefXID()));
                     }
                     else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {
@@ -446,7 +446,7 @@ public class Condition extends ExecuteElement implements IfElse
                 {
                     if ( v_Item instanceof SelfLoop )
                     {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
                     }
                     else if ( !Help.isNull(v_Item.getXJavaID()) )
                     {

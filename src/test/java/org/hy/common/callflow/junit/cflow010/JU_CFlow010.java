@@ -22,7 +22,7 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎010：计算表达式
+ * 测试单元：编排引擎010：计算表达式，及当它是条件逻辑的使用
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-03-04

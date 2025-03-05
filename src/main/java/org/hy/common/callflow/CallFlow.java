@@ -14,6 +14,7 @@ import org.hy.common.callflow.file.ExportXml;
 import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.nesting.NestingConfig;
+import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.db.DBSQL;
 
 
@@ -484,6 +485,24 @@ public class CallFlow
                 else
                 {
                     v_Nexts = i_ExecObject.getRoute().getFaileds();
+                }
+            }
+            else if ( i_ExecObject instanceof CalculateConfig )
+            {
+                if ( Boolean.class.equals(v_Result.getResult().getClass()) )
+                {
+                    if ( (Boolean) v_Result.getResult() )
+                    {
+                        v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                    }
+                    else
+                    {
+                        v_Nexts = i_ExecObject.getRoute().getFaileds();
+                    }
+                }
+                else
+                {
+                    v_Nexts = i_ExecObject.getRoute().getSucceeds();
                 }
             }
             else
