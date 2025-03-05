@@ -595,7 +595,7 @@ public class NodeConfig extends ExecuteElement
      */
     public String toXmlName()
     {
-        return "xnode";
+        return ElementType.Node.getXmlName();
     }
     
     

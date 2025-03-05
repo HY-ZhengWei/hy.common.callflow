@@ -11,7 +11,9 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.IExecute;
+import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
@@ -50,12 +52,13 @@ public class ExportXml
     static 
     {
         // 预定义的引用类
-        getInstance().addImportHead("xconfig"    ,ArrayList.class);
-        getInstance().addImportHead("xnesting"   ,NestingConfig.class);
-        getInstance().addImportHead("xnode"      ,NodeConfig.class);
-        getInstance().addImportHead("xwait"      ,WaitConfig.class);
-        getInstance().addImportHead("xcalculate" ,CalculateConfig.class);
-        getInstance().addImportHead("xcondition" ,Condition.class);
+        getInstance().addImportHead("xconfig"                          ,ArrayList.class);
+        getInstance().addImportHead(ElementType.Nesting.getXmlName()   ,NestingConfig.class);
+        getInstance().addImportHead(ElementType.For.getXmlName()       ,ForConfig.class);
+        getInstance().addImportHead(ElementType.Node.getXmlName()      ,NodeConfig.class);
+        getInstance().addImportHead(ElementType.Wait.getXmlName()      ,WaitConfig.class);
+        getInstance().addImportHead(ElementType.Calculate.getXmlName() ,CalculateConfig.class);
+        getInstance().addImportHead(ElementType.Condition.getXmlName() ,Condition.class);
     }
     
     

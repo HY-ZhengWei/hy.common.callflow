@@ -359,12 +359,12 @@ public class Condition extends ExecuteElement implements IfElse
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
-            v_XName = "xcondition";
+            v_XName = ElementType.Condition.getXmlName();
             v_Xml.append("\n").append(v_LevelN).append(IToXml.toBeginID(v_XName ,this.getXJavaID()));
         }
         else
         {
-            v_XName = "condition";
+            v_XName = ElementType.Condition.getValue().toLowerCase();
             v_Xml.append("\n").append(v_LevelN).append(IToXml.toBegin(v_XName));
         }
         

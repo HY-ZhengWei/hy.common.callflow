@@ -14,17 +14,19 @@ package org.hy.common.callflow.enums;
 public enum ElementType
 {
     
-    Node(     "NODE"      ,"执行节点"),
+    Node(     "NODE"      ,"xnode"      ,"执行节点"),
     
-    Condition("CONDITION" ,"条件逻辑"),
+    Condition("CONDITION" ,"xcalculate" ,"条件逻辑"),
     
-    Wait(     "WAIT"      ,"等待元素"),
+    Wait(     "WAIT"      ,"xwait"      ,"等待元素"),
     
-    Calculate("CALCULATE" ,"计算元素"),
+    Calculate("CALCULATE" ,"xcondition" ,"计算元素"),
     
-    SelfLoop( "SELFLOOP"  ,"自循环"),
+    For(      "FOR"       ,"xfor"       ,"For循环"),
     
-    Nesting(  "NESTING"   ,"嵌套子编排"),
+    Nesting(  "NESTING"   ,"xnesting"   ,"嵌套子编排"),
+    
+    SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
     
     ;
     
@@ -32,6 +34,9 @@ public enum ElementType
     
     /** 值 */
     private String  value;
+    
+    /** XML名称 */
+    private String  xmlName;
     
     /** 描述 */
     private String  comment;
@@ -69,9 +74,10 @@ public enum ElementType
     
     
     
-    ElementType(String i_Value ,String i_Comment)
+    ElementType(String i_Value ,String i_XmlName ,String i_Comment)
     {
         this.value   = i_Value;
+        this.xmlName = i_XmlName;
         this.comment = i_Comment;
     }
 
@@ -84,6 +90,13 @@ public enum ElementType
     
     
     
+    public String getXmlName()
+    {
+        return xmlName;
+    }
+
+
+
     public String getComment()
     {
         return this.comment;

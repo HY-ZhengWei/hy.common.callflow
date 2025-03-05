@@ -196,7 +196,7 @@ public class WaitConfig extends ExecuteElement
         StringBuilder v_Xml    = new StringBuilder();
         String        v_Level1 = "    ";
         String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = "xwait";
+        String        v_XName  = ElementType.Wait.getXmlName();
         
         if ( !Help.isNull(this.getXJavaID()) )
         {

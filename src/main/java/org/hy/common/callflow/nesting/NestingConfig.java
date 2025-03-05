@@ -302,7 +302,7 @@ public class NestingConfig extends ExecuteElement
         StringBuilder v_Xml    = new StringBuilder();
         String        v_Level1 = "    ";
         String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = "xnesting";
+        String        v_XName  = ElementType.Nesting.getXmlName();
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
