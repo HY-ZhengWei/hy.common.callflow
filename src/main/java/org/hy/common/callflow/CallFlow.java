@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.ExecuteTreeHelp;
 import org.hy.common.callflow.execute.IExecute;
@@ -15,7 +16,6 @@ import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
-import org.hy.common.db.DBSQL;
 
 
 
@@ -77,11 +77,7 @@ public class CallFlow
             return false;
         }
         
-        String v_XID = i_XID.trim();
-        if ( v_XID.startsWith(DBSQL.$Placeholder) )
-        {
-            v_XID = v_XID.substring(DBSQL.$Placeholder.length());
-        }
+        String v_XID = ValueHelp.standardValueID(i_XID);
         
         if ( CallFlow.$WorkID                .equals(v_XID) 
           || CallFlow.$FirstExecuteResult    .equals(v_XID) 

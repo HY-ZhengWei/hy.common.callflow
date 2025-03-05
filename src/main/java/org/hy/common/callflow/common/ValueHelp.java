@@ -32,6 +32,83 @@ public class ValueHelp
     
     
     /**
+     * 定义变量ID时的标准化。
+     * 
+     *   定义变量ID前缘有占位符时，去除占位符。
+     *   定义变量ID为空字符时，返回NULL
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-05
+     * @version     v1.0
+     *
+     * @param i_ValueID  定义变量ID
+     * @return
+     */
+    public static String standardValueID(String i_ValueID)
+    {
+        if ( !Help.isNull(i_ValueID) )
+        {
+            String v_ValueID = i_ValueID.trim();
+            if ( v_ValueID.equals(DBSQL.$Placeholder) )
+            {
+                throw new IllegalArgumentException("ValueID[" + i_ValueID + "] is error.");
+            }
+            
+            if ( v_ValueID.startsWith(DBSQL.$Placeholder) )
+            {
+                v_ValueID = v_ValueID.substring(1);
+            }
+            
+            return v_ValueID;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    
+    
+    /**
+     * 引用变量ID时的标准化。
+     * 
+     *   引用变量ID时，没有占位符时，追加占位符后返回。
+     *   引用变量ID为空字符时，返回NULL
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-05
+     * @version     v1.0
+     *
+     * @param i_RefID
+     * @return
+     */
+    public static String standardRefID(String i_RefID)
+    {
+        if ( Help.isNull(i_RefID) )
+        {
+            return null;
+        }
+        else
+        {
+            String v_RefID = i_RefID.trim();
+            if ( v_RefID.equals(DBSQL.$Placeholder) )
+            {
+                throw new IllegalArgumentException("RefID[" + v_RefID + "] is error.");
+            }
+            else if ( !v_RefID.startsWith(DBSQL.$Placeholder) )
+            {
+                return DBSQL.$Placeholder + v_RefID;
+            }
+            else
+            {
+                return v_RefID;
+            }
+        }
+    }
+    
+    
+    
+    /**
      * 从上下文区、全局区、默认值区三个区中取值
      * 
      * @author      ZhengWei(HY)

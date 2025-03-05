@@ -435,27 +435,7 @@ public class NodeConfig extends ExecuteElement
      */
     public void setCallXID(String i_CallXID)
     {
-        if ( Help.isNull(i_CallXID) )
-        {
-            this.callXID = null;
-        }
-        else
-        {
-            String v_CallXID = i_CallXID.trim();
-            if ( v_CallXID.equals(DBSQL.$Placeholder) )
-            {
-                throw new IllegalArgumentException("NodeConfig's callXID[" + i_CallXID + "] is error.");
-            }
-            
-            if ( v_CallXID.startsWith(DBSQL.$Placeholder) )
-            {
-                this.callXID = v_CallXID.substring(DBSQL.$Placeholder.length());
-            }
-            else
-            {
-                this.callXID = v_CallXID;
-            }
-        }
+        this.callXID = ValueHelp.standardRefID(i_CallXID);
         this.isInit  = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
@@ -550,7 +530,8 @@ public class NodeConfig extends ExecuteElement
         {
             throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s statusID[" + i_StatusID + "] is SystemXID.");
         }
-        this.statusID = i_StatusID;
+        
+        this.statusID = ValueHelp.standardValueID(i_StatusID);
     }
 
     

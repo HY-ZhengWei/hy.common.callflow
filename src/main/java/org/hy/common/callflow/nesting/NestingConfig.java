@@ -227,14 +227,7 @@ public class NestingConfig extends ExecuteElement
      */
     public String getCallFlowXID()
     {
-        if ( Help.isNull(this.callFlowXID) )
-        {
-            return null;
-        }
-        else
-        {
-            return DBSQL.$Placeholder + this.callFlowXID;
-        }
+        return ValueHelp.standardRefID(this.callFlowXID);
     }
 
 
@@ -246,27 +239,35 @@ public class NestingConfig extends ExecuteElement
      */
     public void setCallFlowXID(String i_CallFlowXID)
     {
-        if ( Help.isNull(i_CallFlowXID) )
+        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.callFlowXID = ValueHelp.standardValueID(i_CallFlowXID);
+    }
+    
+    
+    
+    /**
+     * 获取：执行状态定义的变量ID
+     */
+    public String getStatusID()
+    {
+        return statusID;
+    }
+
+    
+    
+    /**
+     * 设置：执行状态定义的变量ID
+     * 
+     * @param i_StatusID 执行状态定义的变量ID
+     */
+    public void setStatusID(String i_StatusID)
+    {
+        if ( CallFlow.isSystemXID(i_StatusID) )
         {
-            this.callFlowXID = null;
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s statusID[" + i_StatusID + "] is SystemXID.");
         }
-        else
-        {
-            String v_CallFlowXID = i_CallFlowXID.trim();
-            if ( v_CallFlowXID.equals(DBSQL.$Placeholder) )
-            {
-                throw new IllegalArgumentException("NestingConfig's callFlowXID[" + i_CallFlowXID + "] is error.");
-            }
-            
-            if ( v_CallFlowXID.startsWith(DBSQL.$Placeholder) )
-            {
-                this.callFlowXID = v_CallFlowXID.substring(DBSQL.$Placeholder.length());
-            }
-            else
-            {
-                this.callFlowXID = v_CallFlowXID;
-            }
-        }
+        
+        this.statusID = ValueHelp.standardValueID(i_StatusID);
     }
 
     

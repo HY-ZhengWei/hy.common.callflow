@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -42,25 +43,13 @@ public class SelfLoop extends ExecuteElement
             throw new NullPointerException("SelfLoop's refXID is null.");
         }
         
-        String v_RefXID = i_RefXID.trim();
-        if ( v_RefXID.equals(DBSQL.$Placeholder) )
-        {
-            throw new IllegalArgumentException("SelfLoop's refXID[" + i_RefXID + "] is error.");
-        }
-        
         if ( CallFlow.isSystemXID(i_RefXID) )
         {
             throw new IllegalArgumentException("SelfLoop's refXID[" + i_RefXID + "] is SystemXID.");
         }
         
-        if ( v_RefXID.startsWith(DBSQL.$Placeholder) )
-        {
-            this.refXID = v_RefXID.substring(DBSQL.$Placeholder.length());
-        }
-        else
-        {
-            this.refXID = v_RefXID;
-        }
+        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.refXID = ValueHelp.standardValueID(i_RefXID);
     }
     
     

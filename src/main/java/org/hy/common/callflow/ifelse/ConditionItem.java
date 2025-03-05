@@ -265,7 +265,7 @@ public class ConditionItem implements IfElse ,XJavaID
         {
             throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s ValueXIDA[" + i_ValueXIDA + "] is SystemXID.");
         }
-        this.valueXIDA = i_ValueXIDA;
+        this.valueXIDA = ValueHelp.standardRefID(i_ValueXIDA);
     }
 
     
@@ -289,7 +289,7 @@ public class ConditionItem implements IfElse ,XJavaID
         {
             throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s ValueXIDB[" + i_ValueXIDB + "] is SystemXID.");
         }
-        this.valueXIDB = i_ValueXIDB;
+        this.valueXIDB = ValueHelp.standardRefID(i_ValueXIDB);
     }
 
     

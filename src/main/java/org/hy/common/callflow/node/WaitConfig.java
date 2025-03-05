@@ -13,7 +13,6 @@ import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.SelfLoop;
-import org.hy.common.db.DBSQL;
 import org.hy.common.xml.log.Logger;
 
 
@@ -98,6 +97,7 @@ public class WaitConfig extends ExecuteElement
             $Logger.error(v_Exce);
             throw v_Exce;
         }
+        
         if ( Help.isNumber(i_WaitTime) )
         {
             Long v_WaitTime = Long.valueOf(i_WaitTime);
@@ -111,11 +111,7 @@ public class WaitConfig extends ExecuteElement
         }
         else
         {
-            this.waitTime = i_WaitTime.trim();
-            if ( !this.waitTime.startsWith(DBSQL.$Placeholder) )
-            {
-                this.waitTime = DBSQL.$Placeholder + this.waitTime;
-            }
+            this.waitTime = ValueHelp.standardRefID(i_WaitTime);
         }
     }
 

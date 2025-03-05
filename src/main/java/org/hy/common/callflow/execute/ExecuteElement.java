@@ -14,6 +14,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.TotalNano;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.TreeIDHelp;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteConfig;
 
@@ -930,7 +931,8 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         {
             throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_ReturnID + "] is SystemXID.");
         }
-        this.returnID = i_ReturnID;
+        
+        this.returnID = ValueHelp.standardValueID(i_ReturnID);
     }
     
     
