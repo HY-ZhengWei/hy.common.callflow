@@ -1,8 +1,8 @@
 package org.hy.common.callflow.junit.cflow012.program;
 
+import java.util.Map;
 
-
-
+import org.hy.common.Help;
 
 /**
  * 模拟被编排的程序 
@@ -28,9 +28,10 @@ public class Program
     
     
     
-    public void method_Finish()
+    public void method_Finish(Map<String ,Object> i_Context)
     {
         System.out.println("call method_Finish");
+        Help.print(i_Context);
     }
     
 }

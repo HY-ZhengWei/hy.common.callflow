@@ -59,6 +59,9 @@ public class CallFlow
     /** 变量ID名称：编排执行实例的监听事件（事件可以传递到嵌套子编排中去） */
     public static final String $ExecuteEvent            = "CallFlowExecuteEvent";
     
+    /** 变量ID名称：编排执行实例的上下文当参数传输到方法中时的系统预设的变量名 */
+    public static final String $Context                 = "CallFlowContext";
+    
     
     
     /**
@@ -87,7 +90,8 @@ public class CallFlow
           || CallFlow.$NestingLevel          .equals(v_XID) 
           || CallFlow.$ExecuteIsError        .equals(v_XID) 
           || CallFlow.$ErrorResult           .equals(v_XID) 
-          || CallFlow.$ExecuteEvent          .equals(v_XID)  )
+          || CallFlow.$ExecuteEvent          .equals(v_XID)
+          || CallFlow.$Context               .equals(v_XID) )
         {
             return true;
         }

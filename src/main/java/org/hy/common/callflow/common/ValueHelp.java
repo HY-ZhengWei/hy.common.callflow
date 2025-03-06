@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJSON;
 import org.hy.common.xml.XJava;
@@ -131,8 +132,14 @@ public class ValueHelp
         else if ( i_ValueXID.startsWith(DBSQL.$Placeholder) )
         {
             String v_ValueID = i_ValueXID.trim().substring(DBSQL.$Placeholder.length());
-            String v_YYYZZZ  = null;
-            int    v_Index   = v_ValueID.indexOf($Split);
+            if ( CallFlow.$Context.equals(v_ValueID) )
+            {
+                // 上下文当作参数值
+                return i_Context;
+            }
+            
+            String v_YYYZZZ = null;
+            int    v_Index  = v_ValueID.indexOf($Split);
             if ( v_Index > 0 )
             {
                 if ( v_Index + 1 < v_ValueID.length() )

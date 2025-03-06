@@ -19,6 +19,10 @@
             <comment>完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
+                <value>:CallFlowContext</value>             <!-- 上下文内容 -->
+            </callParam>
         </xnode>
     
         
