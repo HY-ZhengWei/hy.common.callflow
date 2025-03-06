@@ -236,7 +236,7 @@ public class NodeConfig extends ExecuteElement
         Object v_CallObject = XJava.getObject(this.callXID);
         if ( v_CallObject == null )
         {
-            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID[" + this.callXID + "] is not find.");
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID[" + this.getCallXID() + "] is not find.");
             $Logger.error(v_Exce);
             throw v_Exce;
         }
@@ -435,7 +435,8 @@ public class NodeConfig extends ExecuteElement
      */
     public void setCallXID(String i_CallXID)
     {
-        this.callXID = ValueHelp.standardRefID(i_CallXID);
+        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.callXID = ValueHelp.standardValueID(i_CallXID);
         this.isInit  = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }

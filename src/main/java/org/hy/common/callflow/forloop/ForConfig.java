@@ -1,0 +1,1048 @@
+package org.hy.common.callflow.forloop;
+
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.hy.common.Date;
+import org.hy.common.Help;
+import org.hy.common.MethodReflect;
+import org.hy.common.StringHelp;
+import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.enums.ElementType;
+import org.hy.common.callflow.execute.ExecuteElement;
+import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.execute.IExecute;
+import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.route.SelfLoop;
+import org.hy.common.db.DBSQL;
+import org.hy.common.xml.log.Logger;
+
+
+
+
+
+/**
+ * 循环元素：for循环配置信息
+ * 
+ * 支持形式1：数值循环： for (indexID=start; indexID<=end; indexID+=step)
+ * 支持形式2：数值循环： for (start .. end)
+ * 支持形式3：集合循环： for (elementID : end)
+ * 支持形式4：集合循环： for (end)
+ * 
+ * 注：不建议循环配置共用，即使两个编排调用相同的循环配置也建议配置两个循环配置，使循环配置唯一隶属于一个编排中。
+ *    原因1是考虑到后期升级维护编排，在共享循环配置下，无法做到升级时百分百的正确。
+ *    原因2是在共享节点时，统计方面也无法独立区分出来。
+ *    
+ *    如果要共享，建议采用子编排的方式共享。
+ *
+ * @author      ZhengWei(HY)
+ * @createDate  2025-03-05
+ * @version     v1.0
+ */
+public class ForConfig extends ExecuteElement
+{
+    
+    private static final Logger $Logger = new Logger(ForConfig.class);
+    
+    
+    
+    /** 起始值。可以是数值、上下文变量、XID标识 */
+    private String start;
+    
+    /** 结束值。可以是数值、上下文变量、XID标识 */
+    private String end;
+    
+    /** 步长。可以是数值、上下文变量、XID标识 */
+    private String step;
+    
+    /** For循环的每级元素"序号"的变量名称。下标从0开始 */
+    private String indexID;
+    
+    /** For循环的每级元素"对象"的变量名称 */
+    private String elementID;
+    
+    
+    
+    public ForConfig()
+    {
+        this(0L ,0L);
+    }
+    
+    
+    
+    public ForConfig(long i_RequestTotal ,long i_SuccessTotal)
+    {
+        super(i_RequestTotal ,i_SuccessTotal);
+    }
+    
+    
+    /**
+     * 执行元素的类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String getElementType()
+    {
+        return ElementType.For.getValue();
+    }
+    
+    
+    
+    /**
+     * 获取：起始值。可以是数值、上下文变量、XID标识
+     */
+    public String getStart()
+    {
+        return start;
+    }
+
+
+    
+    /**
+     * 设置：起始值。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_Start 起始值。可以是数值、上下文变量、XID标识
+     */
+    public void setStart(String i_Start)
+    {
+        if ( Help.isNull(i_Start) )
+        {
+            this.start = null;
+            return;
+        }
+        
+        String v_Start = i_Start.trim();
+        if ( Help.isNumber(v_Start) )
+        {
+            this.start =  v_Start;
+        }
+        else
+        {
+            this.start = ValueHelp.standardRefID(v_Start);
+        }
+    }
+
+    
+    
+    /**
+     * 获取：结束值。可以是数值、上下文变量、XID标识
+     */
+    public String getEnd()
+    {
+        return end;
+    }
+
+
+    
+    /**
+     * 设置：结束值。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_End 结束值。可以是数值、上下文变量、XID标识
+     */
+    public void setEnd(String i_End)
+    {
+        if ( Help.isNull(i_End) )
+        {
+            this.end = null;
+            return;
+        }
+        
+        String v_End = i_End.trim();
+        if ( Help.isNumber(v_End) )
+        {
+            this.end =  v_End;
+        }
+        else
+        {
+            this.end = ValueHelp.standardRefID(v_End);
+        }
+    }
+
+
+    
+    /**
+     * 获取：步长。可以是数值、上下文变量、XID标识
+     */
+    public String getStep()
+    {
+        return step;
+    }
+
+
+    
+    /**
+     * 设置：步长。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_Step 步长。可以是数值、上下文变量、XID标识
+     */
+    public void setStep(String i_Step)
+    {
+        if ( Help.isNull(i_Step) )
+        {
+            this.step = null;
+            return;
+        }
+        
+        String v_Step = i_Step.trim();
+        if ( Help.isNumber(v_Step) )
+        {
+            this.step =  v_Step;
+        }
+        else
+        {
+            this.step = ValueHelp.standardRefID(v_Step);
+        }
+    }
+
+
+    
+    /**
+     * 获取：For循环的每级元素"序号"的变量名称。下标从0开始
+     */
+    public String getIndexID()
+    {
+        return indexID;
+    }
+
+
+    
+    /**
+     * 设置：For循环的每级元素"序号"的变量名称。下标从0开始
+     * 
+     * @param i_IndexID For循环的每级元素"序号"的变量名称。下标从0开始
+     */
+    public void setIndexID(String i_IndexID)
+    {
+        if ( CallFlow.isSystemXID(i_IndexID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s indexID[" + i_IndexID + "] is SystemXID.");
+        }
+        this.indexID = ValueHelp.standardValueID(i_IndexID);
+    }
+
+    
+    
+    /**
+     * 获取：For循环的每级元素"对象"的变量名称
+     */
+    public String getElementID()
+    {
+        return elementID;
+    }
+
+
+    
+    /**
+     * 设置：For循环的每级元素"对象"的变量名称
+     * 
+     * @param i_ElementID For循环的每级元素"对象"的变量名称
+     */
+    public void setElementID(String i_ElementID)
+    {
+        if ( CallFlow.isSystemXID(i_ElementID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s elementID[" + i_ElementID + "] is SystemXID.");
+        }
+        this.elementID = ValueHelp.standardValueID(i_ElementID);
+    }
+
+
+
+    /**
+     * 执行
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @param i_SuperTreeID  父级执行对象的树ID
+     * @param io_Context     上下文类型的变量信息
+     * @return
+     */
+    @Override
+    public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
+    {
+        long          v_BeginTime = this.request();
+        ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        
+        try
+        {
+            String  v_WorkID     = CallFlow.getWorkID(io_Context);
+            String  v_Prefix     = v_WorkID + "@" + this.getXid() + "@For@";
+            String  v_IndexID    = v_Prefix + "index";
+            String  v_IteratorID = v_Prefix + "iterator";
+            Integer v_OldIndex   = (Integer) io_Context.get(v_IndexID);
+            int     v_Index      = 0;
+            Object  v_Element    = null;
+            
+            // 集合循环
+            if ( Help.isNull(this.start) )
+            {
+                Object v_End = null;
+                try
+                {
+                    v_End = ValueHelp.getValue(this.end ,null ,null ,io_Context);
+                }
+                catch (Exception exce)
+                {
+                    $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
+                    return v_Result.setException(exce);
+                }
+                
+                if ( v_End == null )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
+                    return v_Result;
+                }
+                
+                // 集合循环： for (end)
+                // 集合循环： for (elementID : end)
+                if ( MethodReflect.isExtendImplement(v_End ,List.class) )
+                {
+                    List<?>     v_List     = (List<?>) v_End;
+                    Iterator<?> v_Iterator = null;
+                    if ( v_OldIndex != null )
+                    {
+                        v_Index    = v_OldIndex + 1;
+                        v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                    }
+                    else
+                    {
+                        v_Iterator = v_List.iterator();
+                        io_Context.put(v_IteratorID ,v_Iterator);
+                    }
+                    
+                    if ( !v_Iterator.hasNext() )
+                    {
+                        v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " List.hasNext() error."));
+                        return v_Result;
+                    }
+                    
+                    v_Element = v_Iterator.next();
+                }
+                else if ( MethodReflect.isExtendImplement(v_End ,Set.class) )
+                {
+                    Set<?>      v_Set      = (Set<?>) v_End;
+                    Iterator<?> v_Iterator = null;
+                    if ( v_OldIndex != null )
+                    {
+                        v_Index    = v_OldIndex + 1;
+                        v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                    }
+                    else
+                    {
+                        v_Iterator = v_Set.iterator();
+                        io_Context.put(v_IteratorID ,v_Iterator);
+                    }
+                    
+                    if ( !v_Iterator.hasNext() )
+                    {
+                        v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Set.hasNext() error."));
+                        return v_Result;
+                    }
+                    
+                    v_Element = v_Iterator.next();
+                }
+                else if ( MethodReflect.isExtendImplement(v_End ,Collection.class) )
+                {
+                    Collection<?> v_Collection = (Collection<?>) v_End;
+                    Iterator<?>   v_Iterator   = null;
+                    if ( v_OldIndex != null )
+                    {
+                        v_Index    = v_OldIndex + 1;
+                        v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                    }
+                    else
+                    {
+                        v_Iterator = v_Collection.iterator();
+                        io_Context.put(v_IteratorID ,v_Iterator);
+                    }
+                    
+                    if ( !v_Iterator.hasNext() )
+                    {
+                        v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Collection.hasNext() error."));
+                        return v_Result;
+                    }
+                    
+                    v_Element = v_Iterator.next();
+                }
+                else if ( MethodReflect.isExtendImplement(v_End ,Map.class) )
+                {
+                    Map<? ,?>   v_Map      = (Map<? ,?>) v_End;
+                    Iterator<?> v_Iterator = null;
+                    if ( v_OldIndex != null )
+                    {
+                        v_Index    = v_OldIndex + 1;
+                        v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                    }
+                    else
+                    {
+                        v_Iterator = v_Map.entrySet().iterator();
+                        io_Context.put(v_IteratorID ,v_Iterator);
+                    }
+                    
+                    if ( !v_Iterator.hasNext() )
+                    {
+                        v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Map.hasNext() error."));
+                        return v_Result;
+                    }
+                    
+                    v_Element = v_Iterator.next();
+                }
+                else if ( Help.isArray(v_End) )
+                {
+                    int v_Len = Array.getLength(v_End);
+                    if ( v_OldIndex != null )
+                    {
+                        v_Index = v_OldIndex + 1;
+                    }
+                    
+                    if ( v_Len <= v_Index )
+                    {
+                        v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Array.length " + v_Len + " <= " + v_Index + " error."));
+                        return v_Result;
+                    }
+                    
+                    v_Element = Array.get(v_End ,v_Index);
+                }
+                else
+                {
+                    v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is not list."));
+                    return v_Result;
+                }
+                
+                io_Context.put(v_IndexID ,v_Index);
+                refreshIndex(    io_Context ,v_Index);
+                refreshElementID(io_Context ,v_Element);
+            }
+            // 数值循环
+            else
+            {
+                Integer v_Start = null;
+                try
+                {
+                    v_Start = (Integer) ValueHelp.getValue(this.start ,Integer.class ,null ,io_Context);
+                }
+                catch (Exception exce)
+                {
+                    $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start[" + this.start + "] error." ,exce);
+                    return v_Result.setException(exce);
+                }
+                if ( v_Start == null )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start is null."));
+                    return v_Result;
+                }
+                
+                Integer v_End = null;
+                try
+                {
+                    v_End = (Integer) ValueHelp.getValue(this.end ,Integer.class ,null ,io_Context);
+                }
+                catch (Exception exce)
+                {
+                    $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
+                    return v_Result.setException(exce);
+                }
+                if ( v_End == null )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
+                    return v_Result;
+                }
+                
+                Integer v_Step = null;
+                try
+                {
+                    v_Step = (Integer) ValueHelp.getValue(this.step ,Integer.class ,1 ,io_Context); // 默认值：1
+                }
+                catch (Exception exce)
+                {
+                    $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error." ,exce);
+                    return v_Result.setException(exce);
+                }
+                
+                // 数值循环： for (start .. end)
+                // 数值循环： for (indexID=start; indexID<=end; indexID+=step)
+                if ( v_OldIndex != null )
+                {
+                    v_Index = v_OldIndex + v_Step;
+                }
+                else
+                {
+                    v_Index = v_Start;
+                }
+                
+                if ( v_End < v_Index )
+                {
+                    v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " " + v_End + " < " + v_Index + " error."));
+                    return v_Result;
+                }
+                
+                io_Context.put(v_IndexID ,v_Index);
+                refreshIndex(io_Context  ,v_Index);
+            }
+            
+            this.success(Date.getTimeNano() - v_BeginTime);
+            return v_Result.setResult(true);  // SelfLoop 中有设置结果为 false
+        }
+        catch (Exception exce)
+        {
+            return v_Result.setException(exce);
+        }
+    }
+    
+    
+    
+    /**
+     * 是否能有一个循环元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-06
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @return
+     */
+    public boolean hasNext(Map<String ,Object> io_Context)
+    {
+        String  v_WorkID     = CallFlow.getWorkID(io_Context);
+        String  v_Prefix     = v_WorkID + "@" + this.getXid() + "@For@";
+        String  v_IndexID    = v_Prefix + "index";
+        String  v_IteratorID = v_Prefix + "iterator";
+        Integer v_OldIndex   = (Integer) io_Context.get(v_IndexID);
+        int     v_Index      = 0;
+        
+        // 集合循环
+        if ( Help.isNull(this.start) )
+        {
+            Object v_End = null;
+            try
+            {
+                v_End = ValueHelp.getValue(this.end ,null ,null ,io_Context);
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
+                return false;
+            }
+            
+            if ( v_End == null )
+            {
+                $Logger.error(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
+                return false;
+            }
+            
+            // 集合循环： for (end)
+            // 集合循环： for (elementID : end)
+            if ( MethodReflect.isExtendImplement(v_End ,List.class) )
+            {
+                List<?>     v_List     = (List<?>) v_End;
+                Iterator<?> v_Iterator = null;
+                if ( v_OldIndex != null )
+                {
+                    v_Index    = v_OldIndex + 1;
+                    v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                }
+                else
+                {
+                    v_Iterator = v_List.iterator();
+                    io_Context.put(v_IteratorID ,v_Iterator);
+                }
+                
+                return v_Iterator.hasNext();
+            }
+            else if ( MethodReflect.isExtendImplement(v_End ,Set.class) )
+            {
+                Set<?>      v_Set      = (Set<?>) v_End;
+                Iterator<?> v_Iterator = null;
+                if ( v_OldIndex != null )
+                {
+                    v_Index    = v_OldIndex + 1;
+                    v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                }
+                else
+                {
+                    v_Iterator = v_Set.iterator();
+                    io_Context.put(v_IteratorID ,v_Iterator);
+                }
+                
+                return v_Iterator.hasNext();
+            }
+            else if ( MethodReflect.isExtendImplement(v_End ,Collection.class) )
+            {
+                Collection<?> v_Collection = (Collection<?>) v_End;
+                Iterator<?>   v_Iterator   = null;
+                if ( v_OldIndex != null )
+                {
+                    v_Index    = v_OldIndex + 1;
+                    v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                }
+                else
+                {
+                    v_Iterator = v_Collection.iterator();
+                    io_Context.put(v_IteratorID ,v_Iterator);
+                }
+                
+                return v_Iterator.hasNext();
+            }
+            else if ( MethodReflect.isExtendImplement(v_End ,Map.class) )
+            {
+                Map<? ,?>   v_Map      = (Map<? ,?>) v_End;
+                Iterator<?> v_Iterator = null;
+                if ( v_OldIndex != null )
+                {
+                    v_Index    = v_OldIndex + 1;
+                    v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                }
+                else
+                {
+                    v_Iterator = v_Map.entrySet().iterator();
+                    io_Context.put(v_IteratorID ,v_Iterator);
+                }
+                
+                return v_Iterator.hasNext();
+            }
+            else if ( Help.isArray(v_End) )
+            {
+                int v_Len = Array.getLength(v_End);
+                if ( v_OldIndex != null )
+                {
+                    v_Index = v_OldIndex + 1;
+                }
+                
+                return v_Len > v_Index;
+            }
+            else
+            {
+                $Logger.error(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is not list."));
+                return false;
+            }
+        }
+        // 数值循环
+        else
+        {
+            Integer v_Start = null;
+            try
+            {
+                v_Start = (Integer) ValueHelp.getValue(this.start ,Integer.class ,null ,io_Context);
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start[" + this.start + "] error." ,exce);
+                return false;
+            }
+            if ( v_Start == null )
+            {
+                $Logger.error(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start is null."));
+                return false;
+            }
+            
+            Integer v_End = null;
+            try
+            {
+                v_End = (Integer) ValueHelp.getValue(this.end ,Integer.class ,null ,io_Context);
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
+                return false;
+            }
+            if ( v_End == null )
+            {
+                $Logger.error(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
+                return false;
+            }
+            
+            Integer v_Step = null;
+            try
+            {
+                v_Step = (Integer) ValueHelp.getValue(this.step ,Integer.class ,1 ,io_Context); // 默认值：1
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error." ,exce);
+                return false;
+            }
+            
+            // 数值循环： for (start .. end)
+            // 数值循环： for (indexID=start; indexID<=end; indexID+=step)
+            if ( v_OldIndex != null )
+            {
+                v_Index = v_OldIndex + v_Step;
+            }
+            else
+            {
+                v_Index = v_Start;
+            }
+            
+            return v_End >= v_Index;
+        }
+    }
+    
+    
+    
+    /**
+     * 刷新For循环的每级元素"序号"的变量名称。下标从0开始
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-06
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param i_Index     序号
+     */
+    private void refreshIndex(Map<String ,Object> io_Context ,Integer i_Index)
+    {
+        if ( !Help.isNull(this.indexID) && io_Context != null )
+        {
+            io_Context.put(this.indexID ,i_Index);
+        }
+    }
+    
+    
+    
+    /**
+     * For循环的每级元素"对象"的变量名称
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-06
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param i_Element   元素对象
+     */
+    private void refreshElementID(Map<String ,Object> io_Context ,Object i_Element)
+    {
+        if ( !Help.isNull(this.elementID) && io_Context != null )
+        {
+            io_Context.put(this.elementID ,i_Element);
+        }
+    }
+
+    
+    
+    /**
+     * 转为Xml格式的内容
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @param i_Level        层级。最小下标从0开始。
+     *                           0表示每行前面有0个空格；
+     *                           1表示每行前面有4个空格；
+     *                           2表示每行前面有8个空格；
+     * @param i_SuperTreeID  上级树ID
+     * @return
+     */
+    public String toXml(int i_Level ,String i_SuperTreeID)
+    {
+        String v_TreeID = this.getTreeID(i_SuperTreeID);
+        if ( this.getTreeIDs().size() >= 2 )
+        {
+            String v_MinTreeID = this.getMinTreeID();
+            if ( !v_TreeID.equals(v_MinTreeID) )
+            {
+                // 不等于最小的树ID，不生成Xml内容。防止重复生成
+                return "";
+            }
+        }
+        
+        StringBuilder v_Xml    = new StringBuilder();
+        String        v_Level1 = "    ";
+        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_XName  = ElementType.For.getXmlName();;
+        
+        if ( !Help.isNull(this.getXJavaID()) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(IToXml.toBeginID(v_XName ,this.getXJavaID()));
+        }
+        else
+        {
+            v_Xml.append("\n").append(v_LevelN).append(IToXml.toBegin(v_XName));
+        }
+        
+        v_Xml.append(super.toXml(i_Level));
+        
+        if ( !Help.isNull(this.start) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("start" ,this.start));
+        }
+        if ( !Help.isNull(this.end) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("end" ,this.end));
+        }
+        if ( !Help.isNull(this.step) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("step" ,this.step));
+        }
+        if ( !Help.isNull(this.indexID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("indexID" ,this.indexID));
+        }
+        if ( !Help.isNull(this.elementID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("indexID" ,this.indexID));
+        }
+        
+        if ( !Help.isNull(this.route.getSucceeds()) 
+          || !Help.isNull(this.route.getExceptions()) )
+        {
+            int v_MaxLpad = 0;
+            if ( !Help.isNull(this.route.getSucceeds()) )
+            {
+                v_MaxLpad = 7;
+            }
+            
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
+            
+            // 成功路由
+            if ( !Help.isNull(this.route.getSucceeds()) )
+            {
+                for (IExecute v_Item : this.route.getSucceeds())
+                {
+                    if ( v_Item instanceof SelfLoop )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
+                    }
+                    else if ( !Help.isNull(v_Item.getXJavaID()) )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("succeed" ,v_Item.getXJavaID()));
+                    }
+                    else
+                    {
+                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
+                    }
+                }
+            }
+            // 异常路由
+            if ( !Help.isNull(this.route.getExceptions()) )
+            {
+                for (IExecute v_Item : this.route.getExceptions())
+                {
+                    if ( v_Item instanceof SelfLoop )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
+                    }
+                    else if ( !Help.isNull(v_Item.getXJavaID()) )
+                    {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("error" ,v_Item.getXJavaID() ,v_MaxLpad - 5));
+                    }
+                    else
+                    {
+                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
+                    }
+                }
+            }
+            
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));
+        }
+        
+        v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));
+        
+        return v_Xml.toString();
+    }
+    
+    
+    
+    /**
+     * 解析为实时运行时的执行表达式
+     * 
+     * 注：禁止在此真的执行方法
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public String toString(Map<String ,Object> i_Context)
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        Object        v_End     = null;
+        
+        v_Builder.append("for (");
+        
+        // 集合循环
+        if ( Help.isNull(this.start) )
+        {
+            try
+            {
+                v_End = ValueHelp.getValue(this.end ,null ,null ,i_Context);
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
+            }
+            
+            if ( v_End == null )
+            {
+                v_End = "NULL";
+            }
+            else if ( MethodReflect.isExtendImplement(v_End ,List.class) )
+            {
+                v_End = "List[" + ((List<?>) v_End).size() + "]";
+            }
+            else if ( MethodReflect.isExtendImplement(v_End ,Set.class) )
+            {
+                v_End = "Set[" + ((Set<?>) v_End).size() + "]";
+            }
+            else if ( MethodReflect.isExtendImplement(v_End ,Collection.class) )
+            {
+                v_End = "Collection[" + ((Collection<?>) v_End).size() + "]";
+            }
+            else if ( MethodReflect.isExtendImplement(v_End ,Map.class) )
+            {
+                v_End = "Map[" + ((Map<? ,?>) v_End).size() + "]";
+            }
+            else if ( Help.isArray(v_End) )
+            {
+                v_End = "Array[" + Array.getLength(v_End) + "]";
+            }
+            else
+            {
+                v_End = "Not-List";
+            }
+            
+            // 集合循环： for (end)
+            if ( Help.isNull(this.elementID) )
+            {
+                v_Builder.append(this.end);
+            }
+            // 集合循环： for (indexID : end)
+            else 
+            {
+                v_Builder.append(DBSQL.$Placeholder).append(this.elementID).append(" : ").append(this.end);
+            }
+            
+            v_Builder.append("=").append(v_End);
+        }
+        // 数值循环
+        else
+        {
+            Object v_Start = null;
+            try
+            {
+                v_Start = ValueHelp.getValue(this.start ,Integer.class ,null ,i_Context);
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start[" + this.start + "] error." ,exce);
+            }
+            
+            try
+            {
+                v_End = ValueHelp.getValue(this.end ,Integer.class ,null ,i_Context);
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
+            }
+            
+            // 数值循环： for (start .. end)
+            if ( Help.isNull(this.indexID) )
+            {
+                v_Builder.append(v_Start).append(" .. ").append(v_End);
+            }
+            // 数值循环： for (indexID=start; indexID<=end; indexID+=step)
+            else
+            {
+                Integer v_Step = null;
+                try
+                {
+                    v_Step = (Integer) ValueHelp.getValue(this.step ,Integer.class ,1 ,i_Context);  // 默认值：1
+                }
+                catch (Exception exce)
+                {
+                    $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error." ,exce);
+                }
+                
+                Integer v_IndexID = null;
+                try
+                {
+                    v_IndexID = (Integer) ValueHelp.getValue(DBSQL.$Placeholder + this.indexID ,Integer.class ,null ,i_Context);
+                }
+                catch (Exception exce)
+                {
+                    $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error." ,exce);
+                }
+                if ( v_IndexID != null )
+                {
+                    v_Start = v_IndexID + v_Step;
+                }
+                
+                v_Builder.append(DBSQL.$Placeholder).append(this.indexID).append("=") .append(v_Start).append("; ")
+                         .append(DBSQL.$Placeholder).append(this.indexID).append("<=").append(v_End)  .append("; ")
+                         .append(DBSQL.$Placeholder).append(this.indexID).append("+=").append(v_Step);
+            }
+        }
+        
+        v_Builder.append(")");
+        
+        return v_Builder.toString();
+    }
+    
+    
+    /**
+     * 解析为执行表达式
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @return
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder v_Builder = new StringBuilder();
+        
+        v_Builder.append("for (");
+        
+        // 集合循环
+        if ( Help.isNull(this.start) )
+        {
+            // 集合循环： for (end)
+            if ( Help.isNull(this.elementID) )
+            {
+                v_Builder.append(Help.NVL(this.end ,"?"));
+            }
+            // 集合循环： for (elementID : end)
+            else 
+            {
+                v_Builder.append(DBSQL.$Placeholder).append(this.elementID).append(" : ").append(Help.NVL(this.end ,"?"));
+            }
+        }
+        // 数值循环
+        else
+        {
+            // 数值循环： for (start .. end)
+            if ( Help.isNull(this.indexID) )
+            {
+                v_Builder.append(this.start).append(" .. ").append(Help.NVL(this.end ,"?"));
+            }
+            // 数值循环： for (indexID=start; indexID<=end; indexID+=step)
+            else
+            {
+                v_Builder.append(DBSQL.$Placeholder).append(this.indexID).append("=") .append(this.start).append("; ")
+                         .append(DBSQL.$Placeholder).append(this.indexID).append("<=").append(Help.NVL(this.end ,"?")).append("; ")
+                         .append(DBSQL.$Placeholder).append(this.indexID).append("+=").append(Help.NVL(this.step ,"1"));
+            }
+        }
+        
+        v_Builder.append(")");
+        
+        return v_Builder.toString();
+    }
+    
+}

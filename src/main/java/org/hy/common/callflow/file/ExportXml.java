@@ -327,6 +327,10 @@ public class ExportXml
             {
                 i_ExecObject.setXJavaID("XCalculate_" + StringHelp.getUUID9n());
             }
+            else if ( i_ExecObject instanceof ForConfig )
+            {
+                i_ExecObject.setXJavaID("XFor_" + StringHelp.getUUID9n());
+            }
             else if ( i_ExecObject instanceof SelfLoop )
             {
                 // Nothing  什么都不用做。它不用自己生成XML

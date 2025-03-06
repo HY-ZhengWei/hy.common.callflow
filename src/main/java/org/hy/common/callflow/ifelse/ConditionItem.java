@@ -442,7 +442,7 @@ public class ConditionItem implements IfElse ,XJavaID
             catch (Exception exce)
             {
                 $Logger.error("ConditionItem[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s valueXIDA[" + this.valueXIDA + "] getValue error." ,exce);
-                v_ValueA = "?";
+                v_ValueA = "ERROR";
             }
             
             // B可以为空，表示判定A是否为空，或判定A是否为Boolean类型的真假
@@ -496,7 +496,7 @@ public class ConditionItem implements IfElse ,XJavaID
                 catch (Exception exce)
                 {
                     $Logger.error("ConditionItem[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s valueXIDB[" + this.valueXIDB + "] getValue error." ,exce);
-                    v_ValueB = "?";
+                    v_ValueB = "ERROR";
                 }
                 
                 v_Builder.append(ValueHelp.getExpression(v_ValueA));

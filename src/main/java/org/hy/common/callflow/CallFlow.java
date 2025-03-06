@@ -16,6 +16,7 @@ import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.ifelse.Condition;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
+import org.hy.common.callflow.route.SelfLoop;
 
 
 
@@ -485,6 +486,7 @@ public class CallFlow
             }
             else if ( i_ExecObject instanceof CalculateConfig )
             {
+                // 计算元素按条件逻辑元素行事
                 if ( Boolean.class.equals(v_Result.getResult().getClass()) )
                 {
                     if ( (Boolean) v_Result.getResult() )
@@ -496,9 +498,23 @@ public class CallFlow
                         v_Nexts = i_ExecObject.getRoute().getFaileds();
                     }
                 }
+                // 计算元素按计算运算行事
                 else
                 {
                     v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                }
+            }
+            // 循环元素
+            else if ( i_ExecObject instanceof SelfLoop  )
+            {
+                if ( (Boolean) v_Result.getResult() )
+                {
+                    v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                }
+                else
+                {
+                    // 当循环结束时
+                    // Nothing.
                 }
             }
             else
@@ -538,6 +554,16 @@ public class CallFlow
                 {
                     // 子级或子子级执行异常
                     return v_Result;
+                }
+                
+                // 循环元素
+                if ( v_Next instanceof SelfLoop )
+                {
+                    if ( (Boolean) v_NextResult.getResult() )
+                    {
+                        // 当循环下一个时
+                        break;
+                    }
                 }
             }
             return v_Result;

@@ -11,15 +11,17 @@ import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
+import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
+import org.hy.common.xml.log.Logger;
 
 
 
 
 
 /**
- * 自引用元素：可实现自循环、for循环
+ * 自引用元素：可实现自循环、for循环的结束点（再次循环点）上
  * 
  * 注：与路由配合，隐性使用
  * 
@@ -29,6 +31,10 @@ import org.hy.common.xml.XJava;
  */
 public class SelfLoop extends ExecuteElement
 {
+    
+    private static final Logger $Logger = new Logger(SelfLoop.class);
+    
+    
     
     /** 所在编排内其它元素的XID */
     private String refXID;
@@ -265,6 +271,17 @@ public class SelfLoop extends ExecuteElement
             return v_Result;
         }
         
+        // 循环元素：当没有下一个循环的元素时，退出循环
+        if ( v_ExecObject instanceof ForConfig )
+        {
+            ForConfig v_For = (ForConfig) v_ExecObject;
+            if ( !v_For.hasNext(io_Context) )
+            {
+                ExecuteResult v_Result = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.refXID ,this.toString(io_Context));
+                return v_Result.setResult(false);   // ForConfig 中有设置结果为 true
+            }
+        }
+        
         String v_TreeID      = this.getTreeID(i_SuperTreeID);
         String v_SuperTreeID = this.getTreeSuperID(v_TreeID);
         return v_ExecObject.execute(v_SuperTreeID ,io_Context);
@@ -308,7 +325,32 @@ public class SelfLoop extends ExecuteElement
      */
     public String toString(Map<String ,Object> i_Context)
     {
-        return this.toString();
+        StringBuilder  v_Builder    = new StringBuilder();
+        ExecuteElement v_ExecObject = null;
+        
+        try
+        {
+            v_ExecObject = getExecuteElement();
+        }
+        catch (Exception exce)
+        {
+            $Logger.error(exce);
+        }
+        
+        if ( v_ExecObject == null )
+        {
+            v_Builder.append("SelfLoop ").append(DBSQL.$Placeholder).append(this.refXID);
+        }
+        else if ( v_ExecObject instanceof ForConfig )
+        {
+            v_Builder.append("For End ").append(DBSQL.$Placeholder).append(this.refXID);
+        }
+        else
+        {
+            v_Builder.append("SelfLoop ").append(DBSQL.$Placeholder).append(this.refXID);
+        }
+        
+        return v_Builder.toString();
     }
     
     
