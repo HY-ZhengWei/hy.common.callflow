@@ -98,6 +98,7 @@ public class Condition extends ExecuteElement implements IfElse
     {
         long          v_BeginTime = this.request();
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        this.refreshStatus(io_Context ,v_Result.getStatus());
         
         try
         {
@@ -109,12 +110,15 @@ public class Condition extends ExecuteElement implements IfElse
             }
             
             v_Result.setResult(v_ExceRet);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
             return v_Result;
         }
         catch (Exception exce)
         {
-            return v_Result.setException(exce);
+            v_Result.setException(exce);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
         }
     }
     

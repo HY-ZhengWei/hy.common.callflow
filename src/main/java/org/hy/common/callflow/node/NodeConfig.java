@@ -13,7 +13,6 @@ import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
-import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
@@ -61,9 +60,6 @@ public class NodeConfig extends ExecuteElement
     
     /** 执行方法的参数 */
     private List<NodeParam> callParams;
-    
-    /** 执行状态定义的变量ID */
-    private String          statusID;
     
     /** 执行超时时长（单位：毫秒） */
     private Long            timeout;
@@ -375,44 +371,6 @@ public class NodeConfig extends ExecuteElement
     
     
     /**
-     * 刷新返回值
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-21
-     * @version     v1.0
-     *
-     * @param io_Context  上下文类型的变量信息
-     * @param i_Return    返回值
-     */
-    private void refreshReturn(Map<String ,Object> io_Context ,Object i_Return)
-    {
-        if ( !Help.isNull(this.returnID) && io_Context != null )
-        {
-            io_Context.put(this.returnID ,i_Return);
-        }
-    }
-    
-    
-    /**
-     * 刷新执行状态
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-20
-     * @version     v1.0
-     *
-     * @param io_Context  上下文类型的变量信息
-     * @param i_Status    执行状态
-     */
-    private void refreshStatus(Map<String ,Object> io_Context ,ExecuteStatus i_Status)
-    {
-        if ( !Help.isNull(this.statusID) && io_Context != null )
-        {
-            io_Context.put(this.statusID ,i_Status.getValue());
-        }
-    }
-    
-    
-    /**
      * 获取：执行对象的XID
      */
     public String getCallXID()
@@ -508,31 +466,6 @@ public class NodeConfig extends ExecuteElement
         this.callParams = i_CallParams;
         this.isInit     = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
-    }
-
-    
-    /**
-     * 获取：执行状态定义的变量ID
-     */
-    public String getStatusID()
-    {
-        return statusID;
-    }
-
-    
-    /**
-     * 设置：执行状态定义的变量ID
-     * 
-     * @param i_StatusID 执行状态定义的变量ID
-     */
-    public void setStatusID(String i_StatusID)
-    {
-        if ( CallFlow.isSystemXID(i_StatusID) )
-        {
-            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s statusID[" + i_StatusID + "] is SystemXID.");
-        }
-        
-        this.statusID = ValueHelp.standardValueID(i_StatusID);
     }
 
     

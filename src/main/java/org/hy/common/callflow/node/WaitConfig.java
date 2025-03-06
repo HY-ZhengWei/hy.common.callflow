@@ -133,6 +133,7 @@ public class WaitConfig extends ExecuteElement
     {
         long          v_BeginTime = this.request();
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        this.refreshStatus(io_Context ,v_Result.getStatus());
         
         try
         {
@@ -151,12 +152,15 @@ public class WaitConfig extends ExecuteElement
                 Thread.sleep(v_WaitTime);
             }
             
+            this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
             return v_Result.setResult(true);
         }
         catch (Exception exce)
         {
-            return v_Result.setException(exce);
+            v_Result.setException(exce);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
         }
     }
 

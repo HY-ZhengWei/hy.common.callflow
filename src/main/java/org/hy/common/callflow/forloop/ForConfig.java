@@ -273,6 +273,7 @@ public class ForConfig extends ExecuteElement
     {
         long          v_BeginTime = this.request();
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        this.refreshStatus(io_Context ,v_Result.getStatus());
         
         try
         {
@@ -295,12 +296,15 @@ public class ForConfig extends ExecuteElement
                 catch (Exception exce)
                 {
                     $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
-                    return v_Result.setException(exce);
+                    v_Result.setException(exce);
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
                 }
                 
                 if ( v_End == null )
                 {
                     v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
                     return v_Result;
                 }
                 
@@ -324,6 +328,7 @@ public class ForConfig extends ExecuteElement
                     if ( !v_Iterator.hasNext() )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " List.hasNext() error."));
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
                         return v_Result;
                     }
                     
@@ -347,6 +352,7 @@ public class ForConfig extends ExecuteElement
                     if ( !v_Iterator.hasNext() )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Set.hasNext() error."));
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
                         return v_Result;
                     }
                     
@@ -370,6 +376,7 @@ public class ForConfig extends ExecuteElement
                     if ( !v_Iterator.hasNext() )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Collection.hasNext() error."));
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
                         return v_Result;
                     }
                     
@@ -393,6 +400,7 @@ public class ForConfig extends ExecuteElement
                     if ( !v_Iterator.hasNext() )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Map.hasNext() error."));
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
                         return v_Result;
                     }
                     
@@ -409,6 +417,7 @@ public class ForConfig extends ExecuteElement
                     if ( v_Len <= v_Index )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Array.length " + v_Len + " <= " + v_Index + " error."));
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
                         return v_Result;
                     }
                     
@@ -417,6 +426,7 @@ public class ForConfig extends ExecuteElement
                 else
                 {
                     v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is not list."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
                     return v_Result;
                 }
                 
@@ -435,11 +445,14 @@ public class ForConfig extends ExecuteElement
                 catch (Exception exce)
                 {
                     $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start[" + this.start + "] error." ,exce);
-                    return v_Result.setException(exce);
+                    v_Result.setException(exce);
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
                 }
                 if ( v_Start == null )
                 {
                     v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start is null."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
                     return v_Result;
                 }
                 
@@ -451,11 +464,14 @@ public class ForConfig extends ExecuteElement
                 catch (Exception exce)
                 {
                     $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
-                    return v_Result.setException(exce);
+                    v_Result.setException(exce);
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
                 }
                 if ( v_End == null )
                 {
                     v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
                     return v_Result;
                 }
                 
@@ -467,7 +483,9 @@ public class ForConfig extends ExecuteElement
                 catch (Exception exce)
                 {
                     $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error." ,exce);
-                    return v_Result.setException(exce);
+                    v_Result.setException(exce);
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
                 }
                 
                 // 数值循环： for (start .. end)
@@ -484,6 +502,7 @@ public class ForConfig extends ExecuteElement
                 if ( v_End < v_Index )
                 {
                     v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " " + v_End + " < " + v_Index + " error."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
                     return v_Result;
                 }
                 
@@ -491,12 +510,16 @@ public class ForConfig extends ExecuteElement
                 refreshIndex(io_Context  ,v_Index);
             }
             
+            v_Result.setResult(true);  // SelfLoop 中有设置结果为 false
+            this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
-            return v_Result.setResult(true);  // SelfLoop 中有设置结果为 false
+            return v_Result;
         }
         catch (Exception exce)
         {
-            return v_Result.setException(exce);
+            v_Result.setException(exce);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
         }
     }
     

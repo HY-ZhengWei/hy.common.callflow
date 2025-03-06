@@ -183,12 +183,15 @@ public class CalculateConfig extends ExecuteElement
     {
         long          v_BeginTime = this.request();
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
+        this.refreshStatus(io_Context ,v_Result.getStatus());
         
         try
         {
             if ( Help.isNull(this.calc) )
             {
-                return v_Result.setException(new NullPointerException("Calculate[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s calc is null"));
+                v_Result.setException(new NullPointerException("Calculate[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s calc is null"));
+                this.refreshStatus(io_Context ,v_Result.getStatus());
+                return v_Result;
             }
             
             FelContext v_FelContext = new MapContext();
@@ -204,42 +207,29 @@ public class CalculateConfig extends ExecuteElement
             
             Object v_CalcRet = $FelEngine.eval(this.calcFel ,v_FelContext);
             this.refreshReturn(io_Context ,v_CalcRet);
-            this.success(Date.getTimeNano() - v_BeginTime);
             
             if ( Help.isNull(this.returnID) )
             {
-                return v_Result.setResult((Boolean) v_CalcRet);
+                v_Result.setResult((Boolean) v_CalcRet);
+                this.refreshStatus(io_Context ,v_Result.getStatus());
+                
             }
             else
             {
-                return v_Result.setResult(v_CalcRet);
+                v_Result.setResult(v_CalcRet);
+                this.refreshStatus(io_Context ,v_Result.getStatus());
             }
+            
+            this.success(Date.getTimeNano() - v_BeginTime);
+            return v_Result;
         }
         catch (Exception exce)
         {
-            return v_Result.setException(exce);
+            v_Result.setException(exce);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
         }
     }
-    
-    
-    /**
-     * 刷新返回值
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-03-04
-     * @version     v1.0
-     *
-     * @param io_Context  上下文类型的变量信息
-     * @param i_Return    返回值
-     */
-    private void refreshReturn(Map<String ,Object> io_Context ,Object i_Return)
-    {
-        if ( !Help.isNull(this.returnID) && io_Context != null )
-        {
-            io_Context.put(this.returnID ,i_Return);
-        }
-    }
-
     
     
     /**

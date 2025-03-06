@@ -15,6 +15,7 @@ import org.hy.common.TotalNano;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteConfig;
 
@@ -124,6 +125,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
                                          
     /** 为返回值定义的变量ID */          
     protected String                     returnID;
+    
+    /** 执行状态定义的变量ID */
+    protected String                     statusID;
                                          
     /** 执行链：双向链表：前几个 */             
     protected List<IExecute>             previous;
@@ -938,6 +942,33 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     
     
     /**
+     * 获取：执行状态定义的变量ID
+     */
+    public String getStatusID()
+    {
+        return statusID;
+    }
+
+    
+    
+    /**
+     * 设置：执行状态定义的变量ID
+     * 
+     * @param i_StatusID 执行状态定义的变量ID
+     */
+    public void setStatusID(String i_StatusID)
+    {
+        if ( CallFlow.isSystemXID(i_StatusID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s statusID[" + i_StatusID + "] is SystemXID.");
+        }
+        
+        this.statusID = ValueHelp.standardValueID(i_StatusID);
+    }
+    
+    
+    
+    /**
      * 获取：执行链：双向链表：前几个
      */
     public List<IExecute> getPrevious()
@@ -984,6 +1015,46 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         if ( this.route != null )
         {
             this.route.setOwner(this);
+        }
+    }
+    
+    
+    
+    /**
+     * 刷新返回值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-21
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param i_Return    返回值
+     */
+    protected void refreshReturn(Map<String ,Object> io_Context ,Object i_Return)
+    {
+        if ( !Help.isNull(this.returnID) && io_Context != null )
+        {
+            io_Context.put(this.returnID ,i_Return);
+        }
+    }
+    
+    
+    
+    /**
+     * 刷新执行状态
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-20
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param i_Status    执行状态
+     */
+    protected void refreshStatus(Map<String ,Object> io_Context ,ExecuteStatus i_Status)
+    {
+        if ( !Help.isNull(this.statusID) && io_Context != null )
+        {
+            io_Context.put(this.statusID ,i_Status.getValue());
         }
     }
 

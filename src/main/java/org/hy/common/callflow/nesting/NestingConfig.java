@@ -8,7 +8,6 @@ import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
-import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
@@ -175,49 +174,11 @@ public class NestingConfig extends ExecuteElement
             v_NestingEnd.setPrevious( v_ErrorResult);
             v_NestingEnd.setExecuteLogic(v_ErrorResult.getExecuteLogic());
             v_NestingEnd.setException(   v_ErrorResult.getException());
+            this.refreshStatus(io_Context ,v_ExceRet.getStatus());
         }
         
         this.success(Date.getTimeNano() - v_BeginTime);
         return v_NestingBegin;
-    }
-    
-    
-    
-    /**
-     * 刷新返回值
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-21
-     * @version     v1.0
-     *
-     * @param io_Context  上下文类型的变量信息
-     * @param i_Return    返回值
-     */
-    private void refreshReturn(Map<String ,Object> io_Context ,Object i_Return)
-    {
-        if ( !Help.isNull(this.returnID) && io_Context != null )
-        {
-            io_Context.put(this.returnID ,i_Return);
-        }
-    }
-    
-    
-    /**
-     * 刷新执行状态
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-20
-     * @version     v1.0
-     *
-     * @param io_Context  上下文类型的变量信息
-     * @param i_Status    执行状态
-     */
-    private void refreshStatus(Map<String ,Object> io_Context ,ExecuteStatus i_Status)
-    {
-        if ( !Help.isNull(this.statusID) && io_Context != null )
-        {
-            io_Context.put(this.statusID ,i_Status.getValue());
-        }
     }
     
     
