@@ -1,7 +1,11 @@
-package org.hy.common.callflow.junit.cflow011;
+package org.hy.common.callflow.junit.cflow012;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
@@ -9,7 +13,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.forloop.ForConfig;
-import org.hy.common.callflow.junit.cflow011.program.Program;
+import org.hy.common.callflow.junit.cflow012.program.Program;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -22,7 +26,7 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎011：For循环元素。1到n的数值循环
+ * 测试单元：编排引擎012：For循环元素。循环List、Set、Collection、数组、Map
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-03-06
@@ -30,14 +34,14 @@ import org.junit.runners.MethodSorters;
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow011
+public class JU_CFlow012
 {
     
     private static boolean $isInit = false;
     
     
     
-    public JU_CFlow011() throws Exception
+    public JU_CFlow012() throws Exception
     {
         if ( !$isInit )
         {
@@ -49,23 +53,50 @@ public class JU_CFlow011
     
     
     @Test
-    public void test_CFlow011()
+    public void test_CFlow012()
     {
-        test_CFlow011_Inner();
+        test_CFlow012_Inner();
         System.out.println("\n");
-        test_CFlow011_Inner();
+        test_CFlow012_Inner();
     }
     
     
     
-    private void test_CFlow011_Inner()
+    private void test_CFlow012_Inner()
     {
         // 初始化被编排的执行程序
         XJava.putObject("XProgram" ,new Program());
         
         // 启动编排
-        ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF011_1");
+        ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF012_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+        
+        // 测试数据：List
+        List<String> v_ListDatas = new ArrayList<String>();
+        v_ListDatas.add("123");
+        v_ListDatas.add("456");
+        v_ListDatas.add("789");
+        // v_Context.put("Datas" ,v_ListDatas);
+        
+        // 测试数据：Set
+        Set<String> v_SetDatas = new HashSet<String>();
+        v_SetDatas.add("123");
+        v_SetDatas.add("456");
+        v_SetDatas.add("789");
+        // v_Context.put("Datas" ,v_SetDatas);
+        
+        // 测试数据：Collection
+        // v_Context.put("Datas" ,(Collection<?>)v_ListDatas);
+        
+        // 测试数据：数组
+        // v_Context.put("Datas" ,v_ListDatas.toArray());
+        
+        // 测试数据：Map
+        Map<String ,Integer> v_MapDatas = new HashMap<String ,Integer>();
+        v_MapDatas.put("K123" ,123);
+        v_MapDatas.put("K456" ,456);
+        v_MapDatas.put("K789" ,789);
+        v_Context.put("Datas" ,v_MapDatas);
         
         if ( Help.isNull(v_ForConfig.getTreeIDs()) )
         {

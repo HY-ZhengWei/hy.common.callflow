@@ -871,6 +871,12 @@ public class ForConfig extends ExecuteElement
         StringBuilder v_Builder = new StringBuilder();
         Object        v_End     = null;
         
+        String  v_WorkID   = CallFlow.getWorkID(i_Context);
+        String  v_Prefix   = v_WorkID + "@" + this.getXid() + "@For@";
+        String  v_IndexID  = v_Prefix + "index";
+        Integer v_OldIndex = (Integer) i_Context.get(v_IndexID);
+        int     v_Index    = 0;
+        
         v_Builder.append("for (");
         
         // 集合循环
@@ -885,29 +891,34 @@ public class ForConfig extends ExecuteElement
                 $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
             }
             
+            if ( v_OldIndex != null )
+            {
+                v_Index = v_OldIndex + 1;
+            }
+            
             if ( v_End == null )
             {
                 v_End = "NULL";
             }
             else if ( MethodReflect.isExtendImplement(v_End ,List.class) )
             {
-                v_End = "List[" + ((List<?>) v_End).size() + "]";
+                v_End = "List(" + ((List<?>) v_End).size() + ")[" + v_Index + "]";
             }
             else if ( MethodReflect.isExtendImplement(v_End ,Set.class) )
             {
-                v_End = "Set[" + ((Set<?>) v_End).size() + "]";
-            }
+                v_End = "Set(" + ((Set<?>) v_End).size() + ")[" + v_Index + "]";
+             }
             else if ( MethodReflect.isExtendImplement(v_End ,Collection.class) )
             {
-                v_End = "Collection[" + ((Collection<?>) v_End).size() + "]";
+                v_End = "Collection(" + ((Collection<?>) v_End).size() + ")[" + v_Index + "]";
             }
             else if ( MethodReflect.isExtendImplement(v_End ,Map.class) )
             {
-                v_End = "Map[" + ((Map<? ,?>) v_End).size() + "]";
+                v_End = "Map(" + ((Map<? ,?>) v_End).size() + ")[" + v_Index + "]";
             }
             else if ( Help.isArray(v_End) )
             {
-                v_End = "Array[" + Array.getLength(v_End) + "]";
+                v_End = "Array(" + Array.getLength(v_End) + ")[" + v_Index + "]";
             }
             else
             {
@@ -967,18 +978,9 @@ public class ForConfig extends ExecuteElement
                     $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error." ,exce);
                 }
                 
-                Integer v_IndexID = null;
-                try
+                if ( v_OldIndex != null )
                 {
-                    v_IndexID = (Integer) ValueHelp.getValue(DBSQL.$Placeholder + this.indexID ,Integer.class ,null ,i_Context);
-                }
-                catch (Exception exce)
-                {
-                    $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error." ,exce);
-                }
-                if ( v_IndexID != null )
-                {
-                    v_Start = v_IndexID + v_Step;
+                    v_Start = v_OldIndex + v_Step;
                 }
                 
                 v_Builder.append(DBSQL.$Placeholder).append(this.indexID).append("=") .append(v_Start).append("; ")
