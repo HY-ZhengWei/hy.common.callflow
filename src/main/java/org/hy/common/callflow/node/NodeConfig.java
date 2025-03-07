@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
@@ -177,18 +184,40 @@ public class NodeConfig extends ExecuteElement
         
         try
         {
-            Object v_ExceRet = Void.TYPE;
-            if ( Void.TYPE.equals(this.callMethodObject.getReturnType()) )
+            if ( this.timeout > 0L )
             {
-                this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+                CompletableFuture<Object> v_Future = this.executeAsync(v_CallObject ,v_ParamValues);
+                
+                // 处理任务结果或异常
+                v_Future.whenComplete((i_Result ,i_Exce) -> {
+                    if ( i_Exce != null ) 
+                    {
+                        $Logger.error(i_Exce ,"XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout[" + this.timeout + "]");
+                    }
+                    else
+                    {
+                        v_Result.setResult(i_Result);
+                    }
+                });
+                
+               v_Future.get(); // 阻塞等待任务完成
             }
             else
             {
-                v_ExceRet = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+                Object v_ExceRet = Void.TYPE;
+                if ( Void.TYPE.equals(this.callMethodObject.getReturnType()) )
+                {
+                    this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+                }
+                else
+                {
+                    v_ExceRet = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+                }
+                
+                v_Result.setResult(v_ExceRet);
             }
             
-            v_Result.setResult(v_ExceRet);
-            this.refreshReturn(io_Context ,v_ExceRet);
+            this.refreshReturn(io_Context ,v_Result.getResult());
             this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
             return v_Result;
@@ -199,6 +228,62 @@ public class NodeConfig extends ExecuteElement
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
         }
+    }
+    
+    
+    private CompletableFuture<Object> executeAsync(Object i_CallObject ,Object [] i_ParamValues) 
+    {
+        Supplier<Object> v_Task = () -> {
+            try 
+            {
+                if ( Void.TYPE.equals(this.callMethodObject.getReturnType()) )
+                {
+                    this.callMethodObject.invoke(i_CallObject ,i_ParamValues);
+                    return Void.TYPE;
+                }
+                else
+                {
+                    return this.callMethodObject.invoke(i_CallObject ,i_ParamValues);
+                }
+            } 
+            catch (Exception exce) 
+            {
+                throw new RuntimeException("Task interrupted", exce);
+            }
+        };
+        
+        CompletableFuture<Object> v_Future   = new CompletableFuture<Object>();      // 用于执行任务
+        ScheduledExecutorService v_Scheduler = Executors.newScheduledThreadPool(1);  // 用于超时控制
+
+        // 提交任务到 CompletableFuture
+        CompletableFuture.runAsync(() -> {
+            try 
+            {
+                Object v_ExceRet = v_Task.get();   // 执行任务
+                v_Future.complete(v_ExceRet);      // 任务完成，设置结果
+            } 
+            catch (Exception e) 
+            {
+                v_Future.completeExceptionally(e); // 任务异常，设置异常
+            }
+        });
+
+        // 设置超时任务
+        ScheduledFuture<?> v_TimeoutTask = v_Scheduler.schedule(() -> {
+            if ( !v_Future.isDone() ) 
+            {
+                // 超时后抛出异常
+                v_Future.completeExceptionally(new TimeoutException("Task timed out")); 
+            }
+        }, this.timeout ,TimeUnit.MILLISECONDS);
+
+        // 当任务完成时，取消超时任务
+        v_Future.whenComplete((result, ex) -> {
+            v_TimeoutTask.cancel(true);   // 取消超时任务
+            v_Scheduler.shutdown();       // 关闭调度器
+        });
+
+        return v_Future;
     }
     
     
@@ -591,6 +676,10 @@ public class NodeConfig extends ExecuteElement
         // 生成或写入个性化的XML内容
         toXmlContent(v_Xml ,i_Level ,v_Level1 ,v_LevelN ,i_SuperTreeID ,v_TreeID);
         
+        if ( this.timeout > 0L )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
+        }
         if ( !Help.isNull(this.returnID) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
