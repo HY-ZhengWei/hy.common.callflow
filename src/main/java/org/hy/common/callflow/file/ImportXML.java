@@ -79,7 +79,7 @@ public class ImportXML
     
     
     /**
-     * 升级编排配置（备份、删除、导入）
+     * 升级编排配置（备份为文件、删除、导入）
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-28
@@ -91,7 +91,7 @@ public class ImportXML
      *                      返回.getParamObj() 导入的最新编制配置
      * @throws IOException
      */
-    public Return<List<ExecuteElement>> upgrade(ExecuteElement i_ExecObject ,String i_Xml) throws IOException
+    public Return<List<ExecuteElement>> upgradeBackupFile(ExecuteElement i_ExecObject ,String i_Xml) throws IOException
     {
         if ( Help.isNull(i_Xml) )
         {
@@ -101,11 +101,43 @@ public class ImportXML
         Return<List<ExecuteElement>> v_Ret = new Return<List<ExecuteElement>>();
         if ( i_ExecObject != null )
         {
-            v_Ret.setParamStr(CallFlow.getHelpExport().save(i_ExecObject));  // 先备份
+            v_Ret.setParamStr(CallFlow.getHelpExport().save(i_ExecObject));  // 先备份为文件
             CallFlow.getHelpExecute().removeMySelf(i_ExecObject);            // 后删除对象池关系
         }
         
         return v_Ret.setParamObj(imports(i_Xml));                            // 再导入
+    }
+    
+    
+    
+    /**
+     * 升级编排配置（备份为字符串、删除、导入）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-07
+     * @version     v1.0
+     *
+     * @param i_ExecObject  执行对象（节点或条件逻辑）（允许为NULL）
+     * @param i_Xml         XML格式的编排配置
+     * @return              返回.getParamStr() 如果有升级的话，是备份的编排XML字符串
+     *                      返回.getParamObj() 导入的最新编制配置
+     * @throws IOException
+     */
+    public Return<List<ExecuteElement>> upgradeBackupString(ExecuteElement i_ExecObject ,String i_Xml) throws IOException
+    {
+        if ( Help.isNull(i_Xml) )
+        {
+            throw new NullPointerException("Xml is null.");
+        }
+        
+        Return<List<ExecuteElement>> v_Ret = new Return<List<ExecuteElement>>();
+        if ( i_ExecObject != null )
+        {
+            v_Ret.setParamStr(CallFlow.getHelpExport().export(i_ExecObject));  // 先备份为字符串
+            CallFlow.getHelpExecute().removeMySelf(i_ExecObject);              // 后删除对象池关系
+        }
+        
+        return v_Ret.setParamObj(imports(i_Xml));                              // 再导入
     }
     
     
