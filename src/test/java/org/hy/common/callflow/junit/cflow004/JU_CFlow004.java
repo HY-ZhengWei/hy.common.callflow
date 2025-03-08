@@ -8,7 +8,7 @@ import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.ifelse.Condition;
+import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.junit.cflow004.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
@@ -52,7 +52,7 @@ public class JU_CFlow004
     @Test
     public void test_CFlow004() throws Exception
     {
-        Condition v_Condition = (Condition) XJava.getObject("XCondition_CF004_002");
+        ConditionConfig v_Condition = (ConditionConfig) XJava.getObject("XCondition_CF004_002");
         System.out.println(v_Condition.toString());
         
         Map<String ,Object> v_Context = new HashMap<String ,Object>();

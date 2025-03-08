@@ -1,7 +1,7 @@
 package org.hy.common.callflow.junit;
 
 import org.hy.common.callflow.CallFlow;
-import org.hy.common.callflow.ifelse.Condition;
+import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.junit.cflow003.JU_CFlow003;
 import org.hy.common.callflow.junit.cflow004.JU_CFlow004;
 import org.hy.common.callflow.node.NodeConfig;
@@ -29,7 +29,7 @@ public class JU_Export
         NodeConfig v_Node = (NodeConfig) XJava.getObject("XNode_CF003_001");
         System.out.println(v_Node.toXml(1));
         
-        Condition v_Condition = (Condition) XJava.getObject("XCondition_CF003_003");
+        ConditionConfig v_Condition = (ConditionConfig) XJava.getObject("XCondition_CF003_003");
         System.out.println(v_Condition.toXml(1));
     }
     

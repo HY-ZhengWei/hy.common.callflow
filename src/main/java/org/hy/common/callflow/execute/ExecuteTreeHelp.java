@@ -47,7 +47,7 @@ public class ExecuteTreeHelp
      * @createDate  2025-02-28
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      */
     public void removeMySelf(ExecuteElement i_ExecObject)
     {
@@ -112,7 +112,7 @@ public class ExecuteTreeHelp
      * @createDate  2025-02-28
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param io_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      */
     public void clearTree(ExecuteElement io_ExecObject)
     {
@@ -174,7 +174,7 @@ public class ExecuteTreeHelp
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param io_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      */
     public void calcTree(IExecute io_ExecObject)
     {
@@ -196,7 +196,7 @@ public class ExecuteTreeHelp
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param io_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @param i_SuperTreeID  上级树ID
      * @param i_IndexNo      本节点在上级树中的排列序号
      */
@@ -215,7 +215,7 @@ public class ExecuteTreeHelp
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param io_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @param i_TreeID       执行对象的树ID
      */
     private void calcTreeToChilds(IExecute io_ExecObject ,String i_TreeID)
@@ -272,7 +272,7 @@ public class ExecuteTreeHelp
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @param i_TreeID      树ID
      * @return 
      */
@@ -501,7 +501,7 @@ public class ExecuteTreeHelp
      * @createDate  2025-02-26
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @return               返回元素一定是入参关系中最顶级的首个。但不一定是TreeLevel和TreeNo都是顶级参数。
      */
     public IExecute findFirst(IExecute i_ExecObject)

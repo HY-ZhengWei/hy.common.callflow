@@ -13,7 +13,7 @@ import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.execute.IExecuteEvent;
 import org.hy.common.callflow.file.ExportXml;
 import org.hy.common.callflow.file.ImportXML;
-import org.hy.common.callflow.ifelse.Condition;
+import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.route.SelfLoop;
@@ -295,13 +295,13 @@ public class CallFlow
     
     
     /**
-     * 首个节点或条件逻辑的执行
+     * 首个执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的执行
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @param io_Context    上下文类型的变量信息
      * @return              返回编排执行链中的最后的执行结果
      *                          1.最后执行结果的开始时间beginTime，也是整个编排的最早起始时间
@@ -316,13 +316,13 @@ public class CallFlow
     
     
     /**
-     * 首个节点或条件逻辑的执行
+     * 首个执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的执行
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @param io_Context    上下文类型的变量信息
      * @param i_Event       执行监听事件
      * @return              返回编排执行链中的首个执行对象的执行结果
@@ -409,7 +409,7 @@ public class CallFlow
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_ExecObject      执行对象（节点或条件逻辑）
+     * @param i_ExecObject      执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @param io_Context        上下文类型的变量信息
      * @param i_SuperTreeID     执行链：前一个执行对象的树ID
      * @param i_PreviousResult  执行链：前一个执行结果
@@ -477,7 +477,7 @@ public class CallFlow
                 return CallFlow.putError(io_Context ,v_Result.setCancel());
             }
             
-            if ( i_ExecObject instanceof Condition )
+            if ( i_ExecObject instanceof ConditionConfig )
             {
                 if ( (Boolean) v_Result.getResult() )
                 {

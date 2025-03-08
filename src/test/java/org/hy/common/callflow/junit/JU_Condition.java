@@ -2,7 +2,7 @@ package org.hy.common.callflow.junit;
 
 import org.hy.common.callflow.enums.Comparer;
 import org.hy.common.callflow.enums.Logical;
-import org.hy.common.callflow.ifelse.Condition;
+import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.ifelse.ConditionItem;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class JU_Condition
     @Test
     public void test_And() throws Exception
     {
-        Condition v_Condition = new Condition();
+        ConditionConfig v_Condition = new ConditionConfig();
         v_Condition.setLogical(Logical.And);
         
         v_Condition.setComment("123 == 123");
@@ -57,7 +57,7 @@ public class JU_Condition
     @Test
     public void test_Or() throws Exception
     {
-        Condition v_Condition = new Condition();
+        ConditionConfig v_Condition = new ConditionConfig();
         v_Condition.setLogical(Logical.Or);
         
         v_Condition.setComment("123 == 123");
@@ -83,7 +83,7 @@ public class JU_Condition
     @Test
     public void test_AndOr() throws Exception
     {
-        Condition v_CChild = new Condition();
+        ConditionConfig v_CChild = new ConditionConfig();
         v_CChild.setLogical(Logical.Or);
         
         // 123 == 123 OR 123 == 456
@@ -92,7 +92,7 @@ public class JU_Condition
         
         
         
-        Condition v_CFather = new Condition();
+        ConditionConfig v_CFather = new ConditionConfig();
         v_CFather.setLogical(Logical.And);
         
         // 123 == 123 AND (123 == 123 OR 123 == 456)
@@ -103,7 +103,7 @@ public class JU_Condition
         
         
         // (123 == 123 And (123 == 123 Or 123 == 456)) And ABC == ABC
-        Condition v_Super = new Condition();
+        ConditionConfig v_Super = new ConditionConfig();
         v_Super.setLogical(Logical.And);
         v_Super.setItem(v_CFather);
         v_Super.setItem(new ConditionItem(Comparer.Equal ,String.class ,"ABC" ,"ABC"));

@@ -33,7 +33,7 @@ import org.hy.common.callflow.route.SelfLoop;
  * @createDate  2025-02-12
  * @version     v1.0
  */
-public class Condition extends ExecuteElement implements IfElse
+public class ConditionConfig extends ExecuteElement implements IfElse
 {
     
     /** 逻辑 */
@@ -44,7 +44,7 @@ public class Condition extends ExecuteElement implements IfElse
     
     
     
-    public Condition()
+    public ConditionConfig()
     {
         this(0L ,0L);
     }
@@ -60,7 +60,7 @@ public class Condition extends ExecuteElement implements IfElse
      * @param i_RequestTotal  累计的执行次数
      * @param i_SuccessTotal  累计的执行成功次数
      */
-    public Condition(long i_RequestTotal ,long i_SuccessTotal)
+    public ConditionConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
         this.logical = Logical.And;
@@ -231,7 +231,7 @@ public class Condition extends ExecuteElement implements IfElse
      *
      * @param i_Condition  条件逻辑
      */
-    public boolean setCondition(Condition i_Condition)
+    public boolean setCondition(ConditionConfig i_Condition)
     {
         return this.setItem(i_Condition);
     }
@@ -271,7 +271,7 @@ public class Condition extends ExecuteElement implements IfElse
      *
      * @param i_Item
      */
-    public boolean setItem(Condition i_Item)
+    public boolean setItem(ConditionConfig i_Item)
     {
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         
@@ -498,7 +498,7 @@ public class Condition extends ExecuteElement implements IfElse
                 }
                 
                 IfElse v_Item = this.items.get(x);
-                if ( v_Item instanceof Condition )
+                if ( v_Item instanceof ConditionConfig )
                 {
                     v_Builder.append("(").append(v_Item.toString(i_Context)).append(")");
                 }
@@ -539,7 +539,7 @@ public class Condition extends ExecuteElement implements IfElse
                 }
                 
                 IfElse v_Item = this.items.get(x);
-                if ( v_Item instanceof Condition )
+                if ( v_Item instanceof ConditionConfig )
                 {
                     v_Builder.append("(").append(v_Item.toString()).append(")");
                 }

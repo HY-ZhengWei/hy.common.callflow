@@ -14,7 +14,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.forloop.ForConfig;
-import org.hy.common.callflow.ifelse.Condition;
+import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
@@ -58,7 +58,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Node.getXmlName()      ,NodeConfig.class);
         getInstance().addImportHead(ElementType.Wait.getXmlName()      ,WaitConfig.class);
         getInstance().addImportHead(ElementType.Calculate.getXmlName() ,CalculateConfig.class);
-        getInstance().addImportHead(ElementType.Condition.getXmlName() ,Condition.class);
+        getInstance().addImportHead(ElementType.Condition.getXmlName() ,ConditionConfig.class);
     }
     
     
@@ -140,7 +140,7 @@ public class ExportXml
      * @createDate  2025-02-26
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param io_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @return               返回保存文件的全路径
      * @throws IOException 
      */
@@ -162,7 +162,7 @@ public class ExportXml
      * @createDate  2025-02-26
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（节点或条件逻辑）
+     * @param io_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @param i_SavePath     保存目录
      * @return               返回保存文件的全路径
      * @throws IOException 
@@ -220,7 +220,7 @@ public class ExportXml
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @return
      */
     public String export(IExecute i_ExecObject)
@@ -256,7 +256,7 @@ public class ExportXml
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（节点或条件逻辑）
+     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
      * @param i_TreeID      执行对象的树ID
      * @return
      */
@@ -315,7 +315,7 @@ public class ExportXml
             {
                 i_ExecObject.setXJavaID("XWait_" + StringHelp.getUUID9n());
             }
-            else if ( i_ExecObject instanceof Condition )
+            else if ( i_ExecObject instanceof ConditionConfig )
             {
                 i_ExecObject.setXJavaID("XCondition_" + StringHelp.getUUID9n());
             }

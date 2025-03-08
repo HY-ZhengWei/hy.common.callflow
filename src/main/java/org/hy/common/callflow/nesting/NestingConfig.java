@@ -37,11 +37,8 @@ import org.hy.common.xml.XJava;
 public class NestingConfig extends ExecuteElement
 {
 
-    /** 子编排的XID（节点或条件逻辑的XID）。采用弱关联的方式 */
+    /** 子编排的XID（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的XID）。采用弱关联的方式 */
     private String callFlowXID;
-    
-    /** 执行状态定义的变量ID */
-    private String statusID;
     
     
     
@@ -111,12 +108,14 @@ public class NestingConfig extends ExecuteElement
             return v_NestingBegin;
         }
         // 禁止嵌套直接套嵌套，做无用功
+        /*
         if ( v_CallObject instanceof NestingConfig )
         {
             v_NestingBegin.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + this.callFlowXID + "] is not NodeConfig or Condition."));
             this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
             return v_NestingBegin;
         }
+        */
         
         ExecuteResult v_SuperFirstResult = CallFlow.getFirstResult(io_Context);  // 备份父级首个执行结果 
         ExecuteResult v_SuperLastResult  = CallFlow.getLastResult( io_Context);  // 备份父级最后执行结果 
@@ -184,7 +183,7 @@ public class NestingConfig extends ExecuteElement
     
     
     /**
-     * 获取：子编排的XID（节点或条件逻辑的XID）。采用弱关联的方式
+     * 获取：子编排的XID（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的XID）。采用弱关联的方式
      */
     public String getCallFlowXID()
     {
@@ -194,9 +193,9 @@ public class NestingConfig extends ExecuteElement
 
     
     /**
-     * 设置：子编排的XID（节点或条件逻辑的XID）。采用弱关联的方式
+     * 设置：子编排的XID（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的XID）。采用弱关联的方式
      * 
-     * @param i_CallFlowXID 子编排的XID（节点或条件逻辑的XID）。采用弱关联的方式
+     * @param i_CallFlowXID 子编排的XID（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的XID）。采用弱关联的方式
      */
     public void setCallFlowXID(String i_CallFlowXID)
     {
@@ -204,33 +203,6 @@ public class NestingConfig extends ExecuteElement
         this.callFlowXID = ValueHelp.standardValueID(i_CallFlowXID);
     }
     
-    
-    
-    /**
-     * 获取：执行状态定义的变量ID
-     */
-    public String getStatusID()
-    {
-        return statusID;
-    }
-
-    
-    
-    /**
-     * 设置：执行状态定义的变量ID
-     * 
-     * @param i_StatusID 执行状态定义的变量ID
-     */
-    public void setStatusID(String i_StatusID)
-    {
-        if ( CallFlow.isSystemXID(i_StatusID) )
-        {
-            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s statusID[" + i_StatusID + "] is SystemXID.");
-        }
-        
-        this.statusID = ValueHelp.standardValueID(i_StatusID);
-    }
-
     
     
     /**
