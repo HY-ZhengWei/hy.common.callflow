@@ -192,7 +192,7 @@ public class NodeConfig extends ExecuteElement
                 v_Future.whenComplete((i_Result ,i_Exce) -> {
                     if ( i_Exce != null ) 
                     {
-                        $Logger.error(i_Exce ,"XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout[" + this.timeout + "]");
+                        $Logger.error(i_Exce ,i_Exce.getMessage());
                     }
                     else
                     {
@@ -231,6 +231,17 @@ public class NodeConfig extends ExecuteElement
     }
     
     
+    /**
+     * 超时异步执行
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-07
+     * @version     v1.0
+     *
+     * @param i_CallObject   执行方法的对象实例
+     * @param i_ParamValues  执行方法的参数
+     * @return
+     */
     private CompletableFuture<Object> executeAsync(Object i_CallObject ,Object [] i_ParamValues) 
     {
         Supplier<Object> v_Task = () -> {
@@ -248,7 +259,7 @@ public class NodeConfig extends ExecuteElement
             } 
             catch (Exception exce) 
             {
-                throw new RuntimeException("Task interrupted", exce);
+                throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] executeAsync error", exce);
             }
         };
         
@@ -273,7 +284,7 @@ public class NodeConfig extends ExecuteElement
             if ( !v_Future.isDone() ) 
             {
                 // 超时后抛出异常
-                v_Future.completeExceptionally(new TimeoutException("Task timed out")); 
+                v_Future.completeExceptionally(new TimeoutException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout[" + this.timeout + "]")); 
             }
         }, this.timeout ,TimeUnit.MILLISECONDS);
 
@@ -608,7 +619,15 @@ public class NodeConfig extends ExecuteElement
      * @createDate  2025-03-04
      * @version     v1.0
      *
-     * @param io_Xml  XML内容的缓存区
+     * @param io_Xml         XML内容的缓存区
+     * @param i_Level        层级。最小下标从0开始。
+     *                           0表示每行前面有0个空格；
+     *                           1表示每行前面有4个空格；
+     *                           2表示每行前面有8个空格；
+     * @param i_Level1       单级层级的空格间隔
+     * @param i_LevelN       N级层级的空格间隔
+     * @param i_SuperTreeID  父级树ID
+     * @param i_TreeID       当前树ID
      */
     public void toXmlContent(StringBuilder io_Xml ,int i_Level ,String i_Level1 ,String i_LevelN ,String i_SuperTreeID ,String i_TreeID)
     {

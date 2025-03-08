@@ -84,7 +84,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     /** 背景色 */                        
     protected String                     backgroudColor;
                                          
-    /** 边框西样式 */                    
+    /** 边框线样式 */                    
     protected String                     lineStyle;
                                          
     /** 边框线颜色 */                    
@@ -630,7 +630,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
 
     
     /**
-     * 获取：边框西样式
+     * 获取：边框线样式
      */
     public String getLineStyle()
     {
@@ -640,9 +640,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
 
     
     /**
-     * 设置：边框西样式
+     * 设置：边框线样式
      * 
-     * @param i_LineStyle 边框西样式
+     * @param i_LineStyle 边框线样式
      */
     public void setLineStyle(String i_LineStyle)
     {
