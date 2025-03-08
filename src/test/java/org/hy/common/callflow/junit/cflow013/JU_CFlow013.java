@@ -68,7 +68,7 @@ public class JU_CFlow013
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
         // 大于5秒 或 小于5秒
-        v_Context.put("SleepTime" ,1000L * 10L);
+        v_Context.put("SleepTime" ,1000L * 100L);
         
         if ( Help.isNull(v_FirstNode.getTreeIDs()) )
         {
@@ -122,7 +122,8 @@ public class JU_CFlow013
                          + StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")
                          + " " + i_Result.getExecuteLogic()
                          + " " + Help.NVL(i_Result.getResult())
-                         + " " + i_Result.isSuccess());
+                         + " " + i_Result.isSuccess()
+                         + " " + i_Result.getStatus());
         
         if ( !Help.isNull(i_Result.getNexts()) )
         {

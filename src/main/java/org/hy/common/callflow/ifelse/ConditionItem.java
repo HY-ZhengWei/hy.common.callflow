@@ -32,6 +32,9 @@ public class ConditionItem implements IfElse ,XJavaID
     
     
     
+    /** 主键标识 */
+    private String   id;
+    
     /** 全局惟一标识ID */
     private String   xid;
     
@@ -291,8 +294,28 @@ public class ConditionItem implements IfElse ,XJavaID
         }
         this.valueXIDB = ValueHelp.standardRefID(i_ValueXIDB);
     }
+    
+    
+    /**
+     * 获取：主键标识
+     */
+    public String getId()
+    {
+        return id;
+    }
 
     
+    /**
+     * 设置：主键标识
+     * 
+     * @param i_Id 主键标识
+     */
+    public void setId(String i_Id)
+    {
+        this.id = i_Id;
+    }
+
+
     /**
      * 获取：全局惟一标识ID
      */

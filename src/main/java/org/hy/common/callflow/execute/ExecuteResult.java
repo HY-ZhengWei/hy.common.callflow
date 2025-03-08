@@ -109,7 +109,7 @@ public class ExecuteResult implements ITreeID
      * 
      * @param i_Exception 为异常对象
      */
-    public ExecuteResult setTimeout()
+    public ExecuteResult setTimeout(TimeoutException i_TimeoutException)
     {
         // 所有状态类的setter方法仅允许执行一次
         synchronized ( this )
@@ -123,7 +123,7 @@ public class ExecuteResult implements ITreeID
         }
         
         this.endTime   = Date.getTimeNano();
-        this.exception = new TimeoutException();
+        this.exception = i_TimeoutException;
         this.success   = false;
         this.status    = ExecuteStatus.Timeout;
         

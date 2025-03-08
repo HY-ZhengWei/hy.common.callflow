@@ -224,7 +224,14 @@ public class NodeConfig extends ExecuteElement
         }
         catch (Exception exce)
         {
-            v_Result.setException(exce);
+            if ( exce.getCause() instanceof TimeoutException )
+            {
+                v_Result.setTimeout((TimeoutException) exce.getCause());
+            }
+            else
+            {
+                v_Result.setException(exce);
+            }
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
         }
