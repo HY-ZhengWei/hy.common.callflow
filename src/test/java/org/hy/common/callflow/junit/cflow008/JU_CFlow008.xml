@@ -15,9 +15,9 @@
     <!-- CFlow编排引擎配置 -->
     <xconfig>
     
-        <xnesting id="XNesting_CF008_1_2">
+        <xnesting id="XNesting_CF008_1_1">
             <comment>1</comment>
-            <callFlowXID>:XNode_CF003_001</callFlowXID>
+            <callFlowXID>:XNode_CF003_1</callFlowXID>
             <returnID>CF003</returnID>
         </xnesting>
         
@@ -28,7 +28,7 @@
             <returnID>CF006</returnID>                <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed>                             <!-- 成功时，关联后置节点 -->
-                    <next ref="XNesting_CF008_1_2" />
+                    <next ref="XNesting_CF008_1_1" />
                     <comment>子编排</comment>
                 </succeed>
             </route>
