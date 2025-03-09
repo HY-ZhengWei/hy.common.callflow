@@ -13,6 +13,7 @@
     * [条件逻辑元素的多条件及返回对象举例](#条件逻辑元素的多条件及返回对象举例)
     * [条件逻辑元素的非空及多路径举例](#条件逻辑元素的非空及多路径举例)
     * [多路径裂变举例](#多路径裂变举例)
+    * [嵌套元素举例](#嵌套元素举例)
 
 
 
@@ -641,7 +642,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 多路径裂变举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow006)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow006) [返回目录](#主导思想)
 
 __编排图例演示__
 
@@ -778,6 +779,69 @@ v_Context.put("NULLValue" ,null);  // 传值 null 或 不为 null
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
+```
+
+
+
+嵌套元素举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow007) [返回目录](#主导思想)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow007/JU_CFlow007.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnesting id="XNesting_CF007_1">
+            <comment>1</comment>
+            <callFlowXID>:XNode_CF006_1</callFlowXID> <!-- 子编排的XID -->
+            <returnID>CF006</returnID>                <!-- 定义返回结果的变量名称 -->
+        </xnesting>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 加载6号编排配置
+new JU_CFlow006();
+
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NestingConfig       v_Nesting = (NodeConfig) XJava.getObject("XNesting_CF007_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("NumParam"  ,9);     // 传值 9 或 传值 -1 或 不传值
+v_Context.put("NULLValue" ,null);  // 传值 null 或 不为 null
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_FirstNode ,v_Context);
 ```
 
 
