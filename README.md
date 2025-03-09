@@ -16,6 +16,7 @@
     * [嵌套元素举例](#嵌套元素举例)
     * [嵌套元素的嵌套多个举例](#嵌套元素的嵌套多个举例)
     * [等待元素和While循环举例](#等待元素和While循环举例)
+    * [计算元素和While循环举例](#计算元素和While循环举例)
 
 
 
@@ -1031,6 +1032,111 @@ Map<String ,Object> v_Context   = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
+```
+
+
+
+计算元素和While循环举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow010) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow010/JU_CFlow010.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XCalculate_CF010_1_1_1">
+            <comment>完成</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Double</valueClass>   <!-- 定义入参类型 -->
+                <value>:CalcRet</value>                     <!-- 定义入参变量名称 -->
+            </callParam>
+        </xnode>
+    
+        
+        <xcalculate id="XCalculate_CF010_1_1">
+            <comment>计算表达式</comment>
+            <calc>:Value + 3.14</calc>
+            <returnID>CalcRet</returnID>                    <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCalculate_CF010_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcalculate>
+        
+        
+        <xcalculate id="XCalculate_CF010_1_2">
+            <comment>计算表达式</comment>
+            <calc>:Value + 1</calc>
+            <returnID>Value</returnID>                      <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed>                                   <!-- 自引用 -->
+                    <next>:XCalculate_CF010_1</next>
+                    <comment>While循环的下一步</comment>
+                </succeed>
+            </route>
+        </xcalculate>
+        
+        
+        <xcalculate id="XCalculate_CF010_1">
+            <comment>当作条件逻辑元素来使用，没有返回值变量</comment>
+            <calc><![CDATA[:Value >= 100]]></calc>
+            <route>
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XCalculate_CF010_1_1" />
+                    <comment>真时</comment>
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next ref="XCalculate_CF010_1_2" />
+                    <comment>假时，While循环</comment>
+                </else>
+            </route>
+        </xcalculate>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+CalculateConfig     v_Calculate = (CalculateConfig) XJava.getObject("XCalculate_CF010_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+v_Context.put("Value" ,99);  // 传数字 或 字符类的数字
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_Calculate ,v_Context);
 ```
 
 
