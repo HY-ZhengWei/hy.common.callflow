@@ -15,6 +15,7 @@
     * [多路径裂变举例](#多路径裂变举例)
     * [嵌套元素举例](#嵌套元素举例)
     * [嵌套元素的嵌套多个举例](#嵌套元素的嵌套多个举例)
+    * [等待元素和While循环举例](#等待元素和While循环举例)
 
 
 
@@ -73,7 +74,7 @@
 执行元素举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow001) [返回目录](#主导思想)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow001) [返回目录](#目录)
 
 __编排图例演示__
 
@@ -144,7 +145,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 执行元素的多路分支逐一执行举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow005) [返回目录](#主导思想)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow005) [返回目录](#目录)
 
 __编排图例演示__
 
@@ -250,7 +251,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 条件逻辑元素举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow002) [返回目录](#主导思想)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow002) [返回目录](#目录)
 
 __编排图例演示__
 
@@ -357,7 +358,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 条件逻辑元素的多条件及返回对象举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow004) [返回目录](#主导思想)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow004) [返回目录](#目录)
 
 __编排图例演示__
 
@@ -518,7 +519,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 条件逻辑元素的非空及多路径举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow003) [返回目录](#主导思想)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow003) [返回目录](#目录)
 
 __编排图例演示__
 
@@ -643,7 +644,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 多路径裂变举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow006) [返回目录](#主导思想)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow006) [返回目录](#目录)
 
 __编排图例演示__
 
@@ -787,7 +788,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 嵌套元素举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow007) [返回目录](#主导思想)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow007) [返回目录](#目录)
 
 __编排图例演示__
 
@@ -842,7 +843,7 @@ v_Context.put("NumParam"  ,9);     // 传值 9 或 传值 -1 或 不传值
 v_Context.put("NULLValue" ,null);  // 传值 null 或 不为 null
 
 // 执行编排。返回执行结果       
-ExecuteResult       v_Result  = CallFlow.execute(v_FirstNode ,v_Context);
+ExecuteResult       v_Result  = CallFlow.execute(v_Nesting ,v_Context);
 ```
 
 
@@ -850,7 +851,7 @@ ExecuteResult       v_Result  = CallFlow.execute(v_FirstNode ,v_Context);
 嵌套元素的嵌套多个举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow008) [返回目录](#主导思想)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow008) [返回目录](#目录)
 
 __编排图例演示__
 
@@ -918,7 +919,118 @@ v_Context.put("NumParam"  ,9);     // 传值 9 或 传值 -1 或 不传值
 v_Context.put("NULLValue" ,null);  // 传值 null 或 不为 null
 
 // 执行编排。返回执行结果       
-ExecuteResult       v_Result  = CallFlow.execute(v_FirstNode ,v_Context);
+ExecuteResult       v_Result  = CallFlow.execute(v_Nesting ,v_Context);
+```
+
+
+
+等待元素和While循环举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow009) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow009/JU_CFlow009.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF009_1_1_2">
+            <comment>完成</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+        </xnode>
+    
+        
+        <xwait id="XWait_CF009_1_1_1">
+            <comment>等待1秒</comment>
+            <waitTime>1000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
+            <route>
+                <succeed>                                   <!-- 自引用 -->
+                    <next>:XNode_CF009_1</next>
+                    <comment>While循环的下一步</comment>
+                </succeed>
+            </route>
+        </xwait>
+        
+        
+        <xcondition id="XCondition_CF009_1_1">
+            <comment>判定是否大于1</comment>
+            <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义变量类型 -->
+                <valueXIDA>:Count</valueXIDA>               <!-- 默认值 -->
+                <comparer><![CDATA[<=]]></comparer>         <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                <valueXIDB>2</valueXIDB>                    <!-- 变量 -->
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XWait_CF009_1_1_1" />
+                    <comment>真时</comment>
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next ref="XNode_CF009_1_1_2" />
+                    <comment>假时</comment>
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF009_1">
+            <comment>计数器加加</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_AddCount</callMehod>          <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
+                <value>:Count</value>                       <!-- 定义入参变量名称 -->
+                <valueDefault>0</valueDefault>              <!-- 定义入参默认值 -->
+            </callParam>
+            <returnID>Count</returnID>                      <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCondition_CF009_1_1" />
+                    <comment>While循环</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF009_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 ```
 
 
