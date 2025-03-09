@@ -120,9 +120,6 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     /** 最后修改时间 */                  
     protected Date                       updateTime;
                                          
-    /** 删除标记。1删除；0未删除 */      
-    protected Integer                    isDel;
-                                         
     /** 为返回值定义的变量ID */          
     protected String                     returnID;
     
@@ -894,27 +891,6 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
 
     
     /**
-     * 获取：删除标记。1删除；0未删除
-     */
-    public Integer getIsDel()
-    {
-        return isDel;
-    }
-
-
-    
-    /**
-     * 设置：删除标记。1删除；0未删除
-     * 
-     * @param i_IsDel 删除标记。1删除；0未删除
-     */
-    public void setIsDel(Integer i_IsDel)
-    {
-        this.isDel = i_IsDel;
-    }
-    
-    
-    /**
      * 获取：为返回值定义的变量ID
      */
     public String getReturnID()
@@ -1178,10 +1154,6 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         if ( this.updateTime != null )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
-        }
-        if ( this.isDel != null )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("isDel" ,this.isDel));
         }
         
         return v_Xml.toString();

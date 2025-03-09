@@ -16,6 +16,7 @@ import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
+import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
 
 
@@ -468,7 +469,7 @@ public class CallFlow
         }
         io_Context.put($LastExecuteResult ,v_Result);
         
-        List<IExecute> v_Nexts  = null;
+        List<RouteItem> v_Nexts  = null;
         if ( v_Result.isSuccess() )
         {
             // 事件：执行成功
@@ -511,14 +512,22 @@ public class CallFlow
             // 循环元素
             else if ( i_ExecObject instanceof SelfLoop  )
             {
-                if ( (Boolean) v_Result.getResult() )
+                Object v_RetValue = v_Result.getResult();
+                if ( v_RetValue instanceof Boolean )
                 {
-                    v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                    if ( (Boolean) v_RetValue )
+                    {
+                        v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                    }
+                    else
+                    {
+                        // 当循环结束时
+                        // Nothing.
+                    }
                 }
                 else
                 {
-                    // 当循环结束时
-                    // Nothing.
+                    v_Nexts = i_ExecObject.getRoute().getSucceeds();
                 }
             }
             else
@@ -545,9 +554,9 @@ public class CallFlow
         
         if ( !Help.isNull(v_Nexts) )
         {
-            for (IExecute v_Next : v_Nexts)
+            for (RouteItem v_Next : v_Nexts)
             {
-                ExecuteResult v_NextResult = CallFlow.execute(v_Next ,io_Context ,i_ExecObject.getTreeID(i_SuperTreeID) ,v_Result ,i_Event);
+                ExecuteResult v_NextResult = CallFlow.execute(v_Next.getNext() ,io_Context ,i_ExecObject.getTreeID(i_SuperTreeID) ,v_Result ,i_Event);
                 v_Result.addNext(v_NextResult);
                 if ( !v_NextResult.isSuccess() )
                 {
@@ -561,12 +570,16 @@ public class CallFlow
                 }
                 
                 // 循环元素
-                if ( v_Next instanceof SelfLoop )
+                if ( v_Next.getNext() instanceof SelfLoop )
                 {
-                    if ( (Boolean) v_NextResult.getResult() )
+                    Object v_RetValue = v_NextResult.getResult();
+                    if ( v_RetValue instanceof Boolean )
                     {
-                        // 当循环下一个时
-                        break;
+                        if ( (Boolean) v_RetValue )
+                        {
+                            // 当循环下一个时
+                            break;
+                        }
                     }
                 }
             }

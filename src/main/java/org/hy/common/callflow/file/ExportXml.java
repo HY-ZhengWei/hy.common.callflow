@@ -19,6 +19,7 @@ import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.file.FileHelp;
 import org.hy.common.license.Hash;
@@ -262,14 +263,15 @@ public class ExportXml
      */
     private String exportToChild(IExecute i_ExecObject ,String i_TreeID)
     {
-        StringBuilder  v_Xml    = new StringBuilder();
-        List<IExecute> v_Childs = null;
+        StringBuilder   v_Xml    = new StringBuilder();
+        List<RouteItem> v_Childs = null;
         
         v_Childs = i_ExecObject.getRoute().getSucceeds();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -281,8 +283,9 @@ public class ExportXml
         v_Childs = i_ExecObject.getRoute().getFaileds();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -294,8 +297,9 @@ public class ExportXml
         v_Childs = i_ExecObject.getRoute().getExceptions();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;

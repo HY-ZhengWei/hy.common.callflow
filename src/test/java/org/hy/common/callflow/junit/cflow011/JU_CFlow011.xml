@@ -8,7 +8,7 @@
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     
     
     
@@ -31,8 +31,14 @@
                 <value>:ForIndex</value>                    <!-- 定义入参变量名称 -->
             </callParam>
             <route>
-                <succeed>:XFor_CF011_1</succeed>            <!-- For循环结束点（再次循环点） -->
-                <succeed ref="XNode_CF011_1_1_2" />         <!-- 关联后置节点 -->
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF011_1</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF011_1_1_2" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
             </route>
         </xnode>
         
@@ -46,7 +52,10 @@
                 <value>:ForIndex</value>                    <!-- 定义入参变量名称 -->
             </callParam>
             <route>
-                <succeed ref="XNode_CF011_1_1_1" />         <!-- 关联后置节点 -->
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF011_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
             </route>
         </xnode>
         
@@ -58,7 +67,10 @@
             <step>1</step>                                  <!-- 步长，可选项，默认为1 -->
             <indexID>ForIndex</indexID>                     <!-- 序号变量名称 -->
             <route>
-                <succeed ref="XNode_CF011_1_1" />           <!-- 关联后置节点 -->
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF011_1_1" />
+                    <comment>For循环</comment>
+                </succeed>
             </route>
         </xfor>
         

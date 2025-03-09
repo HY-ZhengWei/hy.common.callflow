@@ -4,8 +4,11 @@
 
     <import name="xconfig"    class="java.util.ArrayList" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     
     
     

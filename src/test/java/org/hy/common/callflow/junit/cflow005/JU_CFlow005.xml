@@ -3,8 +3,12 @@
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     
     
     
@@ -37,8 +41,14 @@
             <callXID>:XProgram</callXID>
             <callMehod>method_1_1</callMehod>
             <route>
-                <succeed ref="XNode_CF005_1_1_1" />
-                <succeed ref="XNode_CF005_1_1_2" />
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_1_1" />
+                    <comment>成功时，第一路</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_1_2" />
+                    <comment>成功时，第二路</comment>
+                </succeed>
             </route>
         </xnode>
         
@@ -48,8 +58,14 @@
             <callXID>:XProgram</callXID>
             <callMehod>method_1</callMehod>
             <route>
-                <succeed ref="XNode_CF005_1_1" />
-                <succeed ref="XNode_CF005_1_2" />
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_1" />
+                    <comment>成功时，第一路</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_2" />
+                    <comment>成功时，第二路</comment>
+                </succeed>
             </route>
         </xnode>
         

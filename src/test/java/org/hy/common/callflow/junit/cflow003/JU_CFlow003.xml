@@ -3,8 +3,12 @@
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     
     
     
@@ -33,8 +37,14 @@
                 <valueXIDA>:NULLValue</valueXIDA>
             </conditionItem>
             <route>
-                <if   ref="XNode_CF003_004" />
-                <else ref="XNode_CF003_005" />
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XNode_CF003_004" />
+                    <comment>真时</comment>
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next ref="XNode_CF003_005" />
+                    <comment>假时</comment>
+                </else>
             </route>
         </xcondition>
         
@@ -46,8 +56,14 @@
                 <valueXIDA>:IfElse</valueXIDA>              <!-- 变量 -->
             </conditionItem>
             <route>
-                <if   ref="XCondition_CF003_003" />         <!-- 真时的路由 -->
-                <else ref="XNode_CF003_005" />              <!-- 假时的路由 -->
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XCondition_CF003_003" />
+                    <comment>真时</comment>
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next ref="XNode_CF003_005" />
+                    <comment>假时</comment>
+                </else>
             </route>
         </xcondition>
         
@@ -63,7 +79,10 @@
             </callParam>
             <returnID>IfElse</returnID>                     <!-- 定义返回结果的变量名称 -->
             <route>
-                <succeed ref="XCondition_CF003_002" />
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCondition_CF003_002" />
+                    <comment>成功时</comment>
+                </succeed>
             </route>
         </xnode>
         

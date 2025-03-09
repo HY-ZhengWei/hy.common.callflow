@@ -12,9 +12,8 @@ import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
-import org.hy.common.callflow.route.SelfLoop;
+import org.hy.common.callflow.route.RouteItem;
 
 
 
@@ -393,74 +392,37 @@ public class ConditionConfig extends ExecuteElement implements IfElse
           || !Help.isNull(this.route.getFaileds())
           || !Help.isNull(this.route.getExceptions()) )
         {
-            int v_MaxLpad = 0;
-            if ( !Help.isNull(this.route.getExceptions()) )
-            {
-                v_MaxLpad = 5;
-            }
-            else if ( !Help.isNull(this.route.getFaileds()) )
-            {
-                v_MaxLpad = 4;
-            }
-            
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
             
             // 真值路由
             if ( !Help.isNull(this.route.getSucceeds()) )
             {
-                for (IExecute v_Item : this.route.getSucceeds())
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("if"));
+                for (RouteItem v_RouteItem : this.route.getSucceeds())
                 {
-                    if ( v_Item instanceof SelfLoop )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("if" ,((SelfLoop) v_Item).getRefXID()));
-                    }
-                    else if ( !Help.isNull(v_Item.getXJavaID()) )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("if" ,v_Item.getXJavaID() ,v_MaxLpad - 2));
-                    }
-                    else
-                    {
-                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
-                    }
+                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
                 }
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("if"));
             }
             // 假值路由
             if ( !Help.isNull(this.route.getFaileds()) )
             {
-                for (IExecute v_Item : this.route.getFaileds())
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("else"));
+                for (RouteItem v_RouteItem : this.route.getSucceeds())
                 {
-                    if ( v_Item instanceof SelfLoop )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("else" ,((SelfLoop) v_Item).getRefXID()));
-                    }
-                    else if ( !Help.isNull(v_Item.getXJavaID()) )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("else" ,v_Item.getXJavaID() ,v_MaxLpad - 4));
-                    }
-                    else
-                    {
-                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
-                    }
+                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
                 }
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("else"));
             }
             // 异常路由
             if ( !Help.isNull(this.route.getExceptions()) )
             {
-                for (IExecute v_Item : this.route.getExceptions())
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("error"));
+                for (RouteItem v_RouteItem : this.route.getExceptions())
                 {
-                    if ( v_Item instanceof SelfLoop )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
-                    }
-                    else if ( !Help.isNull(v_Item.getXJavaID()) )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("error" ,v_Item.getXJavaID()));
-                    }
-                    else
-                    {
-                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
-                    }
+                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
                 }
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("error"));
             }
             
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));

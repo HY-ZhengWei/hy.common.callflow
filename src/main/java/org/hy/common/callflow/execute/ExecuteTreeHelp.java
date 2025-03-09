@@ -3,6 +3,7 @@ package org.hy.common.callflow.execute;
 import java.util.List;
 
 import org.hy.common.Help;
+import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.xml.XJava;
 
@@ -56,50 +57,40 @@ public class ExecuteTreeHelp
             throw new NullPointerException("ExecObject is null.");
         }
         
-        List<IExecute> v_Childs = null;
-        
-        v_Childs = i_ExecObject.getRoute().getSucceeds();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                if ( v_Child instanceof SelfLoop )
-                {
-                    continue;
-                }
-                removeMySelf((ExecuteElement) v_Child);
-            }
-        }
-        
-        v_Childs = i_ExecObject.getRoute().getFaileds();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                if ( v_Child instanceof SelfLoop )
-                {
-                    continue;
-                }
-                removeMySelf((ExecuteElement) v_Child);
-            }
-        }
-        
-        v_Childs = i_ExecObject.getRoute().getExceptions();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                if ( v_Child instanceof SelfLoop )
-                {
-                    continue;
-                }
-                removeMySelf((ExecuteElement) v_Child);
-            }
-        }
+        removeMySelf_SelfLoop(i_ExecObject.getRoute().getSucceeds());
+        removeMySelf_SelfLoop(i_ExecObject.getRoute().getFaileds());
+        removeMySelf_SelfLoop(i_ExecObject.getRoute().getExceptions());
         
         if ( !Help.isNull(i_ExecObject.getXJavaID()) )
         {
             XJava.remove(i_ExecObject.getXJavaID());
+        }
+    }
+    
+    
+    
+    /**
+     * （公共方法的递归）从对象池中删除自己及子级的元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @param i_Childs  子级路由
+     */
+    private void removeMySelf_SelfLoop(List<RouteItem> i_Childs)
+    {
+        if ( !Help.isNull(i_Childs) )
+        {
+            for (RouteItem v_RouteItem : i_Childs)
+            {
+                IExecute v_Child = v_RouteItem.getNext();
+                if ( v_Child instanceof SelfLoop )
+                {
+                    continue;
+                }
+                removeMySelf((ExecuteElement) v_Child);
+            }
         }
     }
     
@@ -123,39 +114,29 @@ public class ExecuteTreeHelp
         
         io_ExecObject.setTreeID(null);
         
-        List<IExecute> v_Childs = null;
-        
-        v_Childs = io_ExecObject.getRoute().getSucceeds();
-        if ( !Help.isNull(v_Childs) )
+        clearTree_SelfLoop(io_ExecObject.getRoute().getSucceeds());
+        clearTree_SelfLoop(io_ExecObject.getRoute().getFaileds());
+        clearTree_SelfLoop(io_ExecObject.getRoute().getExceptions());
+    }
+    
+    
+    
+    /**
+     * （公共方法的递归）清空树ID及寻址相关的信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @param i_Childs  子级路由
+     */
+    private void clearTree_SelfLoop(List<RouteItem> i_Childs)
+    {
+        if ( !Help.isNull(i_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : i_Childs)
             {
-                if ( v_Child instanceof SelfLoop )
-                {
-                    continue;
-                }
-                clearTree((ExecuteElement) v_Child);
-            }
-        }
-        
-        v_Childs = io_ExecObject.getRoute().getFaileds();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
-                if ( v_Child instanceof SelfLoop )
-                {
-                    continue;
-                }
-                clearTree((ExecuteElement) v_Child);
-            }
-        }
-        
-        v_Childs = io_ExecObject.getRoute().getExceptions();
-        if ( !Help.isNull(v_Childs) )
-        {
-            for (IExecute v_Child : v_Childs)
-            {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -220,14 +201,15 @@ public class ExecuteTreeHelp
      */
     private void calcTreeToChilds(IExecute io_ExecObject ,String i_TreeID)
     {
-        int            v_IndexNo = ExecuteElement.$TreeID.getMinIndexNo();
-        List<IExecute> v_Childs  = null;
+        int             v_IndexNo = ExecuteElement.$TreeID.getMinIndexNo();
+        List<RouteItem> v_Childs  = null;
         
         v_Childs = io_ExecObject.getRoute().getSucceeds();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -239,8 +221,9 @@ public class ExecuteTreeHelp
         v_Childs = io_ExecObject.getRoute().getFaileds();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -252,8 +235,9 @@ public class ExecuteTreeHelp
         v_Childs = io_ExecObject.getRoute().getExceptions();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -292,13 +276,14 @@ public class ExecuteTreeHelp
             return i_ExecObject;
         }
         
-        List<IExecute> v_Childs  = null;
+        List<RouteItem> v_Childs  = null;
         
         v_Childs = i_ExecObject.getRoute().getSucceeds();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -314,8 +299,9 @@ public class ExecuteTreeHelp
         v_Childs = i_ExecObject.getRoute().getFaileds();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -331,8 +317,9 @@ public class ExecuteTreeHelp
         v_Childs = i_ExecObject.getRoute().getExceptions();
         if ( !Help.isNull(v_Childs) )
         {
-            for (IExecute v_Child : v_Childs)
+            for (RouteItem v_RouteItem : v_Childs)
             {
+                IExecute v_Child = v_RouteItem.getNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;

@@ -2,8 +2,13 @@
 
 <config>
 
-    <import name="xconfig" class="java.util.ArrayList" />
-    <import name="xnode"   class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     
     
     
@@ -19,10 +24,13 @@
         
         <xnode id="XNode_CF001_001">
             <comment>节点001</comment>
-            <callXID>:XProgram</callXID>            <!-- 定义执行对象 -->
-            <callMehod>method001</callMehod>       <!-- 定义执行方法 -->
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method001</callMehod>                <!-- 定义执行方法 -->
             <route>
-                <succeed ref="XNode_CF001_002" />  <!-- 关联后置节点 -->
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF001_002" />
+                    <comment>成功时</comment>
+                </succeed>
             </route>
         </xnode>
         

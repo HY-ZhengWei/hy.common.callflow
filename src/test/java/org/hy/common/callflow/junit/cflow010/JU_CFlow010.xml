@@ -4,10 +4,11 @@
 
     <import name="xconfig"    class="java.util.ArrayList" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     
     
     
@@ -30,7 +31,10 @@
             <calc>:Value + 3.14</calc>
             <returnID>CalcRet</returnID>                    <!-- 定义返回结果的变量名称 -->
             <route>
-                <succeed ref="XCalculate_CF010_1_1_1" />    <!-- 关联后置节点 -->
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCalculate_CF010_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
             </route>
         </xcalculate>
         
@@ -40,7 +44,10 @@
             <calc>:Value + 1</calc>
             <returnID>Value</returnID>                      <!-- 定义返回结果的变量名称 -->
             <route>
-                <succeed>:XCalculate_CF010_1</succeed>      <!-- 自引用 -->
+                <succeed>                                   <!-- 自引用 -->
+                    <next>:XCalculate_CF010_1</next>
+                    <comment>While循环的下一步</comment>
+                </succeed>
             </route>
         </xcalculate>
         
@@ -49,8 +56,14 @@
             <comment>当作条件逻辑元素来使用，没有返回值变量</comment>
             <calc><![CDATA[:Value >= 100]]></calc>
             <route>
-                <if   ref="XCalculate_CF010_1_1" />         <!-- 真时的路由 -->
-                <else ref="XCalculate_CF010_1_2" />         <!-- 假时的路由 -->
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XCalculate_CF010_1_1" />
+                    <comment>真时</comment>
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next ref="XCalculate_CF010_1_2" />
+                    <comment>假时，While循环</comment>
+                </else>
             </route>
         </xcalculate>
         

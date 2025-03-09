@@ -4,8 +4,11 @@
 
     <import name="xconfig"    class="java.util.ArrayList" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     
     
     
@@ -22,10 +25,13 @@
         <xnesting id="XNesting_CF008_1">
             <comment>1</comment>
             <callFlowXID>:XNode_CF006_1</callFlowXID> <!-- 子编排的XID -->
-            <route>
-                <succeed ref="XNesting_CF008_1_2" />
-            </route>
             <returnID>CF006</returnID>                <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed>                             <!-- 成功时，关联后置节点 -->
+                    <next ref="XNesting_CF008_1_2" />
+                    <comment>子编排</comment>
+                </succeed>
+            </route>
         </xnesting>
         
     </xconfig>

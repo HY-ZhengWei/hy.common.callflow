@@ -8,7 +8,7 @@
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.Condition" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     
     
     
@@ -44,8 +44,14 @@
             </callParam>
             <returnID>TimeLen</returnID>                    <!-- 定义返回结果的变量名称 -->
             <route>
-                <succeed ref="XNode_CF013_1_1" />           <!-- 成功时，关联后置节点 -->
-                <error   ref="XNode_CF013_1_2" />           <!-- 异常时，关联后置节点 -->
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF013_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+                <error>                                     <!-- 异常时，关联后置节点 -->
+                    <next ref="XNode_CF013_1_2" />
+                    <comment>超时异常时</comment>
+                </error>
             </route>
         </xnode>
         

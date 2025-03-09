@@ -10,9 +10,8 @@ import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
-import org.hy.common.callflow.route.SelfLoop;
+import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.xml.log.Logger;
 
 
@@ -216,51 +215,27 @@ public class WaitConfig extends ExecuteElement
         if ( !Help.isNull(this.route.getSucceeds()) 
           || !Help.isNull(this.route.getExceptions()) )
         {
-            int v_MaxLpad = 0;
-            if ( !Help.isNull(this.route.getSucceeds()) )
-            {
-                v_MaxLpad = 7;
-            }
-            
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
             
             // 成功路由
             if ( !Help.isNull(this.route.getSucceeds()) )
             {
-                for (IExecute v_Item : this.route.getSucceeds())
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("succeed"));
+                for (RouteItem v_RouteItem : this.route.getSucceeds())
                 {
-                    if ( v_Item instanceof SelfLoop )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("succeed" ,((SelfLoop) v_Item).getRefXID()));
-                    }
-                    else if ( !Help.isNull(v_Item.getXJavaID()) )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("succeed" ,v_Item.getXJavaID()));
-                    }
-                    else
-                    {
-                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
-                    }
+                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
                 }
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("succeed"));
             }
             // 异常路由
             if ( !Help.isNull(this.route.getExceptions()) )
             {
-                for (IExecute v_Item : this.route.getExceptions())
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("error"));
+                for (RouteItem v_RouteItem : this.route.getExceptions())
                 {
-                    if ( v_Item instanceof SelfLoop )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toValue("error" ,((SelfLoop) v_Item).getRefXID()));
-                    }
-                    else if ( !Help.isNull(v_Item.getXJavaID()) )
-                    {
-                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toRef("error" ,v_Item.getXJavaID() ,v_MaxLpad - 5));
-                    }
-                    else
-                    {
-                        v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
-                    }
+                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
                 }
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("error"));
             }
             
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));

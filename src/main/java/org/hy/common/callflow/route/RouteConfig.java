@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hy.common.Help;
 import org.hy.common.callflow.execute.ExecuteElement;
-import org.hy.common.callflow.execute.IExecute;
 
 
 
@@ -22,16 +21,16 @@ public class RouteConfig
 {
     
     /** 归属者（仅对外开放setter方法，为防止死循环）（内部使用） */
-    private ExecuteElement owner;
+    private ExecuteElement  owner;
     
     /** 执行成功后的路由 */
-    private List<IExecute> succeeds;
+    private List<RouteItem> succeeds;
     
     /** 执行失败后的路由（可选） */
-    private List<IExecute> faileds;
+    private List<RouteItem> faileds;
     
     /** 执行异常后的路由（可选） */
-    private List<IExecute> exceptions;
+    private List<RouteItem> exceptions;
     
     
     
@@ -58,6 +57,15 @@ public class RouteConfig
     
     
     /**
+     * 获取：归属者（仅对外开放setter方法，为防止死循环）（内部使用）
+     */
+    protected ExecuteElement gatOwner()
+    {
+        return owner;
+    }
+    
+    
+    /**
      * 检查自循环，禁止自循环
      * 
      * @author      ZhengWei(HY)
@@ -65,7 +73,7 @@ public class RouteConfig
      * @version     v1.0
      *
      */
-    private void checkSelfLink(ExecuteElement i_Execute)
+    protected void checkSelfLink(ExecuteElement i_Execute)
     {
         if ( i_Execute == null )
         {
@@ -79,17 +87,17 @@ public class RouteConfig
     
     
     /**
-     * 自循环的引用：setSucceed方法的别名，主要用于 "条件逻辑" 判定结果为真时路由配置
+     * 获取一个新的路由项
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_RefXID  引用执行元素的XID
+     * @return
      */
-    public void setIf(String i_RefXID)
+    public RouteItem getIf()
     {
-        this.setSucceed(new SelfLoop(i_RefXID));
+        return new RouteItem(this);
     }
     
     
@@ -97,29 +105,14 @@ public class RouteConfig
      * setSucceed方法的别名，主要用于 "条件逻辑" 判定结果为真时路由配置
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-15
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_Execute  执行对象。节点或判定条件
+     * @param i_RouteItem  路由项
      */
-    public void setIf(ExecuteElement i_Execute)
+    public void setIf(RouteItem i_RouteItem)
     {
-        this.setSucceed(i_Execute);
-    }
-    
-    
-    /**
-     * 自循环的引用：setFailed方法的别名，主要用于 "条件逻辑" 判定结果为假时路由配置
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
-     * @version     v1.0
-     *
-     * @param i_RefXID  引用执行元素的XID
-     */
-    public void setElse(String i_RefXID)
-    {
-        this.setFailed(new SelfLoop(i_RefXID));
+        this.setSucceed(i_RouteItem);
     }
     
     
@@ -130,26 +123,26 @@ public class RouteConfig
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_Execute  执行对象。节点或判定条件
+     * @param i_RouteItem  路由项
      */
-    public void setElse(ExecuteElement i_Execute)
+    public void setElse(RouteItem i_RouteItem)
     {
-        this.setFailed(i_Execute);
+        this.setFailed(i_RouteItem);
     }
     
     
     /**
-     * 自循环的引用：添加执行成功后的路由
+     * 获取一个新的路由项
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_RefXID  引用执行元素的XID
+     * @return
      */
-    public void setSucceed(String i_RefXID)
+    public RouteItem getElse()
     {
-        this.setSucceed(new SelfLoop(i_RefXID));
+        return new RouteItem(this);
     }
     
     
@@ -157,39 +150,37 @@ public class RouteConfig
      * 添加执行成功后的路由
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-15
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_Execute  执行对象。节点或判定条件
+     * @param i_RouteItem  路由项
      */
-    public void setSucceed(ExecuteElement i_Execute)
+    public void setSucceed(RouteItem i_RouteItem)
     {
         synchronized ( this )
         {
             if ( Help.isNull(this.succeeds) )
             {
-                this.succeeds = new ArrayList<IExecute>();
+                this.succeeds = new ArrayList<RouteItem>();
             }
         }
         
-        this.checkSelfLink(i_Execute);
-        i_Execute.setPrevious(this.owner);
-        this.succeeds.add(i_Execute);
+        this.succeeds.add(i_RouteItem);
     }
     
     
     /**
-     * 自循环的引用：添加执行失败后的路由
+     * 获取一个新的路由项
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-15
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_Execute  执行对象。节点或判定条件
+     * @return
      */
-    public void setFailed(String i_RefXID)
+    public RouteItem getSucceed()
     {
-        this.setFailed(new SelfLoop(i_RefXID));
+        return new RouteItem(this);
     }
     
     
@@ -197,39 +188,37 @@ public class RouteConfig
      * 添加执行失败后的路由
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-15
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_Execute  执行对象。节点或判定条件
+     * @param i_RouteItem  路由项
      */
-    public void setFailed(ExecuteElement i_Execute)
+    public void setFailed(RouteItem i_RouteItem)
     {
         synchronized ( this )
         {
             if ( Help.isNull(this.faileds) )
             {
-                this.faileds = new ArrayList<IExecute>();
+                this.faileds = new ArrayList<RouteItem>();
             }
         }
         
-        this.checkSelfLink(i_Execute);
-        i_Execute.setPrevious(this.owner);
-        this.faileds.add(i_Execute);
+        this.faileds.add(i_RouteItem);
     }
     
     
     /**
-     * 自循环的引用：setException方法的别名，添加执行异常后的路由
+     * 获取一个新的路由项
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_RefXID  引用执行元素的XID
+     * @return
      */
-    public void setError(String i_RefXID)
+    public RouteItem getFailed()
     {
-        this.setException(new SelfLoop(i_RefXID));
+        return new RouteItem(this);
     }
     
     
@@ -237,29 +226,29 @@ public class RouteConfig
      * setException方法的别名，添加执行异常后的路由
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-24
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_Execute  执行对象。节点或判定条件
+     * @param i_RouteItem  路由项
      */
-    public void setError(ExecuteElement i_Execute)
+    public void setError(RouteItem i_RouteItem)
     {
-        this.setException(i_Execute);
+        this.setException(i_RouteItem);
     }
     
     
     /**
-     * 自循环的引用：添加执行异常后的路由
+     * 获取一个新的路由项
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-15
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_RefXID  引用执行元素的XID
+     * @return
      */
-    public void setException(String i_RefXID)
+    public RouteItem getError()
     {
-        this.setException(new SelfLoop(i_RefXID));
+        return new RouteItem(this);
     }
     
     
@@ -267,31 +256,74 @@ public class RouteConfig
      * 添加执行异常后的路由
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-15
+     * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_Execute  执行对象。节点或判定条件
+     * @param i_RouteItem  路由项
      */
-    public void setException(ExecuteElement i_Execute)
+    public void setException(RouteItem i_RouteItem)
     {
         synchronized ( this )
         {
             if ( Help.isNull(this.exceptions) )
             {
-                this.exceptions = new ArrayList<IExecute>();
+                this.exceptions = new ArrayList<RouteItem>();
             }
         }
         
-        this.checkSelfLink(i_Execute);
-        i_Execute.setPrevious(this.owner);
-        this.exceptions.add(i_Execute);
+        this.exceptions.add(i_RouteItem);
+    }
+    
+    
+    /**
+     * 获取一个新的路由项
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @return
+     */
+    public RouteItem getException()
+    {
+        return new RouteItem(this);
+    }
+    
+    
+    /**
+     * getSucceeds方法的别名，主要用于 "条件逻辑" 判定结果为真时路由配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     * 
+     * @return
+     */
+    public List<RouteItem> getIfs()
+    {
+        return getSucceeds();
+    }
+    
+    
+    /**
+     * setSucceeds方法的别名，主要用于 "条件逻辑" 判定结果为真时路由配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @param i_Ifs  真值后的路由
+     */
+    public void setIfs(List<RouteItem> i_Ifs)
+    {
+        setSucceeds(i_Ifs);
     }
     
     
     /**
      * 获取：执行成功后的路由
      */
-    public List<IExecute> getSucceeds()
+    public List<RouteItem> getSucceeds()
     {
         return succeeds;
     }
@@ -302,7 +334,7 @@ public class RouteConfig
      * 
      * @param i_Succeeds 执行成功后的路由
      */
-    public void setSucceeds(List<ExecuteElement> i_Succeeds)
+    public void setSucceeds(List<RouteItem> i_Succeeds)
     {
         if ( Help.isNull(i_Succeeds) )
         {
@@ -310,18 +342,48 @@ public class RouteConfig
         }
         else
         {
-            for (ExecuteElement v_Item : i_Succeeds)
+            for (RouteItem v_Item : i_Succeeds)
             {
                 this.setSucceed(v_Item);
             }
         }
+    }
+    
+    
+    /**
+     * getFaileds方法的别名，主要用于 "条件逻辑" 判定结果为假时路由配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @return
+     */
+    public List<RouteItem> getElses()
+    {
+        return getFaileds();
+    }
+    
+    
+    /**
+     * setFaileds方法的别名，主要用于 "条件逻辑" 判定结果为假时路由配置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @param i_Elses  假值后的路由（可选）
+     */
+    public void setElses(List<RouteItem> i_Elses)
+    {
+        setFaileds(i_Elses);
     }
 
     
     /**
      * 获取：执行失败后的路由（可选）
      */
-    public List<IExecute> getFaileds()
+    public List<RouteItem> getFaileds()
     {
         return faileds;
     }
@@ -332,7 +394,7 @@ public class RouteConfig
      * 
      * @param i_Faileds 执行失败后的路由（可选）
      */
-    public void setFaileds(List<ExecuteElement> i_Faileds)
+    public void setFaileds(List<RouteItem> i_Faileds)
     {
         if ( Help.isNull(i_Faileds) )
         {
@@ -340,18 +402,48 @@ public class RouteConfig
         }
         else
         {
-            for (ExecuteElement v_Item : i_Faileds)
+            for (RouteItem v_Item : i_Faileds)
             {
                 this.setFailed(v_Item);
             }
         }
     }
-
+    
+    
+    /**
+     * getExceptions方法的别名，
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @return
+     */
+    public List<RouteItem> getErrors()
+    {
+        return getExceptions();
+    }
+    
+    
+    /**
+     * setExceptions方法的别名，
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @param i_Errors  执行异常后的路由（可选）
+     */
+    public void setErrors(List<RouteItem> i_Errors)
+    {
+        setExceptions(i_Errors);
+    }
+    
     
     /**
      * 获取：执行异常后的路由（可选）
      */
-    public List<IExecute> getExceptions()
+    public List<RouteItem> getExceptions()
     {
         return exceptions;
     }
@@ -362,7 +454,7 @@ public class RouteConfig
      * 
      * @param i_Exceptions 执行异常后的路由（可选）
      */
-    public void setExceptions(List<ExecuteElement> i_Exceptions)
+    public void setExceptions(List<RouteItem> i_Exceptions)
     {
         if ( Help.isNull(i_Exceptions) )
         {
@@ -370,7 +462,7 @@ public class RouteConfig
         }
         else
         {
-            for (ExecuteElement v_Item : i_Exceptions)
+            for (RouteItem v_Item : i_Exceptions)
             {
                 this.setException(v_Item);
             }
