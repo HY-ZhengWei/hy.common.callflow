@@ -17,6 +17,7 @@
     * [嵌套元素的嵌套多个举例](#嵌套元素的嵌套多个举例)
     * [等待元素和While循环举例](#等待元素和While循环举例)
     * [计算元素和While循环举例](#计算元素和While循环举例)
+    * [For循环元素举例](#For循环元素举例)
 
 
 
@@ -1137,6 +1138,117 @@ v_Context.put("Value" ,99);  // 传数字 或 字符类的数字
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result    = CallFlow.execute(v_Calculate ,v_Context);
+```
+
+
+
+For循环元素举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow011) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow011/JU_CFlow011.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF011_1_1_2">
+            <comment>完成</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+        </xnode>
+    
+        
+        <xnode id="XNode_CF011_1_1_1">
+            <comment>模拟循环体内执行的方法2</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_For2</callMehod>              <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
+                <value>:ForIndex</value>                    <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF011_1</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF011_1_1_2" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF011_1_1">
+            <comment>模拟循环体内执行的方法1</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_For1</callMehod>              <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
+                <value>:ForIndex</value>                    <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF011_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xfor id="XFor_CF011_1">
+            <comment>循环：1到3</comment>
+            <start>1</start>                                <!-- 循环开始值 -->
+            <end>3</end>                                    <!-- 循环结束值 -->
+            <step>1</step>                                  <!-- 步长，可选项，默认为1 -->
+            <indexID>ForIndex</indexID>                     <!-- 序号变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF011_1_1" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+        </xfor>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF011_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_ForConfig ,v_Context);
 ```
 
 
