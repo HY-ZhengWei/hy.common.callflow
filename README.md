@@ -17,7 +17,8 @@
     * [嵌套元素的嵌套多个举例](#嵌套元素的嵌套多个举例)
     * [等待元素和While循环举例](#等待元素和While循环举例)
     * [计算元素和While循环举例](#计算元素和While循环举例)
-    * [For循环元素举例](#For循环元素举例)
+    * [循环元素的For循环数列举例](#循环元素的For循环数列举例)
+    * [循环元素的For循环集合和数组举例](#循环元素的For循环集合和数组举例)
 
 
 
@@ -1142,7 +1143,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_Calculate ,v_Context);
 
 
 
-For循环元素举例
+循环元素的For循环数列举例
 ------
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow011) [返回目录](#目录)
@@ -1244,6 +1245,147 @@ XJava.putObject("XProgram" ,new Program());
 // 获取编排中的首个元素
 ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF011_1");
 
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_ForConfig ,v_Context);
+```
+
+
+
+循环元素的For循环集合和数组举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow012) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow012/JU_CFlow012.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF012_1_1_2">
+            <comment>完成</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
+                <value>:CallFlowContext</value>             <!-- 上下文内容 -->
+            </callParam>
+        </xnode>
+    
+        
+        <xnode id="XNode_CF012_1_1_1">
+            <comment>模拟循环体内执行的方法2</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_For2</callMehod>              <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Object</valueClass>   <!-- 定义入参类型 -->
+                <value>:ForElement</value>                  <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF012_1</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF012_1_1_2" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF012_1_1">
+            <comment>模拟循环体内执行的方法1</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_For1</callMehod>              <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
+                <value>:ForIndex</value>                    <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF012_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xfor id="XFor_CF012_1">
+            <comment>循环：List集合</comment>
+            <end>:Datas</end>                               <!-- 集合对象的变量名称 -->
+            <indexID>ForIndex</indexID>                     <!-- 序号变量名称（可选的） -->
+            <elementID>ForElement</elementID>               <!-- 每次循环元素的变量名称（可选的） -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF012_1_1" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+        </xfor>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF012_1");
+
+// 测试数据：List
+List<String> v_ListDatas = new ArrayList<String>();
+v_ListDatas.add("123");
+v_ListDatas.add("456");
+v_ListDatas.add("789");
+// v_Context.put("Datas" ,v_ListDatas);
+
+// 测试数据：Set
+Set<String> v_SetDatas = new HashSet<String>();
+v_SetDatas.add("123");
+v_SetDatas.add("456");
+v_SetDatas.add("789");
+// v_Context.put("Datas" ,v_SetDatas);
+
+// 测试数据：Collection
+// v_Context.put("Datas" ,(Collection<?>)v_ListDatas);
+
+// 测试数据：数组
+// v_Context.put("Datas" ,v_ListDatas.toArray());
+
+// 测试数据：Map
+Map<String ,Integer> v_MapDatas = new HashMap<String ,Integer>();
+v_MapDatas.put("K123" ,123);
+v_MapDatas.put("K456" ,456);
+v_MapDatas.put("K789" ,789);
+v_Context.put("Datas" ,v_MapDatas);
+        
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context   = new HashMap<String ,Object>();
 
