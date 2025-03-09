@@ -95,7 +95,7 @@ public class SelfLoop extends ExecuteElement
      *
      * @return
      */
-    private ExecuteElement getExecuteElement()
+    protected ExecuteElement getExecuteElement()
     {
         ExecuteElement v_ExecObject = (ExecuteElement) XJava.getObject(this.refXID);
         if ( v_ExecObject == null )

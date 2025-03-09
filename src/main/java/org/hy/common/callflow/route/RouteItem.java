@@ -3,7 +3,9 @@ package org.hy.common.callflow.route;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.RouteType;
+import org.hy.common.callflow.enums.SelfLoopType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 
@@ -90,6 +92,34 @@ public class RouteItem implements IToXml
     public RouteType getRouteType()
     {
         return routeType;
+    }
+
+    
+    /**
+     * 获取：循环类型
+     */
+    public SelfLoopType getSelfLoopType()
+    {
+        if ( this.next == null )
+        {
+            return SelfLoopType.Normal;
+        }
+        else if ( this.next instanceof SelfLoop )
+        {
+            ExecuteElement v_RefExecute = ((SelfLoop) this.next).getExecuteElement();
+            if ( ElementType.For.getValue().equals(v_RefExecute.getElementType()) )
+            {
+                return SelfLoopType.For;
+            }
+            else
+            {
+                return SelfLoopType.While;
+            }
+        }
+        else
+        {
+            return SelfLoopType.Normal;
+        }
     }
 
 
