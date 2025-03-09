@@ -3,6 +3,7 @@ package org.hy.common.callflow.route;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 
@@ -22,6 +23,9 @@ public class RouteItem implements IToXml
     
     /** 归属者（仅对外开放setter方法，为防止死循环）（内部使用） */
     private RouteConfig    owner;
+    
+    /** 路由类型 */
+    private RouteType      routeType;
     
     /** 主键标识 */
     private String         id;
@@ -73,12 +77,22 @@ public class RouteItem implements IToXml
     
     
     
-    public RouteItem(RouteConfig i_Route)
+    public RouteItem(RouteConfig i_Route ,RouteType i_RouteType)
     {
-        this.owner = i_Route;
+        this.owner     = i_Route;
+        this.routeType = i_RouteType;
     }
     
     
+    /**
+     * 获取：路由类型
+     */
+    public RouteType getRouteType()
+    {
+        return routeType;
+    }
+
+
     /**
      * 获取：主键标识
      */

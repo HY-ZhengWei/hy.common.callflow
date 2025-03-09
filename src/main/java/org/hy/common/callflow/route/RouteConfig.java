@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hy.common.Help;
+import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 
 
@@ -89,7 +90,7 @@ public class RouteConfig
      */
     public RouteItem getIf()
     {
-        return new RouteItem(this);
+        return new RouteItem(this ,RouteType.If);
     }
     
     
@@ -134,7 +135,7 @@ public class RouteConfig
      */
     public RouteItem getElse()
     {
-        return new RouteItem(this);
+        return this.getFailed();
     }
     
     
@@ -175,7 +176,7 @@ public class RouteConfig
      */
     public RouteItem getSucceed()
     {
-        return new RouteItem(this);
+        return new RouteItem(this ,RouteType.Succeed);
     }
     
     
@@ -216,7 +217,7 @@ public class RouteConfig
      */
     public RouteItem getFailed()
     {
-        return new RouteItem(this);
+        return new RouteItem(this ,RouteType.Else);
     }
     
     
@@ -246,7 +247,7 @@ public class RouteConfig
      */
     public RouteItem getError()
     {
-        return new RouteItem(this);
+        return this.getException();
     }
     
     
@@ -287,7 +288,7 @@ public class RouteConfig
      */
     public RouteItem getException()
     {
-        return new RouteItem(this);
+        return new RouteItem(this ,RouteType.Error);
     }
     
     
