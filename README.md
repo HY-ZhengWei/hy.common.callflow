@@ -7,8 +7,9 @@
 * [主导思想](#主导思想)
 * [概要说明](#概要说明)
 * 使用举例
-    * [简单编排：执行元素举例](#简单编排：两个执行元素举例)
-    * [条件逻辑元素举例](#条件逻辑编排的举例)
+    * [简单编排：执行元素举例](#执行元素举例)
+    * [条件逻辑元素举例](#条件逻辑元素举例)
+    * [条件逻辑元素的非空及多路径举例](#条件逻辑元素的非空及多路径举例)
 
 
 
@@ -64,7 +65,7 @@
 
 
 
-简单编排：两个执行元素举例
+执行元素举例
 ------
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow001)
@@ -230,7 +231,7 @@ __执行编排__
 XJava.putObject("XProgram" ,new Program());
         
 // 获取编排中的首个元素
-NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_1");
+NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF002_1");
 
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context   = new HashMap<String ,Object>();
@@ -240,6 +241,130 @@ v_Context.put("NumParam" ,9);  // 传值 9 或 传值 -1 或 不传值
 ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 ```
 
+
+
+条件逻辑元素的非空及多路径举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow003)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow003/JU_CFlow003.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF003_1_1_2及1_1_1_2">
+            <comment>五个环节，为假时的走向</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method_False</callMehod>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF003_1_1_1_1">
+            <comment>第四个环节，为真时的走向</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method_True</callMehod>
+        </xnode>
+        
+        
+        <xcondition id="XCondition_CF003_1_1_1">
+            <comment>第三个环节，条件逻辑，变量不等于NULL判定</comment>
+            <logical>AND</logical>
+            <conditionItem>
+                <comparer>!=</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                <valueXIDA>:NULLValue</valueXIDA>
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XNode_CF003_1_1_1_1" />
+                    <comment>真时</comment>
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next ref="XNode_CF003_1_1_2及1_1_1_2" />
+                    <comment>假时</comment>
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xcondition id="XCondition_CF003_1_1">
+            <comment>第二个环节，条件逻辑，按第一个环节的执行结果（真、假）控制编排的走向</comment>
+            <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
+            <conditionItem>
+                <valueXIDA>:IfElse</valueXIDA>              <!-- 变量 -->
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XCondition_CF003_1_1_1" />
+                    <comment>真时</comment>
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next ref="XNode_CF003_1_1_2及1_1_1_2" />
+                    <comment>假时</comment>
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF003_1">
+            <comment>第一个环节，有一个参数，有返回结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method_First</callMehod>
+            <callParam>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
+                <value>:NumParam</value>                    <!-- 定义入参变量名称 -->
+                <valueDefault>-1</valueDefault>             <!-- 定义入参默认值 -->
+            </callParam>
+            <returnID>IfElse</returnID>                     <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCondition_CF003_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF003_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+v_Context.put("NumParam"  ,9);     // 传值 9 或 传值 -1 或 不传值
+v_Context.put("NULLValue" ,null);  // 传值 null 或 不为 null
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
+```
 
 
 ---

@@ -66,7 +66,7 @@ public class JU_CFlow003
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF003_001");
+        NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF003_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         ExecuteResult       v_ER        = null;
         IExecute            v_E         = null;
@@ -117,6 +117,9 @@ public class JU_CFlow003
         }
         System.out.println();
         
+        // 导出
+        System.out.println(CallFlow.getHelpExport().export(v_FirstNode));
+        
         // 会有递归异常
         // test_ToJson();
     }
@@ -127,21 +130,23 @@ public class JU_CFlow003
      * 打印执行路径
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-26
+     * @createDate  2025-03-06
      * @version     v1.0
      *
      * @param i_Result
      */
     private void println(ExecuteResult i_Result)
     {
-        System.out.println(StringHelp.rpad(i_Result.getExecuteTreeID() ,9 ," ") 
+        System.out.println(StringHelp.rpad(i_Result.getExecuteTreeID() ,20 ," ") 
                          + " " 
-                         + StringHelp.rpad(i_Result.getTreeID() ,9 ," ") 
+                         + StringHelp.rpad(i_Result.getTreeID() ,20 ," ") 
                          + " " 
                          + Date.toTimeLenNano(i_Result.getEndTime() - i_Result.getBeginTime())
+                         + StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")
                          + " " + i_Result.getExecuteLogic()
                          + " " + Help.NVL(i_Result.getResult())
-                         + " " + i_Result.isSuccess());
+                         + " " + i_Result.isSuccess()
+                         + " " + i_Result.getStatus());
         
         if ( !Help.isNull(i_Result.getNexts()) )
         {
