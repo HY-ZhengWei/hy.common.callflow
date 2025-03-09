@@ -79,13 +79,6 @@ public class RouteItem implements IToXml
     }
     
     
-    public RouteItem(RouteConfig i_Route ,ExecuteElement i_Next)
-    {
-        this.owner = i_Route;
-        this.setNext(i_Next);
-    }
-    
-    
     /**
      * 获取：主键标识
      */
@@ -403,8 +396,6 @@ public class RouteItem implements IToXml
     public void setNext(ExecuteElement i_Next)
     {
         this.next = i_Next;
-        this.owner.checkSelfLink(this.next);
-        this.next.setPrevious(this.owner.gatOwner());
     }
     
     

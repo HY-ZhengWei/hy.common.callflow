@@ -56,14 +56,6 @@ public class RouteConfig
     }
     
     
-    /**
-     * 获取：归属者（仅对外开放setter方法，为防止死循环）（内部使用）
-     */
-    protected ExecuteElement gatOwner()
-    {
-        return owner;
-    }
-    
     
     /**
      * 检查自循环，禁止自循环
@@ -153,9 +145,9 @@ public class RouteConfig
      * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_RouteItem  路由项
+     * @param io_RouteItem  路由项
      */
-    public void setSucceed(RouteItem i_RouteItem)
+    public void setSucceed(RouteItem io_RouteItem)
     {
         synchronized ( this )
         {
@@ -165,7 +157,9 @@ public class RouteConfig
             }
         }
         
-        this.succeeds.add(i_RouteItem);
+        this.checkSelfLink(io_RouteItem.getNext());
+        io_RouteItem.getNext().setPrevious(this.owner);
+        this.succeeds.add(io_RouteItem);
         this.orderBy();
     }
     
@@ -192,9 +186,9 @@ public class RouteConfig
      * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_RouteItem  路由项
+     * @param io_RouteItem  路由项
      */
-    public void setFailed(RouteItem i_RouteItem)
+    public void setFailed(RouteItem io_RouteItem)
     {
         synchronized ( this )
         {
@@ -204,7 +198,9 @@ public class RouteConfig
             }
         }
         
-        this.faileds.add(i_RouteItem);
+        this.checkSelfLink(io_RouteItem.getNext());
+        io_RouteItem.getNext().setPrevious(this.owner);
+        this.faileds.add(io_RouteItem);
         this.orderBy();
     }
     
@@ -261,9 +257,9 @@ public class RouteConfig
      * @createDate  2025-03-09
      * @version     v1.0
      *
-     * @param i_RouteItem  路由项
+     * @param io_RouteItem  路由项
      */
-    public void setException(RouteItem i_RouteItem)
+    public void setException(RouteItem io_RouteItem)
     {
         synchronized ( this )
         {
@@ -273,7 +269,9 @@ public class RouteConfig
             }
         }
         
-        this.exceptions.add(i_RouteItem);
+        this.checkSelfLink(io_RouteItem.getNext());
+        io_RouteItem.getNext().setPrevious(this.owner);
+        this.exceptions.add(io_RouteItem);
         this.orderBy();
     }
     
