@@ -420,6 +420,7 @@ public class RouteItem implements IToXml
     public void setNext(String i_RefXID)
     {
         this.setNext(new SelfLoop(i_RefXID));
+        this.owner.orderBy();
     }
     
     

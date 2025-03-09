@@ -294,22 +294,22 @@ public class CalculateConfig extends ExecuteElement
                 // 真值路由
                 if ( !Help.isNull(this.route.getSucceeds()) )
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("if"));
                     for (RouteItem v_RouteItem : this.route.getSucceeds())
                     {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("if"));
                         v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("if"));
                     }
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("if"));
                 }
                 // 假值路由
                 if ( !Help.isNull(this.route.getFaileds()) )
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("else"));
                     for (RouteItem v_RouteItem : this.route.getSucceeds())
                     {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("else"));
                         v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("else"));
                     }
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("else"));
                 }
             }
             else
@@ -317,24 +317,24 @@ public class CalculateConfig extends ExecuteElement
                 // 成功路由
                 if ( !Help.isNull(this.route.getSucceeds()) )
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("succeed"));
                     for (RouteItem v_RouteItem : this.route.getSucceeds())
                     {
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("succeed"));
                         v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
+                        v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("succeed"));
                     }
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd("succeed"));
                 }
             }
             
             // 异常路由
             if ( !Help.isNull(this.route.getExceptions()) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("error"));
                 for (RouteItem v_RouteItem : this.route.getExceptions())
                 {
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("error"));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("error"));
                 }
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin("error"));
             }
             
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));

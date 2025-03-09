@@ -166,6 +166,7 @@ public class RouteConfig
         }
         
         this.succeeds.add(i_RouteItem);
+        this.orderBy();
     }
     
     
@@ -204,6 +205,7 @@ public class RouteConfig
         }
         
         this.faileds.add(i_RouteItem);
+        this.orderBy();
     }
     
     
@@ -272,6 +274,7 @@ public class RouteConfig
         }
         
         this.exceptions.add(i_RouteItem);
+        this.orderBy();
     }
     
     
@@ -467,6 +470,69 @@ public class RouteConfig
                 this.setException(v_Item);
             }
         }
+    }
+    
+    
+    /**
+     * 排序，将自引用排在前面
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     */
+    protected synchronized void orderBy()
+    {
+        this.orderBy(this.succeeds);
+        this.orderBy(this.faileds);
+        this.orderBy(this.exceptions);
+    }
+    
+    
+    /**
+     * 排序，将自引用排在前面
+     * 
+     * 注：应当每添加一个路由时执行此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-09
+     * @version     v1.0
+     *
+     * @param io_RouteItems  路由集合
+     */
+    private void orderBy(List<RouteItem> io_RouteItems) 
+    {
+        if ( Help.isNull(io_RouteItems) || io_RouteItems.size() == 1 )
+        {
+            return;
+        }
+        
+        RouteItem v_Last = io_RouteItems.get(io_RouteItems.size() - 1);
+        if ( v_Last.getNext() == null || !(v_Last.getNext() instanceof SelfLoop) )
+        {
+            return;
+        }
+        
+        // 定位最后的自引用
+        int v_LastSelfLoopIndex = 0;
+        for (int x=0; x<io_RouteItems.size(); x++)
+        {
+            RouteItem v_RouteItem = io_RouteItems.get(x);
+            if ( v_RouteItem.getNext() == null || !(v_RouteItem.getNext() instanceof SelfLoop) )
+            {
+                v_LastSelfLoopIndex = x;
+                break;
+            }
+        }
+        
+        // 所有非自引用的向后排
+        for (int x=io_RouteItems.size()-2; x>=v_LastSelfLoopIndex; x--)
+        {
+            io_RouteItems.set(x + 1 ,io_RouteItems.get(x));
+        }
+        
+        // 将最后引用向前移
+        io_RouteItems.set(v_LastSelfLoopIndex ,v_Last);
     }
     
 }
