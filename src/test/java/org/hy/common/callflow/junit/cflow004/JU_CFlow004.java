@@ -52,7 +52,7 @@ public class JU_CFlow004
     @Test
     public void test_CFlow004() throws Exception
     {
-        ConditionConfig v_Condition = (ConditionConfig) XJava.getObject("XCondition_CF004_002");
+        ConditionConfig v_Condition = (ConditionConfig) XJava.getObject("XCondition_CF004_1_1");
         System.out.println(v_Condition.toString());
         
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
@@ -92,7 +92,7 @@ public class JU_CFlow004
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        NodeConfig    v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_001");
+        NodeConfig    v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_1");
         ExecuteResult v_Result    = CallFlow.execute(v_FirstNode ,i_Context);
         if ( v_Result.isSuccess() )
         {
@@ -105,24 +105,51 @@ public class JU_CFlow004
         }
         
         // 打印执行路径
-        ExecuteResult v_NodeResult = v_Result;
-        do
+        ExecuteResult v_FirstResult = CallFlow.getFirstResult(i_Context);
+        this.println(v_FirstResult);
+        
+        System.out.println();
+        
+        // 第二种方法获取首个执行结果
+        v_FirstResult = CallFlow.getHelpExecute().getFirstResult(v_Result);
+        this.println(v_FirstResult);
+        System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
+        
+        // 导出
+        System.out.println(CallFlow.getHelpExport().export(v_FirstNode));
+    }
+    
+    
+    
+    /**
+     * 打印执行路径
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-06
+     * @version     v1.0
+     *
+     * @param i_Result
+     */
+    private void println(ExecuteResult i_Result)
+    {
+        System.out.println(StringHelp.rpad(i_Result.getExecuteTreeID() ,20 ," ") 
+                         + " " 
+                         + StringHelp.rpad(i_Result.getTreeID() ,20 ," ") 
+                         + " " 
+                         + Date.toTimeLenNano(i_Result.getEndTime() - i_Result.getBeginTime())
+                         + StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")
+                         + " " + i_Result.getExecuteLogic()
+                         + " " + Help.NVL(i_Result.getResult())
+                         + " " + i_Result.isSuccess()
+                         + " " + i_Result.getStatus());
+        
+        if ( !Help.isNull(i_Result.getNexts()) )
         {
-            System.out.println(StringHelp.rpad(v_NodeResult.getExecuteTreeID() ,9 ," ") 
-                             + " " 
-                             + StringHelp.rpad(v_NodeResult.getTreeID() ,9 ," ") 
-                             + " " 
-                             + Date.toTimeLenNano(v_NodeResult.getBeginTime()) 
-                             + " ~ "
-                             + Date.toTimeLenNano(v_NodeResult.getEndTime()) 
-                             + " "
-                             + Date.toTimeLenNano(v_NodeResult.getEndTime() - v_NodeResult.getBeginTime())
-                             + " " + v_NodeResult.getExecuteLogic()
-                             + " " + Help.NVL(v_NodeResult.getResult())
-                             + " " + v_NodeResult.isSuccess());
-            v_NodeResult = v_NodeResult.getPrevious();
+            for (ExecuteResult v_Item : i_Result.getNexts())
+            {
+                this.println(v_Item);
+            }
         }
-        while ( v_NodeResult != null );
     }
     
 }
