@@ -7,7 +7,8 @@
 * [主导思想](#主导思想)
 * [概要说明](#概要说明)
 * 使用举例
-    * [简单编排：执行元素举例](#执行元素举例)
+    * [执行元素：简单编排](#执行元素举例)
+    * [执行元素的多路分支逐一执行举例](#执行元素的多路分支逐一执行举例)
     * [条件逻辑元素举例](#条件逻辑元素举例)
     * [条件逻辑元素的非空及多路径举例](#条件逻辑元素的非空及多路径举例)
     * [条件逻辑元素的多条件及返回对象举例](#条件逻辑元素的多条件及返回对象举例)
@@ -127,6 +128,112 @@ XJava.putObject("XProgram" ,new Program());
         
 // 获取编排中的首个元素
 NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
+```
+
+
+
+执行元素的多路分支逐一执行举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow005)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow005/JU_CFlow005.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF005_1_2">
+            <comment>1.2节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method_1_2</callMehod>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF005_1_1_2">
+            <comment>1.1.2节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method_1_1_2</callMehod>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF005_1_1_1">
+            <comment>1.1.1节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method_1_1_1</callMehod>
+        </xnode>
+    
+    
+        <xnode id="XNode_CF005_1_1">
+            <comment>1.1节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method_1_1</callMehod>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_1_1" />
+                    <comment>成功时，第一路</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_1_2" />
+                    <comment>成功时，第二路</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF005_1">
+            <comment>1节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method_1</callMehod>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_1" />
+                    <comment>成功时，第一路</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_2" />
+                    <comment>成功时，第二路</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF005_1");
 
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context   = new HashMap<String ,Object>();
