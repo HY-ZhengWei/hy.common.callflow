@@ -62,6 +62,74 @@
 
 
 
+简单编排：两个元素举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow001)
+  
+![image](src/test/java/org/hy/common/callflow/junit/cflow001/JU_CFlow001.png)
+
+__编排XML配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+        
+        <xnode id="XNode_CF001_002">
+            <comment>节点002，后面节点配置在XML前</comment>
+            <callXID>:XProgram</callXID>
+            <callMehod>method002</callMehod>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF001_001">
+            <comment>节点001</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method001</callMehod>                <!-- 定义执行方法 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF001_002" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_001");
+
+// 初始化上下文（可方便的获取中间运算结果，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
+```
+
+
 ---
 #### 本项目引用Jar包，其源码链接如下
 引用 https://github.com/HY-ZhengWei/hy.common.base 类库

@@ -60,17 +60,12 @@ public class JU_CFlow011
     
     private void test_CFlow011_Inner()
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF011_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
-        
-        if ( Help.isNull(v_ForConfig.getTreeIDs()) )
-        {
-            CallFlow.getHelpExecute().calcTree(v_ForConfig);
-        }
         
         ExecuteResult v_Result = CallFlow.execute(v_ForConfig ,v_Context);
         if ( v_Result.isSuccess() )

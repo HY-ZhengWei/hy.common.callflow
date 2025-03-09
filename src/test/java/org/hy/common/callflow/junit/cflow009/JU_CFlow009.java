@@ -60,17 +60,12 @@ public class JU_CFlow009
     
     private void test_CFlow009_Inner()
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF009_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
-        
-        if ( Help.isNull(v_FirstNode.getTreeIDs()) )
-        {
-            CallFlow.getHelpExecute().calcTree(v_FirstNode);
-        }
         
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
         if ( v_Result.isSuccess() )

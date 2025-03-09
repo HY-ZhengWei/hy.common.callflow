@@ -60,20 +60,15 @@ public class JU_CFlow010
     
     private void test_CFlow010_Inner()
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         CalculateConfig     v_Calculate = (CalculateConfig) XJava.getObject("XCalculate_CF010_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
         // 传数字 或 字符类的数字
         v_Context.put("Value" ,99);
-        
-        if ( Help.isNull(v_Calculate.getTreeIDs()) )
-        {
-            CallFlow.getHelpExecute().calcTree(v_Calculate);
-        }
         
         ExecuteResult v_Result = CallFlow.execute(v_Calculate ,v_Context);
         if ( v_Result.isSuccess() )

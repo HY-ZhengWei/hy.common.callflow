@@ -60,10 +60,10 @@ public class JU_CFlow006
     
     private void test_CFlow006_Inner() throws Exception
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF006_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         

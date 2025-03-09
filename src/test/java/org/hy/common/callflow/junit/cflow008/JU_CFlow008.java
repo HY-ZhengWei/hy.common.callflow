@@ -65,18 +65,12 @@ public class JU_CFlow008
     
     private void test_CFlow008_Inner() throws Exception
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         NestingConfig       v_Nesting = (NestingConfig) XJava.getObject("XNesting_CF008_1");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
-        
-        if ( !Help.isNull(v_Nesting.getTreeIDs()) )
-        {
-            CallFlow.getHelpExecute().clearTree(v_Nesting);
-        }
-        CallFlow.getHelpExecute().calcTree(v_Nesting);
         
         // 传值 9 或 传值 -1 或 不传值
         v_Context.put("NumParam"  ,9);

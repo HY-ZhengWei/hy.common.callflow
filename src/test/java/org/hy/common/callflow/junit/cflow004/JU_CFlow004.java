@@ -88,10 +88,10 @@ public class JU_CFlow004
     
     private void test_CFlow004_Inner(Map<String ,Object> i_Context) throws Exception
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         NodeConfig    v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_001");
         ExecuteResult v_Result    = CallFlow.execute(v_FirstNode ,i_Context);
         if ( v_Result.isSuccess() )

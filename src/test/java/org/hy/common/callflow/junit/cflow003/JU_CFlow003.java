@@ -62,19 +62,14 @@ public class JU_CFlow003
     
     private void test_CFlow003_Inner() throws Exception
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF003_001");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         ExecuteResult       v_ER        = null;
         IExecute            v_E         = null;
-        
-        if ( Help.isNull(v_FirstNode.getTreeIDs()) )
-        {
-            CallFlow.getHelpExecute().calcTree(v_FirstNode);
-        }
         
         // 传值 9 或 传值 -1 或 不传值
         v_Context.put("NumParam"  ,9);

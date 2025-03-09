@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Date;
-import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -60,17 +59,12 @@ public class JU_CFlow002
     
     private void test_CFlow002_Inner()
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF002_001");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
-        
-        if ( Help.isNull(v_FirstNode.getTreeIDs()) )
-        {
-            CallFlow.getHelpExecute().calcTree(v_FirstNode);
-        }
         
         // 传值 9 或 传值 -1 或 不传值
         v_Context.put("NumParam" ,9);

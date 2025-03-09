@@ -51,10 +51,10 @@ public class JU_CFlow005
     @Test
     public void test_CFlow005() throws Exception
     {
-        // 初始化被编排的执行程序
+        // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
-        // 启动编排
+        // 获取编排中的首个元素
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF005_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
