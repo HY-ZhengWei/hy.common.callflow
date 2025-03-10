@@ -516,4 +516,47 @@ public class ConditionConfig extends ExecuteElement implements IfElse
         return v_Builder.toString();
     }
     
+    
+    /**
+     * 深度克隆编排元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Clone        克隆的复制品对象
+     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
+     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
+     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
+     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
+     * @return
+     */
+    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        ConditionConfig v_Clone = (ConditionConfig) io_Clone;
+        super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+        
+        v_Clone.logical = this.logical;
+        
+        for (IfElse v_Item : this.items)
+        {
+            if ( v_Item instanceof ConditionItem )
+            {
+                ConditionItem v_CloneConditionItem = new ConditionItem();
+                v_Item.clone(v_CloneConditionItem ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.items.add(v_CloneConditionItem);
+            }
+            else if ( v_Item instanceof ConditionConfig )
+            {
+                ConditionConfig v_CloneCondition = new ConditionConfig();
+                v_Item.clone(v_CloneCondition ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.items.add(v_CloneCondition);
+            }
+            else
+            {
+                throw new RuntimeException("Unknown type[" + v_Item.getClass().getName() + "] of exception");
+            }
+        }
+    }
+    
 }

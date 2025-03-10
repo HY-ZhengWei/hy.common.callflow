@@ -18,7 +18,6 @@ import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
-import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.log.Logger;
@@ -784,7 +783,7 @@ public class ForConfig extends ExecuteElement
         StringBuilder v_Xml    = new StringBuilder();
         String        v_Level1 = "    ";
         String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = ElementType.For.getXmlName();;
+        String        v_XName  = ElementType.For.getXmlName();
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -1070,7 +1069,7 @@ public class ForConfig extends ExecuteElement
         v_Clone.start     = this.start;
         v_Clone.end       = this.end;
         v_Clone.step      = this.step;
-        v_Clone.indexID   = this.indexID;;
+        v_Clone.indexID   = this.indexID;
         v_Clone.elementID = this.elementID;
     }
     

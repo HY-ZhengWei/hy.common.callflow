@@ -2,6 +2,7 @@ package org.hy.common.callflow.ifelse;
 
 import java.util.Map;
 
+import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.file.IToXml;
 
 
@@ -15,7 +16,7 @@ import org.hy.common.callflow.file.IToXml;
  * @createDate  2025-02-12
  * @version     v1.0
  */
-public interface IfElse extends IToXml
+public interface IfElse extends IToXml ,CloneableCallFlow
 {
     
     /**
