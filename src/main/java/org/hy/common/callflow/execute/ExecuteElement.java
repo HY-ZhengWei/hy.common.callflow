@@ -18,6 +18,7 @@ import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteConfig;
+import org.hy.common.callflow.route.RouteItem;
 
 
 
@@ -32,7 +33,7 @@ import org.hy.common.callflow.route.RouteConfig;
  * @createDate  2025-02-24
  * @version     v1.0
  */
-public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
+public abstract class ExecuteElement extends TotalNano implements IExecute
 {
     
     public static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);
@@ -1158,6 +1159,105 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         }
         
         return v_Xml.toString();
+    }
+    
+    
+    /**
+     * 深度克隆编排
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Clone        克隆的复制品对象
+     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
+     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
+     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
+     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
+     * @return
+     */
+    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        ExecuteElement v_Clone = (ExecuteElement) io_Clone;
+        
+        v_Clone.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        v_Clone.xid             = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
+        io_XIDObjects.put(v_Clone.xid ,v_Clone);
+        
+        v_Clone.id              = this.id;
+        v_Clone.treeIDs.putAll(   this.treeIDs);
+        v_Clone.treeLevels.putAll(this.treeLevels);
+        v_Clone.treeNos.putAll(   this.treeNos);
+        v_Clone.comment         = this.comment;
+        v_Clone.styleName       = this.styleName;
+        v_Clone.x               = this.x;
+        v_Clone.y               = this.y;
+        v_Clone.z               = this.z;
+        v_Clone.height          = this.height;
+        v_Clone.width           = this.width;
+        v_Clone.iconURL         = this.iconURL;
+        v_Clone.opacity         = this.opacity;
+        v_Clone.backgroudColor  = this.backgroudColor;
+        v_Clone.lineStyle       = this.lineStyle;
+        v_Clone.lineColor       = this.lineColor;
+        v_Clone.lineSize        = this.lineSize;
+        v_Clone.fontColor       = this.fontColor;
+        v_Clone.fontFamily      = this.fontFamily;
+        v_Clone.fontWeight      = this.fontWeight;
+        v_Clone.fontSize        = this.fontSize;
+        v_Clone.fontAlign       = this.fontAlign;
+        v_Clone.createUserID    = this.createUserID;
+        v_Clone.updateUserID    = this.updateUserID;
+        v_Clone.createTime      = this.createTime == null ? null : new Date(this.createTime.getTime());
+        v_Clone.updateTime      = this.updateTime == null ? null : new Date(this.updateTime.getTime());
+        v_Clone.returnID        = this.returnID;
+        v_Clone.statusID        = this.statusID;
+        
+        if ( !Help.isNull(this.previous) )
+        {
+            v_Clone.previous = new ArrayList<IExecute>();
+            for (IExecute v_Item : this.previous)
+            {
+                String         v_CloneItemXID = this.cloneXID(v_Item.getXJavaID() ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
+                ExecuteElement v_CloneItem    = io_XIDObjects.get(v_CloneItemXID);
+                if ( v_CloneItem == null )
+                {
+                    throw new RuntimeException("Clone XID[" + v_CloneItemXID + "] object is not exist.");
+                }
+                
+                v_Clone.previous.add(v_CloneItem);
+            }
+        }
+        
+        if ( !Help.isNull(this.route.getSucceeds()) )
+        {
+            for (RouteItem v_RouteItem : this.route.getSucceeds())
+            {
+                RouteItem v_CloneRouteItem = new RouteItem(v_Clone.getRoute() ,v_RouteItem.getRouteType());
+                v_RouteItem.clone(v_CloneRouteItem ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.getRoute().setSucceed(v_CloneRouteItem);
+            }
+        }
+        
+        if ( !Help.isNull(this.route.getFaileds()) )
+        {
+            for (RouteItem v_RouteItem : this.route.getFaileds())
+            {
+                RouteItem v_CloneRouteItem = new RouteItem(v_Clone.getRoute() ,v_RouteItem.getRouteType());
+                v_RouteItem.clone(v_CloneRouteItem ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.getRoute().setFailed(v_CloneRouteItem);
+            }
+        }
+        
+        if ( !Help.isNull(this.route.getExceptions()) )
+        {
+            for (RouteItem v_RouteItem : this.route.getExceptions())
+            {
+                RouteItem v_CloneRouteItem = new RouteItem(v_Clone.getRoute() ,v_RouteItem.getRouteType());
+                v_RouteItem.clone(v_CloneRouteItem ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.getRoute().setException(v_CloneRouteItem);
+            }
+        }
     }
     
 }

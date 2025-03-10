@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.XJavaID;
+import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.common.IDirectedGraphID;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteConfig;
@@ -20,7 +21,7 @@ import org.hy.common.callflow.route.RouteConfig;
  * @createDate  2025-02-15
  * @version     v1.0
  */
-public interface IExecute extends IDirectedGraphID ,IToXml ,XJavaID
+public interface IExecute extends IDirectedGraphID ,IToXml ,CloneableCallFlow ,XJavaID
 {
     
     /**
