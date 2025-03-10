@@ -6,6 +6,7 @@
 ------
 * [主导思想](#主导思想)
 * [概要说明](#概要说明)
+* [主要方法](#主要方法)
 * 使用举例
     * [执行元素：简单编排](#执行元素举例)
     * [执行元素的多路分支逐一执行举例](#执行元素的多路分支逐一执行举例)
@@ -82,9 +83,16 @@
 |:--------|:--------|
 |CallFlow.execute(IExecute ,Map)|执行编排|
 |CallFlow.execute(IExecute ,Map ,IExecuteEvent)|执行编排，并带有事件监听器的|
+|CallFlow.getHelpExecute().calcTree(IExecute)|计算寻址相关的树ID|
+|CallFlow.getHelpExecute().clearTree(IExecute)|清理寻址相关的树ID|
+|CallFlow.getHelpExecute().findTreeID(IExecute ,String)|用树ID定位编排中的元素|
+|CallFlow.getHelpExecute().findFirst(IExecute)|定位编排中的首个元素|
 |CallFlow.getHelpExport().export(IExecute)|导出编排配置|
 |CallFlow.getHelpExport().save(IExecute)|导出编排配置，并保存为文件|
 |CallFlow.getHelpExport().save(IExecute ,String)|导出编排配置，并保存在指定目录中|
+|CallFlow.getHelpImport().imports(String)|导入编排配置|
+|CallFlow.getHelpImport().upgradeBackupFile(ExecuteElement ,String)|升级编排配置，并备份原编排为文件|
+|CallFlow.getHelpImport().upgradeBackupString(ExecuteElement ,String)|升级编排配置，并备份原编排为文本字符|
 
 
 
