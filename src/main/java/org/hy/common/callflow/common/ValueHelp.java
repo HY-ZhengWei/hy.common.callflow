@@ -127,7 +127,10 @@ public class ValueHelp
         Object v_Value = i_ValueXID;
         if ( i_ValueXID == null )
         {
-            // Nothing.
+            if ( i_Default != null )
+            {
+                return toObject(i_Default ,i_ValueClass);
+            }
         }
         else if ( i_ValueXID.startsWith(DBSQL.$Placeholder) )
         {

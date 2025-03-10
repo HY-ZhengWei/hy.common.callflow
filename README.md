@@ -1404,7 +1404,7 @@ __编排配置__
             <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
-                <value>:CallFlowContext</value>             <!-- 上下文内容 -->
+                <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
             </callParam>
         </xnode>
     
