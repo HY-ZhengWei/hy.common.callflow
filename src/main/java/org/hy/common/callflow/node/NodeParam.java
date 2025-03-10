@@ -5,7 +5,9 @@ import java.util.Map;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.XJavaID;
+import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJSON;
@@ -22,7 +24,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-11
  * @version     v1.0
  */
-public class NodeParam implements IToXml ,XJavaID
+public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
 {
     
     private static final Logger $Logger = new Logger(NodeParam.class);
@@ -47,7 +49,7 @@ public class NodeParam implements IToXml ,XJavaID
     /** 参数默认值的字符形式（参数为上下文变量、XID标识时生效） */
     private String   valueDefault;
     
-    /** 参数默认值的实例对象 */
+    /** 参数默认值的实例对象(内部使用) */
     private Object   valueDefaultObject;
     
     
@@ -148,6 +150,7 @@ public class NodeParam implements IToXml ,XJavaID
     
     /**
      * 参数默认值的实例对象
+     * 禁止转Json
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-20
@@ -156,7 +159,7 @@ public class NodeParam implements IToXml ,XJavaID
      * @return
      * @throws Exception
      */
-    public synchronized Object getValueDefaultObject() throws Exception
+    public synchronized Object gatValueDefaultObject() throws Exception
     {
         if ( this.valueDefault == null || this.valueClass == null )
         {
@@ -403,7 +406,7 @@ public class NodeParam implements IToXml ,XJavaID
         
         try
         {
-            v_Value = ValueHelp.getValue(this.value ,this.valueClass ,this.getValueDefaultObject() ,i_Context);
+            v_Value = ValueHelp.getValue(this.value ,this.valueClass ,this.gatValueDefaultObject() ,i_Context);
         }
         catch (Exception exce)
         {
@@ -451,6 +454,33 @@ public class NodeParam implements IToXml ,XJavaID
         }
         
         return v_Builder.toString();
+    }
+    
+    
+    /**
+     * 深度克隆编排
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Clone        克隆的复制品对象
+     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
+     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
+     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
+     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
+     * @return
+     */
+    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        NodeParam v_Clone = (NodeParam) io_Clone;
+        
+        v_Clone.id           = this.id;
+        v_Clone.xid          = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
+        v_Clone.comment      = this.comment;
+        v_Clone.valueClass   = this.valueClass;
+        v_Clone.value        = this.value;
+        v_Clone.valueDefault = this.valueDefault;
     }
     
 }

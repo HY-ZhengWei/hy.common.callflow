@@ -62,7 +62,7 @@ public class NodeConfig extends ExecuteElement
     /** 执行方法对象（仅内部使用） */
     private Method          callMethodObject;
     
-    /** 是否初始化 */
+    /** 是否初始化（仅内部使用） */
     private boolean         isInit;
     
     /** 执行方法的参数 */
@@ -156,7 +156,7 @@ public class NodeConfig extends ExecuteElement
                 for (int x=0; x<v_ParamValues.length; x++)
                 {
                     NodeParam v_NodeParam  = this.callParams.get(x);
-                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,v_NodeParam.getValueDefaultObject() ,io_Context);
+                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,v_NodeParam.gatValueDefaultObject() ,io_Context);
                 }
             }
             catch (Exception exce)
@@ -351,7 +351,7 @@ public class NodeConfig extends ExecuteElement
                 for (int x=0; x<v_ParamValues.length; x++)
                 {
                     NodeParam v_NodeParam  = this.callParams.get(x);
-                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,v_NodeParam.getValueDefaultObject() ,io_Context);
+                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,v_NodeParam.gatValueDefaultObject() ,io_Context);
                 }
             }
             catch (Exception exce)
@@ -879,6 +879,42 @@ public class NodeConfig extends ExecuteElement
         v_Builder.append(")");
         
         return v_Builder.toString();
+    }
+    
+    
+    /**
+     * 深度克隆编排元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Clone        克隆的复制品对象
+     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
+     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
+     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
+     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
+     * @return
+     */
+    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        NodeConfig v_Clone = (NodeConfig) io_Clone;
+        super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+        
+        v_Clone.callXID   = this.callXID;
+        v_Clone.callMehod = this.callMehod; 
+        v_Clone.timeout   = this.timeout;
+        
+        if ( !Help.isNull(this.callParams) )
+        {
+            v_Clone.callParams = new ArrayList<NodeParam>();
+            for (NodeParam v_NodeParam : this.callParams)
+            {
+                NodeParam v_CloneNodeParam = new NodeParam();
+                v_NodeParam.clone(v_CloneNodeParam ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.callParams.add(v_CloneNodeParam);
+            }
+        }
     }
     
 }
