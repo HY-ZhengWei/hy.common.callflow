@@ -18,6 +18,7 @@ import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.log.Logger;
@@ -1044,6 +1045,33 @@ public class ForConfig extends ExecuteElement
         v_Builder.append(")");
         
         return v_Builder.toString();
+    }
+    
+    
+    /**
+     * 深度克隆编排元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Clone        克隆的复制品对象
+     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
+     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
+     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
+     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
+     * @return
+     */
+    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        ForConfig v_Clone = (ForConfig) io_Clone;
+        super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+        
+        v_Clone.start     = this.start;
+        v_Clone.end       = this.end;
+        v_Clone.step      = this.step;
+        v_Clone.indexID   = this.indexID;;
+        v_Clone.elementID = this.elementID;
     }
     
 }
