@@ -18,6 +18,7 @@ import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
+import org.hy.common.xml.XJava;
 
 
 
@@ -100,6 +101,24 @@ public class CallFlow
         {
             return false;
         }
+    }
+    
+    
+    
+    /**
+     * 在执行上下文中，设置编排执行实例ID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @return
+     */
+    public static Map<String ,Object> setWorkID(Map<String ,Object> io_Context ,String i_WorkID)
+    {
+        io_Context.put($WorkID ,i_WorkID);
+        return io_Context;
     }
     
     
@@ -291,6 +310,50 @@ public class CallFlow
     public static ImportXML getHelpImport()
     {
         return ImportXML.getInstance();
+    }
+    
+    
+    
+    /**
+     * 首个执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的执行
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param i_ExecXID     执行对象的XID（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
+     * @param io_Context    上下文类型的变量信息
+     * @return              返回编排执行链中的最后的执行结果
+     *                          1.最后执行结果的开始时间beginTime，也是整个编排的最早起始时间
+     *                          2.最后执行结果的结束时间endTime  ，也是整个编排的最晚结束时间
+     *                          3.异常时，最后执行结果重复描述一次异常信息
+     */
+    public static ExecuteResult execute(String i_ExecXID ,Map<String ,Object> io_Context)
+    {
+        return execute(i_ExecXID ,io_Context ,null);
+    }
+    
+    
+    
+    /**
+     * 首个执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的执行
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param i_ExecXID     执行对象的XID（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
+     * @param io_Context    上下文类型的变量信息
+     * @param i_Event       执行监听事件
+     * @return              返回编排执行链中的首个执行对象的执行结果
+     *                          1.返回值的beginTime，是整个编排的最早起始时间
+     *                          2.返回值的endTime  ，是整个编排的最晚结束时间
+     *                          3.异常时，最后执行结果重复描述一次异常信息
+     */
+    public static ExecuteResult execute(String i_ExecXID ,Map<String ,Object> io_Context ,IExecuteEvent i_Event)
+    {
+        IExecute v_ExecObject = (IExecute) XJava.getObject(i_ExecXID);
+        return execute(v_ExecObject ,io_Context ,i_Event);
     }
     
     
@@ -510,14 +573,14 @@ public class CallFlow
                 }
             }
             // 循环元素
-            else if ( i_ExecObject instanceof SelfLoop  )
+            else if ( i_ExecObject instanceof SelfLoop )
             {
                 Object v_RetValue = v_Result.getResult();
                 if ( v_RetValue instanceof Boolean )
                 {
                     if ( (Boolean) v_RetValue )
                     {
-                        v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                        v_Nexts = ((SelfLoop) i_ExecObject).gatRoute().getSucceeds();
                     }
                     else
                     {
@@ -527,7 +590,7 @@ public class CallFlow
                 }
                 else
                 {
-                    v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                    v_Nexts = ((SelfLoop) i_ExecObject).gatRoute().getSucceeds();
                 }
             }
             else
@@ -543,7 +606,14 @@ public class CallFlow
                 return v_Result;
             }
             
-            v_Nexts = i_ExecObject.getRoute().getExceptions();
+            if ( i_ExecObject instanceof SelfLoop )
+            {
+                v_Nexts = ((SelfLoop) i_ExecObject).gatRoute().getExceptions();
+            }
+            else
+            {
+                v_Nexts = i_ExecObject.getRoute().getExceptions();
+            }
         }
         
         // 事件：执行后
@@ -556,7 +626,7 @@ public class CallFlow
         {
             for (RouteItem v_Next : v_Nexts)
             {
-                ExecuteResult v_NextResult = CallFlow.execute(v_Next.getNext() ,io_Context ,i_ExecObject.getTreeID(i_SuperTreeID) ,v_Result ,i_Event);
+                ExecuteResult v_NextResult = CallFlow.execute(v_Next.gatNext() ,io_Context ,i_ExecObject.getTreeID(i_SuperTreeID) ,v_Result ,i_Event);
                 v_Result.addNext(v_NextResult);
                 if ( !v_NextResult.isSuccess() )
                 {
@@ -570,7 +640,7 @@ public class CallFlow
                 }
                 
                 // 循环元素
-                if ( v_Next.getNext() instanceof SelfLoop )
+                if ( v_Next.gatNext() instanceof SelfLoop )
                 {
                     Object v_RetValue = v_NextResult.getResult();
                     if ( v_RetValue instanceof Boolean )
