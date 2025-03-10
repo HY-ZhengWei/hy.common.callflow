@@ -10,6 +10,7 @@
 * 使用举例
     * [执行元素：简单编排](#执行元素举例)
     * [执行元素的多路分支逐一执行举例](#执行元素的多路分支逐一执行举例)
+    * [执行元素的方法传参（Map、List、Set、对象）举例](#执行元素的方法传参（Map、List、Set、对象）举例)
     * [执行元素的超时和异常举例](#执行元素的超时和异常举例)
     * [条件逻辑元素举例](#条件逻辑元素举例)
     * [条件逻辑元素的多条件及返回对象举例](#条件逻辑元素的多条件及返回对象举例)
@@ -263,6 +264,176 @@ XJava.putObject("XProgram" ,new Program());
         
 // 获取编排中的首个元素
 NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF005_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
+```
+
+
+
+执行元素的方法传参（Map、List、Set、对象）举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow014) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow014/JU_CFlow014.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF014_1_4">
+            <comment>方法入参数是Set集合</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Set</callMehod>               <!-- 定义执行方法 -->
+            <callParam>                                     <!-- 定义入参类型 -->
+                <value>:ObjectData.hashSetData</value>      <!-- 支持面向对象xx.yy.zz，并且不用定义入参的元类型 -->
+            </callParam>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF014_1_3">
+            <comment>方法入参数是List集合</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_List</callMehod>              <!-- 定义执行方法 -->
+            <callParam>                                     <!-- 定义入参类型 -->
+                <value>:ObjectData.listData</value>         <!-- 支持面向对象xx.yy.zz，并且不用定义入参的元类型 -->
+            </callParam>
+        </xnode>
+        
+    
+        <xnode id="XNode_CF014_1_2">
+            <comment>方法入参数是对象</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Object</callMehod>            <!-- 定义执行方法 -->
+            <callParam>                                     <!-- 定义入参类型 -->
+                <valueClass>org.hy.common.callflow.junit.cflow014.program.Program</valueClass>      
+                <value>                                     <!-- 定义入参默认值 -->
+                {
+                    "name": "CallFlow",
+                    "age": 1,
+                    "birthday": "2025-02-07",
+                    "listData" : [
+                        "6元素",
+                        "4路由",
+                        "2循环"
+                    ],
+                    "hashSetData" : [
+                        "成功路由",
+                        "异常路由",
+                        "真值路由",
+                        "假值路由"
+                    ]
+                }
+                </value>
+            </callParam>
+            <returnID>ObjectData</returnID>                 <!-- 定义返回结果的变量名称 -->
+        </xnode>
+    
+    
+        <xnode id="XNode_CF014_1_1_1">
+            <comment>方法入参数是Map集合，数值传值</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Map</callMehod>               <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
+                <value>                                     <!-- 定义入参默认值 -->
+                {
+                    "狗": "忠诚",
+                    "猫": "独立",
+                    "鱼": "宁静"
+                }
+                </value>
+            </callParam>
+        </xnode>
+        
+    
+        <xnode id="XNode_CF014_1_1">
+            <comment>方法入参数是Map集合，默认值传值</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Map</callMehod>               <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
+                <!-- 不设定入参变量名称，可用默认值代替 -->
+                <valueDefault>                              <!-- 定义入参默认值 -->
+                {
+                    "张三": "23",
+                    "李四": "24",
+                    "王五": "25"
+                }
+                </valueDefault>
+            </callParam>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF014_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF014_1">
+            <comment>方法入参数是Map集合，系统预设变量传值</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_Map</callMehod>               <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
+                <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF014_1_1" />
+                    <comment>第一个分支</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF014_1_2" />
+                    <comment>第二个分支</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF014_1_3" />
+                    <comment>第三个分支</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF014_1_4" />
+                    <comment>第四个分支</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF014_1");
 
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context   = new HashMap<String ,Object>();
