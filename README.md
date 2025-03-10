@@ -75,6 +75,19 @@
 
 
 
+主要方法
+------
+
+|方法|说明|
+|:--------|:--------|
+|CallFlow.execute(IExecute ,Map)|执行编排|
+|CallFlow.execute(IExecute ,Map ,IExecuteEvent)|执行编排，并带有事件监听器的|
+|CallFlow.getHelpExport().export(IExecute)|导出编排配置|
+|CallFlow.getHelpExport().save(IExecute)|导出编排配置，并保存为文件|
+|CallFlow.getHelpExport().save(IExecute ,String)|导出编排配置，并保存在指定目录中|
+
+
+
 执行元素举例
 ------
 
