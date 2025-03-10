@@ -1,13 +1,22 @@
 package org.hy.common.callflow.route;
 
+import java.util.Map;
+
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.enums.SelfLoopType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.forloop.ForConfig;
+import org.hy.common.callflow.ifelse.ConditionConfig;
+import org.hy.common.callflow.nesting.NestingConfig;
+import org.hy.common.callflow.node.CalculateConfig;
+import org.hy.common.callflow.node.NodeConfig;
+import org.hy.common.callflow.node.WaitConfig;
 
 
 
@@ -20,7 +29,7 @@ import org.hy.common.callflow.file.IToXml;
  * @createDate  2025-03-09
  * @version     v1.0
  */
-public class RouteItem implements IToXml
+public class RouteItem implements IToXml ,CloneableCallFlow
 {
     
     /** 归属者（仅对外开放setter方法，为防止死循环）（内部使用） */
@@ -567,6 +576,91 @@ public class RouteItem implements IToXml
         }
         
         return v_Xml.toString();
+    }
+    
+    
+    /**
+     * 深度克隆编排
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Clone        克隆的复制品对象
+     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
+     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
+     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
+     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
+     * @return
+     */
+    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        RouteItem v_Clone = (RouteItem) io_Clone;
+        
+        v_Clone.id           = this.id;
+        v_Clone.comment      = this.comment;
+        v_Clone.pathDatas    = this.pathDatas;
+        v_Clone.lineStyle    = this.lineStyle;
+        v_Clone.lineColor    = this.lineColor;
+        v_Clone.lineSize     = this.lineSize;
+        v_Clone.fontColor    = this.fontColor;
+        v_Clone.fontFamily   = this.fontFamily;
+        v_Clone.fontWeight   = this.fontWeight;
+        v_Clone.fontSize     = this.fontSize;
+        v_Clone.fontAlign    = this.fontAlign;
+        v_Clone.createUserID = this.createUserID;
+        v_Clone.updateUserID = this.updateUserID;
+        v_Clone.createTime   = this.createTime == null ? null : new Date(this.createTime.getTime());
+        v_Clone.updateTime   = this.updateTime == null ? null : new Date(this.updateTime.getTime());
+        
+        if ( this.next != null )
+        {
+            if ( this.next instanceof NodeConfig )
+            {
+                NodeConfig v_CloneNode = new NodeConfig();
+                ((NodeConfig) this.next).clone(v_CloneNode ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneNode;
+            }
+            else if ( this.next instanceof WaitConfig )
+            {
+                WaitConfig v_CloneWait = new WaitConfig();
+                ((WaitConfig) this.next).clone(v_CloneWait ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneWait;
+            }
+            else if ( this.next instanceof ConditionConfig )
+            {
+                ConditionConfig v_CloneCondition = new ConditionConfig();
+                ((ConditionConfig) this.next).clone(v_CloneCondition ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneCondition;
+            }
+            else if ( this.next instanceof NestingConfig )
+            {
+                NestingConfig v_CloneNesting = new NestingConfig();
+                ((NestingConfig) this.next).clone(v_CloneNesting ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneNesting;
+            }
+            else if ( this.next instanceof CalculateConfig )
+            {
+                CalculateConfig v_CloneCalculate = new CalculateConfig();
+                ((CalculateConfig) this.next).clone(v_CloneCalculate ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneCalculate;
+            }
+            else if ( this.next instanceof ForConfig )
+            {
+                ForConfig v_CloneFor = new ForConfig();
+                ((ForConfig) this.next).clone(v_CloneFor ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneFor;
+            }
+            else if ( this.next instanceof SelfLoop )
+            {
+                // 不应当走到些
+                throw new RuntimeException("Not allowed RouteItem's next is SelfLoop");
+            }
+            else
+            {
+                throw new RuntimeException("Unknown type[" + this.next.getClass().getName() + "] of exception");
+            }
+        }
     }
     
 }

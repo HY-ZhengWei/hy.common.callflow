@@ -388,4 +388,26 @@ public class SelfLoop extends ExecuteElement
         return v_Builder.toString();
     }
     
+    
+    
+    /**
+     * 深度克隆编排
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Clone        克隆的复制品对象
+     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
+     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
+     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
+     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
+     * @return
+     */
+    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        // 无须克隆自引用元素，也不允许调用此方法
+        throw new RuntimeException("Not allowed to call SelfLoop.clone().");
+    }
+    
 }
