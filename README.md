@@ -91,8 +91,8 @@
 |CallFlow.getHelpExport().save(IExecute)|导出编排配置，并保存为文件|
 |CallFlow.getHelpExport().save(IExecute ,String)|导出编排配置，并保存在指定目录中|
 |CallFlow.getHelpImport().imports(String)|导入编排配置|
-|CallFlow.getHelpImport().upgradeBackupFile(ExecuteElement ,String)|升级编排配置，并备份原编排为文件|
-|CallFlow.getHelpImport().upgradeBackupString(ExecuteElement ,String)|升级编排配置，并备份原编排为文本字符|
+|CallFlow.getHelpImport().upgradeBackupFile(IExecute ,String)|升级编排配置，并备份原编排为文件|
+|CallFlow.getHelpImport().upgradeBackupString(IExecute ,String)|升级编排配置，并备份原编排为文本字符|
 
 
 
