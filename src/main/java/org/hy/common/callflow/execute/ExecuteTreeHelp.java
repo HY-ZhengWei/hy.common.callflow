@@ -84,7 +84,7 @@ public class ExecuteTreeHelp
         {
             for (RouteItem v_RouteItem : i_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -136,7 +136,7 @@ public class ExecuteTreeHelp
         {
             for (RouteItem v_RouteItem : i_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -209,7 +209,7 @@ public class ExecuteTreeHelp
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -223,7 +223,7 @@ public class ExecuteTreeHelp
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -237,7 +237,7 @@ public class ExecuteTreeHelp
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -283,7 +283,7 @@ public class ExecuteTreeHelp
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -301,7 +301,7 @@ public class ExecuteTreeHelp
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -319,7 +319,7 @@ public class ExecuteTreeHelp
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -512,7 +512,7 @@ public class ExecuteTreeHelp
             }
         }
         
-        List<IExecute> v_PreviousList = i_ExecObject.getPrevious();
+        List<IExecute> v_PreviousList = i_ExecObject.gatPrevious();
         if ( Help.isNull(v_PreviousList) )
         {
             return i_ExecObject;

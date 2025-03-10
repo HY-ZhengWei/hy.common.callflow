@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Date;
-import org.hy.common.Help;
-import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.junit.JUBase;
 import org.hy.common.callflow.junit.cflow009.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
@@ -30,7 +29,7 @@ import org.junit.runners.MethodSorters;
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow009
+public class JU_CFlow009 extends JUBase
 {
     
     private static boolean $isInit = false;
@@ -91,38 +90,8 @@ public class JU_CFlow009
         
         // 导出
         System.out.println(CallFlow.getHelpExport().export(v_FirstNode));
-    }
-    
-    
-    
-    /**
-     * 打印执行路径
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
-     * @version     v1.0
-     *
-     * @param i_Result
-     */
-    private void println(ExecuteResult i_Result)
-    {
-        System.out.println(StringHelp.rpad(i_Result.getExecuteTreeID() ,20 ," ") 
-                         + " " 
-                         + StringHelp.rpad(i_Result.getTreeID() ,20 ," ") 
-                         + " " 
-                         + Date.toTimeLenNano(i_Result.getEndTime() - i_Result.getBeginTime())
-                         + StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")
-                         + " " + i_Result.getExecuteLogic()
-                         + " " + Help.NVL(i_Result.getResult())
-                         + " " + i_Result.isSuccess());
         
-        if ( !Help.isNull(i_Result.getNexts()) )
-        {
-            for (ExecuteResult v_Item : i_Result.getNexts())
-            {
-                this.println(v_Item);
-            }
-        }
+        toJson(v_FirstNode);
     }
     
 }

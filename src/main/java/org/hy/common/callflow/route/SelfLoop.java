@@ -95,7 +95,7 @@ public class SelfLoop extends ExecuteElement
      *
      * @return
      */
-    protected ExecuteElement getExecuteElement()
+    protected ExecuteElement gatExecuteElement()
     {
         ExecuteElement v_ExecObject = (ExecuteElement) XJava.getObject(this.refXID);
         if ( v_ExecObject == null )
@@ -109,10 +109,11 @@ public class SelfLoop extends ExecuteElement
     
     /**
      * 获取：执行链：双向链表：前几个
+     * 防止Json无限制循环
      */
-    public List<IExecute> getPrevious()
+    public List<IExecute> gatPrevious()
     {
-        return getExecuteElement().getPrevious();
+        return gatExecuteElement().gatPrevious();
     }
     
     
@@ -122,7 +123,20 @@ public class SelfLoop extends ExecuteElement
      */
     public RouteConfig getRoute()
     {
-        return getExecuteElement().getRoute();
+        // 与路由配合，隐性使用，没有其后，防止Json无限制循环
+        // 改用 gatRoute() 方法
+        return null; 
+    }
+    
+    
+    
+    /**
+     * 获取：执行链：双向链表：其后多个路由
+     * 防止Json无限制循环
+     */
+    public RouteConfig gatRoute()
+    {
+        return gatExecuteElement().getRoute();
     }
     
     
@@ -138,7 +152,7 @@ public class SelfLoop extends ExecuteElement
      */
     public Collection<String> getTreeIDs()
     {
-        return getExecuteElement().getTreeIDs();
+        return gatExecuteElement().getTreeIDs();
     }
     
     
@@ -150,7 +164,7 @@ public class SelfLoop extends ExecuteElement
      */
     public String getTreeID(String i_SuperTreeID)
     {
-        ExecuteElement v_ExecObject = getExecuteElement();
+        ExecuteElement v_ExecObject = gatExecuteElement();
         String         v_TreeID     = v_ExecObject.getTreeID(i_SuperTreeID);
         if ( Help.isNull(v_TreeID) )
         {
@@ -186,7 +200,7 @@ public class SelfLoop extends ExecuteElement
      */
     public String getTreeSuperID(String i_TreeID)
     {
-        return getExecuteElement().getTreeSuperID(i_TreeID);
+        return gatExecuteElement().getTreeSuperID(i_TreeID);
     }
 
 
@@ -198,7 +212,7 @@ public class SelfLoop extends ExecuteElement
      */
     public Integer getTreeLevel(String i_TreeID)
     {
-        return getExecuteElement().getTreeLevel(i_TreeID);
+        return gatExecuteElement().getTreeLevel(i_TreeID);
     }
 
 
@@ -210,7 +224,7 @@ public class SelfLoop extends ExecuteElement
      */
     public Integer getTreeNo(String i_TreeID)
     {
-        return getExecuteElement().getTreeNo(i_TreeID);
+        return gatExecuteElement().getTreeNo(i_TreeID);
     }
     
     
@@ -226,7 +240,7 @@ public class SelfLoop extends ExecuteElement
      */
     public String getMaxTreeID()
     {
-        return getExecuteElement().getMaxTreeID();
+        return gatExecuteElement().getMaxTreeID();
     }
     
     
@@ -242,7 +256,7 @@ public class SelfLoop extends ExecuteElement
      */
     public String getMinTreeID()
     {
-        return getExecuteElement().getMinTreeID();
+        return gatExecuteElement().getMinTreeID();
     }
 
     
@@ -330,7 +344,7 @@ public class SelfLoop extends ExecuteElement
         
         try
         {
-            v_ExecObject = getExecuteElement();
+            v_ExecObject = gatExecuteElement();
         }
         catch (Exception exce)
         {

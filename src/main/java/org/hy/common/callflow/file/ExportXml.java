@@ -271,7 +271,7 @@ public class ExportXml
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -285,7 +285,7 @@ public class ExportXml
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
@@ -299,7 +299,7 @@ public class ExportXml
         {
             for (RouteItem v_RouteItem : v_Childs)
             {
-                IExecute v_Child = v_RouteItem.getNext();
+                IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;

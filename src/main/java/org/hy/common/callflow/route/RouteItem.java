@@ -106,7 +106,7 @@ public class RouteItem implements IToXml
         }
         else if ( this.next instanceof SelfLoop )
         {
-            ExecuteElement v_RefExecute = ((SelfLoop) this.next).getExecuteElement();
+            ExecuteElement v_RefExecute = ((SelfLoop) this.next).gatExecuteElement();
             if ( ElementType.For.getValue().equals(v_RefExecute.getElementType()) )
             {
                 return SelfLoopType.For;
@@ -425,8 +425,9 @@ public class RouteItem implements IToXml
     
     /**
      * 获取：下一步
+     * 防止Json无限制循环
      */
-    public ExecuteElement getNext()
+    public ExecuteElement gatNext()
     {
         return next;
     }

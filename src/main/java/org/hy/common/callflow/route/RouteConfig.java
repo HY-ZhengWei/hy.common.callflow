@@ -158,8 +158,8 @@ public class RouteConfig
             }
         }
         
-        this.checkSelfLink(io_RouteItem.getNext());
-        io_RouteItem.getNext().setPrevious(this.owner);
+        this.checkSelfLink(io_RouteItem.gatNext());
+        io_RouteItem.gatNext().setPrevious(this.owner);
         this.succeeds.add(io_RouteItem);
         this.orderBy();
     }
@@ -199,8 +199,8 @@ public class RouteConfig
             }
         }
         
-        this.checkSelfLink(io_RouteItem.getNext());
-        io_RouteItem.getNext().setPrevious(this.owner);
+        this.checkSelfLink(io_RouteItem.gatNext());
+        io_RouteItem.gatNext().setPrevious(this.owner);
         this.faileds.add(io_RouteItem);
         this.orderBy();
     }
@@ -270,8 +270,8 @@ public class RouteConfig
             }
         }
         
-        this.checkSelfLink(io_RouteItem.getNext());
-        io_RouteItem.getNext().setPrevious(this.owner);
+        this.checkSelfLink(io_RouteItem.gatNext());
+        io_RouteItem.gatNext().setPrevious(this.owner);
         this.exceptions.add(io_RouteItem);
         this.orderBy();
     }
@@ -507,7 +507,7 @@ public class RouteConfig
         }
         
         RouteItem v_Last = io_RouteItems.get(io_RouteItems.size() - 1);
-        if ( v_Last.getNext() == null || !(v_Last.getNext() instanceof SelfLoop) )
+        if ( v_Last.gatNext() == null || !(v_Last.gatNext() instanceof SelfLoop) )
         {
             return;
         }
@@ -517,7 +517,7 @@ public class RouteConfig
         for (int x=0; x<io_RouteItems.size(); x++)
         {
             RouteItem v_RouteItem = io_RouteItems.get(x);
-            if ( v_RouteItem.getNext() == null || !(v_RouteItem.getNext() instanceof SelfLoop) )
+            if ( v_RouteItem.gatNext() == null || !(v_RouteItem.gatNext() instanceof SelfLoop) )
             {
                 v_LastSelfLoopIndex = x;
                 break;

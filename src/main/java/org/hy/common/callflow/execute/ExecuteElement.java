@@ -32,7 +32,7 @@ import org.hy.common.callflow.route.RouteConfig;
  * @createDate  2025-02-24
  * @version     v1.0
  */
-public abstract class ExecuteElement extends TotalNano implements IExecute
+public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
     
     public static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);
@@ -946,8 +946,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     
     /**
      * 获取：执行链：双向链表：前几个
+     * 防止Json无限制循环
      */
-    public List<IExecute> getPrevious()
+    public List<IExecute> gatPrevious()
     {
         return previous;
     }

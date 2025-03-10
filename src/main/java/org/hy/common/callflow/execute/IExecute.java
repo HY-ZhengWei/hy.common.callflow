@@ -53,6 +53,7 @@ public interface IExecute extends IDirectedGraphID ,IToXml ,XJavaID
     
     /**
      * 获取：执行链：双向链表：前几个
+     * 防止Json无限制循环
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-27
@@ -60,7 +61,7 @@ public interface IExecute extends IDirectedGraphID ,IToXml ,XJavaID
      *
      * @return
      */
-    public List<IExecute> getPrevious();
+    public List<IExecute> gatPrevious();
     
     
     
