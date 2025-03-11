@@ -42,7 +42,10 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     
 
     /** 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String waitTime;
+    private String  waitTime;
+    
+    /** 计数器（正整数，下标从0开始）。可以是上下文变量、XID标识 */
+    private String  counter;
     
     
     
@@ -57,6 +60,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     {
         super(i_RequestTotal ,i_SuccessTotal);
         this.waitTime = "0";
+        this.counter  = CallFlow.$WaitCounter;
     }
     
     
@@ -116,9 +120,38 @@ public class WaitConfig extends ExecuteElement implements Cloneable
             this.waitTime = ValueHelp.standardRefID(i_WaitTime);
         }
     }
-
+    
+    
+    
+    /**
+     * 获取：计数器（正整数，下标从0开始）。可以是上下文变量、XID标识
+     */
+    public String getCounter()
+    {
+        return counter;
+    }
 
     
+    
+    /**
+     * 设置：计数器（正整数，下标从0开始）。可以是上下文变量、XID标识
+     * 
+     * @param i_Counter 计数器（正整数，下标从0开始）。可以是上下文变量、XID标识
+     */
+    public void setCounter(String i_Counter)
+    {
+        if ( Help.isNull(i_Counter) )
+        {
+            this.counter = CallFlow.$WaitCounter;
+        }
+        else
+        {
+            this.counter = ValueHelp.standardValueID(i_Counter.trim());
+        }
+    }
+
+
+
     /**
      * 执行
      * 
@@ -152,6 +185,17 @@ public class WaitConfig extends ExecuteElement implements Cloneable
             if ( v_WaitTime > 0 )
             {
                 Thread.sleep(v_WaitTime);
+            }
+            
+            // 计数器
+            Integer v_Counter = (Integer) io_Context.get(this.counter);
+            if ( v_Counter == null )
+            {
+                io_Context.put(this.counter ,1);
+            }
+            else
+            {
+                io_Context.put(this.counter ,v_Counter + 1);
             }
             
             this.refreshStatus(io_Context ,v_Result.getStatus());
