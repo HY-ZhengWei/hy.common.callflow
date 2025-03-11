@@ -239,12 +239,20 @@ public class ValueHelp
      * @param i_YYYZZZ  方法路径
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static Object getYYYZZZ(Object i_Object ,String i_YYYZZZ)
     {
         try
         {
-            MethodReflect v_MR = new MethodReflect(i_Object ,i_YYYZZZ ,true ,MethodReflect.$NormType_Getter);
-            return v_MR.invokeForInstance(i_Object);
+            if ( MethodReflect.isExtendImplement(i_Object ,Map.class) )
+            {
+                return MethodReflect.getMapValue((Map<String ,?>) i_Object ,i_YYYZZZ);
+            }
+            else
+            {
+                MethodReflect v_MR = new MethodReflect(i_Object ,i_YYYZZZ ,true ,MethodReflect.$NormType_Getter);
+                return v_MR.invokeForInstance(i_Object);
+            }
         }
         catch (Exception exce)
         {
