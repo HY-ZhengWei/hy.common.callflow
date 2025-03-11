@@ -183,7 +183,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
-        v_ParamValues = this.generateParams(v_ParamValues);
+        v_ParamValues = this.generateParams(io_Context ,v_ParamValues);
         
         try
         {
@@ -317,10 +317,11 @@ public class NodeConfig extends ExecuteElement implements Cloneable
      * @createDate  2025-03-11
      * @version     v1.0
      *
-     * @param io_Params
+     * @param io_Context  上下文类型的变量信息
+     * @param io_Params   方法执行参数
      * @return
      */
-    public Object [] generateParams(Object [] io_Params)
+    public Object [] generateParams(Map<String ,Object> io_Context ,Object [] io_Params)
     {
         return io_Params;
     }
