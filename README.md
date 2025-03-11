@@ -350,6 +350,16 @@ __编排配置__
             </callParam>
             <returnID>ObjectData</returnID>                 <!-- 定义返回结果的变量名称 -->
         </xnode>
+        
+        
+        <xnode id="XCondition_CF004_1_1_1_1">
+            <comment>取Map中的元素值</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMehod>method_String</callMehod>            <!-- 定义执行方法 -->
+            <callParam>
+                <value>:MapDatas.狗</value>                 <!-- 支持面向对象xx.yy.zz，从Map中取一个元素 -->
+            </callParam>
+        </xnode>
     
     
         <xnode id="XNode_CF014_1_1_1">
@@ -366,6 +376,13 @@ __编排配置__
                 }
                 </value>
             </callParam>
+            <returnID>MapDatas</returnID>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCondition_CF004_1_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
         </xnode>
         
     
