@@ -54,10 +54,11 @@ public class Program
     
     
     
-    public void method_Map(Map<String ,Object> i_MapDatas)
+    public Map<String ,Object> method_Map(Map<String ,Object> i_MapDatas)
     {
         System.out.println("\ncall method_Map");
         Help.print(i_MapDatas);
+        return i_MapDatas;
     }
     
     
@@ -74,6 +75,13 @@ public class Program
     {
         System.out.println("\ncall method_Set");
         Help.print(i_SetDatas);
+    }
+    
+    
+    
+    public void method_String(String i_String)
+    {
+        System.out.println("\ncall method_String：" + i_String);
     }
 
 
