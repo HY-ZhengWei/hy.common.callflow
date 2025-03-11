@@ -183,6 +183,8 @@ public class NodeConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
+        v_ParamValues = this.generateParams(v_ParamValues);
+        
         try
         {
             if ( this.timeout > 0L )
@@ -303,6 +305,24 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         });
 
         return v_Future;
+    }
+    
+    
+    /**
+     * 执行方法前对方法入参的处理、加工、合成
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @param io_Params
+     * @return
+     */
+    public Object [] generateParams(Object [] io_Params)
+    {
+        return io_Params;
     }
     
     
