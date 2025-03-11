@@ -64,6 +64,9 @@ public class CallFlow
     /** 变量ID名称：编排执行实例的上下文当参数传输到方法中时的系统预设的变量名 */
     public static final String $Context                 = "CallFlowContext";
     
+    /** 变量ID名称：编排执行实例的等待元素的计数器的系统预设的变量名 */
+    public static final String $WaitCounter             = "CallFlowCounter";
+    
     
     
     /**
