@@ -44,7 +44,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     /** 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
     private String  waitTime;
     
-    /** 计数器（正整数，下标从0开始）。可以是上下文变量、XID标识 */
+    /** 计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识 */
     private String  counter;
     
     
@@ -124,7 +124,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：计数器（正整数，下标从0开始）。可以是上下文变量、XID标识
+     * 获取：计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识
      */
     public String getCounter()
     {
@@ -134,9 +134,9 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 设置：计数器（正整数，下标从0开始）。可以是上下文变量、XID标识
+     * 设置：计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识
      * 
-     * @param i_Counter 计数器（正整数，下标从0开始）。可以是上下文变量、XID标识
+     * @param i_Counter 计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识
      */
     public void setCounter(String i_Counter)
     {
