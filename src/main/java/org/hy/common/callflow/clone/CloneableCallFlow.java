@@ -3,6 +3,7 @@ package org.hy.common.callflow.clone;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.execute.ExecuteElement;
 
@@ -20,6 +21,11 @@ import org.hy.common.callflow.execute.ExecuteElement;
  */
 public interface CloneableCallFlow
 {
+    
+    /** XID版本的前缀 */
+    public String XIDVersion = "_V";
+    
+    
     
     /**
      * 深度克隆编排
@@ -60,6 +66,36 @@ public interface CloneableCallFlow
         }
         
         return v_New + Help.NVL(i_AppendXID);
+    }
+    
+    
+    
+    /**
+     * 从XID的编码规范中解析版本号
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @param i_XID
+     * @return
+     */
+    default Return<String> parserXIDVersion(String i_XID)
+    {
+        Return<String> v_Ret   = new Return<String> (false);
+        String []      v_Datas = StringHelp.split(i_XID ,XIDVersion);
+        if ( v_Datas.length >= 2 )
+        {
+            String v_Version = v_Datas[v_Datas.length - 1];
+            if ( Help.isNumber(v_Ret.getParamStr()) )
+            {
+                v_Ret.setParamInt(Integer.parseInt(v_Ret.getParamStr()));
+                v_Ret.setParamStr(XIDVersion + v_Version);
+                v_Ret.set(true);
+            }
+        }
+        
+        return v_Ret;
     }
     
 }

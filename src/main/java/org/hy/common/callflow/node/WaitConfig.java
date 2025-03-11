@@ -1,9 +1,11 @@
 package org.hy.common.callflow.node;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
@@ -32,7 +34,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-03-03
  * @version     v1.0
  */
-public class WaitConfig extends ExecuteElement
+public class WaitConfig extends ExecuteElement implements Cloneable
 {
     
     private static final Logger $Logger = new Logger(WaitConfig.class);
@@ -335,10 +337,54 @@ public class WaitConfig extends ExecuteElement
      */
     public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
     {
+        if ( Help.isNull(this.xid) )
+        {
+            throw new NullPointerException("Clone WaitConfig xid is null.");
+        }
+        
         WaitConfig v_Clone = (WaitConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
         v_Clone.waitTime = this.waitTime;
+    }
+    
+    
+    /**
+     * 深度克隆编排元素
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @return
+     * @throws CloneNotSupportedException
+     *
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    protected Object clone() throws CloneNotSupportedException
+    {
+        if ( Help.isNull(this.xid) )
+        {
+            throw new NullPointerException("Clone WaitConfig xid is null.");
+        }
+        
+        Map<String ,ExecuteElement> v_XIDObjects = new HashMap<String ,ExecuteElement>();
+        Return<String>              v_Version    = parserXIDVersion(this.xid);
+        WaitConfig                  v_Clone      = new WaitConfig();
+        
+        if ( v_Version.booleanValue() )
+        {
+            this.clone(v_Clone ,v_Version.getParamStr() ,XIDVersion + (v_Version.getParamInt() + 1) ,""         ,v_XIDObjects);
+        }
+        else
+        {
+            this.clone(v_Clone ,""                      ,""                                         ,XIDVersion ,v_XIDObjects);
+        }
+        
+        v_XIDObjects.clear();
+        v_XIDObjects = null;
+        return v_Clone;
     }
     
 }

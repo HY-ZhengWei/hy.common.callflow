@@ -2,6 +2,7 @@ package org.hy.common.callflow.forloop;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Set;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
@@ -44,7 +46,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-03-05
  * @version     v1.0
  */
-public class ForConfig extends ExecuteElement
+public class ForConfig extends ExecuteElement implements Cloneable
 {
     
     private static final Logger $Logger = new Logger(ForConfig.class);
@@ -1063,6 +1065,11 @@ public class ForConfig extends ExecuteElement
      */
     public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
     {
+        if ( Help.isNull(this.xid) )
+        {
+            throw new NullPointerException("Clone ForConfig xid is null.");
+        }
+        
         ForConfig v_Clone = (ForConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
@@ -1071,6 +1078,45 @@ public class ForConfig extends ExecuteElement
         v_Clone.step      = this.step;
         v_Clone.indexID   = this.indexID;
         v_Clone.elementID = this.elementID;
+    }
+    
+    
+    /**
+     * 深度克隆编排元素
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @return
+     * @throws CloneNotSupportedException
+     *
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    protected Object clone() throws CloneNotSupportedException
+    {
+        if ( Help.isNull(this.xid) )
+        {
+            throw new NullPointerException("Clone ForConfig xid is null.");
+        }
+        
+        Map<String ,ExecuteElement> v_XIDObjects = new HashMap<String ,ExecuteElement>();
+        Return<String>              v_Version    = parserXIDVersion(this.xid);
+        ForConfig                   v_Clone      = new ForConfig();
+        
+        if ( v_Version.booleanValue() )
+        {
+            this.clone(v_Clone ,v_Version.getParamStr() ,XIDVersion + (v_Version.getParamInt() + 1) ,""         ,v_XIDObjects);
+        }
+        else
+        {
+            this.clone(v_Clone ,""                      ,""                                         ,XIDVersion ,v_XIDObjects);
+        }
+        
+        v_XIDObjects.clear();
+        v_XIDObjects = null;
+        return v_Clone;
     }
     
 }
