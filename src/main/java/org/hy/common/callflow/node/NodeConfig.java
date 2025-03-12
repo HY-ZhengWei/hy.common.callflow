@@ -139,6 +139,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         
         // 获取执行对象
         Object v_CallObject = XJava.getObject(this.callXID);
+        v_CallObject = this.generateObject(io_Context ,v_CallObject);
         if ( v_CallObject == null )
         {
             v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID[" + this.callXID + "] is not find."));
@@ -189,7 +190,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         {
             if ( this.timeout > 0L )
             {
-                CompletableFuture<Object> v_Future = this.executeAsync(v_CallObject ,v_ParamValues);
+                CompletableFuture<Object> v_Future = this.executeAsync(io_Context ,v_CallObject ,v_ParamValues);
                 
                 // 处理任务结果或异常
                 v_Future.whenComplete((i_Result ,i_Exce) -> {
@@ -217,6 +218,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
                     v_ExceRet = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
                 }
                 
+                this.generateReturn(io_Context ,v_ExceRet);
                 v_Result.setResult(v_ExceRet);
             }
             
@@ -248,11 +250,12 @@ public class NodeConfig extends ExecuteElement implements Cloneable
      * @createDate  2025-03-07
      * @version     v1.0
      *
+     * @param io_Context     上下文类型的变量信息
      * @param i_CallObject   执行方法的对象实例
      * @param i_ParamValues  执行方法的参数
      * @return
      */
-    private CompletableFuture<Object> executeAsync(Object i_CallObject ,Object [] i_ParamValues) 
+    private CompletableFuture<Object> executeAsync(Map<String ,Object> io_Context ,Object i_CallObject ,Object [] i_ParamValues) 
     {
         Supplier<Object> v_Task = () -> {
             try 
@@ -260,11 +263,11 @@ public class NodeConfig extends ExecuteElement implements Cloneable
                 if ( Void.TYPE.equals(this.callMethodObject.getReturnType()) )
                 {
                     this.callMethodObject.invoke(i_CallObject ,i_ParamValues);
-                    return Void.TYPE;
+                    return this.generateReturn(io_Context ,Void.TYPE);
                 }
                 else
                 {
-                    return this.callMethodObject.invoke(i_CallObject ,i_ParamValues);
+                    return this.generateReturn(io_Context ,this.callMethodObject.invoke(i_CallObject ,i_ParamValues));
                 }
             } 
             catch (Exception exce) 
@@ -309,7 +312,26 @@ public class NodeConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 执行方法前对方法入参的处理、加工、合成
+     * 执行方法前，对执行对象的处理
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @param io_Context        上下文类型的变量信息
+     * @param io_ExecuteObject  执行对象。已用NodeConfig自己的力量生成了执行对象。
+     * @return
+     */
+    public Object generateObject(Map<String ,Object> io_Context ,Object io_ExecuteObject)
+    {
+        return io_ExecuteObject;
+    }
+    
+    
+    /**
+     * 执行方法前，对方法入参的处理、加工、合成
      * 
      * 建议：子类重写此方法
      * 
@@ -318,12 +340,33 @@ public class NodeConfig extends ExecuteElement implements Cloneable
      * @version     v1.0
      *
      * @param io_Context  上下文类型的变量信息
-     * @param io_Params   方法执行参数
+     * @param io_Params   方法执行参数。已用NodeConfig自己的力量生成了执行参数。
      * @return
      */
     public Object [] generateParams(Map<String ,Object> io_Context ,Object [] io_Params)
     {
         return io_Params;
+    }
+    
+    
+    /**
+     * 执行成功时，对执行结果的处理
+     * 
+     * 注：此时执行结果还没有保存到上下文中
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @param io_Context        上下文类型的变量信息
+     * @param io_ExecuteReturn  执行结果。已用NodeConfig自己的力量获取了执行结果。
+     * @return
+     */
+    public Object generateReturn(Map<String ,Object> io_Context ,Object io_ExecuteReturn)
+    {
+        return io_ExecuteReturn;
     }
     
     
