@@ -122,6 +122,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -193,6 +194,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -299,6 +301,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -486,6 +489,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -579,6 +583,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -686,6 +691,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -847,6 +853,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -972,6 +979,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -1116,6 +1124,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -1179,6 +1188,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -1255,6 +1265,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -1271,6 +1282,8 @@ __编排配置__
         <xwait id="XWait_CF009_1_1_1">
             <comment>等待1秒</comment>
             <waitTime>1000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
+            <counter>1</counter>
+            <counterMax>5</counterMax>
             <route>
                 <if>                                        <!-- 自引用 -->
                     <next>:XNode_CF009_1</next>
@@ -1287,7 +1300,7 @@ __编排配置__
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义变量类型 -->
                 <valueXIDA>:Count</valueXIDA>               <!-- 默认值 -->
                 <comparer><![CDATA[<=]]></comparer>         <!-- 判定比较器（可以不用显式定义。默认为==） -->
-                <valueXIDB>2</valueXIDB>                    <!-- 变量 -->
+                <valueXIDB>9</valueXIDB>                    <!-- 变量 -->
             </conditionItem>
             <route>
                 <if>                                        <!-- 真时的路由 -->
@@ -1366,6 +1379,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -1471,6 +1485,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     
@@ -1582,6 +1597,7 @@ __编排配置__
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     
     
     

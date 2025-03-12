@@ -251,7 +251,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
             boolean v_Ret = true;
             if ( !Help.isNull(this.counterMax) )
             {
-                Integer v_CounterMax = (Integer) ValueHelp.getValue(this.waitTime ,Integer.class ,0 ,io_Context);
+                Integer v_CounterMax = (Integer) ValueHelp.getValue(this.counterMax ,Integer.class ,0 ,io_Context);
                 if ( v_CounterMax != null )
                 {
                     v_Ret = v_Counter <= v_CounterMax;
@@ -421,7 +421,6 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         }
         v_Builder.append(" ms");
         
-        
         // 计数器
         if ( !Help.isNull(this.counter) )
         {
@@ -436,6 +435,22 @@ public class WaitConfig extends ExecuteElement implements Cloneable
             }
             
             v_Builder.append(" Counter：").append(v_Counter);
+        }
+        
+        // 计数器最大值
+        if ( !Help.isNull(this.counterMax) )
+        {
+            v_Builder.append(" CounterMax：");
+            try
+            {
+                Integer v_CounterMax = (Integer) ValueHelp.getValue(this.counterMax ,Integer.class ,0 ,i_Context);
+                v_Builder.append(v_CounterMax);
+            }
+            catch (Exception exce)
+            {
+                v_Builder.append("ERROR");
+                $Logger.error(exce);
+            }
         }
         
         return v_Builder.toString();
