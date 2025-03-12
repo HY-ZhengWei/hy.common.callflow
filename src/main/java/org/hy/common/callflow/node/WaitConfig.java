@@ -332,7 +332,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
             
-            // 成功路由
+            // 真时的路由
             if ( !Help.isNull(this.route.getSucceeds()) )
             {
                 for (RouteItem v_RouteItem : this.route.getSucceeds())
@@ -342,7 +342,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
                     v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.If.getXmlName()));
                 }
             }
-            // 成功路由
+            // 假时的路由
             if ( !Help.isNull(this.route.getFaileds()) )
             {
                 for (RouteItem v_RouteItem : this.route.getFaileds())
