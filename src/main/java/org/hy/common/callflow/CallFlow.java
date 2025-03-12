@@ -55,6 +55,9 @@ public class CallFlow
     /** 变量ID名称：编排执行实例是否异常 */
     public static final String $ExecuteIsError          = "CallFlowExecuteIsError";
     
+    /** 变量ID名称：编排执行实例的返回元素执行真返回时的标记 */
+    public static final String $CallFlowReturn          = "CallFlowReturn";
+    
     /** 变量ID名称：编排执行实例异常的结果 */
     public static final String $ErrorResult             = "CallFlowErrorResult";
     
@@ -96,7 +99,9 @@ public class CallFlow
           || CallFlow.$ExecuteIsError        .equals(v_XID) 
           || CallFlow.$ErrorResult           .equals(v_XID) 
           || CallFlow.$ExecuteEvent          .equals(v_XID)
-          || CallFlow.$Context               .equals(v_XID) )
+          || CallFlow.$Context               .equals(v_XID)
+          || CallFlow.$WaitCounter           .equals(v_XID)
+          || CallFlow.$CallFlowReturn        .equals(v_XID) )
         {
             return true;
         }
@@ -139,6 +144,39 @@ public class CallFlow
     public static String getWorkID(Map<String ,Object> i_Context)
     {
         return (String) i_Context.get($WorkID);
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，是否 “真返回”
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @param i_Context
+     * @return
+     */
+    public static boolean isTrueReturn(Map<String ,Object> i_Context)
+    {
+        return i_Context.get($CallFlowReturn) != null;
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，清除 “真返回”
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     */
+    public static void clearTrueReturn(Map<String ,Object> io_Context)
+    {
+        io_Context.remove($CallFlowReturn);
     }
     
     
@@ -633,12 +671,18 @@ public class CallFlow
                 v_Result.addNext(v_NextResult);
                 if ( !v_NextResult.isSuccess() )
                 {
+                    // 下一个执行异常
                     CallFlow.putError(io_Context ,v_NextResult);
                     return v_Result;
                 }
                 else if ( CallFlow.getExecuteIsError(io_Context) )
                 {
                     // 子级或子子级执行异常
+                    return v_Result;
+                }
+                else if ( CallFlow.isTrueReturn(io_Context) )
+                {
+                    // 真返回
                     return v_Result;
                 }
                 

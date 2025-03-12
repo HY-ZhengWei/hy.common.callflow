@@ -144,6 +144,9 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         ExecuteElement v_CallFlow = (ExecuteElement) v_CallObject;
         ExecuteResult  v_ExceRet  = CallFlow.execute(v_CallFlow ,io_Context ,CallFlow.getExecuteEvent(io_Context));
         
+        // 清除子编排中的 “真返回” 标记
+        CallFlow.clearTrueReturn(io_Context);
+        
         this.refreshStatus(io_Context ,v_ExceRet.getStatus());             // 子编排的状态就是我的状态
         
         synchronized ( this )

@@ -26,6 +26,8 @@ public enum ElementType
     
     Nesting(  "NESTING"   ,"xnesting"   ,"嵌套子编排"),
     
+    Return(   "RETURN"    ,"xreturn"    ,"返回元素"),
+    
     SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
     
     ;

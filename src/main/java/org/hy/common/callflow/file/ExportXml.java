@@ -19,6 +19,7 @@ import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.file.FileHelp;
@@ -334,6 +335,10 @@ public class ExportXml
             else if ( i_ExecObject instanceof ForConfig )
             {
                 i_ExecObject.setXJavaID("XFor_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof ReturnConfig )
+            {
+                i_ExecObject.setXJavaID("XReturn_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof SelfLoop )
             {

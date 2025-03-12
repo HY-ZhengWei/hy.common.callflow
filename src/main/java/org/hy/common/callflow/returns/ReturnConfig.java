@@ -1,4 +1,4 @@
-package org.hy.common.callflow.node;
+package org.hy.common.callflow.returns;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +15,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
+import org.hy.common.xml.XJSON;
 import org.hy.common.xml.log.Logger;
 
 
@@ -22,7 +23,12 @@ import org.hy.common.xml.log.Logger;
 
 
 /**
- * 等待元素：等待配置信息
+ * 返回元素：返回特定的数据，并将它定义为结果。
+ * 
+ * 什么是 “真返回” ，即不在执行其它分支、其它未执行的元素而返回。
+ *     如编程语言中的 return 一样。
+ *     当是嵌套的子编排时，在嵌套内的 “真返回” 仅退出子编排，返回到主编排向后继续执行。
+ *     当不是 “真返回” 时，表示要向外返回多个值 或 仅当此元素为普通元素用。
  * 
  * 注：不建议等待配置共用，即使两个编排调用相同的等待配置也建议配置两个等待配置，使等待配置唯一隶属于一个编排中。
  *    原因1是考虑到后期升级维护编排，在共享等待配置下，无法做到升级时百分百的正确。
@@ -31,36 +37,40 @@ import org.hy.common.xml.log.Logger;
  *    如果要共享，建议采用子编排的方式共享。
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-03-03
+ * @createDate  2025-03-11
  * @version     v1.0
  */
-public class WaitConfig extends ExecuteElement implements Cloneable
+public class ReturnConfig extends ExecuteElement implements Cloneable
 {
     
-    private static final Logger $Logger = new Logger(WaitConfig.class);
-    
-    
-
-    /** 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String  waitTime;
-    
-    /** 计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识 */
-    private String  counter;
+    private static final Logger $Logger = new Logger(ReturnConfig.class);
     
     
     
-    public WaitConfig()
+    /** 返回结果的元类型。返回结果的数据为数值类型时生效；或返回结果有默认值时生效 */
+    private Class<?> retClass;
+    
+    /** 返回结果的数据。可以是数值、上下文变量、XID标识 */
+    private String   retValue;
+    
+    /** 返回结果的默认值的字符形式（参数为上下文变量、XID标识时生效） */
+    private String   retDefault;
+    
+    /** 返回结果默认值的实例对象(内部使用) */
+    private Object   retDefaultObject;
+    
+    
+    
+    public ReturnConfig()
     {
         this(0L ,0L);
     }
     
     
     
-    public WaitConfig(long i_RequestTotal ,long i_SuccessTotal)
+    public ReturnConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.waitTime = "0";
-        this.counter  = CallFlow.$WaitCounter;
     }
     
     
@@ -69,95 +79,156 @@ public class WaitConfig extends ExecuteElement implements Cloneable
      * 执行元素的类型
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-11
      * @version     v1.0
      *
      * @return
      */
     public String getElementType()
     {
-        return ElementType.Wait.getValue();
+        return ElementType.Return.getValue();
     }
     
     
     
     /**
-     * 获取：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
-     */
-    public String getWaitTime()
-    {
-        return waitTime;
-    }
-
-
-    
-    /**
-     * 设置：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 参数默认值的实例对象
+     * 禁止转Json
      * 
-     * @param i_WaitTime 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @return
+     * @throws Exception
      */
-    public void setWaitTime(String i_WaitTime)
+    public synchronized Object gatRetDefaultObject() throws Exception
     {
-        if ( Help.isNull(i_WaitTime) )
+        if ( this.retDefault == null || this.retClass == null )
         {
-            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTime is null.");
-            $Logger.error(v_Exce);
-            throw v_Exce;
+            return null;
         }
         
-        if ( Help.isNumber(i_WaitTime) )
+        if ( this.retDefaultObject == null )
         {
-            Long v_WaitTime = Long.valueOf(i_WaitTime);
-            if ( v_WaitTime < 0L )
+            if ( Help.isBasicDataType(this.retClass) )
             {
-                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTime Less than zero.");
-                $Logger.error(v_Exce);
-                throw v_Exce;
+                this.retDefaultObject = Help.toObject(this.retClass ,this.retDefault);
             }
-            this.waitTime = i_WaitTime.trim();
+            else
+            {
+                XJSON v_XJson = new XJSON();
+                this.retDefaultObject = v_XJson.toJava(this.retDefault ,this.retClass);
+            }
         }
-        else
-        {
-            this.waitTime = ValueHelp.standardRefID(i_WaitTime);
-        }
+        
+        return retDefaultObject;
     }
     
     
     
     /**
-     * 获取：计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识
+     * 获取：返回结果的元类型。返回结果的数据为数值类型时生效
      */
-    public String getCounter()
+    public Class<?> getRetClass()
     {
-        return counter;
+        return retClass;
     }
 
     
     
     /**
-     * 设置：计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识
+     * 设置：返回结果的元类型。返回结果的数据为数值类型时生效
      * 
-     * @param i_Counter 计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识
+     * @param i_RetClass 返回结果的元类型。返回结果的数据为数值类型时生效
      */
-    public void setCounter(String i_Counter)
+    public void setRetClass(Class<?> i_RetClass)
     {
-        if ( Help.isNull(i_Counter) )
+        if ( Void.class.equals(i_RetClass) )
         {
-            this.counter = CallFlow.$WaitCounter;
+            this.retClass = null;
         }
         else
         {
-            this.counter = ValueHelp.standardValueID(i_Counter.trim());
+            this.retClass = i_RetClass;
         }
+        this.retDefaultObject = null;
+    }
+    
+    
+    
+    /**
+     * 获取：返回结果的数据。可以是数值、上下文变量、XID标识
+     */
+    public String getRetValue()
+    {
+        return retValue;
     }
 
+    
+    
+    /**
+     * 设置：返回结果的数据。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_RetValue 返回结果的数据。可以是数值、上下文变量、XID标识
+     */
+    public void setRetValue(String i_RetValue)
+    {
+        this.retValue = i_RetValue;
+    }
 
+    
+    
+    /**
+     * 获取：返回结果的默认值的字符形式（参数为上下文变量、XID标识时生效）
+     */
+    public String getRetDefault()
+    {
+        return retDefault;
+    }
 
+    
+    
+    /**
+     * 设置：返回结果的默认值的字符形式（参数为上下文变量、XID标识时生效）
+     * 
+     * @param i_RetDefault 返回结果的默认值的字符形式（参数为上下文变量、XID标识时生效）
+     */
+    public void setRetDefault(String i_RetDefault)
+    {
+        this.retDefault       = i_RetDefault;
+        this.retDefaultObject = null;
+    }
+    
+    
+    
+    /**
+     * 是否 “真返回”。 什么是真返回，即不在执行其它分支、其它未执行的元素而返回。
+     * 
+     * 如编程语言中的 return 一样。
+     * 当是嵌套的子编排时，在嵌套内的 “真返回” 仅退出子编排，返回到主编排向后继续执行。
+     * 
+     * 当不是 “真返回” 时，表示要向外返回多个值 或 仅当此元素为普通元素用。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @return
+     */
+    public boolean isReturn()
+    {
+        return Help.isNull(this.route.getSucceeds())
+            && Help.isNull(this.route.getErrors());
+    }
+    
+    
+    
     /**
      * 执行
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-11
      * @version     v1.0
      *
      * @param i_SuperTreeID  父级执行对象的树ID
@@ -173,35 +244,17 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         
         try
         {
-            Long v_WaitTime = null;
-            if ( Help.isNumber(this.waitTime) )
+            Object v_Value = ValueHelp.getValue(this.retValue ,this.retClass ,this.gatRetDefaultObject() ,io_Context);
+            if ( this.isReturn() )
             {
-                v_WaitTime = Long.valueOf(this.waitTime);
-            }
-            else
-            {
-                v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,0L ,io_Context);
-            }
-            
-            if ( v_WaitTime > 0 )
-            {
-                Thread.sleep(v_WaitTime);
-            }
-            
-            // 计数器
-            Integer v_Counter = (Integer) io_Context.get(this.counter);
-            if ( v_Counter == null )
-            {
-                io_Context.put(this.counter ,1);
-            }
-            else
-            {
-                io_Context.put(this.counter ,v_Counter + 1);
+                // 不要在此 put(v_Value) ，容易产生幻觉，一种情况下能取到值，一种情况下取不值。
+                // 原因是：$CallFlowReturn 只是一种标记，并且在嵌套情况下，它还会被清除
+                io_Context.put(CallFlow.$CallFlowReturn ,true);
             }
             
             this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
-            return v_Result.setResult(true);
+            return v_Result.setResult(v_Value);
         }
         catch (Exception exce)
         {
@@ -217,7 +270,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
      * 转为Xml格式的内容
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-11
      * @version     v1.0
      *
      * @param i_Level        层级。最小下标从0开始。
@@ -243,7 +296,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         StringBuilder v_Xml    = new StringBuilder();
         String        v_Level1 = "    ";
         String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = ElementType.Wait.getXmlName();
+        String        v_XName  = ElementType.Return.getXmlName();
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -256,9 +309,18 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         
         v_Xml.append(super.toXml(i_Level));
         
-        if ( !Help.isNull(this.waitTime) )
+        
+        if ( this.retClass != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("waitTime" ,this.waitTime));
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("retClass" ,this.retClass.getName()));
+        }
+        if ( !Help.isNull(this.retValue) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("retValue" ,this.retValue));
+        }
+        if ( !Help.isNull(this.retDefault) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("retDefault" ,this.retDefault));
         }
         
         if ( !Help.isNull(this.route.getSucceeds()) 
@@ -303,7 +365,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
      * 注：禁止在此真的执行方法
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-11
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -312,36 +374,20 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     public String toString(Map<String ,Object> i_Context)
     {
         StringBuilder v_Builder = new StringBuilder();
+        Object        v_Value   = null;
         
-        v_Builder.append("Wait ");
-        if ( !Help.isNumber(this.waitTime) )
+        v_Builder.append("Return：");
+        
+        try
         {
-            v_Builder.append(this.waitTime).append("=");
-            
-            Long v_WaitTime = null;
-            try
-            {
-                v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,null ,i_Context);
-                if ( v_WaitTime == null )
-                {
-                    v_Builder.append("?");
-                }
-                else
-                {
-                    v_Builder.append(v_WaitTime);
-                }
-            }
-            catch (Exception exce)
-            {
-                v_Builder.append("ERROR");
-                $Logger.error(exce);
-            }
+            v_Value = ValueHelp.getValue(this.retValue ,this.retClass ,this.gatRetDefaultObject() ,i_Context);
         }
-        else
+        catch (Exception exce)
         {
-            v_Builder.append(this.waitTime);
+            $Logger.error("ReturnConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s retValue[" + this.retValue + "] getValue error." ,exce);
         }
-        v_Builder.append(" ms");
+        
+        v_Builder.append(v_Value);
         
         return v_Builder.toString();
     }
@@ -351,7 +397,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
      * 解析为执行表达式
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-03
+     * @createDate  2025-03-11
      * @version     v1.0
      *
      * @return
@@ -361,7 +407,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Wait ").append(this.waitTime).append(" ms");
+        v_Builder.append("Return：").append(this.retValue);
         
         return v_Builder.toString();
     }
@@ -371,7 +417,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
      * 深度克隆编排元素
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-10
+     * @createDate  2025-03-11
      * @version     v1.0
      *
      * @param io_Clone        克隆的复制品对象
@@ -385,13 +431,15 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone WaitConfig xid is null.");
+            throw new NullPointerException("Clone ReturnConfig xid is null.");
         }
         
-        WaitConfig v_Clone = (WaitConfig) io_Clone;
+        ReturnConfig v_Clone = (ReturnConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.waitTime = this.waitTime;
+        v_Clone.retClass   = this.retClass;
+        v_Clone.retValue   = this.retValue;
+        v_Clone.retDefault = this.retDefault; 
     }
     
     
@@ -412,12 +460,12 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone WaitConfig xid is null.");
+            throw new NullPointerException("Clone ReturnConfig xid is null.");
         }
         
         Map<String ,ExecuteElement> v_XIDObjects = new HashMap<String ,ExecuteElement>();
         Return<String>              v_Version    = parserXIDVersion(this.xid);
-        WaitConfig                  v_Clone      = new WaitConfig();
+        ReturnConfig                v_Clone      = new ReturnConfig();
         
         if ( v_Version.booleanValue() )
         {

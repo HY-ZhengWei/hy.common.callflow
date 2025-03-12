@@ -17,6 +17,7 @@ import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.returns.ReturnConfig;
 
 
 
@@ -650,6 +651,12 @@ public class RouteItem implements IToXml ,CloneableCallFlow
                 ForConfig v_CloneFor = new ForConfig();
                 ((ForConfig) this.next).clone(v_CloneFor ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
                 v_Clone.next = v_CloneFor;
+            }
+            else if ( this.next instanceof ReturnConfig )
+            {
+                ReturnConfig v_CloneReturn = new ReturnConfig();
+                ((ReturnConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneReturn;
             }
             else if ( this.next instanceof SelfLoop )
             {
