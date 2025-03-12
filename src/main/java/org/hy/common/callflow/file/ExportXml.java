@@ -61,6 +61,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Wait.getXmlName()      ,WaitConfig.class);
         getInstance().addImportHead(ElementType.Calculate.getXmlName() ,CalculateConfig.class);
         getInstance().addImportHead(ElementType.Condition.getXmlName() ,ConditionConfig.class);
+        getInstance().addImportHead(ElementType.Return.getXmlName()    ,ReturnConfig.class);
     }
     
     

@@ -69,7 +69,7 @@ public class CallFlow
     public static final String $Context                 = "CallFlowContext";
     
     /** 变量ID名称：编排执行实例的等待元素的计数器的系统预设的变量名 */
-    public static final String $WaitCounter             = "CallFlowCounter";
+    public static final String $WaitCounter             = "CallFlowWaitCounter";
     
     
     

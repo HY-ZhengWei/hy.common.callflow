@@ -238,11 +238,13 @@ public class WaitConfig extends ExecuteElement implements Cloneable
             Integer v_Counter = (Integer) io_Context.get(this.counter);
             if ( v_Counter == null )
             {
+                v_Counter = 1;
                 io_Context.put(this.counter ,1);
             }
             else
             {
-                io_Context.put(this.counter ,v_Counter + 1);
+                v_Counter += 1;
+                io_Context.put(this.counter ,v_Counter);
             }
             
             // 计数器最大值
