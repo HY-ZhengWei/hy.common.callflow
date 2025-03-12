@@ -26,10 +26,10 @@
             <comment>等待1秒</comment>
             <waitTime>1000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
             <route>
-                <succeed>                                   <!-- 自引用 -->
+                <if>                                        <!-- 自引用 -->
                     <next>:XNode_CF009_1</next>
                     <comment>While循环的下一步</comment>
-                </succeed>
+                </if>
             </route>
         </xwait>
         

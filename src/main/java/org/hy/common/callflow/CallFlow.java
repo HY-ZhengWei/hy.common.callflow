@@ -16,6 +16,7 @@ import org.hy.common.callflow.file.ImportXML;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
+import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.xml.XJava;
@@ -582,6 +583,7 @@ public class CallFlow
                 return CallFlow.putError(io_Context ,v_Result.setCancel());
             }
             
+            // 条件逻辑元素
             if ( i_ExecObject instanceof ConditionConfig )
             {
                 if ( (Boolean) v_Result.getResult() )
@@ -593,6 +595,19 @@ public class CallFlow
                     v_Nexts = i_ExecObject.getRoute().getFaileds();
                 }
             }
+            // 等待元素
+            else if ( i_ExecObject instanceof WaitConfig )
+            {
+                if ( (Boolean) v_Result.getResult() )
+                {
+                    v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                }
+                else
+                {
+                    v_Nexts = i_ExecObject.getRoute().getFaileds();
+                }
+            }
+            // 计算元素
             else if ( i_ExecObject instanceof CalculateConfig )
             {
                 // 计算元素按条件逻辑元素行事

@@ -47,6 +47,9 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     /** 计数器（正整数，下标从1开始，执行等待后++）。可以是上下文变量、XID标识 */
     private String  counter;
     
+    /** 计数器的最大值（正整数，允许counter等于最大值）。可以是数值、上下文变量、XID标识 */
+    private String  counterMax;
+    
     
     
     public WaitConfig()
@@ -152,6 +155,49 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     }
 
 
+    
+    /**
+     * 获取：计数器的最大值（正整数，允许counter等于最大值）。可以是数值、上下文变量、XID标识
+     */
+    public String getCounterMax()
+    {
+        return counterMax;
+    }
+
+
+    
+    /**
+     * 设置：计数器的最大值（正整数，允许counter等于最大值）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_CounterMax 计数器的最大值（正整数，允许counter等于最大值）。可以是数值、上下文变量、XID标识
+     */
+    public void setCounterMax(String i_CounterMax)
+    {
+        if ( Help.isNull(i_CounterMax) )
+        {
+            this.counterMax = null;
+        }
+        else
+        {
+            if ( Help.isNumber(i_CounterMax) )
+            {
+                Integer v_CounterMax = Integer.valueOf(i_CounterMax);
+                if ( v_CounterMax <= 0 )
+                {
+                    IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CounterMax Less than or Equal to zero.");
+                    $Logger.error(v_Exce);
+                    throw v_Exce;
+                }
+                this.counterMax = i_CounterMax.trim();
+            }
+            else
+            {
+                this.counterMax = ValueHelp.standardRefID(i_CounterMax);
+            }
+        }
+    }
+
+
 
     /**
      * 执行
@@ -199,9 +245,20 @@ public class WaitConfig extends ExecuteElement implements Cloneable
                 io_Context.put(this.counter ,v_Counter + 1);
             }
             
+            // 计数器最大值
+            boolean v_Ret = true;
+            if ( !Help.isNull(this.counterMax) )
+            {
+                Integer v_CounterMax = (Integer) ValueHelp.getValue(this.waitTime ,Integer.class ,0 ,io_Context);
+                if ( v_CounterMax != null )
+                {
+                    v_Ret = v_Counter <= v_CounterMax;
+                }
+            }
+            
             this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
-            return v_Result.setResult(true);
+            return v_Result.setResult(v_Ret);
         }
         catch (Exception exce)
         {
@@ -260,8 +317,17 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("waitTime" ,this.waitTime));
         }
+        if ( !Help.isNull(this.counter) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("counter" ,this.counter));
+        }
+        if ( !Help.isNull(this.counterMax) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("counterMax" ,this.counterMax));
+        }
         
         if ( !Help.isNull(this.route.getSucceeds()) 
+          || !Help.isNull(this.route.getFaileds())
           || !Help.isNull(this.route.getExceptions()) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
@@ -271,9 +337,19 @@ public class WaitConfig extends ExecuteElement implements Cloneable
             {
                 for (RouteItem v_RouteItem : this.route.getSucceeds())
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Succeed.getXmlName()));
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.If.getXmlName()));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Succeed.getXmlName()));
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.If.getXmlName()));
+                }
+            }
+            // 成功路由
+            if ( !Help.isNull(this.route.getFaileds()) )
+            {
+                for (RouteItem v_RouteItem : this.route.getFaileds())
+                {
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Else.getXmlName()));
+                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Else.getXmlName()));
                 }
             }
             // 异常路由
@@ -313,7 +389,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Wait ");
+        v_Builder.append("Wait：");
         if ( !Help.isNumber(this.waitTime) )
         {
             v_Builder.append(this.waitTime).append("=");
@@ -343,6 +419,23 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         }
         v_Builder.append(" ms");
         
+        
+        // 计数器
+        if ( !Help.isNull(this.counter) )
+        {
+            Integer v_Counter = (Integer) i_Context.get(this.counter);
+            if ( v_Counter == null )
+            {
+                v_Counter = 1;
+            }
+            else
+            {
+                v_Counter = v_Counter + 1;
+            }
+            
+            v_Builder.append(" Counter：").append(v_Counter);
+        }
+        
         return v_Builder.toString();
     }
     
@@ -361,7 +454,17 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Wait ").append(this.waitTime).append(" ms");
+        v_Builder.append("Wait：").append(this.waitTime).append(" ms");
+        
+        if ( !Help.isNull(this.counter) )
+        {
+            v_Builder.append(" Counter：").append(this.counter);
+        }
+        
+        if ( Help.isNull(this.counterMax) )
+        {
+            v_Builder.append(" Max：").append(this.counterMax);
+        }
         
         return v_Builder.toString();
     }
@@ -391,7 +494,9 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         WaitConfig v_Clone = (WaitConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.waitTime = this.waitTime;
+        v_Clone.waitTime   = this.waitTime;
+        v_Clone.counter    = this.counter;
+        v_Clone.counterMax = this.counterMax;
     }
     
     
