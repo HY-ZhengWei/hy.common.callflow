@@ -1,4 +1,4 @@
-package org.hy.common.callflow.junit.cflow005;
+package org.hy.common.callflow.junit.cflow015;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
-import org.hy.common.callflow.junit.cflow005.program.Program;
+import org.hy.common.callflow.junit.cflow015.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
@@ -20,22 +20,22 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎005：多个分支执行
+ * 测试单元：编排引擎015：返回元素
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-02-25
+ * @createDate  2025-03-13
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow005 extends JUBase
+public class JU_CFlow015 extends JUBase
 {
     
     private static boolean $isInit = false;
     
     
     
-    public JU_CFlow005() throws Exception
+    public JU_CFlow015() throws Exception
     {
         if ( !$isInit )
         {
@@ -47,16 +47,20 @@ public class JU_CFlow005 extends JUBase
     
     
     @Test
-    public void test_CFlow005() throws Exception
+    public void test_CFlow015() throws Exception
     {
         // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF005_1");
+        NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF015_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
+        // 真时：返回元素生效，仅部分元素被执行。假时：其它元素均被执行
+        v_Context.put("IsReturn" ,true);
+        
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
+        System.out.println("结果：" + v_Result.getResult());
         
         // 打印执行路径
         ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
