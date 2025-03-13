@@ -48,7 +48,7 @@ public class JU_Node
         v_Node.setCallMethod("m001");
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
-        ExecuteResult v_Result = v_Node.execute(null ,null);
+        ExecuteResult v_Result = v_Node.execute(null ,new HashMap<String ,Object>());
         if ( !v_Result.isSuccess() )
         {
             v_Result.getException().printStackTrace();
@@ -57,24 +57,10 @@ public class JU_Node
         
         v_Node.setCallXID("N001");
         v_Node.setCallMethod("m001");
-        v_Node.setCallParam(new NodeParam("HY" ,String.class));
+        v_Node.setCallParam(new NodeParam("HY" ,String.class.getName()));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
-        v_Result = v_Node.execute(null ,null);
-        if ( !v_Result.isSuccess() )
-        {
-            v_Result.getException().printStackTrace();
-        }
-        
-        
-        v_Node.getCallParams().clear();
-        v_Node.setCallXID("N001");
-        v_Node.setCallMethod("m001");
-        v_Node.setCallParam(new NodeParam("HY"  ,String.class));
-        v_Node.setCallParam(new NodeParam("123" ,Integer.class));
-        System.out.println("\n\n" + v_Node.toString());
-        System.out.println(v_Node.toString(null));
-        v_Result = v_Node.execute(null ,null);
+        v_Result = v_Node.execute(null ,new HashMap<String ,Object>());
         if ( !v_Result.isSuccess() )
         {
             v_Result.getException().printStackTrace();
@@ -84,12 +70,11 @@ public class JU_Node
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
         v_Node.setCallMethod("m001");
-        v_Node.setCallParam(new NodeParam("HY"  ,String.class));
-        v_Node.setCallParam(new NodeParam("123" ,Integer.class));
-        v_Node.setCallParam(new NodeParam("2025-02-19 22:15:00" ,Date.class));
+        v_Node.setCallParam(new NodeParam("HY"  ,String.class.getName()));
+        v_Node.setCallParam(new NodeParam("123" ,Integer.class.getName()));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
-        v_Result = v_Node.execute(null ,null);
+        v_Result = v_Node.execute(null ,new HashMap<String ,Object>());
         if ( !v_Result.isSuccess() )
         {
             v_Result.getException().printStackTrace();
@@ -99,10 +84,25 @@ public class JU_Node
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
         v_Node.setCallMethod("m001");
-        v_Node.setCallParam(new NodeParam(":Param" ,Param.class));
+        v_Node.setCallParam(new NodeParam("HY"  ,String.class.getName()));
+        v_Node.setCallParam(new NodeParam("123" ,Integer.class.getName()));
+        v_Node.setCallParam(new NodeParam("2025-02-19 22:15:00" ,Date.class.getName()));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
-        v_Result = v_Node.execute(null ,null);
+        v_Result = v_Node.execute(null ,new HashMap<String ,Object>());
+        if ( !v_Result.isSuccess() )
+        {
+            v_Result.getException().printStackTrace();
+        }
+        
+        
+        v_Node.getCallParams().clear();
+        v_Node.setCallXID("N001");
+        v_Node.setCallMethod("m001");
+        v_Node.setCallParam(new NodeParam(":Param" ,Param.class.getName()));
+        System.out.println("\n\n" + v_Node.toString());
+        System.out.println(v_Node.toString(null));
+        v_Result = v_Node.execute(null ,new HashMap<String ,Object>());
         if ( !v_Result.isSuccess() )
         {
             v_Result.getException().printStackTrace();
@@ -119,10 +119,10 @@ public class JU_Node
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
         v_Node.setCallMethod("m001");
-        v_Node.setCallParam(new NodeParam(":Param" ,Param.class ,v_Default));
+        v_Node.setCallParam(new NodeParam(":Param" ,Param.class.getName() ,v_Default));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
-        v_Result = v_Node.execute(null ,null);
+        v_Result = v_Node.execute(null ,new HashMap<String ,Object>());
         if ( !v_Result.isSuccess() )
         {
             v_Result.getException().printStackTrace();
@@ -132,7 +132,7 @@ public class JU_Node
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
         v_Node.setCallMethod("m001");
-        v_Node.setCallParam(new NodeParam(":Param" ,Param.class));
+        v_Node.setCallParam(new NodeParam(":Param" ,Param.class.getName()));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(v_Context));
         v_Result = v_Node.execute(null ,v_Context);

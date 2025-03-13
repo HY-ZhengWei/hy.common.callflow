@@ -40,8 +40,13 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
     /** 注释。可用于日志的输出等帮助性的信息 */
     private String   comment;
     
-    /** 参数类型。参数为数值类型时生效；或参数有默认值时生效 */
-    private Class<?> valueClass;
+    /** 
+     * 参数类型。参数为数值类型时生效；或参数有默认值时生效。
+     * 
+     * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
+     * 优点：提高可移植性。
+     */
+    private String   valueClass;
     
     /** 参数数值。可以是数值、上下文变量、XID标识 */
     private String   value;
@@ -85,7 +90,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      * @param i_Value       参数数值。可以是数值、上下文变量、XID标识
      * @param i_ValueClass  参数类型
      */
-    public NodeParam(String i_Value ,Class<?> i_ValueClass)
+    public NodeParam(String i_Value ,String i_ValueClass)
     {
         if ( Help.isNull(i_Value) )
         {
@@ -117,7 +122,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      * @param i_ValueClass    参数类型
      * @param i_ValueDefault  参数默认值的字符形式（参数为上下文变量、XID标识时生效）
      */
-    public NodeParam(String i_Value ,Class<?> i_ValueClass ,String i_ValueDefault)
+    public NodeParam(String i_Value ,String i_ValueClass ,String i_ValueDefault)
     {
         if ( Help.isNull(i_Value) )
         {
@@ -168,25 +173,55 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
         
         if ( this.valueDefaultObject == null )
         {
-            if ( Help.isBasicDataType(this.valueClass) )
+            Class<?> v_ValueClass = this.gatValueClass();
+            if ( Help.isBasicDataType(v_ValueClass) )
             {
-                this.valueDefaultObject = Help.toObject(this.valueClass ,this.valueDefault);
+                this.valueDefaultObject = Help.toObject(v_ValueClass ,this.valueDefault);
             }
             else
             {
                 XJSON v_XJson = new XJSON();
-                this.valueDefaultObject = v_XJson.toJava(this.valueDefault ,this.valueClass);
+                this.valueDefaultObject = v_XJson.toJava(this.valueDefault ,v_ValueClass);
             }
         }
         
         return valueDefaultObject;
+    }
+    
+    
+    /**
+     * 获取参数类型的元类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-13
+     * @version     v1.0
+     *
+     * @return
+     */
+    public Class<?> gatValueClass()
+    {
+        if ( !Help.isNull(this.valueClass) )
+        {
+            try
+            {
+                return Help.forName(this.valueClass);
+            }
+            catch (Exception exce)
+            {
+                throw new RuntimeException(exce);
+            }
+        }
+        else
+        {
+            return null;
+        }
     }
 
 
     /**
      * 获取：参数类型。参数为数值类型时生效；或参数有默认值时生效
      */
-    public Class<?> getValueClass()
+    public String getValueClass()
     {
         return valueClass;
     }
@@ -197,9 +232,9 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      * 
      * @param i_ValueClass 参数类型。仅为数值类型时才生效
      */
-    public void setValueClass(Class<?> i_ValueClass)
+    public void setValueClass(String i_ValueClass)
     {
-        if ( Void.class.equals(i_ValueClass) )
+        if ( Void.class.getName().equals(i_ValueClass) )
         {
             this.valueClass = null;
         }
@@ -372,7 +407,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
         }
         if ( this.valueClass != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueClass" ,this.valueClass.getName()));
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
         }
         if ( !Help.isNull(this.value) )
         {
@@ -406,7 +441,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
         
         try
         {
-            v_Value = ValueHelp.getValue(this.value ,this.valueClass ,this.gatValueDefaultObject() ,i_Context);
+            v_Value = ValueHelp.getValue(this.value ,this.gatValueClass() ,this.gatValueDefaultObject() ,i_Context);
         }
         catch (Exception exce)
         {
@@ -446,7 +481,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
         }
         else if ( this.valueClass != null )
         {
-            v_Builder.append(ValueHelp.getExpression(this.value ,this.valueClass));
+            v_Builder.append(ValueHelp.getExpression(this.value ,this.gatValueClass()));
         }
         else
         {

@@ -158,7 +158,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
                 for (int x=0; x<v_ParamValues.length; x++)
                 {
                     NodeParam v_NodeParam  = this.callParams.get(x);
-                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,v_NodeParam.gatValueDefaultObject() ,io_Context);
+                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.gatValueClass() ,v_NodeParam.gatValueDefaultObject() ,io_Context);
                 }
             }
             catch (Exception exce)
@@ -416,7 +416,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
                 for (int x=0; x<v_ParamValues.length; x++)
                 {
                     NodeParam v_NodeParam  = this.callParams.get(x);
-                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.getValueClass() ,v_NodeParam.gatValueDefaultObject() ,io_Context);
+                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.gatValueClass() ,v_NodeParam.gatValueDefaultObject() ,io_Context);
                 }
             }
             catch (Exception exce)
@@ -483,7 +483,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
                     Class<?> v_ParamValueClass = null;
                     if ( i_ParamValues[y] == null )
                     {
-                        v_ParamValueClass = this.callParams.get(y).getValueClass();
+                        v_ParamValueClass = this.callParams.get(y).gatValueClass();
                     }
                     else
                     {

@@ -47,8 +47,13 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     
     
     
-    /** 返回结果的元类型。返回结果的数据为数值类型时生效；或返回结果有默认值时生效 */
-    private Class<?>            retClass;
+    /** 
+     * 返回结果的元类型。返回结果的数据为数值类型时生效；或返回结果有默认值时生效 
+     * 
+     * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
+     * 优点：提高可移植性。
+     */
+    private String              retClass;
     
     /** 返回结果的数据。可以是数值、上下文变量、XID标识 */
     private String              retValue;
@@ -71,7 +76,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     public ReturnConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.retClass = ReturnData.class;
+        this.retClass = ReturnData.class.getName();
     }
     
     
@@ -112,14 +117,15 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         if ( this.retDefaultObject == null )
         {
-            if ( Help.isBasicDataType(this.retClass) )
+            Class<?> v_RetClass = this.gatRetClass();
+            if ( Help.isBasicDataType(v_RetClass) )
             {
-                this.retDefaultObject = Help.toObject(this.retClass ,this.retDefault);
+                this.retDefaultObject = Help.toObject(v_RetClass ,this.retDefault);
             }
             else
             {
                 XJSON v_XJson = new XJSON();
-                this.retDefaultObject = v_XJson.toJava(this.retDefault ,this.retClass);
+                this.retDefaultObject = v_XJson.toJava(this.retDefault ,v_RetClass);
             }
         }
         
@@ -129,9 +135,39 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 获取返回结果的元类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-13
+     * @version     v1.0
+     *
+     * @return
+     */
+    public Class<?> gatRetClass()
+    {
+        if ( !Help.isNull(this.retClass) )
+        {
+            try
+            {
+                return Help.forName(this.retClass);
+            }
+            catch (Exception exce)
+            {
+                throw new RuntimeException(exce);
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    
+    
+    /**
      * 获取：返回结果的元类型。返回结果的数据为数值类型时生效
      */
-    public Class<?> getRetClass()
+    public String getRetClass()
     {
         return retClass;
     }
@@ -143,9 +179,9 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
      * 
      * @param i_RetClass 返回结果的元类型。返回结果的数据为数值类型时生效
      */
-    public void setRetClass(Class<?> i_RetClass)
+    public void setRetClass(String i_RetClass)
     {
-        if ( Void.class.equals(i_RetClass) )
+        if ( Void.class.getName().equals(i_RetClass) )
         {
             this.retClass = null;
         }
@@ -245,7 +281,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         try
         {
-            Object v_Value = ValueHelp.getValue(this.retValue ,this.retClass ,this.gatRetDefaultObject() ,io_Context);
+            Object v_Value = ValueHelp.getValue(this.retValue ,this.gatRetClass() ,this.gatRetDefaultObject() ,io_Context);
             if ( this.isReturn() )
             {
                 // 不要在此 put(v_Value) ，容易产生幻觉，一种情况下能取到值，一种情况下取不值。
@@ -314,9 +350,9 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         if ( this.retClass != null )
         {
-            if ( !this.retClass.equals(ReturnData.class) )
+            if ( !this.retClass.equals(ReturnData.class.getName()) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("retClass" ,this.retClass.getName()));
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("retClass" ,this.gatRetClass().getName()));
             }
         }
         if ( !Help.isNull(this.retValue) )
@@ -385,7 +421,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         try
         {
-            v_Value = ValueHelp.getValue(this.retValue ,this.retClass ,this.gatRetDefaultObject() ,i_Context);
+            v_Value = ValueHelp.getValue(this.retValue ,this.gatRetClass() ,this.gatRetDefaultObject() ,i_Context);
         }
         catch (Exception exce)
         {

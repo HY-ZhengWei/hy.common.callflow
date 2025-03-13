@@ -49,21 +49,21 @@ public class JU_ConditionItem
         v_A        = "123";
         v_B        = "123";
         v_Comparer = Comparer.Equal;
-        v_CItem    = new ConditionItem(v_Comparer ,String.class ,v_A ,v_B);
+        v_CItem    = new ConditionItem(v_Comparer ,String.class.getName() ,v_A ,v_B);
         System.out.println(v_CItem.toString()          + " ? " + v_CItem.allow(v_Context));
         System.out.println(v_CItem.toString(v_Context) + " ? " + v_CItem.allow(v_Context) + "\n\n");
         
         v_A        = "123";
         v_B        = "123";
         v_Comparer = Comparer.EqualNot;
-        v_CItem    = new ConditionItem(v_Comparer ,String.class ,v_A ,v_B);
+        v_CItem    = new ConditionItem(v_Comparer ,String.class.getName() ,v_A ,v_B);
         System.out.println(v_CItem.toString()          + " ? " + v_CItem.allow(v_Context));
         System.out.println(v_CItem.toString(v_Context) + " ? " + v_CItem.allow(v_Context) + "\n\n");
         
         v_A        = "123";
         v_B        = "456";
         v_Comparer = Comparer.EqualNot;
-        v_CItem    = new ConditionItem(v_Comparer ,String.class ,v_A ,v_B);
+        v_CItem    = new ConditionItem(v_Comparer ,String.class.getName() ,v_A ,v_B);
         System.out.println(v_CItem.toString()          + " ? " + v_CItem.allow(v_Context));
         System.out.println(v_CItem.toString(v_Context) + " ? " + v_CItem.allow(v_Context) + "\n\n");
         

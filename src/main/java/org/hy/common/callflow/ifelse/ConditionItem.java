@@ -45,8 +45,13 @@ public class ConditionItem implements IfElse ,XJavaID
     /** 比较器 */
     private Comparer comparer;
     
-    /** 参数类型。参数为数值类型时生效 */
-    private Class<?> valueClass;
+    /** 
+     * 参数类型。参数为数值类型时生效 
+     * 
+     * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
+     * 优点：提高可移植性。
+     */
+    private String   valueClass;
     
     /** 数值A、上下文变量A、XID标识A（支持xxx.yyy.www） */
     private String   valueXIDA;
@@ -107,7 +112,7 @@ public class ConditionItem implements IfElse ,XJavaID
      * @param i_ValueXIDA   数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
      * @param i_ValueXIDB   数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
      */
-    public ConditionItem(Comparer i_Comparer ,Class<?> i_ValueClass ,String i_ValueXIDA ,String i_ValueXIDB)
+    public ConditionItem(Comparer i_Comparer ,String i_ValueClass ,String i_ValueXIDA ,String i_ValueXIDB)
     {
         this.comparer   = i_Comparer;
         this.valueClass = i_ValueClass;
@@ -142,7 +147,7 @@ public class ConditionItem implements IfElse ,XJavaID
         // B可以为空，表示判定A是否为空，或判定A是否为Boolean类型的真假
         if ( this.valueXIDB == null )
         {
-            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.valueClass ,null ,i_Context);
+            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
             
             if ( Comparer.Equal.equals(this.comparer) )
             {
@@ -183,8 +188,8 @@ public class ConditionItem implements IfElse ,XJavaID
         }
         else
         {
-            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.valueClass ,null ,i_Context);
-            Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.valueClass ,null ,i_Context);
+            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
+            Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.gatValueClass() ,null ,i_Context);
             
             return this.comparer.compare(v_ValueA ,v_ValueB);
         }
@@ -230,9 +235,38 @@ public class ConditionItem implements IfElse ,XJavaID
     
     
     /**
+     * 获取参数类型的元类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-13
+     * @version     v1.0
+     *
+     * @return
+     */
+    public Class<?> gatValueClass()
+    {
+        if ( !Help.isNull(this.valueClass) )
+        {
+            try
+            {
+                return Help.forName(this.valueClass);
+            }
+            catch (Exception exce)
+            {
+                throw new RuntimeException(exce);
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    
+    /**
      * 获取：参数类型。参数为数值类型时生效
      */
-    public Class<?> getValueClass()
+    public String getValueClass()
     {
         return valueClass;
     }
@@ -243,7 +277,7 @@ public class ConditionItem implements IfElse ,XJavaID
      * 
      * @param i_ValueClass 参数类型。参数为数值类型时生效
      */
-    public void setValueClass(Class<?> i_ValueClass)
+    public void setValueClass(String i_ValueClass)
     {
         this.valueClass = i_ValueClass;
     }
@@ -417,7 +451,7 @@ public class ConditionItem implements IfElse ,XJavaID
         }
         if ( this.valueClass != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueClass" ,this.valueClass.getName()));
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
         }
         if ( !Help.isNull(this.valueXIDA) )
         {
@@ -461,7 +495,7 @@ public class ConditionItem implements IfElse ,XJavaID
             
             try
             {
-                v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.valueClass ,null ,i_Context);
+                v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
             }
             catch (Exception exce)
             {
@@ -515,7 +549,7 @@ public class ConditionItem implements IfElse ,XJavaID
             {
                 try
                 {
-                    v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.valueClass ,null ,i_Context);
+                    v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.gatValueClass() ,null ,i_Context);
                 }
                 catch (Exception exce)
                 {
@@ -551,9 +585,9 @@ public class ConditionItem implements IfElse ,XJavaID
         
         if ( this.comparer != null )
         {
-            v_Builder.append(this.valueXIDA == null ? "NULL" : ValueHelp.getExpression(this.valueXIDA ,this.valueClass));
+            v_Builder.append(this.valueXIDA == null ? "NULL" : ValueHelp.getExpression(this.valueXIDA ,this.gatValueClass()));
             v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
-            v_Builder.append(this.valueXIDA == null ? "NULL" : ValueHelp.getExpression(this.valueXIDB ,this.valueClass));
+            v_Builder.append(this.valueXIDA == null ? "NULL" : ValueHelp.getExpression(this.valueXIDB ,this.gatValueClass()));
         }
         
         return v_Builder.toString();
