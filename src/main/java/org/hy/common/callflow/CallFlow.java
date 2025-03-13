@@ -59,6 +59,9 @@ public class CallFlow
     /** 变量ID名称：编排执行实例的返回元素执行真返回时的标记 */
     public static final String $CallFlowReturn          = "CallFlowReturn";
     
+    /** 变量ID名称：编排执行实例的返回元素执行真返回时的返回值 */
+    public static final String $CallFlowReturnValue     = "CallFlowReturnValue";
+    
     /** 变量ID名称：编排执行实例异常的结果 */
     public static final String $ErrorResult             = "CallFlowErrorResult";
     
@@ -102,7 +105,8 @@ public class CallFlow
           || CallFlow.$ExecuteEvent          .equals(v_XID)
           || CallFlow.$Context               .equals(v_XID)
           || CallFlow.$WaitCounter           .equals(v_XID)
-          || CallFlow.$CallFlowReturn        .equals(v_XID) )
+          || CallFlow.$CallFlowReturn        .equals(v_XID)
+          || CallFlow.$CallFlowReturnValue   .equals(v_XID) )
         {
             return true;
         }
@@ -150,13 +154,30 @@ public class CallFlow
     
     
     /**
+     * 从执行上下文中，获取 “真返回” 的返回数值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-13
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public static Object getReturnValue(Map<String ,Object> i_Context)
+    {
+        return i_Context.get($CallFlowReturnValue);
+    }
+    
+    
+    
+    /**
      * 从执行上下文中，是否 “真返回”
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-11
      * @version     v1.0
      *
-     * @param i_Context
+     * @param i_Context  上下文类型的变量信息
      * @return
      */
     public static boolean isTrueReturn(Map<String ,Object> i_Context)
@@ -177,6 +198,7 @@ public class CallFlow
      */
     public static void clearTrueReturn(Map<String ,Object> io_Context)
     {
+        // 注：但不会清除的返回数值 $CallFlowReturnValue
         io_Context.remove($CallFlowReturn);
     }
     
@@ -485,7 +507,15 @@ public class CallFlow
             
             if ( !CallFlow.getExecuteIsError(io_Context) )
             {
-                return v_LastResult.setResult(v_NodeResult.getResult());
+                // 真返回时的返回数值
+                if ( CallFlow.isTrueReturn(v_Context) )
+                {
+                    return v_LastResult.setResult(CallFlow.getReturnValue(v_Context));
+                }
+                else
+                {
+                    return v_LastResult.setResult(v_NodeResult.getResult());
+                }
             }
             else
             {

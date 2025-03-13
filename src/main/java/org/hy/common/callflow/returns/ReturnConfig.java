@@ -48,16 +48,16 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     
     
     /** 返回结果的元类型。返回结果的数据为数值类型时生效；或返回结果有默认值时生效 */
-    private Class<?> retClass;
+    private Class<?>            retClass;
     
     /** 返回结果的数据。可以是数值、上下文变量、XID标识 */
-    private String   retValue;
+    private String              retValue;
     
     /** 返回结果的默认值的字符形式（参数为上下文变量、XID标识时生效） */
-    private String   retDefault;
+    private String              retDefault;
     
     /** 返回结果默认值的实例对象(内部使用) */
-    private Object   retDefaultObject;
+    private Object              retDefaultObject;
     
     
     
@@ -71,6 +71,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     public ReturnConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
+        this.retClass = ReturnData.class;
     }
     
     
@@ -249,7 +250,8 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
             {
                 // 不要在此 put(v_Value) ，容易产生幻觉，一种情况下能取到值，一种情况下取不值。
                 // 原因是：$CallFlowReturn 只是一种标记，并且在嵌套情况下，它还会被清除
-                io_Context.put(CallFlow.$CallFlowReturn ,true);
+                io_Context.put(CallFlow.$CallFlowReturn      ,true);
+                io_Context.put(CallFlow.$CallFlowReturnValue ,v_Value);
             }
             
             this.refreshStatus(io_Context ,v_Result.getStatus());
