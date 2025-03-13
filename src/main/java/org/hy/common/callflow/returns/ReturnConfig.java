@@ -314,7 +314,10 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         if ( this.retClass != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("retClass" ,this.retClass.getName()));
+            if ( !this.retClass.equals(ReturnData.class) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("retClass" ,this.retClass.getName()));
+            }
         }
         if ( !Help.isNull(this.retValue) )
         {

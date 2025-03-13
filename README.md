@@ -22,6 +22,7 @@
     * [计算元素和While循环举例](#计算元素和While循环举例)
     * [循环元素的For循环数列举例](#循环元素的For循环数列举例)
     * [循环元素的For循环集合和数组举例](#循环元素的For循环集合和数组举例)
+    * [返回元素的举例](#返回元素的举例)
 
 
 
@@ -1706,6 +1707,160 @@ v_MapDatas.put("K123" ,123);
 v_MapDatas.put("K456" ,456);
 v_MapDatas.put("K789" ,789);
 v_Context.put("Datas" ,v_MapDatas);
+        
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_ForConfig ,v_Context);
+```
+
+
+
+返回元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow015) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow015/JU_CFlow015.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF015_1_2">
+            <comment>1.2节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_1_2</callMethod>
+        </xnode>
+        
+        
+        <xreturn id="XReturn_CF015_1_1_2_1_1">
+            <comment>任务执行完成</comment>
+            <retValue>
+            {
+                "retBoolean": true,
+                "retInt": 1,
+                "retLong": 1234567890,
+                "retDouble": 3.14,
+                "retText": "ABC",
+                "retMap": {
+                    "k1": "v1",
+                    "k2": "v2",
+                    "k3": "v3",
+                },
+                "retList": [
+                    "L1",
+                    "L2",
+                    "L3",
+                ]
+            }
+            </retValue>
+        </xreturn>
+        
+        
+        <xcondition id="XCondition_CF015_1_1_2_1">
+            <comment>是否返回</comment>
+            <conditionItem>
+                <valueXIDA>:IsReturn</valueXIDA>
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XReturn_CF015_1_1_2_1_1" />
+                    <comment>真时</comment>
+                </if>
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF015_1_1_2">
+            <comment>1.1.2节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_1_1_2</callMethod>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCondition_CF015_1_1_2_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF015_1_1_1">
+            <comment>1.1.1节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_1_1_1</callMethod>
+        </xnode>
+    
+    
+        <xnode id="XNode_CF015_1_1">
+            <comment>1.1节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_1_1</callMethod>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF015_1_1_1" />
+                    <comment>成功时，第一路</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF015_1_1_2" />
+                    <comment>成功时，第二路</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF015_1">
+            <comment>1节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_1</callMethod>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF015_1_1" />
+                    <comment>成功时，第一路</comment>
+                </succeed>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF015_1_2" />
+                    <comment>成功时，第二路</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF015_1");
+
+// 真时：返回元素生效，仅部分元素被执行。假时：其它元素均被执行
+v_Context.put("IsReturn" ,true);
         
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context   = new HashMap<String ,Object>();
