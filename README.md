@@ -132,14 +132,14 @@ __编排配置__
         <xnode id="XNode_CF001_1_1">
             <comment>节点002，后面节点配置在XML前</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method002</callMehod>
+            <callMethod>method002</callMethod>
         </xnode>
         
         
         <xnode id="XNode_CF001_1">
             <comment>节点001</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method001</callMehod>                <!-- 定义执行方法 -->
+            <callMethod>method001</callMethod>              <!-- 定义执行方法 -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF001_1_1" />
@@ -204,28 +204,28 @@ __编排配置__
         <xnode id="XNode_CF005_1_2">
             <comment>1.2节点</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_1_2</callMehod>
+            <callMethod>method_1_2</callMethod>
         </xnode>
         
         
         <xnode id="XNode_CF005_1_1_2">
             <comment>1.1.2节点</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_1_1_2</callMehod>
+            <callMethod>method_1_1_2</callMethod>
         </xnode>
         
         
         <xnode id="XNode_CF005_1_1_1">
             <comment>1.1.1节点</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_1_1_1</callMehod>
+            <callMethod>method_1_1_1</callMethod>
         </xnode>
     
     
         <xnode id="XNode_CF005_1_1">
             <comment>1.1节点</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_1_1</callMehod>
+            <callMethod>method_1_1</callMethod>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF005_1_1_1" />
@@ -242,7 +242,7 @@ __编排配置__
         <xnode id="XNode_CF005_1">
             <comment>1节点</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_1</callMehod>
+            <callMethod>method_1</callMethod>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF005_1_1" />
@@ -311,7 +311,7 @@ __编排配置__
         <xnode id="XNode_CF014_1_4">
             <comment>方法入参数是Set集合</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Set</callMehod>               <!-- 定义执行方法 -->
+            <callMethod>method_Set</callMethod>             <!-- 定义执行方法 -->
             <callParam>                                     <!-- 定义入参类型 -->
                 <value>:ObjectData.hashSetData</value>      <!-- 支持面向对象xx.yy.zz，并且不用定义入参的元类型 -->
             </callParam>
@@ -321,7 +321,7 @@ __编排配置__
         <xnode id="XNode_CF014_1_3">
             <comment>方法入参数是List集合</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_List</callMehod>              <!-- 定义执行方法 -->
+            <callMethod>method_List</callMethod>            <!-- 定义执行方法 -->
             <callParam>                                     <!-- 定义入参类型 -->
                 <value>:ObjectData.listData</value>         <!-- 支持面向对象xx.yy.zz，并且不用定义入参的元类型 -->
             </callParam>
@@ -331,7 +331,7 @@ __编排配置__
         <xnode id="XNode_CF014_1_2">
             <comment>方法入参数是对象</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Object</callMehod>            <!-- 定义执行方法 -->
+            <callMethod>method_Object</callMethod>          <!-- 定义执行方法 -->
             <callParam>                                     <!-- 定义入参类型 -->
                 <valueClass>org.hy.common.callflow.junit.cflow014.program.Program</valueClass>      
                 <value>                                     <!-- 定义入参默认值 -->
@@ -360,7 +360,7 @@ __编排配置__
         <xnode id="XCondition_CF004_1_1_1_1">
             <comment>取Map中的元素值</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_String</callMehod>            <!-- 定义执行方法 -->
+            <callMethod>method_String</callMethod>          <!-- 定义执行方法 -->
             <callParam>
                 <value>:MapDatas.狗</value>                 <!-- 支持面向对象xx.yy.zz，从Map中取一个元素 -->
             </callParam>
@@ -370,7 +370,7 @@ __编排配置__
         <xnode id="XNode_CF014_1_1_1">
             <comment>方法入参数是Map集合，数值传值</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Map</callMehod>               <!-- 定义执行方法 -->
+            <callMethod>method_Map</callMethod>             <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
                 <value>                                     <!-- 定义入参默认值 -->
@@ -394,7 +394,7 @@ __编排配置__
         <xnode id="XNode_CF014_1_1">
             <comment>方法入参数是Map集合，默认值传值</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Map</callMehod>               <!-- 定义执行方法 -->
+            <callMethod>method_Map</callMethod>             <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
                 <!-- 不设定入参变量名称，可用默认值代替 -->
@@ -418,7 +418,7 @@ __编排配置__
         <xnode id="XNode_CF014_1">
             <comment>方法入参数是Map集合，系统预设变量传值</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Map</callMehod>               <!-- 定义执行方法 -->
+            <callMethod>method_Map</callMethod>             <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
                 <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
@@ -499,14 +499,14 @@ __编排配置__
         <xnode id="XNode_CF013_1_2">
             <comment>超时异常情况</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Error</callMehod>             <!-- 定义执行方法 -->
+            <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
         </xnode>
     
         
         <xnode id="XNode_CF013_1_1">
             <comment>正常情况</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_OK</callMehod>                <!-- 定义执行方法 -->
+            <callMethod>method_OK</callMethod>              <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
                 <value>:TimeLen</value>                     <!-- 定义入参变量名称 -->
@@ -517,7 +517,7 @@ __编排配置__
         <xnode id="XNode_CF013_1">
             <comment>模拟超时</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Timeout</callMehod>           <!-- 定义执行方法 -->
+            <callMethod>method_Timeout</callMethod>         <!-- 定义执行方法 -->
             <timeout>5000</timeout>                         <!-- 执行超时时长（单位：毫秒） -->
             <callParam>
                 <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
@@ -593,14 +593,14 @@ __编排配置__
         <xnode id="XNode_CF002_1_1_2">
             <comment>第三个环节，为假时的走向</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_False</callMehod>
+            <callMethod>method_False</callMethod>
         </xnode>
         
         
         <xnode id="XNode_CF002_1_1_1">
             <comment>第三个环节，为真时的走向</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_True</callMehod>
+            <callMethod>method_True</callMethod>
         </xnode>
         
         
@@ -629,7 +629,7 @@ __编排配置__
         <xnode id="XNode_CF002_1">
             <comment>第一个环节，有一个参数，有返回结果</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_First</callMehod>
+            <callMethod>method_First</callMethod>
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:NumParam</value>                    <!-- 定义入参变量名称 -->
@@ -701,14 +701,14 @@ __编排配置__
         <xnode id="XNode_CF004_1_1_2_2">
             <comment>第六个环节，大于等于10的走向</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_Less_10</callMehod>
+            <callMethod>method_Less_10</callMethod>
         </xnode>
     
     
         <xnode id="XNode_CF004_1_1_2_1">
             <comment>第五个环节，大于等于10的走向</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_Greater_10</callMehod>
+            <callMethod>method_Greater_10</callMethod>
         </xnode>
         
         
@@ -737,7 +737,7 @@ __编排配置__
         <xnode id="XNode_CF004_1_1_1">
             <comment>第三个环节，默认值或空值的走向</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_Default_Null</callMehod>
+            <callMethod>method_Default_Null</callMethod>
         </xnode>
         
         
@@ -786,7 +786,7 @@ __编排配置__
         <xnode id="XNode_CF004_1">
             <comment>第一个环节，有一个参数，有返回结果</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_First</callMehod>
+            <callMethod>method_First</callMethod>
             <callParam>
                 <valueClass>org.hy.common.Date</valueClass> <!-- 定义入参01类型 -->
                 <value>:TimeParam</value>                   <!-- 定义入参01变量名称 -->
@@ -863,14 +863,14 @@ __编排配置__
         <xnode id="XNode_CF003_1_1_2及1_1_1_2">
             <comment>五个环节，为假时的走向</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_False</callMehod>
+            <callMethod>method_False</callMethod>
         </xnode>
         
         
         <xnode id="XNode_CF003_1_1_1_1">
             <comment>第四个环节，为真时的走向</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_True</callMehod>
+            <callMethod>method_True</callMethod>
         </xnode>
         
         
@@ -916,7 +916,7 @@ __编排配置__
         <xnode id="XNode_CF003_1">
             <comment>第一个环节，有一个参数，有返回结果</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_First</callMehod>
+            <callMethod>method_First</callMethod>
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:NumParam</value>                    <!-- 定义入参变量名称 -->
@@ -989,14 +989,14 @@ __编排配置__
         <xnode id="XNode_CF006_三个寻址">
             <comment>1_1_2_1 、 1_1_1_2_1 、 1_1_1_1_1</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_Finish</callMehod>
+            <callMethod>method_Finish</callMethod>
         </xnode>
         
     
         <xnode id="XNode_CF006_两个寻址">
             <comment>1_1_2和1_1_1_2</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_False</callMehod>
+            <callMethod>method_False</callMethod>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF006_三个寻址" />
@@ -1009,7 +1009,7 @@ __编排配置__
         <xnode id="XNode_CF006_1_1_1_1">
             <comment>1_1_1_1</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_True</callMehod>
+            <callMethod>method_True</callMethod>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF006_三个寻址" />
@@ -1061,7 +1061,7 @@ __编排配置__
         <xnode id="XNode_CF006_1">
             <comment>1</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_First</callMehod>
+            <callMethod>method_First</callMethod>
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:NumParam</value>                    <!-- 定义入参变量名称 -->
@@ -1275,7 +1275,7 @@ __编排配置__
         <xnode id="XNode_CF009_1_1_2">
             <comment>完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
         </xnode>
     
         
@@ -1318,7 +1318,7 @@ __编排配置__
         <xnode id="XNode_CF009_1">
             <comment>计数器加加</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_AddCount</callMehod>          <!-- 定义执行方法 -->
+            <callMethod>method_AddCount</callMethod>        <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:Count</value>                       <!-- 定义入参变量名称 -->
@@ -1389,7 +1389,7 @@ __编排配置__
         <xnode id="XCalculate_CF010_1_1_1">
             <comment>完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Double</valueClass>   <!-- 定义入参类型 -->
                 <value>:CalcRet</value>                     <!-- 定义入参变量名称 -->
@@ -1495,14 +1495,14 @@ __编排配置__
         <xnode id="XNode_CF011_1_1_2">
             <comment>完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
         </xnode>
     
         
         <xnode id="XNode_CF011_1_1_1">
             <comment>模拟循环体内执行的方法2</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_For2</callMehod>              <!-- 定义执行方法 -->
+            <callMethod>method_For2</callMethod>            <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:ForIndex</value>                    <!-- 定义入参变量名称 -->
@@ -1523,7 +1523,7 @@ __编排配置__
         <xnode id="XNode_CF011_1_1">
             <comment>模拟循环体内执行的方法1</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_For1</callMehod>              <!-- 定义执行方法 -->
+            <callMethod>method_For1</callMethod>            <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:ForIndex</value>                    <!-- 定义入参变量名称 -->
@@ -1607,7 +1607,7 @@ __编排配置__
         <xnode id="XNode_CF012_1_1_2">
             <comment>完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
                 <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
@@ -1618,7 +1618,7 @@ __编排配置__
         <xnode id="XNode_CF012_1_1_1">
             <comment>模拟循环体内执行的方法2</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_For2</callMehod>              <!-- 定义执行方法 -->
+            <callMethod>method_For2</callMethod>            <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Object</valueClass>   <!-- 定义入参类型 -->
                 <value>:ForElement</value>                  <!-- 定义入参变量名称 -->
@@ -1639,7 +1639,7 @@ __编排配置__
         <xnode id="XNode_CF012_1_1">
             <comment>模拟循环体内执行的方法1</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_For1</callMehod>              <!-- 定义执行方法 -->
+            <callMethod>method_For1</callMethod>            <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:ForIndex</value>                    <!-- 定义入参变量名称 -->

@@ -19,14 +19,14 @@
         <xnode id="XNode_CF006_三个寻址">
             <comment>1_1_2_1 、 1_1_1_2_1 、 1_1_1_1_1</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_Finish</callMehod>
+            <callMethod>method_Finish</callMethod>
         </xnode>
         
     
         <xnode id="XNode_CF006_两个寻址">
             <comment>1_1_2和1_1_1_2</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_False</callMehod>
+            <callMethod>method_False</callMethod>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF006_三个寻址" />
@@ -39,7 +39,7 @@
         <xnode id="XNode_CF006_1_1_1_1">
             <comment>1_1_1_1</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_True</callMehod>
+            <callMethod>method_True</callMethod>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF006_三个寻址" />
@@ -91,7 +91,7 @@
         <xnode id="XNode_CF006_1">
             <comment>1</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method_First</callMehod>
+            <callMethod>method_First</callMethod>
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:NumParam</value>                    <!-- 定义入参变量名称 -->

@@ -19,7 +19,7 @@
         <xnode id="XNode_CF009_1_1_2">
             <comment>完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
         </xnode>
     
         
@@ -62,7 +62,7 @@
         <xnode id="XNode_CF009_1">
             <comment>计数器加加</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_AddCount</callMehod>          <!-- 定义执行方法 -->
+            <callMethod>method_AddCount</callMethod>        <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:Count</value>                       <!-- 定义入参变量名称 -->

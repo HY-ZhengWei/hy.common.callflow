@@ -45,7 +45,7 @@ public class JU_Node
         NodeConfig v_Node = new NodeConfig();
         v_Node.setReturnID("Ret");
         v_Node.setCallXID("N001");
-        v_Node.setCallMehod("m001");
+        v_Node.setCallMethod("m001");
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
         ExecuteResult v_Result = v_Node.execute(null ,null);
@@ -56,7 +56,7 @@ public class JU_Node
         
         
         v_Node.setCallXID("N001");
-        v_Node.setCallMehod("m001");
+        v_Node.setCallMethod("m001");
         v_Node.setCallParam(new NodeParam("HY" ,String.class));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
@@ -69,7 +69,7 @@ public class JU_Node
         
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
-        v_Node.setCallMehod("m001");
+        v_Node.setCallMethod("m001");
         v_Node.setCallParam(new NodeParam("HY"  ,String.class));
         v_Node.setCallParam(new NodeParam("123" ,Integer.class));
         System.out.println("\n\n" + v_Node.toString());
@@ -83,7 +83,7 @@ public class JU_Node
         
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
-        v_Node.setCallMehod("m001");
+        v_Node.setCallMethod("m001");
         v_Node.setCallParam(new NodeParam("HY"  ,String.class));
         v_Node.setCallParam(new NodeParam("123" ,Integer.class));
         v_Node.setCallParam(new NodeParam("2025-02-19 22:15:00" ,Date.class));
@@ -98,7 +98,7 @@ public class JU_Node
         
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
-        v_Node.setCallMehod("m001");
+        v_Node.setCallMethod("m001");
         v_Node.setCallParam(new NodeParam(":Param" ,Param.class));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
@@ -118,7 +118,7 @@ public class JU_Node
                            """;
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
-        v_Node.setCallMehod("m001");
+        v_Node.setCallMethod("m001");
         v_Node.setCallParam(new NodeParam(":Param" ,Param.class ,v_Default));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(null));
@@ -131,7 +131,7 @@ public class JU_Node
         
         v_Node.getCallParams().clear();
         v_Node.setCallXID("N001");
-        v_Node.setCallMehod("m001");
+        v_Node.setCallMethod("m001");
         v_Node.setCallParam(new NodeParam(":Param" ,Param.class));
         System.out.println("\n\n" + v_Node.toString());
         System.out.println(v_Node.toString(v_Context));

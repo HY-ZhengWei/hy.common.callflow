@@ -58,7 +58,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
     private String          callXID;
     
     /** 执行方法名称 */
-    private String          callMehod;
+    private String          callMethod;
     
     /** 执行方法对象（仅内部使用） */
     private Method          callMethodObject;
@@ -454,15 +454,15 @@ public class NodeConfig extends ExecuteElement implements Cloneable
             return;
         }
         
-        if ( Help.isNull(this.callMehod) )
+        if ( Help.isNull(this.callMethod) )
         {
             throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod is null.");
         }
         
-        List<Method> v_CallMethods = MethodReflect.getMethods(i_CallObject.getClass() ,this.callMehod ,i_ParamValues.length);
+        List<Method> v_CallMethods = MethodReflect.getMethods(i_CallObject.getClass() ,this.callMethod ,i_ParamValues.length);
         if ( Help.isNull(v_CallMethods) )
         {
-            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "(" + i_ParamValues.length + ")] is not find.");
+            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is not find.");
         }
         
         if ( v_CallMethods.size() == 1 )
@@ -527,12 +527,12 @@ public class NodeConfig extends ExecuteElement implements Cloneable
                 }
                 else
                 {
-                    throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "(" + i_ParamValues.length + ")] is find " + v_CallMethods.size() + " methods.");
+                    throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is find " + v_CallMethods.size() + " methods.");
                 }
             }
             else
             {
-                throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMehod + "(" + i_ParamValues.length + ")] is not find.");
+                throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is not find.");
             }
         }
     }
@@ -571,21 +571,21 @@ public class NodeConfig extends ExecuteElement implements Cloneable
     /**
      * 获取：执行方法名称
      */
-    public String getCallMehod()
+    public String getCallMethod()
     {
-        return callMehod;
+        return callMethod;
     }
 
     
     /**
      * 设置：执行方法名称
      * 
-     * @param i_CallMehod 执行方法名称
+     * @param i_CallMethod 执行方法名称
      */
-    public void setCallMehod(String i_CallMehod)
+    public void setCallMethod(String i_CallMethod)
     {
-        this.callMehod = i_CallMehod;
-        this.isInit    = false;
+        this.callMethod = i_CallMethod;
+        this.isInit     = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
     
@@ -707,9 +707,9 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         {
             io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callXID" ,this.getCallXID()));
         }
-        if ( !Help.isNull(this.callMehod) )
+        if ( !Help.isNull(this.callMethod) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callMehod" ,this.callMehod));
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callMethod" ,this.callMethod));
         }
         if ( !Help.isNull(this.callParams) )
         {
@@ -852,9 +852,9 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         }
         v_Builder.append(ValueHelp.$Split);
         
-        if ( !Help.isNull(this.callMehod) )
+        if ( !Help.isNull(this.callMethod) )
         {
-            v_Builder.append(this.callMehod);
+            v_Builder.append(this.callMethod);
             this.init(i_Context);
             if ( this.callMethodObject == null )
             {
@@ -918,9 +918,9 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         }
         v_Builder.append(ValueHelp.$Split);
         
-        if ( !Help.isNull(this.callMehod) )
+        if ( !Help.isNull(this.callMethod) )
         {
-            v_Builder.append(this.callMehod);
+            v_Builder.append(this.callMethod);
         }
         else
         {
@@ -971,9 +971,9 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         NodeConfig v_Clone = (NodeConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.callXID   = this.callXID;
-        v_Clone.callMehod = this.callMehod; 
-        v_Clone.timeout   = this.timeout;
+        v_Clone.callXID    = this.callXID;
+        v_Clone.callMethod = this.callMethod; 
+        v_Clone.timeout    = this.timeout;
         
         if ( !Help.isNull(this.callParams) )
         {

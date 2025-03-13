@@ -19,14 +19,14 @@
         <xnode id="XNode_CF001_1_1">
             <comment>节点002，后面节点配置在XML前</comment>
             <callXID>:XProgram</callXID>
-            <callMehod>method002</callMehod>
+            <callMethod>method002</callMethod>
         </xnode>
         
         
         <xnode id="XNode_CF001_1">
             <comment>节点001</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method001</callMehod>                <!-- 定义执行方法 -->
+            <callMethod>method001</callMethod>              <!-- 定义执行方法 -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF001_1_1" />

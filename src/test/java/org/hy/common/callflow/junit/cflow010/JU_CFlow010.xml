@@ -19,7 +19,7 @@
         <xnode id="XCalculate_CF010_1_1_1">
             <comment>完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMehod>method_Finish</callMehod>            <!-- 定义执行方法 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Double</valueClass>   <!-- 定义入参类型 -->
                 <value>:CalcRet</value>                     <!-- 定义入参变量名称 -->
