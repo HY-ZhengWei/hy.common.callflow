@@ -1,8 +1,6 @@
 package org.hy.common.callflow.junit;
 
-import org.hy.common.Date;
-import org.hy.common.Help;
-import org.hy.common.StringHelp;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.xml.XJSON;
@@ -32,24 +30,7 @@ public class JUBase
      */
     protected void println(ExecuteResult i_Result)
     {
-        System.out.println(StringHelp.rpad(i_Result.getExecuteTreeID() ,20 ," ") 
-                         + " " 
-                         + StringHelp.rpad(i_Result.getTreeID() ,20 ," ") 
-                         + " " 
-                         + Date.toTimeLenNano(i_Result.getEndTime() - i_Result.getBeginTime())
-                         + StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")
-                         + " " + i_Result.getExecuteLogic()
-                         + " " + Help.NVL(i_Result.getResult())
-                         + " " + i_Result.isSuccess()
-                         + " " + i_Result.getStatus());
-        
-        if ( !Help.isNull(i_Result.getNexts()) )
-        {
-            for (ExecuteResult v_Item : i_Result.getNexts())
-            {
-                this.println(v_Item);
-            }
-        }
+        System.out.println(CallFlow.getHelpLog().logs(i_Result));
     }
     
     

@@ -16,15 +16,15 @@ public enum ExecuteStatus
     
     NotStart ("NotStart"  ,"未开始"),
     
-    Started  ("Started"   ,"已开始，即执行中"),
+    Started  ("Started"   ,"执行中"),         // 已开始，即执行中
     
     Finished ("Finished"  ,"已完成"),
     
-    Exception("Exception" ,"发生异常"),
+    Exception("Exception" ,"异常态"),         // 发生异常
     
-    Timeout  ("Timeout"   ,"执行超时"),
+    Timeout  ("Timeout"   ,"超时态"),         // 执行超时
     
-    Canceled ("Canceled"  ,"取消执行"),
+    Canceled ("Canceled"  ,"取消态"),         // 取消执行
     
     ;
     

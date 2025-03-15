@@ -8,6 +8,7 @@ import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.execute.ExecuteResultLogHelp;
 import org.hy.common.callflow.execute.ExecuteTreeHelp;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.execute.IExecuteEvent;
@@ -374,6 +375,22 @@ public class CallFlow
     public static ImportXML getHelpImport()
     {
         return ImportXML.getInstance();
+    }
+    
+    
+    
+    /**
+     * 集成：执行结果的日志辅助类
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-15
+     * @version     v1.0
+     *
+     * @return
+     */
+    public static ExecuteResultLogHelp getHelpLog()
+    {
+        return ExecuteResultLogHelp.getInstance();
     }
     
     
