@@ -69,8 +69,8 @@ public class NodeConfig extends ExecuteElement implements Cloneable
     /** 执行方法的参数 */
     private List<NodeParam> callParams;
     
-    /** 执行超时时长（单位：毫秒） */
-    private Long            timeout;
+    /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    private String          timeout;
     
     
     
@@ -94,7 +94,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
     {
         super(i_RequestTotal ,i_SuccessTotal);
         this.isInit  = false;
-        this.timeout = 0L;
+        this.timeout = "0";
     }
     
     
@@ -188,9 +188,10 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         
         try
         {
-            if ( this.timeout > 0L )
+            Long v_Timeout = this.gatTimeout(io_Context);
+            if ( v_Timeout > 0L )
             {
-                CompletableFuture<Object> v_Future = this.executeAsync(io_Context ,v_CallObject ,v_ParamValues);
+                CompletableFuture<Object> v_Future = this.executeAsync(v_Timeout ,io_Context ,v_CallObject ,v_ParamValues);
                 
                 // 处理任务结果或异常
                 v_Future.whenComplete((i_Result ,i_Exce) -> {
@@ -250,12 +251,13 @@ public class NodeConfig extends ExecuteElement implements Cloneable
      * @createDate  2025-03-07
      * @version     v1.0
      *
+     * @param i_Timeout      执行超时时长（单位：毫秒）
      * @param io_Context     上下文类型的变量信息
      * @param i_CallObject   执行方法的对象实例
      * @param i_ParamValues  执行方法的参数
      * @return
      */
-    private CompletableFuture<Object> executeAsync(Map<String ,Object> io_Context ,Object i_CallObject ,Object [] i_ParamValues) 
+    private CompletableFuture<Object> executeAsync(Long i_Timeout ,Map<String ,Object> io_Context ,Object i_CallObject ,Object [] i_ParamValues) 
     {
         Supplier<Object> v_Task = () -> {
             try 
@@ -299,7 +301,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
                 // 超时后抛出异常
                 v_Future.completeExceptionally(new TimeoutException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout[" + this.timeout + "]")); 
             }
-        }, this.timeout ,TimeUnit.MILLISECONDS);
+        }, i_Timeout ,TimeUnit.MILLISECONDS);
 
         // 当任务完成时，取消超时任务
         v_Future.whenComplete((result, ex) -> {
@@ -635,33 +637,73 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         this.isInit     = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
+    
+    
+    /**
+     * 从上下文中获取运行时的超时时长
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-15
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Long gatTimeout(Map<String ,Object> i_Context) throws Exception
+    {
+        Long v_Timeout = null;
+        if ( Help.isNumber(this.timeout) )
+        {
+            v_Timeout = Long.valueOf(this.timeout);
+        }
+        else
+        {
+            v_Timeout = (Long) ValueHelp.getValue(this.timeout ,Long.class ,0L ,i_Context);
+        }
+        
+        return v_Timeout;
+    }
 
     
     /**
-     * 获取：执行超时时长（单位：毫秒）
+     * 获取：执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
      */
-    public Long getTimeout()
+    public String getTimeout()
     {
         return timeout;
     }
 
     
     /**
-     * 设置：执行超时时长（单位：毫秒）
+     * 设置：执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
      * 
-     * @param i_Timeout 执行超时时长（单位：毫秒）
+     * @param i_Timeout 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
      */
-    public void setTimeout(Long i_Timeout)
+    public void setTimeout(String i_Timeout)
     {
-        if ( i_Timeout == null )
+        if ( Help.isNull(i_Timeout) )
         {
-            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout is null.");
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
         }
-        if ( i_Timeout < 0 )
+        
+        if ( Help.isNumber(i_Timeout) )
         {
-            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout Less than zero.");
+            Long v_Timeout = Long.valueOf(i_Timeout);
+            if ( v_Timeout < 0L )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.timeout = i_Timeout.trim();
         }
-        this.timeout = i_Timeout;
+        else
+        {
+            this.timeout = ValueHelp.standardRefID(i_Timeout);
+        }
     }
     
     
@@ -767,7 +809,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         // 生成或写入个性化的XML内容
         toXmlContent(v_Xml ,i_Level ,v_Level1 ,v_LevelN ,i_SuperTreeID ,v_TreeID);
         
-        if ( this.timeout > 0L )
+        if ( !Help.isNull(this.timeout) && !"0".equals(this.timeout) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
         }
