@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF016_1_1">
+            <comment>1.1节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Finish</callMethod>
+        </xnode>
+        
+    
+        <xnode id="XNode_CF016_1">
+            <comment>1节点</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_1</callMethod>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next>:XNode_CF016_1</next>
+                    <comment>自引用、自循环、递归</comment>
+                </succeed>
+                <error>                                     <!-- 异常时，关联后置节点 -->
+                    <next ref="XNode_CF016_1_1" />
+                    <comment>可使用异常机制退出递归</comment>
+                </error>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
