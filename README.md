@@ -9,7 +9,7 @@
 * [主要方法](#主要方法)
 * 使用举例
     * [执行元素：简单编排](#执行元素举例)
-    * [执行元素的多路分支逐一执行举例](#执行元素的多路分支逐一执行举例)
+    * [执行元素的多路分支和异常举例](#执行元素的多路分支和异常举例)
     * [执行元素的方法传参（Map、List、Set、对象）举例](#执行元素的方法传参举例)
     * [执行元素的超时和异常举例](#执行元素的超时和异常举例)
     * [条件逻辑元素举例](#条件逻辑元素举例)
@@ -172,7 +172,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
 
 
 
-执行元素的多路分支逐一执行举例
+执行元素的多路分支和异常举例
 ------
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow005) [返回目录](#目录)
@@ -203,9 +203,16 @@ __编排配置__
     <xconfig>
     
         <xnode id="XNode_CF005_1_2">
-            <comment>1.2节点</comment>
+            <comment>1.2节点。异常时有后续的处理，我也会被执行</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_1_2</callMethod>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF005_1_1_2_1">
+            <comment>异常时的后续处理</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Error</callMethod>
         </xnode>
         
         
@@ -213,6 +220,12 @@ __编排配置__
             <comment>1.1.2节点</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_1_1_2</callMethod>
+            <route>
+                <error>                                     <!-- 异常时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_1_2_1" />
+                    <comment>异常时</comment>
+                </error>
+            </route>
         </xnode>
         
         
@@ -497,10 +510,23 @@ __编排配置__
     <!-- CFlow编排引擎配置 -->
     <xconfig>
     
+        <xnode id="XNode_CF013_1_2_1">
+            <comment>异常路由后的成功路由后的子元素的执行</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+        </xnode>
+        
+        
         <xnode id="XNode_CF013_1_2">
             <comment>超时异常情况</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF013_1_2_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
         </xnode>
     
         

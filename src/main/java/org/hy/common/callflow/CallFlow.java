@@ -700,6 +700,12 @@ public class CallFlow
             {
                 v_Nexts = i_ExecObject.getRoute().getExceptions();
             }
+            
+            if ( Help.isNull(v_Nexts) )
+            {
+                // 当没有异常处理时，应结束整个编排，退出结束整个编排
+                CallFlow.putError(io_Context ,v_Result);
+            }
         }
         
         // 事件：执行后
@@ -714,13 +720,7 @@ public class CallFlow
             {
                 ExecuteResult v_NextResult = CallFlow.execute(v_Next.gatNext() ,io_Context ,i_ExecObject.getTreeID(i_SuperTreeID) ,v_Result ,i_Event);
                 v_Result.addNext(v_NextResult);
-                if ( !v_NextResult.isSuccess() )
-                {
-                    // 下一个执行异常
-                    CallFlow.putError(io_Context ,v_NextResult);
-                    return v_Result;
-                }
-                else if ( CallFlow.getExecuteIsError(io_Context) )
+                if ( CallFlow.getExecuteIsError(io_Context) )
                 {
                     // 子级或子子级执行异常
                     return v_Result;

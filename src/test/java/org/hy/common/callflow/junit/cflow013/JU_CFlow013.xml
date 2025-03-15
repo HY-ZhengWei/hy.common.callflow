@@ -16,10 +16,23 @@
     <!-- CFlow编排引擎配置 -->
     <xconfig>
     
+        <xnode id="XNode_CF013_1_2_1">
+            <comment>异常路由后的成功路由后的子元素的执行</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+        </xnode>
+        
+        
         <xnode id="XNode_CF013_1_2">
             <comment>超时异常情况</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF013_1_2_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
         </xnode>
     
         

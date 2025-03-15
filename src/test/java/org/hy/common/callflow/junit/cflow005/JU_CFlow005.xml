@@ -17,9 +17,16 @@
     <xconfig>
     
         <xnode id="XNode_CF005_1_2">
-            <comment>1.2节点</comment>
+            <comment>1.2节点。异常时有后续的处理，我也会被执行</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_1_2</callMethod>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF005_1_1_2_1">
+            <comment>异常时的后续处理</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Error</callMethod>
         </xnode>
         
         
@@ -27,6 +34,12 @@
             <comment>1.1.2节点</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_1_1_2</callMethod>
+            <route>
+                <error>                                     <!-- 异常时，关联后置节点 -->
+                    <next ref="XNode_CF005_1_1_2_1" />
+                    <comment>异常时</comment>
+                </error>
+            </route>
         </xnode>
         
         

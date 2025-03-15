@@ -48,4 +48,11 @@ public class Program
         System.out.println("call method_Error");
     }
     
+    
+    
+    public void method_Finish()
+    {
+        System.out.println("call method_Finish");
+    }
+    
 }
