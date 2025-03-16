@@ -231,7 +231,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
             
             if ( v_WaitTime > 0 )
             {
-                Thread.sleep(v_WaitTime);
+                Thread.sleep(v_WaitTime ,0);
             }
             
             // 计数器

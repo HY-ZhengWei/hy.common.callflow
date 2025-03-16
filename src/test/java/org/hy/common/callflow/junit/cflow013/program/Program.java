@@ -18,18 +18,17 @@ public class Program
     
     public long method_Timeout(long i_Sleep)
     {
-        System.out.println("call method_Timeout Sleep=" + i_Sleep + "\tStartTime：" + Date.getNowTime().getFullMilli());
-        
         try
         {
+            System.out.println("call method_Timeout Sleep=" + i_Sleep + "\tStartTime：" + Date.getNowTime().getFullMilli());
             Thread.sleep(i_Sleep);
+            System.out.println("call method_Timeout Sleep=" + i_Sleep + "\t  endTime：" + Date.getNowTime().getFullMilli());
         }
         catch (Exception exce)
         {
-            exce.printStackTrace();
+            System.out.println("call method_Timeout 发生中断");
+            throw new RuntimeException(exce);
         }
-        
-        System.out.println("call method_Timeout Sleep=" + i_Sleep + "\t  endTime：" + Date.getNowTime().getFullMilli());
         
         return i_Sleep;
     }
@@ -50,9 +49,9 @@ public class Program
     
     
     
-    public void method_Finish()
+    public void method_Error_Finish()
     {
-        System.out.println("call method_Finish");
+        System.out.println("call method_Error_Finish");
     }
     
 }

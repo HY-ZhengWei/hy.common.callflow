@@ -5,13 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Supplier;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
@@ -26,6 +20,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
+import org.hy.common.callflow.timeout.TimeoutConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
@@ -191,21 +186,16 @@ public class NodeConfig extends ExecuteElement implements Cloneable
             Long v_Timeout = this.gatTimeout(io_Context);
             if ( v_Timeout > 0L )
             {
-                CompletableFuture<Object> v_Future = this.executeAsync(v_Timeout ,io_Context ,v_CallObject ,v_ParamValues);
-                
-                // 处理任务结果或异常
-                v_Future.whenComplete((i_Result ,i_Exce) -> {
-                    if ( i_Exce != null ) 
-                    {
-                        $Logger.error(i_Exce ,i_Exce.getMessage());
-                    }
-                    else
-                    {
-                        v_Result.setResult(i_Result);
-                    }
-                });
-                
-               v_Future.get(); // 阻塞等待任务完成
+                TimeoutConfig<Object> v_Future = this.executeAsync(v_Timeout ,io_Context ,v_CallObject ,v_ParamValues);
+                Object v_ExceRet = v_Future.execute();  // 阻塞等待任务完成
+                if ( v_Future.isSucceed() )
+                {
+                    v_Result.setResult(v_ExceRet);
+                }
+                else
+                {
+                    throw v_Future.getException();
+                }
             }
             else
             {
@@ -230,7 +220,11 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         }
         catch (Exception exce)
         {
-            if ( exce.getCause() instanceof TimeoutException )
+            if ( exce instanceof TimeoutException )
+            {
+                v_Result.setTimeout((TimeoutException) exce);
+            }
+            else if ( exce.getCause() instanceof TimeoutException )
             {
                 v_Result.setTimeout((TimeoutException) exce.getCause());
             }
@@ -250,6 +244,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
      * @author      ZhengWei(HY)
      * @createDate  2025-03-07
      * @version     v1.0
+     * @version     v2.0  2025-03-16  从 CompletableFuture 升级为 TimeoutConfig
      *
      * @param i_Timeout      执行超时时长（单位：毫秒）
      * @param io_Context     上下文类型的变量信息
@@ -257,7 +252,67 @@ public class NodeConfig extends ExecuteElement implements Cloneable
      * @param i_ParamValues  执行方法的参数
      * @return
      */
-    private CompletableFuture<Object> executeAsync(Long i_Timeout ,Map<String ,Object> io_Context ,Object i_CallObject ,Object [] i_ParamValues) 
+    private TimeoutConfig<Object> executeAsync(Long i_Timeout ,Map<String ,Object> io_Context ,Object i_CallObject ,Object [] i_ParamValues)
+    {
+        return new TimeoutConfig<Object>(i_Timeout).future(() -> 
+        {
+            try 
+            {
+                if ( Void.TYPE.equals(this.callMethodObject.getReturnType()) )
+                {
+                    this.callMethodObject.invoke(i_CallObject ,i_ParamValues);
+                    return this.generateReturn(io_Context ,Void.TYPE);
+                }
+                else
+                {
+                    return this.generateReturn(io_Context ,this.callMethodObject.invoke(i_CallObject ,i_ParamValues));
+                }
+            } 
+            catch (Exception exce) 
+            {
+                throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] executeAsync error", exce);
+            }
+        });
+    }
+    
+    
+    /*
+    private void call_executeAsync_stop()
+    {
+        CompletableFuture<Object> v_Future = this.executeAsync_stop(v_Timeout ,io_Context ,v_CallObject ,v_ParamValues);
+        
+        // 处理任务结果或异常
+        v_Future.whenComplete((i_Result ,i_Exce) -> {
+            if ( i_Exce != null ) 
+            {
+                $Logger.error(i_Exce ,i_Exce.getMessage());
+            }
+            else
+            {
+                v_Result.setResult(i_Result);
+            }
+        });
+        
+       v_Future.get(); // 阻塞等待任务完成
+    }
+    */
+    
+    
+    /**
+     * 超时异步执行
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-07
+     * @version     v1.0
+     *
+     * @param i_Timeout      执行超时时长（单位：毫秒）
+     * @param io_Context     上下文类型的变量信息
+     * @param i_CallObject   执行方法的对象实例
+     * @param i_ParamValues  执行方法的参数
+     * @return
+     */
+    /*
+    private CompletableFuture<Object> executeAsync_stop(Long i_Timeout ,Map<String ,Object> io_Context ,Object i_CallObject ,Object [] i_ParamValues) 
     {
         Supplier<Object> v_Task = () -> {
             try 
@@ -278,8 +333,8 @@ public class NodeConfig extends ExecuteElement implements Cloneable
             }
         };
         
-        CompletableFuture<Object> v_Future   = new CompletableFuture<Object>();      // 用于执行任务
-        ScheduledExecutorService v_Scheduler = Executors.newScheduledThreadPool(1);  // 用于超时控制
+        CompletableFuture<Object> v_Future    = new CompletableFuture<Object>();      // 用于执行任务
+        ScheduledExecutorService  v_Scheduler = Executors.newScheduledThreadPool(1);  // 用于超时控制
 
         // 提交任务到 CompletableFuture
         CompletableFuture.runAsync(() -> {
@@ -300,6 +355,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
             {
                 // 超时后抛出异常
                 v_Future.completeExceptionally(new TimeoutException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout[" + this.timeout + "]")); 
+                v_Future.cancel(true);
             }
         }, i_Timeout ,TimeUnit.MILLISECONDS);
 
@@ -311,6 +367,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
 
         return v_Future;
     }
+    */
     
     
     /**

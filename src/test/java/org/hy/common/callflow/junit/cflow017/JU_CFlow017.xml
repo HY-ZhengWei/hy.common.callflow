@@ -15,59 +15,80 @@
     
     <!-- CFlow编排引擎配置 -->
     <xconfig>
-    
-        <xnode id="XNode_CF013_1_2_1">
-            <comment>异常路由后的成功路由后的子元素的执行</comment>
+        
+        <xnode id="XWait_CF017_子编排_1_1">
+            <comment>嵌套超时后，此元素不应当被执行</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMethod>method_Error_Finish</callMethod>    <!-- 定义执行方法 -->
+            <callMethod>method_Child_Finish</callMethod>    <!-- 定义执行方法 -->
         </xnode>
         
         
-        <xnode id="XNode_CF013_1_2">
+        <xnode id="XWait_CF017_子编排_1">
+            <comment>嵌套超时后，此元素不应当被执行</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Sleep</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
+                <value>:TimeoutLen</value>                  <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XWait_CF017_子编排_1_1" />
+                    <comment>等待10秒后执行下一步</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        
+    
+    
+        <xnode id="XNode_CF017_1_2_1">
+            <comment>异常路由后的成功路由后的子元素的执行</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Timeout_Finish</callMethod>  <!-- 定义执行方法 -->
+        </xnode>
+        
+        
+        <xnode id="XNode_CF017_1_2">
             <comment>超时异常情况</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
+            <callMethod>method_Timeout</callMethod>         <!-- 定义执行方法 -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF013_1_2_1" />
+                    <next ref="XNode_CF017_1_2_1" />
                     <comment>成功时</comment>
                 </succeed>
             </route>
         </xnode>
     
         
-        <xnode id="XNode_CF013_1_1">
+        <xnode id="XNode_CF017_1_1">
             <comment>正常情况</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_OK</callMethod>              <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
-                <value>:TimeLen</value>                     <!-- 定义入参变量名称 -->
+                <value>:TimeoutLen</value>                  <!-- 定义入参变量名称 -->
             </callParam>
         </xnode>
         
         
-        <xnode id="XNode_CF013_1">
+        <xnesting id="XNode_CF017_1">
             <comment>模拟超时</comment>
-            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMethod>method_Timeout</callMethod>         <!-- 定义执行方法 -->
-            <timeout>5000</timeout>                         <!-- 执行超时时长（单位：毫秒） -->
-            <callParam>
-                <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
-                <value>:SleepTime</value>                   <!-- 定义入参变量名称 -->
-            </callParam>
-            <returnID>TimeLen</returnID>                    <!-- 定义返回结果的变量名称 -->
+            <callFlowXID>:XWait_CF017_子编排_1</callFlowXID>  <!-- 子编排的XID -->
+            <timeout>:TimeoutLen</timeout>                  <!-- 执行超时时长（单位：毫秒） -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF013_1_1" />
+                    <next ref="XNode_CF017_1_1" />
                     <comment>成功时</comment>
                 </succeed>
                 <error>                                     <!-- 异常时，关联后置节点 -->
-                    <next ref="XNode_CF013_1_2" />
+                    <next ref="XNode_CF017_1_2" />
                     <comment>超时异常时</comment>
                 </error>
             </route>
-        </xnode>
+        </xnesting>
         
     </xconfig>
     

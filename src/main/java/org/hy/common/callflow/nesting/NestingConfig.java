@@ -2,9 +2,11 @@ package org.hy.common.callflow.nesting;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.MethodReflect;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
@@ -15,8 +17,10 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
+import org.hy.common.callflow.timeout.TimeoutConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -38,9 +42,16 @@ import org.hy.common.xml.XJava;
  */
 public class NestingConfig extends ExecuteElement implements Cloneable
 {
+    
+    private static final Logger $Logger = new Logger(NestingConfig.class);
+    
+    
 
     /** 子编排的XID（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的XID）。采用弱关联的方式 */
     private String callFlowXID;
+    
+    /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    private String timeout;
     
     
     
@@ -54,6 +65,7 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     public NestingConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
+        this.timeout = "0";
     }
 
     
@@ -109,6 +121,13 @@ public class NestingConfig extends ExecuteElement implements Cloneable
             this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
             return v_NestingBegin;
         }
+        // 执行对象不是编排元素
+        if ( !MethodReflect.isExtendImplement(v_CallObject ,ExecuteElement.class) )
+        {
+            v_NestingBegin.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + this.callFlowXID + "] is not ExecuteElement."));
+            this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
+            return v_NestingBegin;
+        }
         // 禁止嵌套直接套嵌套，做无用功
         /*
         if ( v_CallObject instanceof NestingConfig )
@@ -118,6 +137,18 @@ public class NestingConfig extends ExecuteElement implements Cloneable
             return v_NestingBegin;
         }
         */
+        
+        Long v_Timeout = null;
+        try
+        {
+            v_Timeout = this.gatTimeout(io_Context);
+        }
+        catch (Exception exce)
+        {
+            v_NestingBegin.setException(exce);
+            this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
+            return v_NestingBegin;
+        }
         
         ExecuteResult v_SuperFirstResult = CallFlow.getFirstResult(io_Context);  // 备份父级首个执行结果 
         ExecuteResult v_SuperLastResult  = CallFlow.getLastResult( io_Context);  // 备份父级最后执行结果 
@@ -132,7 +163,6 @@ public class NestingConfig extends ExecuteElement implements Cloneable
             // 嵌套是主编排的首个执行对象
             v_NestingBegin.setPrevious(null);
         }
-        v_NestingBegin.setResult(true);
         
         synchronized ( this )
         {
@@ -141,13 +171,35 @@ public class NestingConfig extends ExecuteElement implements Cloneable
             io_Context.put(CallFlow.$NestingLevel           ,v_NestingLevel + 1);  // 嵌套层级++
         }
         
-        ExecuteElement v_CallFlow = (ExecuteElement) v_CallObject;
-        ExecuteResult  v_ExceRet  = CallFlow.execute(v_CallFlow ,io_Context ,CallFlow.getExecuteEvent(io_Context));
+        ExecuteElement   v_CallFlow    = (ExecuteElement) v_CallObject;
+        ExecuteResult    v_ExceRet     = null;
+        TimeoutException v_TimeoutExce = null;
+        if ( v_Timeout > 0L )
+        {
+            TimeoutConfig<ExecuteResult> v_Future = this.executeAsync(v_Timeout ,io_Context ,v_CallFlow);
+            v_ExceRet = v_Future.execute();  // 阻塞等待任务完成
+            if ( v_Future.isError() )
+            {
+                if ( v_Future.getException() instanceof TimeoutException )
+                {
+                    v_TimeoutExce = (TimeoutException) v_Future.getException();
+                }
+                else
+                {
+                    if ( !CallFlow.getExecuteIsError(io_Context) )
+                    {
+                        $Logger.error("应当永不会被执行，如果执行了，程序就有Bug" ,v_Future.getException());
+                    }
+                }
+            }
+        }
+        else
+        {
+            v_ExceRet = CallFlow.execute(v_CallFlow ,io_Context ,CallFlow.getExecuteEvent(io_Context));
+        }
         
         // 清除子编排中的 “真返回” 标记
         CallFlow.clearTrueReturn(io_Context);
-        
-        this.refreshStatus(io_Context ,v_ExceRet.getStatus());             // 子编排的状态就是我的状态
         
         synchronized ( this )
         {
@@ -159,16 +211,46 @@ public class NestingConfig extends ExecuteElement implements Cloneable
             io_Context.put(CallFlow.$NestingLevel ,v_NestingLevel);
         }
         
-        
-        if ( !CallFlow.getExecuteIsError(io_Context) )
+        // 超时异常
+        if ( v_TimeoutExce != null )
         {
-            ExecuteResult v_LastResult = CallFlow.getLastResult(io_Context);
-            v_LastResult.addNext(v_NestingEnd);                            // 子编排完成后的下一步关联到本层编排的嵌套配置
-            v_NestingEnd.setPrevious(v_LastResult);                        // 关联最后执行对象的结果
-            v_NestingEnd.setResult(v_ExceRet.getResult());                 // 子编排的结果就是我的结果
-            this.refreshReturn(io_Context ,v_ExceRet.getResult());         // 这里用 returnID 返回是的执行结果的原始信息，而不是ExecuteResult对象。
+            ExecuteResult v_ErrorResult = null;
+            do
+            {
+                v_ErrorResult = CallFlow.getErrorResult(io_Context);
+                if ( v_ErrorResult == null )
+                {
+                    v_ErrorResult = CallFlow.getLastResult(io_Context);
+                }
+                
+                if ( v_ErrorResult == null )
+                {
+                    try
+                    {
+                        // 子编排中的元素有可能会慢于主编排的嵌套返回，所以要等一下
+                        Thread.sleep(10L);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        // Nothing.
+                    }
+                }
+            }
+            while ( v_ErrorResult == null );
+            
+            // 必须清除子编排元素引发的异常。如Thread.sleep()方法的InterruptedException异常
+            // 使嵌套元素来主导异常的走向，拥有异常的发表权和控制权
+            CallFlow.clearError(io_Context);   
+            
+            v_ErrorResult.addNext(v_NestingEnd);
+            v_NestingEnd.setPrevious(v_ErrorResult);
+            v_NestingEnd.setTimeout(v_TimeoutExce);
+            
+            v_NestingBegin.setTimeout(v_TimeoutExce);
+            this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
         }
-        else
+        // 运行时异常
+        else if ( CallFlow.getExecuteIsError(io_Context) )
         {
             // 不能改写为异常的元素的执行XID和树ID。嵌套就是一个相对独立的元素
             // 如果将子嵌套的执行XID和树ID拿到本编排流程中，是无法定位
@@ -176,16 +258,52 @@ public class NestingConfig extends ExecuteElement implements Cloneable
             ExecuteResult v_ErrorResult = CallFlow.getErrorResult(io_Context);
             v_ErrorResult.addNext(v_NestingEnd);
             v_NestingEnd.setPrevious( v_ErrorResult);
-            v_NestingEnd.setExecuteLogic(v_ErrorResult.getExecuteLogic());
-            v_NestingEnd.setException(   v_ErrorResult.getException());
-            this.refreshStatus(io_Context ,v_ExceRet.getStatus());
+            v_NestingEnd.setException(v_ErrorResult.getException());
+            
+            v_NestingBegin.setException(v_ErrorResult.getException());
+            this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
+        }
+        // 执行成功
+        else
+        {
+            ExecuteResult v_LastResult = CallFlow.getLastResult(io_Context);
+            v_LastResult.addNext(v_NestingEnd);                        // 子编排完成后的下一步关联到本层编排的嵌套配置
+            v_NestingEnd.setPrevious(v_LastResult);                    // 关联最后执行对象的结果
+            v_NestingEnd.setResult(v_ExceRet.getResult());             // 子编排的结果就是我的结果
+            this.refreshReturn(io_Context ,v_ExceRet.getResult());     // 这里用 returnID 返回是的执行结果的原始信息，而不是ExecuteResult对象。
+            this.refreshStatus(io_Context ,v_ExceRet.getStatus());     // 子编排的状态就是我的状态
+            
+            v_NestingBegin.setResult(v_ExceRet.getResult());
+            this.success(Date.getTimeNano() - v_BeginTime);
         }
         
-        this.success(Date.getTimeNano() - v_BeginTime);
         return v_NestingBegin;
     }
     
     
+    
+    /**
+     * 超时异步执行
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     * @param i_Timeout      执行超时时长（单位：毫秒）
+     * @param io_Context     上下文类型的变量信息
+     * @param i_CallObject   执行方法的对象实例
+     * @param i_ParamValues  执行方法的参数
+     * @return
+     */
+    private TimeoutConfig<ExecuteResult> executeAsync(Long i_Timeout ,Map<String ,Object> io_Context ,ExecuteElement i_CallFlow)
+    {
+        return new TimeoutConfig<ExecuteResult>(i_Timeout).future(() -> 
+        {
+            return CallFlow.execute(i_CallFlow ,io_Context ,CallFlow.getExecuteEvent(io_Context));
+        });
+    }
+    
+
     
     /**
      * 获取：子编排的XID（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素的XID）。采用弱关联的方式
@@ -206,6 +324,77 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     {
         // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
         this.callFlowXID = ValueHelp.standardValueID(i_CallFlowXID);
+    }
+    
+    
+    
+    /**
+     * 从上下文中获取运行时的超时时长
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-15
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Long gatTimeout(Map<String ,Object> i_Context) throws Exception
+    {
+        Long v_Timeout = null;
+        if ( Help.isNumber(this.timeout) )
+        {
+            v_Timeout = Long.valueOf(this.timeout);
+        }
+        else
+        {
+            v_Timeout = (Long) ValueHelp.getValue(this.timeout ,Long.class ,0L ,i_Context);
+        }
+        
+        return v_Timeout;
+    }
+    
+    
+    
+    /**
+     * 获取：执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public String getTimeout()
+    {
+        return timeout;
+    }
+
+    
+    
+    /**
+     * 设置：执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_Timeout 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public void setTimeout(String i_Timeout)
+    {
+        if ( Help.isNull(i_Timeout) )
+        {
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_Timeout) )
+        {
+            Long v_Timeout = Long.valueOf(i_Timeout);
+            if ( v_Timeout < 0L )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.timeout = i_Timeout.trim();
+        }
+        else
+        {
+            this.timeout = ValueHelp.standardRefID(i_Timeout);
+        }
     }
     
     
@@ -403,6 +592,7 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
         v_Clone.callFlowXID = this.callFlowXID;
+        v_Clone.timeout     = this.timeout;
     }
     
     

@@ -313,6 +313,23 @@ public class CallFlow
     
     
     /**
+     * 从上下文中清除之前记录的异常
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     * @param io_Context
+     */
+    public static void clearError(Map<String ,Object> io_Context)
+    {
+        io_Context.put($ExecuteIsError ,false);
+        io_Context.remove($ErrorResult);
+    }
+    
+    
+    
+    /**
      * 向执行上下文中，记录执行异常
      * 
      * @author      ZhengWei(HY)
@@ -484,7 +501,7 @@ public class CallFlow
         }
         
         Map<String ,Object> v_Context = io_Context == null ? new HashMap<String ,Object>() : io_Context;
-        io_Context.put($ExecuteIsError ,false);
+        CallFlow.clearError(v_Context);
         
         // 外界未定义编排执行实例ID时，自动生成
         if ( v_Context.get($WorkID) == null )

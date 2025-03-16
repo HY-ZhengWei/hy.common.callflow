@@ -18,6 +18,7 @@
     * [多路径裂变举例](#多路径裂变举例)
     * [嵌套元素举例](#嵌套元素举例)
     * [嵌套元素的嵌套多个举例](#嵌套元素的嵌套多个举例)
+    * [嵌套元素的超时和异常举例](#嵌套元素的超时和异常举例)
     * [等待元素和While循环举例](#等待元素和While循环举例)
     * [计算元素和While循环举例](#计算元素和While循环举例)
     * [循环元素的For循环数列举例](#循环元素的For循环数列举例)
@@ -515,7 +516,7 @@ __编排配置__
         <xnode id="XNode_CF013_1_2_1">
             <comment>异常路由后的成功路由后的子元素的执行</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+            <callMethod>method_Error_Finish</callMethod>    <!-- 定义执行方法 -->
         </xnode>
         
         
@@ -1264,6 +1265,133 @@ NestingConfig       v_Nesting = (NodeConfig) XJava.getObject("XNesting_CF008_1")
 Map<String ,Object> v_Context = new HashMap<String ,Object>();
 v_Context.put("NumParam"  ,9);     // 传值 9 或 传值 -1 或 不传值
 v_Context.put("NULLValue" ,null);  // 传值 null 或 不为 null
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Nesting ,v_Context);
+```
+
+
+
+嵌套元素的超时和异常举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow017) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow017/JU_CFlow017.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+        
+        <xnode id="XWait_CF017_子编排_1_1">
+            <comment>嵌套超时后，此元素不应当被执行</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Child_Finish</callMethod>    <!-- 定义执行方法 -->
+        </xnode>
+        
+        
+        <xnode id="XWait_CF017_子编排_1">
+            <comment>嵌套超时后，此元素不应当被执行</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Sleep</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
+                <value>:TimeoutLen</value>                  <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XWait_CF017_子编排_1_1" />
+                    <comment>等待10秒后执行下一步</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        
+    
+    
+        <xnode id="XNode_CF017_1_2_1">
+            <comment>异常路由后的成功路由后的子元素的执行</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Timeout_Finish</callMethod>  <!-- 定义执行方法 -->
+        </xnode>
+        
+        
+        <xnode id="XNode_CF017_1_2">
+            <comment>超时异常情况</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Timeout</callMethod>         <!-- 定义执行方法 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF017_1_2_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+    
+        
+        <xnode id="XNode_CF017_1_1">
+            <comment>正常情况</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_OK</callMethod>              <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
+                <value>:TimeoutLen</value>                  <!-- 定义入参变量名称 -->
+            </callParam>
+        </xnode>
+        
+        
+        <xnesting id="XNode_CF017_1">
+            <comment>模拟超时</comment>
+            <callFlowXID>:XWait_CF017_子编排_1</callFlowXID>  <!-- 子编排的XID -->
+            <timeout>:TimeoutLen</timeout>                  <!-- 执行超时时长（单位：毫秒） -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF017_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+                <error>                                     <!-- 异常时，关联后置节点 -->
+                    <next ref="XNode_CF017_1_2" />
+                    <comment>超时异常时</comment>
+                </error>
+            </route>
+        </xnesting>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NestingConfig       v_Nesting = (NodeConfig) XJava.getObject("XNode_CF017_1");
+
+// 大于10秒 或 小于10秒
+v_Context.put("TimeoutLen" ,1000L * 3L);
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_Nesting ,v_Context);

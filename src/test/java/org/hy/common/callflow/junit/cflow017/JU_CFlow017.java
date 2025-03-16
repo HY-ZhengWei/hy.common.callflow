@@ -1,14 +1,15 @@
-package org.hy.common.callflow.junit.cflow013;
+package org.hy.common.callflow.junit.cflow017;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
-import org.hy.common.callflow.junit.cflow013.program.Program;
-import org.hy.common.callflow.node.NodeConfig;
+import org.hy.common.callflow.junit.cflow017.program.Program;
+import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -21,22 +22,22 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎013：执行元素的超时异常处理
+ * 测试单元：编排引擎017：嵌套元素的超时异常处理
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-03-07
+ * @createDate  2025-03-15
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow013 extends JUBase
+public class JU_CFlow017 extends JUBase
 {
     
     private static boolean $isInit = false;
     
     
     
-    public JU_CFlow013() throws Exception
+    public JU_CFlow017() throws Exception
     {
         if ( !$isInit )
         {
@@ -48,30 +49,28 @@ public class JU_CFlow013 extends JUBase
     
     
     @Test
-    public void test_CFlow013() throws InterruptedException
+    public void test_CFlow017()
     {
-        test_CFlow013_Inner();
+        test_CFlow017_Inner();
         System.out.println("\n");
-        test_CFlow013_Inner();
-        
-        Thread.sleep(60 * 1000);
+        test_CFlow017_Inner();
     }
     
     
     
-    private void test_CFlow013_Inner()
+    private void test_CFlow017_Inner()
     {
         // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF013_1");
-        Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+        NestingConfig       v_Nesting = (NestingConfig) XJava.getObject("XNode_CF017_1");
+        Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
-        // 大于5秒 或 小于5秒
-        v_Context.put("SleepTime" ,1000L * 10L);
+        // 大于10秒 或 小于10秒
+        v_Context.put("TimeoutLen" ,1000L * 3L);
         
-        ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
+        ExecuteResult v_Result = CallFlow.execute(v_Nesting ,v_Context);
         if ( v_Result.isSuccess() )
         {
             System.out.println("Success");
@@ -79,6 +78,11 @@ public class JU_CFlow013 extends JUBase
         else
         {
             System.out.println("Error XID = " + v_Result.getExecuteXID());
+            System.out.println("Error Msg = " + v_Result.getException().getMessage());
+            if ( v_Result.getException() instanceof TimeoutException )
+            {
+                System.out.println("is TimeoutException");
+            }
             v_Result.getException().printStackTrace();
         }
         
@@ -94,9 +98,18 @@ public class JU_CFlow013 extends JUBase
         System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
         
         // 导出
-        System.out.println(CallFlow.getHelpExport().export(v_FirstNode));
+        System.out.println(CallFlow.getHelpExport().export(v_Nesting));
         
-        toJson( v_FirstNode);
+        toJson(v_Nesting);
+        
+        try
+        {
+            Thread.sleep(60 * 1000);
+        }
+        catch (Exception exce)
+        {
+            exce.printStackTrace();
+        }
     }
     
 }
