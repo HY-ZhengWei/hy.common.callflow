@@ -595,6 +595,33 @@ public class ConditionItem implements IfElse ,XJavaID
     
     
     /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        ConditionItem v_Clone = new ConditionItem();
+        
+        v_Clone.id         = this.id;
+        v_Clone.comment    = this.comment;
+        v_Clone.comparer   = this.comparer;
+        v_Clone.valueClass = this.valueClass;
+        v_Clone.valueXIDA  = this.valueXIDA;
+        v_Clone.valueXIDB  = this.valueXIDB; 
+        
+        return v_Clone;
+    }
+    
+    
+    /**
      * 深度克隆编排元素
      * 
      * @author      ZhengWei(HY)

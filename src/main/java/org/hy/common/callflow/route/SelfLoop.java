@@ -391,6 +391,26 @@ public class SelfLoop extends ExecuteElement
     
     
     /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        // 无须克隆自引用元素，也不允许调用此方法
+        throw new RuntimeException("Not allowed to call SelfLoop.cloneMyOnly().");
+    }
+    
+    
+    
+    /**
      * 深度克隆编排
      * 
      * @author      ZhengWei(HY)
@@ -405,6 +425,27 @@ public class SelfLoop extends ExecuteElement
      * @return
      */
     public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        // 无须克隆自引用元素，也不允许调用此方法
+        throw new RuntimeException("Not allowed to call SelfLoop.clone().");
+    }
+    
+    
+    
+    /**
+     * 深度克隆编排元素
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @return
+     * @throws CloneNotSupportedException
+     *
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    protected Object clone() throws CloneNotSupportedException
     {
         // 无须克隆自引用元素，也不允许调用此方法
         throw new RuntimeException("Not allowed to call SelfLoop.clone().");

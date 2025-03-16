@@ -581,6 +581,25 @@ public class RouteItem implements IToXml ,CloneableCallFlow
     
     
     /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        // 无须克隆路由项，也不允许调用此方法
+        throw new RuntimeException("Not allowed to call RouteItem.cloneMyOnly().");
+    }
+    
+    
+    /**
      * 深度克隆编排
      * 
      * @author      ZhengWei(HY)
@@ -668,6 +687,26 @@ public class RouteItem implements IToXml ,CloneableCallFlow
                 throw new RuntimeException("Unknown type[" + this.next.getClass().getName() + "] of exception");
             }
         }
+    }
+    
+    
+    /**
+     * 深度克隆编排元素
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-11
+     * @version     v1.0
+     *
+     * @return
+     * @throws CloneNotSupportedException
+     *
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    protected Object clone() throws CloneNotSupportedException
+    {
+        // 无须克隆路由项，也不允许调用此方法
+        throw new RuntimeException("Not allowed to call RouteItem.clone().");
     }
     
 }

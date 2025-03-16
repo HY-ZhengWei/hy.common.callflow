@@ -493,6 +493,32 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
     
     
     /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        NodeParam v_Clone = new NodeParam();
+        
+        v_Clone.id           = this.id;
+        v_Clone.comment      = this.comment;
+        v_Clone.valueClass   = this.valueClass;
+        v_Clone.value        = this.value;
+        v_Clone.valueDefault = this.valueDefault;
+        
+        return v_Clone;
+    }
+    
+    
+    /**
      * 深度克隆编排
      * 
      * @author      ZhengWei(HY)
@@ -510,8 +536,8 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
     {
         NodeParam v_Clone = (NodeParam) io_Clone;
         
-        v_Clone.id           = this.id;
         v_Clone.xid          = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
+        v_Clone.id           = this.id;
         v_Clone.comment      = this.comment;
         v_Clone.valueClass   = this.valueClass;
         v_Clone.value        = this.value;

@@ -28,6 +28,7 @@ import com.greenpineyu.fel.context.MapContext;
 
 
 
+
 /**
  * 计算元素：计算配置信息
  * 
@@ -438,6 +439,29 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
         }
         
         return v_Builder.toString();
+    }
+    
+    
+    /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        CalculateConfig v_Clone = new CalculateConfig();
+        
+        this.cloneMyOnly(v_Clone);
+        v_Clone.setCalc(this.calc);
+        
+        return v_Clone;
     }
     
     

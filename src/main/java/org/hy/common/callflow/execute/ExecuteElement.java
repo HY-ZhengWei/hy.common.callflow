@@ -1162,27 +1162,19 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     }
     
     
+    
     /**
-     * 深度克隆编排
+     * 浅克隆，只克隆自己，不克隆路由
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-10
+     * @createDate  2025-03-16
      * @version     v1.0
-     *
-     * @param io_Clone        克隆的复制品对象
-     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
-     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
-     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
-     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
-     * @return
+     * 
+     * @param io_Clone
      */
-    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    protected void cloneMyOnly(ExecuteElement io_Clone)
     {
-        ExecuteElement v_Clone = (ExecuteElement) io_Clone;
-        
-        v_Clone.reset(this.getRequestTotal() ,this.getSuccessTotal());
-        v_Clone.xid             = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
-        io_XIDObjects.put(v_Clone.xid ,v_Clone);
+        ExecuteElement v_Clone = io_Clone;
         
         v_Clone.id              = this.id;
         v_Clone.treeIDs.putAll(   this.treeIDs);
@@ -1212,6 +1204,33 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         v_Clone.updateTime      = this.updateTime == null ? null : new Date(this.updateTime.getTime());
         v_Clone.returnID        = this.returnID;
         v_Clone.statusID        = this.statusID;
+    }
+    
+    
+    
+    /**
+     * 深度克隆编排
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-10
+     * @version     v1.0
+     *
+     * @param io_Clone        克隆的复制品对象
+     * @param i_ReplaceXID    要被替换掉的XID中的关键字（可为空）
+     * @param i_ReplaceByXID  新的XID内容，替换为的内容（可为空）
+     * @param i_AppendXID     替换后，在XID尾追加的内容（可为空）
+     * @param io_XIDObjects   已实例化的XID对象。Map.key为XID值
+     * @return
+     */
+    public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
+    {
+        ExecuteElement v_Clone = (ExecuteElement) io_Clone;
+        
+        v_Clone.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        v_Clone.xid             = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
+        io_XIDObjects.put(v_Clone.xid ,v_Clone);
+        
+        this.cloneMyOnly(v_Clone);
         
         if ( !Help.isNull(this.previous) )
         {

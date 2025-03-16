@@ -1046,8 +1046,46 @@ public class NodeConfig extends ExecuteElement implements Cloneable
     }
     
     
+    
+    /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        NodeConfig v_Clone = new NodeConfig();
+        
+        this.cloneMyOnly(v_Clone);
+        v_Clone.callXID    = this.callXID;
+        v_Clone.callMethod = this.callMethod; 
+        v_Clone.timeout    = this.timeout;
+        
+        if ( !Help.isNull(this.callParams) )
+        {
+            v_Clone.callParams = new ArrayList<NodeParam>();
+            for (NodeParam v_NodeParam : this.callParams)
+            {
+                v_Clone.callParams.add((NodeParam) v_NodeParam.cloneMyOnly());
+            }
+        }
+        
+        return v_Clone;
+    }
+    
+    
+    
     /**
      * 深度克隆编排元素
+     * 
+     * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-10
@@ -1089,6 +1127,8 @@ public class NodeConfig extends ExecuteElement implements Cloneable
 
     /**
      * 深度克隆编排元素
+     * 
+     * 建议：子类重写此方法
      *
      * @author      ZhengWei(HY)
      * @createDate  2025-03-11

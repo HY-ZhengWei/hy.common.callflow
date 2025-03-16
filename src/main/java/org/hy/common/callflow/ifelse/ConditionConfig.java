@@ -520,6 +520,45 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     
     
     /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        ConditionConfig v_Clone = new ConditionConfig();
+        
+        this.cloneMyOnly(v_Clone);
+        v_Clone.logical = this.logical;
+        
+        for (IfElse v_Item : this.items)
+        {
+            if ( v_Item instanceof ConditionItem )
+            {
+                v_Clone.items.add((ConditionItem) ((ConditionItem) v_Item).cloneMyOnly());
+            }
+            else if ( v_Item instanceof ConditionConfig )
+            {
+                v_Clone.items.add((ConditionConfig) ((ConditionConfig) v_Item).cloneMyOnly());
+            }
+            else
+            {
+                throw new RuntimeException("Unknown type[" + v_Item.getClass().getName() + "] of exception");
+            }
+        }
+        
+        return v_Clone;
+    }
+    
+    
+    /**
      * 深度克隆编排元素
      * 
      * @author      ZhengWei(HY)

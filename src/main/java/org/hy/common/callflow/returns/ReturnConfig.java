@@ -455,6 +455,31 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        ReturnConfig v_Clone = new ReturnConfig();
+        
+        this.cloneMyOnly(v_Clone);
+        v_Clone.retClass   = this.retClass;
+        v_Clone.retValue   = this.retValue;
+        v_Clone.retDefault = this.retDefault; 
+        
+        return v_Clone;
+    }
+    
+    
+    /**
      * 深度克隆编排元素
      * 
      * @author      ZhengWei(HY)

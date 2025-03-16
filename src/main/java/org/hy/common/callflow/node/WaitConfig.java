@@ -488,6 +488,31 @@ public class WaitConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        WaitConfig v_Clone = new WaitConfig();
+        
+        this.cloneMyOnly(v_Clone);
+        v_Clone.waitTime   = this.waitTime;
+        v_Clone.counter    = this.counter;
+        v_Clone.counterMax = this.counterMax;
+        
+        return v_Clone;
+    }
+    
+    
+    /**
      * 深度克隆编排元素
      * 
      * @author      ZhengWei(HY)

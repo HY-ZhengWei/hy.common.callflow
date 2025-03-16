@@ -28,6 +28,20 @@ public interface CloneableCallFlow
     
     
     /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly();
+    
+    
+    
+    /**
      * 深度克隆编排
      * 
      * @author      ZhengWei(HY)

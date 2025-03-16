@@ -447,6 +447,10 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
         }
+        if ( !Help.isNull(this.timeout) && !"0".equals(this.timeout) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
+        }
         if ( !Help.isNull(this.returnID) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
@@ -564,6 +568,30 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         v_Builder.append("execute(...)");
         
         return v_Builder.toString();
+    }
+    
+    
+    /**
+     * 浅克隆，只克隆自己，不克隆路由。
+     * 
+     * 注：不克隆XID。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-16
+     * @version     v1.0
+     *
+     */
+    public Object cloneMyOnly()
+    {
+        NestingConfig v_Clone = new NestingConfig();
+        
+        this.cloneMyOnly(v_Clone);
+        v_Clone.callFlowXID = this.callFlowXID;
+        v_Clone.timeout     = this.timeout;
+        
+        return v_Clone;
     }
     
     
