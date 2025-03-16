@@ -143,7 +143,7 @@ public class ExportXml
      * @createDate  2025-02-26
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
+     * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
      * @return               返回保存文件的全路径
      * @throws IOException 
      */
@@ -165,7 +165,7 @@ public class ExportXml
      * @createDate  2025-02-26
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
+     * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
      * @param i_SavePath     保存目录
      * @return               返回保存文件的全路径
      * @throws IOException 
@@ -223,7 +223,7 @@ public class ExportXml
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
      * @return
      */
     public String export(IExecute i_ExecObject)
@@ -259,7 +259,7 @@ public class ExportXml
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行元素、条件逻辑元素、等待元素、计算元素、循环元素、嵌套元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
      * @param i_TreeID      执行对象的树ID
      * @return
      */
