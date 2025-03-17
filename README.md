@@ -1310,21 +1310,16 @@ __编排配置__
         </xnode>
         
         
-        <xnode id="XWait_CF017_子编排_1">
-            <comment>嵌套超时后，此元素不应当被执行</comment>
-            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMethod>method_Sleep</callMethod>           <!-- 定义执行方法 -->
-            <callParam>
-                <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
-                <value>:TimeoutLen</value>                  <!-- 定义入参变量名称 -->
-            </callParam>
+        <xwait id="XWait_CF017_子编排_1">
+            <comment>等待10秒</comment>
+            <waitTime>10000</waitTime>                      <!-- 等待时长（单位：毫秒） -->
             <route>
-                <succeed>
+                <if>
                     <next ref="XWait_CF017_子编排_1_1" />
                     <comment>等待10秒后执行下一步</comment>
-                </succeed>
+                </if>
             </route>
-        </xnode>
+        </xwait>
         
         
         

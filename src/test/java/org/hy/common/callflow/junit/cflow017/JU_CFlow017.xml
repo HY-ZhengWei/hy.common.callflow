@@ -23,13 +23,25 @@
         </xnode>
         
         
+        <xwait id="XWait_CF017_子编排_1">
+            <comment>等待10秒</comment>
+            <waitTime>10000</waitTime>                      <!-- 等待时长（单位：毫秒） -->
+            <route>
+                <if>
+                    <next ref="XWait_CF017_子编排_1_1" />
+                    <comment>等待10秒后执行下一步</comment>
+                </if>
+            </route>
+        </xwait>
+        
+        <!-- Thread.sleep 的另种测试方案
         <xnode id="XWait_CF017_子编排_1">
             <comment>嵌套超时后，此元素不应当被执行</comment>
-            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMethod>method_Sleep</callMethod>           <!-- 定义执行方法 -->
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Sleep</callMethod>
             <callParam>
-                <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
-                <value>:TimeoutLen</value>                  <!-- 定义入参变量名称 -->
+                <valueClass>java.lang.Long</valueClass>
+                <value>:TimeoutLen</value>
             </callParam>
             <route>
                 <succeed>
@@ -38,6 +50,7 @@
                 </succeed>
             </route>
         </xnode>
+        -->
         
         
         
