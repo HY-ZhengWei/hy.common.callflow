@@ -89,6 +89,7 @@
 |:--------|:--------|
 |CallFlow.execute(IExecute ,Map)|执行编排|
 |CallFlow.execute(IExecute ,Map ,IExecuteEvent)|执行编排，并带有事件监听器的|
+|CallFlow.getHelpCheck(IExecute)|编排的静态合规性检测|
 |CallFlow.getHelpExecute().calcTree(IExecute)|计算寻址相关的树ID|
 |CallFlow.getHelpExecute().clearTree(IExecute)|清理寻址相关的树ID|
 |CallFlow.getHelpExecute().findTreeID(IExecute ,String)|用树ID定位编排中的元素|

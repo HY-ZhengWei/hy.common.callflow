@@ -479,6 +479,18 @@ public class RouteItem implements IToXml ,CloneableCallFlow
     {
         this.owner = i_Owner;
     }
+    
+    
+    /**
+     * 设置：归属者（仅对外开放setter方法，为防止死循环）（内部使用）
+     * 防止Json无限制循环
+     * 
+     * @param i_Owner 归属者（仅对外开放setter方法，为防止死循环）（内部使用）
+     */
+    public RouteConfig gatOwner()
+    {
+        return this.owner;
+    }
 
 
     /**

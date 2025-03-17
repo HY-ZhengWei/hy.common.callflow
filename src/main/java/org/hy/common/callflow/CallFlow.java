@@ -7,6 +7,7 @@ import java.util.Map;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.execute.ExecuteElementCheckHelp;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.ExecuteResultLogHelp;
 import org.hy.common.callflow.execute.ExecuteTreeHelp;
@@ -360,6 +361,22 @@ public class CallFlow
     public static ExecuteTreeHelp getHelpExecute()
     {
         return ExecuteTreeHelp.getInstance();
+    }
+    
+    
+    
+    /**
+     * 集成：编排及元素的检测
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-17
+     * @version     v1.0
+     *
+     * @return
+     */
+    public static ExecuteElementCheckHelp getHelpCheck()
+    {
+        return ExecuteElementCheckHelp.getInstance();
     }
     
     
