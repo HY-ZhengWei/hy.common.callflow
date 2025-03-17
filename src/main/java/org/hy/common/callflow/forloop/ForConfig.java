@@ -131,6 +131,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
         {
             this.start = ValueHelp.standardRefID(v_Start);
         }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
 
     
@@ -167,6 +168,8 @@ public class ForConfig extends ExecuteElement implements Cloneable
         {
             this.end = ValueHelp.standardRefID(v_End);
         }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -203,6 +206,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
         {
             this.step = ValueHelp.standardRefID(v_Step);
         }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
     }
 
 
@@ -229,6 +233,8 @@ public class ForConfig extends ExecuteElement implements Cloneable
             throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s indexID[" + i_IndexID + "] is SystemXID.");
         }
         this.indexID = ValueHelp.standardValueID(i_IndexID);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
     
@@ -255,6 +261,8 @@ public class ForConfig extends ExecuteElement implements Cloneable
             throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s elementID[" + i_ElementID + "] is SystemXID.");
         }
         this.elementID = ValueHelp.standardValueID(i_ElementID);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 

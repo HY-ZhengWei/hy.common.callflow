@@ -624,6 +624,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         this.callXID = ValueHelp.standardValueID(i_CallXID);
         this.isInit  = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
     
@@ -646,6 +647,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         this.callMethod = i_CallMethod;
         this.isInit     = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
@@ -671,6 +673,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         this.callParams.add(i_Param);
         this.isInit = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
     
@@ -693,6 +696,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
         this.callParams = i_CallParams;
         this.isInit     = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     

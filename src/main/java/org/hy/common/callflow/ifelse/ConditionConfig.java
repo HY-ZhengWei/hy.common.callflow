@@ -251,6 +251,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     public boolean setItem(ConditionItem i_Item)
     {
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
         
         if ( i_Item != null )
         {
@@ -276,6 +277,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     public boolean setItem(ConditionConfig i_Item)
     {
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
         
         if ( i_Item != null  )
         {
@@ -307,6 +309,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     {
         this.logical = i_Logical;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
@@ -328,6 +331,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     {
         this.items = i_Items;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     

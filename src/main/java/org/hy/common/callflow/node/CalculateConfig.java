@@ -167,6 +167,8 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
             this.calcFel      = null;
             this.placeholders = null;
         }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 

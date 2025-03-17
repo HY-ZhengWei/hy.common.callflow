@@ -190,6 +190,8 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
             this.retClass = i_RetClass;
         }
         this.retDefaultObject = null;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
@@ -212,6 +214,8 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     public void setRetValue(String i_RetValue)
     {
         this.retValue = i_RetValue;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
     
@@ -235,6 +239,8 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     {
         this.retDefault       = i_RetDefault;
         this.retDefaultObject = null;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     

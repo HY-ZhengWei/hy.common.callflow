@@ -11,6 +11,7 @@ import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
+import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
@@ -215,6 +216,17 @@ public class ExecuteElementCheckHelp
             if ( Help.isNull(v_Return.getRetValue()) )
             {
                 io_Result.set(false).setParamStr("ReturnConfig[" + Help.NVL(v_Return.getXid()) + "].retValue is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof WaitConfig )
+        {
+            WaitConfig v_Wait = (WaitConfig) i_ExecObject;
+            
+            // 返回元素的返回结果数据不能为空
+            if ( "0".equals(v_Wait.getWaitTime()) )
+            {
+                io_Result.set(false).setParamStr("WaitConfig[" + Help.NVL(v_Wait.getXid()) + "].waitTime is 0.");
                 return false;
             }
         }

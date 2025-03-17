@@ -123,6 +123,8 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         {
             this.waitTime = ValueHelp.standardRefID(i_WaitTime);
         }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
@@ -152,6 +154,8 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         {
             this.counter = ValueHelp.standardValueID(i_Counter.trim());
         }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -195,6 +199,8 @@ public class WaitConfig extends ExecuteElement implements Cloneable
                 this.counterMax = ValueHelp.standardRefID(i_CounterMax);
             }
         }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 

@@ -40,6 +40,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     
     
     
+    /** 关键属性有改动 */
+    private   boolean                    keyChange;
+    
     /** 主键标识 */
     protected String                     id;
                                          
@@ -153,6 +156,45 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         this.treeLevels = new LinkedHashMap<String ,Integer>();
         this.treeNos    = new LinkedHashMap<String ,Integer>();
         this.route      = new RouteConfig(this);
+        this.keyChange  = false;
+    }
+    
+    
+    
+    /**
+     * 关键属性有改动
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-17
+     * @version     v1.0
+     *
+     */
+    protected void keyChange()
+    {
+        this.keyChange = true;
+        if ( !Help.isNull(this.previous) )
+        {
+            for (IExecute v_Item : this.previous)
+            {
+                ((ExecuteElement) v_Item).keyChange();
+            }
+        }
+    }
+    
+    
+    
+    /**
+     * 关键属性有改动
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-17
+     * @version     v1.0
+     *
+     * @return
+     */
+    public boolean isKeyChange()
+    {
+        return this.keyChange;
     }
     
     
@@ -179,6 +221,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
             throw new IllegalArgumentException("ExecuteElement's XID[" + i_Xid + "] is SystemXID.");
         }
         this.xid = i_Xid;
+        this.keyChange();
     }
 
     
@@ -195,6 +238,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
             throw new IllegalArgumentException("ExecuteElement's XJavaID[" + i_XJavaID + "] is SystemXID.");
         }
         this.xid = i_XJavaID;
+        this.keyChange();
     }
     
     
@@ -914,6 +958,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         }
         
         this.returnID = ValueHelp.standardValueID(i_ReturnID);
+        this.keyChange();
     }
     
     
@@ -941,6 +986,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         }
         
         this.statusID = ValueHelp.standardValueID(i_StatusID);
+        this.keyChange();
     }
     
     
@@ -968,6 +1014,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
             this.previous = new ArrayList<IExecute>();
         }
         this.previous.add(i_Previous);
+        this.keyChange();
     }
 
 
@@ -990,6 +1037,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
     public void setRoute(RouteConfig i_Route)
     {
         this.route = i_Route;
+        this.keyChange();
         if ( this.route != null )
         {
             this.route.setOwner(this);

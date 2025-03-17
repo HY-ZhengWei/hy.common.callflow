@@ -324,6 +324,8 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     {
         // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
         this.callFlowXID = ValueHelp.standardValueID(i_CallFlowXID);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
