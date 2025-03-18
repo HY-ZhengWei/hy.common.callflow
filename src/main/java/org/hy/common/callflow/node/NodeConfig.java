@@ -42,7 +42,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-11
  * @version     v1.0
  */
-public class NodeConfig extends ExecuteElement implements Cloneable
+public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
     
     private static final Logger $Logger = new Logger(NodeConfig.class);
