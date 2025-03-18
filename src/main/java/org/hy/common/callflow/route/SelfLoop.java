@@ -87,6 +87,22 @@ public class SelfLoop extends ExecuteElement
     
     
     /**
+     * 仅用于检测时
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-18
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String gatRefXID()
+    {
+        return this.refXID;
+    }
+    
+    
+    
+    /**
      * 获取引用的执行元素
      * 
      * @author      ZhengWei(HY)

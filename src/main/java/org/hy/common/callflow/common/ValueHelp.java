@@ -33,6 +33,23 @@ public class ValueHelp
     
     
     /**
+     * 是否为引用ID的格式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-18
+     * @version     v1.0
+     *
+     * @param i_RefID  引用的XID
+     * @return
+     */
+    public static boolean isRefID(String i_RefID)
+    {
+        return i_RefID.startsWith(DBSQL.$Placeholder);
+    }
+    
+    
+    
+    /**
      * 定义变量ID时的标准化。
      * 
      *   定义变量ID前缘有占位符时，去除占位符。

@@ -87,6 +87,7 @@ public class RouteConfig
         }
         else if ( this.owner.equals(i_Execute) )
         {
+            // 自循环（递归），请用SelfLoop的自引用实现
             throw new IllegalArgumentException("XID[" + Help.NVL(i_Execute.getXid()) + ":" + Help.NVL(i_Execute.getComment()) + "] Not allowed to self link.");
         }
     }

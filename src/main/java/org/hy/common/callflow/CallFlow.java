@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteElementCheckHelp;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.ExecuteResultLogHelp;
@@ -515,6 +517,14 @@ public class CallFlow
         if ( i_ExecObject == null )
         {
             return v_LastResult.setException(new NullPointerException("ExecObject is null."));
+        }
+        if ( ((ExecuteElement) i_ExecObject).isKeyChange() )
+        {
+            Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(i_ExecObject);
+            if ( !v_CheckRet.get() )
+            {
+                return v_LastResult.setException(new RuntimeException(v_CheckRet.getParamStr()));
+            }
         }
         
         Map<String ,Object> v_Context = io_Context == null ? new HashMap<String ,Object>() : io_Context;

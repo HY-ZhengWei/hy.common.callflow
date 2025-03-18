@@ -179,6 +179,24 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
                 ((ExecuteElement) v_Item).keyChange();
             }
         }
+        // System.out.println("keyChange：" + this.xid);
+    }
+    
+    
+    
+    /**
+     * 通过检测（静态检测环境），并符合要求。
+     * 
+     * 详见：ExecuteElementCheckHelp
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-17
+     * @version     v1.0
+     *
+     */
+    protected void checkOK()
+    {
+        this.keyChange = false;
     }
     
     

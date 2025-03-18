@@ -51,7 +51,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
     /** 参数数值。可以是数值、上下文变量、XID标识 */
     private String   value;
     
-    /** 参数默认值的字符形式（参数为上下文变量、XID标识时生效） */
+    /** 参数默认值的字符形式（参数为数值、上下文变量、XID标识时生效） */
     private String   valueDefault;
     
     /** 参数默认值的实例对象(内部使用) */
@@ -120,7 +120,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      *
      * @param i_Value         参数数值。可以是数值、上下文变量、XID标识
      * @param i_ValueClass    参数类型
-     * @param i_ValueDefault  参数默认值的字符形式（参数为上下文变量、XID标识时生效）
+     * @param i_ValueDefault  参数默认值的字符形式（参数为数值、上下文变量、XID标识时生效）
      */
     public NodeParam(String i_Value ,String i_ValueClass ,String i_ValueDefault)
     {
@@ -234,7 +234,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      */
     public void setValueClass(String i_ValueClass)
     {
-        if ( Void.class.getName().equals(i_ValueClass) )
+        if ( Help.isNull(i_ValueClass) || Void.class.getName().equals(i_ValueClass) )
         {
             this.valueClass = null;
         }
@@ -267,7 +267,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
 
     
     /**
-     * 获取：参数默认值的字符形式（参数为上下文变量、XID标识时生效）
+     * 获取：参数默认值的字符形式（参数为数值、上下文变量、XID标识时生效）
      */
     public String getValueDefault()
     {
@@ -276,9 +276,9 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
 
     
     /**
-     * 设置：参数默认值的字符形式（参数为上下文变量、XID标识时生效）
+     * 设置：参数默认值的字符形式（参数为数值、上下文变量、XID标识时生效）
      * 
-     * @param i_ValueDefault 参数默认值的字符形式（参数为上下文变量、XID标识时生效）
+     * @param i_ValueDefault 参数默认值的字符形式（参数为数值、上下文变量、XID标识时生效）
      */
     public void setValueDefault(String i_ValueDefault)
     {

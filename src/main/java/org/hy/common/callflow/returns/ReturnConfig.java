@@ -290,8 +290,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
             Object v_Value = ValueHelp.getValue(this.retValue ,this.gatRetClass() ,this.gatRetDefaultObject() ,io_Context);
             if ( this.isReturn() )
             {
-                // 不要在此 put(v_Value) ，容易产生幻觉，一种情况下能取到值，一种情况下取不值。
-                // 原因是：$CallFlowReturn 只是一种标记，并且在嵌套情况下，它还会被清除
+                // $CallFlowReturn 只是一种标记，并且在嵌套情况下，它还会被清除
                 io_Context.put(CallFlow.$CallFlowReturn      ,true);
                 io_Context.put(CallFlow.$CallFlowReturnValue ,v_Value);
             }

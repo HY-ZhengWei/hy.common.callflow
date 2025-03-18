@@ -104,7 +104,7 @@ public class JU_CFlow017 extends JUBase
         
         try
         {
-            Thread.sleep(60 * 1000);
+            Thread.sleep(20 * 1000);
         }
         catch (Exception exce)
         {
