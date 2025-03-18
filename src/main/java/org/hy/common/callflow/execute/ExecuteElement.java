@@ -33,7 +33,7 @@ import org.hy.common.callflow.route.RouteItem;
  * @createDate  2025-02-24
  * @version     v1.0
  */
-public abstract class ExecuteElement extends TotalNano implements IExecute
+public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
     
     public static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);
@@ -1293,7 +1293,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
         ExecuteElement v_Clone = (ExecuteElement) io_Clone;
         
         v_Clone.reset(this.getRequestTotal() ,this.getSuccessTotal());
-        v_Clone.xid             = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
+        v_Clone.xid = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
         io_XIDObjects.put(v_Clone.xid ,v_Clone);
         
         this.cloneMyOnly(v_Clone);
@@ -1343,6 +1343,27 @@ public abstract class ExecuteElement extends TotalNano implements IExecute
                 v_Clone.getRoute().setException(v_CloneRouteItem);
             }
         }
+    }
+    
+    
+    
+    /**
+     * 深度克隆编排元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-18
+     * @version     v1.0
+     *
+     * @return
+     * @throws CloneNotSupportedException
+     *
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        // 请不要直接调用此方法，应调用子类的
+        throw new RuntimeException("Not allowed to call ExecuteElement.clone().");
     }
     
 }

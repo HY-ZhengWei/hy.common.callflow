@@ -593,11 +593,25 @@ public class RouteItem implements IToXml ,CloneableCallFlow
     
     
     /**
+     * 仅仅创建一个新的实例，没有任何赋值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-18
+     * @version     v1.0
+     *
+     * @return
+     */
+    public Object newMy()
+    {
+        // 无须克隆路由项，也不允许调用此方法
+        throw new RuntimeException("Not allowed to call RouteItem.newMy().");
+    }
+    
+    
+    /**
      * 浅克隆，只克隆自己，不克隆路由。
      * 
      * 注：不克隆XID。
-     * 
-     * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-16

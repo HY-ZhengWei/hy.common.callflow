@@ -7,6 +7,7 @@ import java.util.Map;
 import org.hy.common.Help;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.clone.CloneableHelp;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteElementCheckHelp;
@@ -427,6 +428,22 @@ public class CallFlow
     public static ExecuteResultLogHelp getHelpLog()
     {
         return ExecuteResultLogHelp.getInstance();
+    }
+    
+    
+    
+    /**
+     * 集成：克隆编排的辅助类
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-18
+     * @version     v1.0
+     *
+     * @return
+     */
+    public static CloneableHelp getHelpClone()
+    {
+        return CloneableHelp.getInstance();
     }
     
     

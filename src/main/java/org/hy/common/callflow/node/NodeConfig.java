@@ -1052,6 +1052,24 @@ public class NodeConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 仅仅创建一个新的实例，没有任何赋值
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-18
+     * @version     v1.0
+     *
+     * @return
+     */
+    public Object newMy()
+    {
+        return new NodeConfig();
+    }
+    
+    
+    
+    /**
      * 浅克隆，只克隆自己，不克隆路由。
      * 
      * 注：不克隆XID。
@@ -1144,7 +1162,7 @@ public class NodeConfig extends ExecuteElement implements Cloneable
      * @see java.lang.Object#clone()
      */
     @Override
-    protected Object clone() throws CloneNotSupportedException
+    public Object clone() throws CloneNotSupportedException
     {
         if ( Help.isNull(this.xid) )
         {
