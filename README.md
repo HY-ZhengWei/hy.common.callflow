@@ -101,6 +101,7 @@
 |CallFlow.getHelpImport().upgradeBackupFile(IExecute ,String)|升级编排配置，并备份原编排为文件|
 |CallFlow.getHelpImport().upgradeBackupString(IExecute ,String)|升级编排配置，并备份原编排为文本字符|
 |CallFlow.getHelpLog().logs(ExecuteResult)|生成执行结果的轨迹日志|
+|CallFlow.getHelpClone().clone(IExecute)|深度克隆编排|
 
 
 
