@@ -744,8 +744,9 @@ __编排配置__
         </xnode>
         
         
+        <!-- 条件逻辑表达式为：2.0D >= 10.0D  -->
         <xcondition id="XCondition_CF004_1_1_2">
-            <comment>第四个环节，条件逻辑，变量不等于NULL判定</comment>
+            <comment>第四个环节，条件逻辑，是否大于等于</comment>
             <logical>AND</logical>
             <conditionItem>
                 <valueClass>java.lang.Double</valueClass>
@@ -773,6 +774,8 @@ __编排配置__
         </xnode>
         
         
+        <!-- 条件逻辑表达式为：
+        (2025-02-25 00:00:00 == NULL OR 2.0D == NULL) OR (2025-02-25 00:00:00 == 2025-02-25 00:00:00 AND 2.0D == 3.1415926D) -->
         <xcondition id="XCondition_CF004_1_1">
             <comment>第二个环节，条件逻辑，按第一个环节的执行结果控制编排的走向</comment>
             <logical>OR</logical>                               <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
