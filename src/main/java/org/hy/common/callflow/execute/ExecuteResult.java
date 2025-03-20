@@ -52,6 +52,9 @@ public class ExecuteResult implements ITreeID
     
     /** 执行逻辑的表达式 */
     private String              executeLogic;
+    
+    /** 注释。可用于日志的输出等帮助性的信息 */
+    protected String            comment;
                                 
     /** 执行状态 */             
     private ExecuteStatus       status;
@@ -448,6 +451,26 @@ public class ExecuteResult implements ITreeID
     {
         this.executeLogic = i_ExecuteLogic;
         return this;
+    }
+
+    
+    /**
+     * 获取：注释。可用于日志的输出等帮助性的信息
+     */
+    public String getComment()
+    {
+        return comment;
+    }
+
+    
+    /**
+     * 设置：注释。可用于日志的输出等帮助性的信息
+     * 
+     * @param i_Comment 注释。可用于日志的输出等帮助性的信息
+     */
+    public void setComment(String i_Comment)
+    {
+        this.comment = i_Comment;
     }
 
 

@@ -506,7 +506,9 @@ public class ConditionItem implements IfElse ,XJavaID
             // B可以为空，表示判定A是否为空，或判定A是否为Boolean类型的真假
             if ( this.valueXIDB == null )
             {
+                v_Builder.append(this.valueXIDA).append("[");
                 v_Builder.append(ValueHelp.getExpression(v_ValueA));
+                v_Builder.append("]");
                 
                 if ( Comparer.Equal.equals(this.comparer) )
                 {

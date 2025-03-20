@@ -648,6 +648,7 @@ public class CallFlow
         }
         
         ExecuteResult v_Result = i_ExecObject.execute(i_SuperTreeID ,io_Context);
+        v_Result.setComment(i_ExecObject.getComment());
         if ( i_PreviousResult == null )
         {
             // 这里须明白，当有嵌套时，子级的编排也有它自己的首个执行对象的结果

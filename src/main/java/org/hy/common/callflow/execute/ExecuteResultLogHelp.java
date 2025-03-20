@@ -53,7 +53,7 @@ public class ExecuteResultLogHelp
         StringBuilder v_Buffer = new StringBuilder();
         
         int[] v_Lens = calcMaxLen(i_Result);
-        this.logs_Inner(i_Result ,v_Buffer ,v_Lens[0] + 1 ,v_Lens[1] + 1);
+        this.logs_Inner(i_Result ,v_Buffer ,v_Lens[0] + 1 ,v_Lens[1] + 1 ,v_Lens[2]);
         
         return v_Buffer.toString();
     }
@@ -70,14 +70,17 @@ public class ExecuteResultLogHelp
      * @param i_Result  执行结果
      * @return          第1个元素表示：执行对象的树ID的最大长度
      *                  第2个元素表示：执行结果的树ID的最大长度
+     *                  第3个元素表示：执行结果的XID的最大长度
      */
     private int[] calcMaxLen(ExecuteResult i_Result)
     {
         int v_MaxExecuteTreeIDLen = 0;
         int v_MaxResultTreeIDLen  = 0;
+        int v_MaxExecuteXIDLen    = 0;
         
         v_MaxExecuteTreeIDLen = Help.max(i_Result.getExecuteTreeID().length() ,v_MaxExecuteTreeIDLen);
         v_MaxResultTreeIDLen  = Help.max(i_Result.getTreeID().length()        ,v_MaxResultTreeIDLen);
+        v_MaxExecuteXIDLen    = Help.max(i_Result.getExecuteXID().length()    ,v_MaxExecuteXIDLen);
         
         if ( !Help.isNull(i_Result.getNexts()) )
         {
@@ -87,10 +90,11 @@ public class ExecuteResultLogHelp
                
                v_MaxExecuteTreeIDLen = Help.max(v_ItemRet[0] ,v_MaxExecuteTreeIDLen);
                v_MaxResultTreeIDLen  = Help.max(v_ItemRet[1] ,v_MaxResultTreeIDLen);
+               v_MaxExecuteXIDLen    = Help.max(v_ItemRet[2] ,v_MaxExecuteXIDLen);
            }
         }
         
-        return new int [] {v_MaxExecuteTreeIDLen ,v_MaxResultTreeIDLen};
+        return new int [] {v_MaxExecuteTreeIDLen ,v_MaxResultTreeIDLen ,v_MaxExecuteXIDLen};
     }
     
     
@@ -106,23 +110,26 @@ public class ExecuteResultLogHelp
      * @param io_Logs                日志缓存区
      * @param i_MaxExecuteTreeIDLen  执行对象的树ID的最大长度
      * @param i_MaxResultTreeIDLen   执行结果的树ID的最大长度
+     * @param i_MaxExecuteXIDLen     执行结果的XID的最大长度
      */
-    private void logs_Inner(ExecuteResult i_Result ,StringBuilder io_Logs ,int i_MaxExecuteTreeIDLen ,int i_MaxResultTreeIDLen)
+    private void logs_Inner(ExecuteResult i_Result ,StringBuilder io_Logs ,int i_MaxExecuteTreeIDLen ,int i_MaxResultTreeIDLen ,int i_MaxExecuteXIDLen)
     {
         io_Logs.append(StringHelp.rpad(i_Result.getExecuteTreeID() ,i_MaxExecuteTreeIDLen ," "));
         io_Logs.append(StringHelp.rpad(i_Result.getTreeID()        ,i_MaxResultTreeIDLen  ," "));
         io_Logs.append(Date.toTimeLenNano(i_Result.getEndTime() - i_Result.getBeginTime()));
         io_Logs.append(i_Result.isSuccess() ? " 成功 " : " 异常 ");
-        io_Logs.append(i_Result.getStatus().getComment());
+        io_Logs.append(i_Result.getStatus().getComment()).append(" ");
+        io_Logs.append(StringHelp.rpad(i_Result.getExecuteXID() ,i_MaxExecuteXIDLen ," "));
         io_Logs.append(StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")).append(" ");
         io_Logs.append(i_Result.getExecuteLogic()).append(" ");
-        io_Logs.append(Help.NVL(i_Result.getResult())).append("\n");
+        io_Logs.append(Help.NVL(i_Result.getResult())).append(" ");
+        io_Logs.append(i_Result.getComment()).append("\n");
 
         if ( !Help.isNull(i_Result.getNexts()) )
         {
            for (ExecuteResult v_Item : i_Result.getNexts())
            {
-               this.logs_Inner(v_Item ,io_Logs ,i_MaxExecuteTreeIDLen ,i_MaxResultTreeIDLen);
+               this.logs_Inner(v_Item ,io_Logs ,i_MaxExecuteTreeIDLen ,i_MaxResultTreeIDLen ,i_MaxExecuteXIDLen);
            }
         }
     }
