@@ -16,17 +16,19 @@ public enum ElementType
     
     Node(     "NODE"      ,"xnode"      ,"执行节点"),
     
-    Condition("CONDITION" ,"xcalculate" ,"条件逻辑"),
+    Condition("CONDITION" ,"xcondition" ,"条件逻辑"),
     
     Wait(     "WAIT"      ,"xwait"      ,"等待元素"),
     
-    Calculate("CALCULATE" ,"xcondition" ,"计算元素"),
+    Calculate("CALCULATE" ,"xcalculate" ,"计算元素"),
     
     For(      "FOR"       ,"xfor"       ,"For循环"),
     
     Nesting(  "NESTING"   ,"xnesting"   ,"嵌套子编排"),
     
     Return(   "RETURN"    ,"xreturn"    ,"返回元素"),
+    
+    MT(       "MT"        ,"xmt"        ,"并发元素"),
     
     SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
     
