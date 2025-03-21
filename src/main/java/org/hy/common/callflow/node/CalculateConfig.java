@@ -310,7 +310,7 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
                 // 假值路由
                 if ( !Help.isNull(this.route.getFaileds()) )
                 {
-                    for (RouteItem v_RouteItem : this.route.getSucceeds())
+                    for (RouteItem v_RouteItem : this.route.getFaileds())
                     {
                         v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Else.getXmlName()));
                         v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));

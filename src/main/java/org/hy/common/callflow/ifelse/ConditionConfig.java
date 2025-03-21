@@ -329,7 +329,14 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
      */
     public void setItems(List<IfElse> i_Items)
     {
-        this.items = i_Items;
+        if ( i_Items == null )
+        {
+            this.items.clear();
+        }
+        else
+        {
+            this.items = i_Items;
+        }
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -414,7 +421,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
             // 假值路由
             if ( !Help.isNull(this.route.getFaileds()) )
             {
-                for (RouteItem v_RouteItem : this.route.getSucceeds())
+                for (RouteItem v_RouteItem : this.route.getFaileds())
                 {
                     v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Else.getXmlName()));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
