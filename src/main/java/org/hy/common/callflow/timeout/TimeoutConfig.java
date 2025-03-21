@@ -66,16 +66,37 @@ public class TimeoutConfig<R>
      * @createDate  2025-03-15
      * @version     v1.0
      *
-     * @param i_Runnable  执行方法
      * @return
      */
     public R execute()
+    {
+        if ( this.executeAsync() )
+        {
+            return this.get(); 
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    
+    /**
+     * 异步执行
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-21
+     * @version     v1.0
+     *
+     * @return  是否执行
+     */
+    public boolean executeAsync()
     {
         if ( this.runnable == null )
         {
             this.executeException = new NullPointerException("TimeoutRunnable is null.");
             this.executeResult    = null;
-            return null;
+            return false;
         }
         
         try
@@ -98,7 +119,29 @@ public class TimeoutConfig<R>
                 }
             });
             this.executeThread.start();
+        }
+        catch (Exception exce)
+        {
+            this.executeException = exce;
+        }
         
+        return true;
+    }
+    
+    
+    /**
+     * 获取异步执行的结果（阻塞等待任务完成）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public R get()
+    {
+        try
+        {
             if ( this.timeout > 0L )
             {
                 this.executeThread.join(this.timeout ,0);

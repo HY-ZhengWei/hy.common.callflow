@@ -1,15 +1,14 @@
-package org.hy.common.callflow.ifelse;
+package org.hy.common.callflow.nesting;
 
 import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
-import org.hy.common.XJavaID;
-import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.Comparer;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.ifelse.ConditionItem;
 import org.hy.common.xml.log.Logger;
 
 
@@ -17,69 +16,47 @@ import org.hy.common.xml.log.Logger;
 
 
 /**
- * 条件项
- * 
- * 支持两种形式：
- *      if ( A == B ) 的形式
- *      if ( A )      的形式。即NULL值的判定，或逻辑值的判定
+ * 并发项
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-02-12
+ * @createDate  2025-03-20
  * @version     v1.0
  */
-public class ConditionItem implements IfElse ,XJavaID
+public class MTItem extends ConditionItem
 {
-    private static final Logger $Logger = new Logger(ConditionItem.class);
+    
+    private static final Logger $Logger = new Logger(MTItem.class);
     
     
     
-    /** 主键标识 */
-    protected String   id;
+    /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套和返回元素的XID）。采用弱关联的方式 */
+    private String callFlowXID;
     
-    /** 全局惟一标识ID */
-    protected String   xid;
-    
-    /** 注释。可用于日志的输出等帮助性的信息 */
-    protected String   comment;
-    
-    /** 比较器 */
-    protected Comparer comparer;
-    
-    /** 
-     * 参数类型。参数为数值类型时生效 
-     * 
-     * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
-     * 优点：提高可移植性。
-     */
-    protected String   valueClass;
-    
-    /** 数值A、上下文变量A、XID标识A（支持xxx.yyy.www） */
-    protected String   valueXIDA;
-    
-    /** 数值B、上下文变量B、XID标识B（支持xxx.yyy.www） */
-    protected String   valueXIDB;
+    /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    private String timeout;
     
     
     
-    public ConditionItem()
+    public MTItem()
     {
-        this(Comparer.Equal ,null ,null ,null);
+        super();
+        this.timeout = "0";
     }
-    
     
     
     /**
      * 构造器（主要用于判定对象是否为NULL；或Boolean类型的真假）
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-12
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @param i_ValueXIDA   数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
      */
-    public ConditionItem(String i_ValueXIDA)
+    public MTItem(String i_ValueXIDA)
     {
-        this(Comparer.Equal ,null ,i_ValueXIDA ,null);
+        super(i_ValueXIDA);
+        this.timeout = "0";
     }
     
     
@@ -87,16 +64,17 @@ public class ConditionItem implements IfElse ,XJavaID
      * 构造器（主要用于两个变量、XID标识时）
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-12
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @param i_Comparer    比较器
      * @param i_ValueXIDA   数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
      * @param i_ValueXIDB   数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
      */
-    public ConditionItem(Comparer i_Comparer ,String i_ValueXIDA ,String i_ValueXIDB)
+    public MTItem(Comparer i_Comparer ,String i_ValueXIDA ,String i_ValueXIDB)
     {
-        this(i_Comparer ,null ,i_ValueXIDA ,i_ValueXIDB);
+        super(i_Comparer ,null ,i_ValueXIDA ,i_ValueXIDB);
+        this.timeout = "0";
     }
     
     
@@ -104,7 +82,7 @@ public class ConditionItem implements IfElse ,XJavaID
      * 构造器（主要用于有数值类的）
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-12
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @param i_Comparer    比较器
@@ -112,314 +90,116 @@ public class ConditionItem implements IfElse ,XJavaID
      * @param i_ValueXIDA   数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
      * @param i_ValueXIDB   数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
      */
-    public ConditionItem(Comparer i_Comparer ,String i_ValueClass ,String i_ValueXIDA ,String i_ValueXIDB)
+    public MTItem(Comparer i_Comparer ,String i_ValueClass ,String i_ValueXIDA ,String i_ValueXIDB)
     {
-        this.comparer   = i_Comparer;
-        this.valueClass = i_ValueClass;
-        this.valueXIDA  = i_ValueXIDA;
-        this.valueXIDB  = i_ValueXIDB;
+        super(i_Comparer ,i_ValueClass ,i_ValueXIDA ,i_ValueXIDB);
+        this.timeout = "0";
     }
     
     
+    /**
+     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套和返回元素的XID）。采用弱关联的方式
+     */
+    public String getCallFlowXID()
+    {
+        return ValueHelp.standardRefID(this.callFlowXID);
+    }
+    
     
     /**
-     * 允许判定。即：真判定
+     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套和返回元素的XID）。采用弱关联的方式
+     */
+    protected String gatCallFlowXID()
+    {
+        return this.callFlowXID;
+    }
+
+    
+    /**
+     * 设置：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套和返回元素的XID）。采用弱关联的方式
+     * 
+     * @param i_CallFlowXID 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套和返回元素的XID）。采用弱关联的方式
+     */
+    public void setCallFlowXID(String i_CallFlowXID)
+    {
+        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.callFlowXID = ValueHelp.standardValueID(i_CallFlowXID);
+    }
+    
+    
+    /**
+     * 从上下文中获取运行时的超时时长
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-12
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
-     * @return           返回判定结果或抛出异常
+     * @return
      * @throws Exception 
      */
-    public boolean allow(Map<String ,Object> i_Context) throws Exception
+    protected Long gatTimeout(Map<String ,Object> i_Context) throws Exception
     {
-        if ( this.comparer == null )
+        Long v_Timeout = null;
+        if ( Help.isNumber(this.timeout) )
         {
-            throw new NullPointerException("ConditionItem comparer [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
+            v_Timeout = Long.valueOf(this.timeout);
         }
-        if ( this.valueXIDA == null )
+        else
         {
-            throw new NullPointerException("ConditionItem valueA [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
+            v_Timeout = (Long) ValueHelp.getValue(this.timeout ,Long.class ,0L ,i_Context);
         }
         
-        // B可以为空，表示判定A是否为空，或判定A是否为Boolean类型的真假
-        if ( this.valueXIDB == null )
+        return v_Timeout;
+    }
+    
+    
+    /**
+     * 获取：执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public String getTimeout()
+    {
+        return timeout;
+    }
+
+    
+    /**
+     * 设置：执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_Timeout 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public void setTimeout(String i_Timeout)
+    {
+        if ( Help.isNull(i_Timeout) )
         {
-            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
-            
-            if ( Comparer.Equal.equals(this.comparer) )
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_Timeout) )
+        {
+            Long v_Timeout = Long.valueOf(i_Timeout);
+            if ( v_Timeout < 0L )
             {
-                if ( v_ValueA == null )
-                {
-                    // 等于NULL
-                    return true;
-                }
-                else if ( Boolean.class.equals(v_ValueA.getClass()) )
-                {
-                    return (Boolean) v_ValueA;
-                }
-                else
-                {
-                    return false;
-                }
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
             }
-            else if ( Comparer.EqualNot.equals(this.comparer) )
-            {
-                if ( v_ValueA == null )
-                {
-                    // 不等于NULL
-                    return false;
-                }
-                else if ( Boolean.class.equals(v_ValueA.getClass()) )
-                {
-                    return !(Boolean) v_ValueA;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                return v_ValueA != null;
-            }
+            this.timeout = i_Timeout.trim();
         }
         else
         {
-            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
-            Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.gatValueClass() ,null ,i_Context);
-            
-            return this.comparer.compare(v_ValueA ,v_ValueB);
+            this.timeout = ValueHelp.standardRefID(i_Timeout);
         }
     }
-    
-    
-    
-    /**
-     * 拒绝判定。即：假判定
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-02-12
-     * @version     v1.0
-     *
-     * @param i_Context  上下文类型的变量信息
-     * @return           返回判定结果或抛出异常
-     */
-    public boolean reject(Map<String ,Object> i_Context) throws Exception
-    {
-        return !allow(i_Context);
-    }
-    
-    
-    
-    /**
-     * 获取：比较器
-     */
-    public Comparer getComparer()
-    {
-        return comparer;
-    }
 
-    
-    /**
-     * 设置：比较器
-     * 
-     * @param i_Comparer 比较器
-     */
-    public void setComparer(Comparer i_Comparer)
-    {
-        this.comparer = i_Comparer;
-    }
-    
-    
-    /**
-     * 获取参数类型的元类型
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-03-13
-     * @version     v1.0
-     *
-     * @return
-     */
-    public Class<?> gatValueClass()
-    {
-        if ( !Help.isNull(this.valueClass) )
-        {
-            try
-            {
-                return Help.forName(this.valueClass);
-            }
-            catch (Exception exce)
-            {
-                throw new RuntimeException(exce);
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-    
-    
-    /**
-     * 获取：参数类型。参数为数值类型时生效
-     */
-    public String getValueClass()
-    {
-        return valueClass;
-    }
-
-    
-    /**
-     * 设置：参数类型。参数为数值类型时生效
-     * 
-     * @param i_ValueClass 参数类型。参数为数值类型时生效
-     */
-    public void setValueClass(String i_ValueClass)
-    {
-        this.valueClass = i_ValueClass;
-    }
-
-
-    /**
-     * 获取：数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
-     */
-    public String getValueXIDA()
-    {
-        return valueXIDA;
-    }
-
-    
-    /**
-     * 设置：数值A、变量A、XID标识A（支持xxx.yyy.www）
-     * 
-     * @param i_ValueXIDA 数值A、上下文变量A、XID标识A（支持xxx.yyy.www）
-     */
-    public void setValueXIDA(String i_ValueXIDA)
-    {
-        if ( CallFlow.isSystemXID(i_ValueXIDA) )
-        {
-            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s ValueXIDA[" + i_ValueXIDA + "] is SystemXID.");
-        }
-        this.valueXIDA = i_ValueXIDA;
-    }
-
-    
-    /**
-     * 获取：数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
-     */
-    public String getValueXIDB()
-    {
-        return valueXIDB;
-    }
-
-    
-    /**
-     * 设置：数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
-     * 
-     * @param i_ValueXIDB 数值B、上下文变量B、XID标识B（支持xxx.yyy.www）
-     */
-    public void setValueXIDB(String i_ValueXIDB)
-    {
-        if ( CallFlow.isSystemXID(i_ValueXIDB) )
-        {
-            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s ValueXIDB[" + i_ValueXIDB + "] is SystemXID.");
-        }
-        this.valueXIDB = i_ValueXIDB;
-    }
-    
-    
-    /**
-     * 获取：主键标识
-     */
-    public String getId()
-    {
-        return id;
-    }
-
-    
-    /**
-     * 设置：主键标识
-     * 
-     * @param i_Id 主键标识
-     */
-    public void setId(String i_Id)
-    {
-        this.id = i_Id;
-    }
-
-
-    /**
-     * 获取：全局惟一标识ID
-     */
-    public String getXid()
-    {
-        return xid;
-    }
-
-    
-    /**
-     * 设置：全局惟一标识ID
-     * 
-     * @param i_Xid 全局惟一标识ID
-     */
-    public void setXid(String i_Xid)
-    {
-        this.xid = i_Xid;
-    }
-    
-
-    /**
-     * 设置XJava池中对象的ID标识。此方法不用用户调用设置值，是自动的。
-     * 
-     * @param i_XJavaID
-     */
-    public void setXJavaID(String i_XJavaID)
-    {
-        this.xid = i_XJavaID;
-    }
-    
-    
-    /**
-     * 获取XJava池中对象的ID标识。
-     * 
-     * @return
-     */
-    public String getXJavaID()
-    {
-        return this.xid;
-    }
-    
-    
-    /**
-     * 注释。可用于日志的输出等帮助性的信息
-     * 
-     * @param i_Comment
-     */
-    public void setComment(String i_Comment)
-    {
-        this.comment = i_Comment;
-    }
-    
-    
-    /**
-     * 注释。可用于日志的输出等帮助性的信息
-     *
-     * @return
-     */
-    public String getComment()
-    {
-        return this.comment;
-    }
-    
     
     /**
      * 转为Xml格式的内容
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-24
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @param i_Level        层级。最小下标从0开始。
@@ -444,7 +224,6 @@ public class ConditionItem implements IfElse ,XJavaID
         {
             v_Xml.append("\n").append(v_LevelN).append(IToXml.toBegin(v_XName));
         }
-        
         if ( !Help.isNull(this.comment) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
@@ -465,6 +244,14 @@ public class ConditionItem implements IfElse ,XJavaID
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDB" ,this.valueXIDB));
         }
+        if ( !Help.isNull(this.callFlowXID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
+        }
+        if ( !Help.isNull(this.timeout) && !"0".equals(this.timeout) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
+        }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));
         
@@ -478,7 +265,7 @@ public class ConditionItem implements IfElse ,XJavaID
      * 注：禁止在此真的执行逻辑判定
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-20
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -488,7 +275,7 @@ public class ConditionItem implements IfElse ,XJavaID
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        if ( this.comparer != null )
+        if ( this.comparer != null && !Help.isNull(this.valueXIDA) )
         {
             Object v_ValueA = null;
             Object v_ValueB = null;
@@ -563,7 +350,11 @@ public class ConditionItem implements IfElse ,XJavaID
                 v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
                 v_Builder.append(ValueHelp.getExpression(v_ValueB));
             }
+            
+            v_Builder.append(" ");
         }
+        
+        v_Builder.append("TO ").append(Help.NVL(this.callFlowXID));
         
         return v_Builder.toString();
     }
@@ -575,7 +366,7 @@ public class ConditionItem implements IfElse ,XJavaID
      * 注：禁止在此真的执行逻辑判定
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-19
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @return
@@ -585,12 +376,15 @@ public class ConditionItem implements IfElse ,XJavaID
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        if ( this.comparer != null )
+        if ( this.comparer != null && !Help.isNull(this.valueXIDA) )
         {
             v_Builder.append(this.valueXIDA == null ? "NULL" : ValueHelp.getExpression(this.valueXIDA ,this.gatValueClass()));
             v_Builder.append(" ").append(this.comparer.getValue()).append(" ");
             v_Builder.append(this.valueXIDA == null ? "NULL" : ValueHelp.getExpression(this.valueXIDB ,this.gatValueClass()));
+            v_Builder.append(" ");
         }
+        
+        v_Builder.append("TO ").append(Help.NVL(this.callFlowXID));
         
         return v_Builder.toString();
     }
@@ -600,14 +394,14 @@ public class ConditionItem implements IfElse ,XJavaID
      * 仅仅创建一个新的实例，没有任何赋值
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-18
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @return
      */
     public Object newMy()
     {
-        return new ConditionItem();
+        return new MTItem();
     }
     
     
@@ -617,20 +411,21 @@ public class ConditionItem implements IfElse ,XJavaID
      * 注：不克隆XID。
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-16
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      */
     public Object cloneMyOnly()
     {
-        ConditionItem v_Clone = new ConditionItem();
+        MTItem v_Clone = new MTItem();
         
-        v_Clone.id         = this.id;
-        v_Clone.comment    = this.comment;
-        v_Clone.comparer   = this.comparer;
-        v_Clone.valueClass = this.valueClass;
-        v_Clone.valueXIDA  = this.valueXIDA;
-        v_Clone.valueXIDB  = this.valueXIDB; 
+        v_Clone.id          = this.id;
+        v_Clone.comment     = this.comment;
+        v_Clone.comparer    = this.comparer;
+        v_Clone.valueClass  = this.valueClass;
+        v_Clone.valueXIDA   = this.valueXIDA;
+        v_Clone.valueXIDB   = this.valueXIDB; 
+        v_Clone.callFlowXID = this.callFlowXID; 
         
         return v_Clone;
     }
@@ -640,7 +435,7 @@ public class ConditionItem implements IfElse ,XJavaID
      * 深度克隆编排元素
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-03-10
+     * @createDate  2025-03-21
      * @version     v1.0
      *
      * @param io_Clone        克隆的复制品对象
@@ -652,15 +447,16 @@ public class ConditionItem implements IfElse ,XJavaID
      */
     public void clone(Object io_Clone ,String i_ReplaceXID ,String i_ReplaceByXID ,String i_AppendXID ,Map<String ,ExecuteElement> io_XIDObjects)
     {
-        ConditionItem v_Clone = (ConditionItem) io_Clone;
+        MTItem v_Clone = (MTItem) io_Clone;
         
-        v_Clone.xid        = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
-        v_Clone.id         = this.id;
-        v_Clone.comment    = this.comment;
-        v_Clone.comparer   = this.comparer;
-        v_Clone.valueClass = this.valueClass;
-        v_Clone.valueXIDA  = this.valueXIDA;
-        v_Clone.valueXIDB  = this.valueXIDB;
+        v_Clone.xid         = this.cloneXID(this.xid ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID);
+        v_Clone.id          = this.id;
+        v_Clone.comment     = this.comment;
+        v_Clone.comparer    = this.comparer;
+        v_Clone.valueClass  = this.valueClass;
+        v_Clone.valueXIDA   = this.valueXIDA;
+        v_Clone.valueXIDB   = this.valueXIDB;
+        v_Clone.callFlowXID = this.callFlowXID;
     }
     
 }

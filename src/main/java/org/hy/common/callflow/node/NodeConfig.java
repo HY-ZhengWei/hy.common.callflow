@@ -521,7 +521,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         List<Method> v_CallMethods = MethodReflect.getMethods(i_CallObject.getClass() ,this.callMethod ,i_ParamValues.length);
         if ( Help.isNull(v_CallMethods) )
         {
-            throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is not find.");
+            throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is not find.");
         }
         
         if ( v_CallMethods.size() == 1 )

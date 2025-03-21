@@ -648,6 +648,7 @@ public class CallFlow
         }
         
         ExecuteResult v_Result = i_ExecObject.execute(i_SuperTreeID ,io_Context);
+        v_Result.setElementType(i_ExecObject.getElementType());
         v_Result.setComment(i_ExecObject.getComment());
         if ( i_PreviousResult == null )
         {

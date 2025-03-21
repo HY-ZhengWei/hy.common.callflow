@@ -3,6 +3,7 @@
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />

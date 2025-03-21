@@ -15,6 +15,7 @@ import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
+import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
@@ -55,6 +56,7 @@ public class ExportXml
     {
         // 预定义的引用类
         getInstance().addImportHead("xconfig"                          ,ArrayList.class);
+        getInstance().addImportHead(ElementType.MT.getXmlName()        ,MTConfig.class);
         getInstance().addImportHead(ElementType.Nesting.getXmlName()   ,NestingConfig.class);
         getInstance().addImportHead(ElementType.For.getXmlName()       ,ForConfig.class);
         getInstance().addImportHead(ElementType.Node.getXmlName()      ,NodeConfig.class);
@@ -328,6 +330,10 @@ public class ExportXml
             else if ( i_ExecObject instanceof NestingConfig )
             {
                 i_ExecObject.setXJavaID("XNesting_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof MTConfig )
+            {
+                i_ExecObject.setXJavaID("XMT_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof CalculateConfig )
             {

@@ -3,6 +3,7 @@
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -87,7 +88,7 @@
         </xnode>
         
         
-        <xnesting id="XNode_CF017_1">
+        <xnesting id="XNesting_CF017_1">
             <comment>模拟超时</comment>
             <callFlowXID>:XWait_CF017_子编排_1</callFlowXID>  <!-- 子编排的XID -->
             <timeout>:TimeoutLen</timeout>                  <!-- 执行超时时长（单位：毫秒） -->

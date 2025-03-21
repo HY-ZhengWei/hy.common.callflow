@@ -122,6 +122,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -194,6 +195,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -314,6 +316,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -502,6 +505,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -609,6 +613,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -717,6 +722,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -882,6 +888,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1008,6 +1015,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1153,6 +1161,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1217,6 +1226,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1294,6 +1304,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1360,7 +1371,7 @@ __编排配置__
         </xnode>
         
         
-        <xnesting id="XNode_CF017_1">
+        <xnesting id="XNesting_CF017_1">
             <comment>模拟超时</comment>
             <callFlowXID>:XWait_CF017_子编排_1</callFlowXID>  <!-- 子编排的XID -->
             <timeout>:TimeoutLen</timeout>                  <!-- 执行超时时长（单位：毫秒） -->
@@ -1388,7 +1399,7 @@ __执行编排__
 XJava.putObject("XProgram" ,new Program());
         
 // 获取编排中的首个元素
-NestingConfig       v_Nesting = (NodeConfig) XJava.getObject("XNode_CF017_1");
+NestingConfig       v_Nesting = (NodeConfig) XJava.getObject("XNesting_CF017_1");
 
 // 大于10秒 或 小于10秒
 v_Context.put("TimeoutLen" ,1000L * 3L);
@@ -1416,6 +1427,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1530,6 +1542,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1636,6 +1649,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1748,6 +1762,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1890,6 +1905,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2044,6 +2060,7 @@ __编排配置__
 <config>
 
     <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />

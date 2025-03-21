@@ -53,6 +53,9 @@ public class ExecuteResult implements ITreeID
     /** 执行逻辑的表达式 */
     private String              executeLogic;
     
+    /** 执行对象的元素类型 */
+    private String              elementType;
+    
     /** 注释。可用于日志的输出等帮助性的信息 */
     protected String            comment;
                                 
@@ -232,6 +235,38 @@ public class ExecuteResult implements ITreeID
         this.exception = i_Exception;
         this.success   = false;
         this.status    = ExecuteStatus.Exception;
+        
+        return this;
+    }
+    
+    
+    /**
+     * 设置：为异常对象（异常时，也可以有结果，如并发元素）
+     * 
+     * @param i_Exception 为异常对象
+     * @param i_Result    执行结果（方法编排中的最后一个结果数据）
+     */
+    public ExecuteResult setException(Exception i_Exception ,Object i_Result)
+    {
+        // 所有状态类的setter方法仅允许执行一次
+        synchronized ( this )
+        {
+            if ( this.success || this.exception != null )
+            {
+                if ( this.success || this.exception != null )
+                {
+                    IllegalArgumentException v_Exce = new IllegalArgumentException("All state setter methods are only allowed to be executed once.");
+                    $Logger.error(v_Exce);
+                    throw v_Exce;
+                }
+            }
+        }
+        
+        this.endTime   = Date.getTimeNano();
+        this.exception = i_Exception;
+        this.success   = false;
+        this.status    = ExecuteStatus.Exception;
+        this.result    = i_Result;
         
         return this;
     }
@@ -452,8 +487,28 @@ public class ExecuteResult implements ITreeID
         this.executeLogic = i_ExecuteLogic;
         return this;
     }
+    
+    
+    /**
+     * 获取：执行对象的元素类型
+     */
+    public String getElementType()
+    {
+        return elementType;
+    }
 
     
+    /**
+     * 设置：执行对象的元素类型
+     * 
+     * @param i_ElementType 执行对象的元素类型
+     */
+    public void setElementType(String i_ElementType)
+    {
+        this.elementType = i_ElementType;
+    }
+
+
     /**
      * 获取：注释。可用于日志的输出等帮助性的信息
      */

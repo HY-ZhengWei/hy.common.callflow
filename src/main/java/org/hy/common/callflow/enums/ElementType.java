@@ -24,11 +24,11 @@ public enum ElementType
     
     For(      "FOR"       ,"xfor"       ,"For循环"),
     
+    MT(       "MT"        ,"xmt"        ,"并发元素"),
+    
     Nesting(  "NESTING"   ,"xnesting"   ,"嵌套子编排"),
     
     Return(   "RETURN"    ,"xreturn"    ,"返回元素"),
-    
-    MT(       "MT"        ,"xmt"        ,"并发元素"),
     
     SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
     

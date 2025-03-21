@@ -1,10 +1,16 @@
 package org.hy.common.callflow.junit;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
 import org.hy.common.callflow.timeout.TimeoutConfig;
+import org.junit.Test;
 
 
 
@@ -151,5 +157,49 @@ public class JU_Timeout
         
         Thread.sleep(60 * 1000);
     }
+    
+    
+    
+    @Test
+    public void execute() 
+    {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        // 提交任务1
+        Future<String> future1 = executor.submit(() -> {
+            Thread.sleep(3000); // 模拟耗时操作
+            return "T1：" + Date.getNowTime().getFullMilli();
+        });
+        
+        // 提交任务2
+        Future<String> future2 = executor.submit(() -> {
+            Thread.sleep(5000); // 模拟耗时操作
+            return "T2：" + Date.getNowTime().getFullMilli();
+        });
+        
+        try
+        {
+            System.out.println(Date.getNowTime().getFullMilli() + " Start");
+            // 设置超时时间为2秒
+            String result1 = future1.get(10 ,TimeUnit.SECONDS);
+            String result2 = future2.get(3  ,TimeUnit.SECONDS);
+            System.out.println(Date.getNowTime().getFullMilli() + " Thread 1 Result: " + result1);
+            System.out.println(Date.getNowTime().getFullMilli() + " Thread 2 Result: " + result2);
+        }
+        catch (TimeoutException e)
+        {
+            System.err.println("Task timed out: " + e.getMessage());
+        }
+        catch (ExecutionException | InterruptedException e)
+        {
+            System.err.println("Task execution failed: " + e.getMessage());
+        }
+        finally
+        {
+            // 关闭线程池
+            executor.shutdown();
+        }
+        System.out.println("Main thread exits.");
+    }
+    
     
 }

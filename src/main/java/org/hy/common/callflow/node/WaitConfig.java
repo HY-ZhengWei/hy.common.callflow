@@ -264,9 +264,11 @@ public class WaitConfig extends ExecuteElement implements Cloneable
                 }
             }
             
+            v_Result.setResult(v_Ret);
+            this.refreshReturn(io_Context ,v_Result.getResult());
             this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
-            return v_Result.setResult(v_Ret);
+            return v_Result;
         }
         catch (Exception exce)
         {

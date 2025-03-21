@@ -1,8 +1,13 @@
 package org.hy.common.callflow.execute;
 
+import java.util.List;
+
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.enums.ElementType;
+import org.hy.common.callflow.nesting.MTExecuteResult;
 
 
 
@@ -112,6 +117,7 @@ public class ExecuteResultLogHelp
      * @param i_MaxResultTreeIDLen   执行结果的树ID的最大长度
      * @param i_MaxExecuteXIDLen     执行结果的XID的最大长度
      */
+    @SuppressWarnings("unchecked")
     private void logs_Inner(ExecuteResult i_Result ,StringBuilder io_Logs ,int i_MaxExecuteTreeIDLen ,int i_MaxResultTreeIDLen ,int i_MaxExecuteXIDLen)
     {
         io_Logs.append(StringHelp.rpad(i_Result.getExecuteTreeID() ,i_MaxExecuteTreeIDLen ," "));
@@ -122,9 +128,28 @@ public class ExecuteResultLogHelp
         io_Logs.append(StringHelp.rpad(i_Result.getExecuteXID() ,i_MaxExecuteXIDLen ," "));
         io_Logs.append(StringHelp.lpad("" ,i_Result.getNestingLevel() * 4 ," ")).append(" ");
         io_Logs.append(i_Result.getExecuteLogic()).append(" ");
-        io_Logs.append(Help.NVL(i_Result.getResult())).append(" ");
-        io_Logs.append(i_Result.getComment()).append("\n");
-
+        
+        if ( ElementType.MT.getValue().equals(i_Result.getElementType()) )
+        {
+            io_Logs.append(Help.NVL(i_Result.getComment())).append("\n\n");
+            
+            List<MTExecuteResult> v_MTResults = (List<MTExecuteResult>) i_Result.getResult();
+            for (MTExecuteResult v_MTResult : v_MTResults)
+            {
+                io_Logs.append("并发：").append(v_MTResult.getIndexNo()).append(" ")
+                       .append(v_MTResult.getCallFlowXID()).append(" ")
+                       .append(Help.NVL(v_MTResult.getComment())).append("\n");
+                
+                ExecuteResult v_MTFirstResult = CallFlow.getFirstResult(v_MTResult.getContext());
+                io_Logs.append(this.logs(v_MTFirstResult)).append("\n");
+            }
+        }
+        else
+        {
+            io_Logs.append(Help.NVL(i_Result.getResult())).append(" ");
+            io_Logs.append(Help.NVL(i_Result.getComment())).append("\n");
+        }
+        
         if ( !Help.isNull(i_Result.getNexts()) )
         {
            for (ExecuteResult v_Item : i_Result.getNexts())
