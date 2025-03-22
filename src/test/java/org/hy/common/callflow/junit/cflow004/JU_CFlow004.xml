@@ -106,7 +106,7 @@
         
         
         <xnode id="XNode_CF004_1">
-            <comment>第一个环节，有一个参数，有返回结果</comment>
+            <comment>第一个环节，有两个参数，有返回结果</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_First</callMethod>
             <callParam>

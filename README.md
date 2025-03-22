@@ -825,7 +825,7 @@ __编排配置__
         
         
         <xnode id="XNode_CF004_1">
-            <comment>第一个环节，有一个参数，有返回结果</comment>
+            <comment>第一个环节，有两个参数，有返回结果</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_First</callMethod>
             <callParam>
@@ -1463,7 +1463,7 @@ __编排配置__
         
         
         <xcondition id="XCondition_CF009_1_1">
-            <comment>判定是否大于1</comment>
+            <comment>判定是否大于10</comment>
             <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
             <conditionItem>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义变量类型 -->
