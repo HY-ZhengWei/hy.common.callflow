@@ -11,6 +11,8 @@ import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.ifelse.ConditionItem;
 import org.hy.common.callflow.ifelse.IfElse;
+import org.hy.common.callflow.nesting.MTConfig;
+import org.hy.common.callflow.nesting.MTItem;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
@@ -170,6 +172,83 @@ public class ExecuteElementCheckHelp
             }
             
             io_ForXIDs.put(i_ExecObject.getXJavaID() ,0);
+        }
+        else if ( i_ExecObject instanceof MTConfig )
+        {
+            MTConfig v_MT = (MTConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_MT.getMtitems()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(v_MT.getXid()) + "].Mtitems is null.");
+                return false;
+            }
+            
+            int x = 0;
+            for (MTItem v_MTItem : v_MT.getMtitems())
+            {
+                // 并发元素必须有子编排的XID
+                if ( Help.isNull(v_MTItem.getCallFlowXID()) )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(v_MT.getXid()) + "].[" + x + "].callFlowXID is null.");
+                    return false;
+                }
+                
+                // 并发元素的不应自己并发自己，递归应采用自引用方式实现
+                if ( v_MTItem.getCallFlowXID().equals(v_MT.getXJavaID()) )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(v_MT.getXid()) + "].[" + x + "].callFlowXID[" + v_MTItem.getCallFlowXID() + "] cannot nest itself.");
+                    return false;
+                }
+                
+                if ( !Help.isNull(v_MTItem.getValueXIDA()) )
+                {
+                    // 当有比较值A时，比较器不应为空
+                    if ( v_MTItem.getComparer() == null )
+                    {
+                        io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(v_MT.getXid()) + "].[" + x + "].comparer is null.");
+                        return false;
+                    }
+                    
+                    if ( !ValueHelp.isRefID(v_MTItem.getValueXIDA()) )
+                    {
+                        if ( Help.isNull(v_MTItem.getValueClass()) )
+                        {
+                            // 条件项的比值为数值类型时，其类型应不会空
+                            io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(v_MT.getXid()) + "].[" + x + "].valueXIDA is Normal type ,but valueClass is null.");
+                            return false;
+                        }
+                    }
+                }
+                
+                if ( !Help.isNull(v_MTItem.getValueXIDB()) )
+                {
+                    // 当有比较值B时，比较值A不应为空
+                    if ( Help.isNull(v_MTItem.getValueXIDA()) )
+                    {
+                        io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(v_MT.getXid()) + "].[" + x + "].valueXIDA is null.");
+                        return false;
+                    }
+                    
+                    // 当有比较值B时，比较器不应为空
+                    if ( v_MTItem.getComparer() == null )
+                    {
+                        io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(v_MT.getXid()) + "].[" + x + "].comparer is null.");
+                        return false;
+                    }
+                    
+                    if ( !ValueHelp.isRefID(v_MTItem.getValueXIDB()) )
+                    {
+                        if ( Help.isNull(v_MTItem.getValueClass()) )
+                        {
+                            // 条件项的比值为数值类型时，其类型应不会空
+                            io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(v_MT.getXid()) + "].[" + x + "].valueXIDB is Normal type ,but valueClass is null.");
+                            return false;
+                        }
+                    }
+                }
+                
+                x++;
+            }
         }
         else if ( i_ExecObject instanceof NestingConfig )
         {

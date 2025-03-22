@@ -368,7 +368,6 @@ public class MTConfig extends ExecuteElement implements Cloneable
         }
         
         if ( !Help.isNull(this.route.getSucceeds()) 
-          || !Help.isNull(this.route.getFaileds())
           || !Help.isNull(this.route.getExceptions()) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
@@ -378,19 +377,9 @@ public class MTConfig extends ExecuteElement implements Cloneable
             {
                 for (RouteItem v_RouteItem : this.route.getSucceeds())
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.If.getXmlName()));
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Succeed.getXmlName()));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.If.getXmlName()));
-                }
-            }
-            // 假时的路由
-            if ( !Help.isNull(this.route.getFaileds()) )
-            {
-                for (RouteItem v_RouteItem : this.route.getFaileds())
-                {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Else.getXmlName()));
-                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Else.getXmlName()));
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Succeed.getXmlName()));
                 }
             }
             // 异常路由

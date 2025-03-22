@@ -457,7 +457,7 @@ public class ConditionItem implements IfElse ,XJavaID
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDA" ,this.valueXIDA));
         }
-        if ( this.comparer != null )
+        if ( this.comparer != null && Comparer.Equal != this.comparer )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comparer" ,this.comparer.getValue()));
         }
