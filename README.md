@@ -81,7 +81,7 @@
         
         3.2 For循环路由，与循环元素配合（至少有一个），回流到循环元素的路。
         
-        3.3 路由与循环可以组合后共存（12种可能），即：成功路由+For循环路由组成一条成功时For循环的路由。
+        3.3 路由与循环可以组合后共存（12种），即：成功路由+For循环路由组成一条成功时For循环的路由。
 
 
 
@@ -2123,7 +2123,7 @@ ExecuteResult       v_Result    = CallFlow.execute(v_ForConfig ,v_Context);
 
 
 
-递归的举例
+并发元素的举例
 ------
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow018) [返回目录](#目录)
