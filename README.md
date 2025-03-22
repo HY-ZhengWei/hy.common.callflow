@@ -25,6 +25,7 @@
     * [循环元素的For循环集合和数组举例](#循环元素的For循环集合和数组举例)
     * [返回元素的举例](#返回元素的举例)
     * [递归的举例](#递归的举例)
+    * [并发元素的举例](#并发元素的举例)
 
 
 
@@ -46,7 +47,7 @@
 概要说明
 ------
 
-    1. 7种编排元素。
+    1. 8种编排元素。
     
         1.1. 执行元素，配置及执行Java方法。可轻松扩展它，衍生成特定的业务元素。
     
@@ -61,6 +62,8 @@
         1.6. 嵌套元素，嵌套其它编排，复用与共享编排，构建更复杂的业务。
         
         1.7. 返回元素，返回数据并结束执行。在嵌套子编排中，仅结束子编排，返回到主编排继续执行。
+        
+        1.8. 并发元素，同时执行多个独立的编排，全都执行完成后，并发元素才视为执行完成。
         
     2. 4种编排路由。
         
@@ -78,7 +81,7 @@
         
         3.2 For循环路由，与循环元素配合（至少有一个），回流到循环元素的路。
         
-        3.3 路由与循环可以组合后共存，即：成功路由+For循环路由组成一条成功时For循环的路由。
+        3.3 路由与循环可以组合后共存（12种可能），即：成功路由+For循环路由组成一条成功时For循环的路由。
 
 
 
@@ -2116,6 +2119,131 @@ Map<String ,Object> v_Context   = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result    = CallFlow.execute(v_ForConfig ,v_Context);
+```
+
+
+
+递归的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow018) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow018/JU_CFlow018.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XWait_CF018_B_1_1">
+            <comment>显示等待秒数</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_ShowWaitTime</callMethod>    <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
+                <value>:XWait_CF018_B_1.waitTime</value>    <!-- 定义入参变量名称 -->
+            </callParam>
+        </xnode>
+        
+    
+        <xwait id="XWait_CF018_B_1">
+            <comment>等待5秒</comment>
+            <waitTime>5000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
+            <route>
+                <if>
+                    <next ref="XWait_CF018_B_1_1" />
+                    <comment>等待5秒后执行下一步</comment>
+                </if>
+            </route>
+        </xwait>
+        
+        
+        <xnode id="XWait_CF018_A_1_1">
+            <comment>显示等待秒数</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_ShowWaitTime</callMethod>    <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
+                <value>:XWait_CF018_A_1.waitTime</value>    <!-- 定义入参变量名称 -->
+            </callParam>
+        </xnode>
+        
+        
+        <xwait id="XWait_CF018_A_1">
+            <comment>等待3秒</comment>
+            <waitTime>3000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
+            <route>
+                <if>
+                    <next ref="XWait_CF018_A_1_1" />
+                    <comment>等待3秒后执行下一步</comment>
+                </if>
+            </route>
+        </xwait>
+        
+        
+        <xnode id="XNode_CF018_1_1">
+            <comment>显示等待秒数</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+        </xnode>
+        
+        
+        <xmt id="XMT_CF018_1">
+            <comment>并发两种</comment>
+            <item>
+                <comment>并发项：模拟等待3秒</comment>
+                <callFlowXID>:XWait_CF018_A_1</callFlowXID>
+            </item>
+            <item>
+                <comment>并发项：模拟等待5秒</comment>
+                <callFlowXID>:XWait_CF018_B_1</callFlowXID>
+            </item>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF018_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xmt>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+MTConfig            v_MT        = (MTConfig) XJava.getObject("XMT_CF018_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_MT ,v_Context);
 ```
 
 
