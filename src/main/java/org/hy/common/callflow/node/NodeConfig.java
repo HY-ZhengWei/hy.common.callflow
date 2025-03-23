@@ -50,22 +50,28 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     
     
     /** 执行对象的XID */
-    private String          callXID;
+    private String              callXID;
     
     /** 执行方法名称 */
-    private String          callMethod;
+    private String              callMethod;
     
     /** 执行方法对象（仅内部使用） */
-    private Method          callMethodObject;
+    private Method              callMethodObject;
     
     /** 是否初始化（仅内部使用） */
-    private boolean         isInit;
+    private boolean             isInit;
     
     /** 执行方法的参数 */
-    private List<NodeParam> callParams;
+    private List<NodeParam>     callParams;
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String          timeout;
+    private String              timeout;
+    
+    /** 向上下文中赋值 */
+    private String              context;
+    
+    /** 向上下文中赋值（内部使用） */
+    private Map<String ,Object> contextMap;
     
     
     
@@ -130,6 +136,11 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID is null."));
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
+        }
+        
+        if ( !Help.isNull(this.contextMap) )
+        {
+            io_Context.putAll(this.contextMap);
         }
         
         // 获取执行对象
@@ -769,6 +780,42 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     
     
     /**
+     * 获取：向上下文中赋值
+     */
+    public String getContext()
+    {
+        return context;
+    }
+
+    
+    /**
+     * 设置：向上下文中赋值
+     * 
+     * @param i_Context 向上下文中赋值
+     */
+    @SuppressWarnings("unchecked")
+    public void setContext(String i_Context)
+    {
+        this.context = i_Context;
+        try
+        {
+            if ( !Help.isNull(this.context) )
+            {
+                this.contextMap = (Map<String ,Object>) ValueHelp.getValue(this.context ,Map.class ,null ,null);
+            }
+            else
+            {
+                this.contextMap = null;
+            }
+        }
+        catch (Exception exce)
+        {
+            $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s setContext is error" ,exce);
+        }
+    }
+
+
+    /**
      * 获取XML内容中的名称，如<名称>内容</名称>
      * 
      * 建议：子类重写此方法
@@ -873,6 +920,10 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         if ( !Help.isNull(this.timeout) && !"0".equals(this.timeout) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
+        }
+        if ( !Help.isNull(this.context) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
         }
         if ( !Help.isNull(this.returnID) )
         {
