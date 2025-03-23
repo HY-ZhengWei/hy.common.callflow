@@ -11,6 +11,7 @@ import org.hy.common.MethodReflect;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
@@ -19,6 +20,7 @@ import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.timeout.TimeoutConfig;
 import org.hy.common.xml.XJava;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -33,9 +35,19 @@ import org.hy.common.xml.XJava;
  */
 public class MTConfig extends ExecuteElement implements Cloneable
 {
+    
+    private static final Logger $Logger = new Logger(MTConfig.class);
+    
+    
 
     /** 并发项的集合 */
-    private List<MTItem> mtitems;
+    private List<MTItem>        mtitems;
+    
+    /** 向上下文中赋值（向所有并发项的独立上下文中赋值） */
+    private String              context;
+    
+    /** 向上下文中赋值（内部使用） */
+    private Map<String ,Object> contextMap;
     
     
     
@@ -133,6 +145,44 @@ public class MTConfig extends ExecuteElement implements Cloneable
     }
     
     
+    
+    /**
+     * 获取：向上下文中赋值（向所有并发项的独立上下文中赋值）
+     */
+    public String getContext()
+    {
+        return context;
+    }
+
+    
+    
+    /**
+     * 设置：向上下文中赋值（向所有并发项的独立上下文中赋值）
+     * 
+     * @param i_Context 向上下文中赋值（仅向并发项的独立上下文中赋值）
+     */
+    @SuppressWarnings("unchecked")
+    public void setContext(String i_Context)
+    {
+        this.context = i_Context;
+        try
+        {
+            if ( !Help.isNull(this.context) )
+            {
+                this.contextMap = (Map<String ,Object>) ValueHelp.getValue(this.context ,Map.class ,null ,null);
+            }
+            else
+            {
+                this.contextMap = null;
+            }
+        }
+        catch (Exception exce)
+        {
+            $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s setContext is error" ,exce);
+        }
+    }
+    
+    
 
     /**
      * 执行
@@ -157,6 +207,11 @@ public class MTConfig extends ExecuteElement implements Cloneable
             List<MTExecuteResult> v_MTItemResults = new ArrayList<MTExecuteResult>();
             boolean               v_IsOrderBy     = false;
             Exception             v_Exception     = null;
+            
+            if ( !Help.isNull(this.contextMap) )
+            {
+                io_Context.putAll(this.contextMap);
+            }
             
             // 先判定允许执行的并发项
             if ( !Help.isNull(this.mtitems) )
@@ -215,6 +270,10 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 {
                     Map<String ,Object> v_MTItemContext = new HashMap<String ,Object>();
                     v_MTItemContext.putAll(io_Context);
+                    if ( !Help.isNull(v_MTItemResult.getMtItem().gatContextMap()) )
+                    {
+                        v_MTItemContext.putAll(v_MTItemResult.getMtItem().gatContextMap());
+                    }
                     v_MTItemResult.setContext(v_MTItemContext);
                 }
                 
@@ -361,6 +420,10 @@ public class MTConfig extends ExecuteElement implements Cloneable
             {
                 v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
             }
+        }
+        if ( !Help.isNull(this.context) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
         }
         if ( !Help.isNull(this.returnID) )
         {
