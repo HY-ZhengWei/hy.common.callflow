@@ -2162,6 +2162,10 @@ __编排配置__
                 <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
                 <value>:XWait_CF018_B_1.waitTime</value>    <!-- 定义入参变量名称 -->
             </callParam>
+            <callParam>
+                <valueClass>java.lang.String</valueClass>
+                <value>:typeName</value>                    <!-- 相同变量名称，不同值 -->
+            </callParam>
         </xnode>
         
     
@@ -2184,6 +2188,10 @@ __编排配置__
             <callParam>
                 <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
                 <value>:XWait_CF018_A_1.waitTime</value>    <!-- 定义入参变量名称 -->
+            </callParam>
+            <callParam>
+                <valueClass>java.lang.String</valueClass>
+                <value>:typeName</value>                    <!-- 相同变量名称，不同值 -->
             </callParam>
         </xnode>
         
@@ -2212,10 +2220,20 @@ __编排配置__
             <item>
                 <comment>并发项：模拟等待3秒</comment>
                 <callFlowXID>:XWait_CF018_A_1</callFlowXID>
+                <context>
+                {
+                    "typeName": "A"
+                }
+                </context>
             </item>
             <item>
                 <comment>并发项：模拟等待5秒</comment>
                 <callFlowXID>:XWait_CF018_B_1</callFlowXID>
+                <context>
+                {
+                    "typeName": "B"
+                }
+                </context>
             </item>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
