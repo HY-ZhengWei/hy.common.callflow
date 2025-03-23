@@ -30,10 +30,16 @@ public class MTItem extends ConditionItem
     
     
     /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套和返回元素的XID）。采用弱关联的方式 */
-    private String callFlowXID;
+    private String              callFlowXID;
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String timeout;
+    private String              timeout;
+    
+    /** 向上下文中赋值（仅向并发项的独立上下文中赋值） */
+    private String              context;
+    
+    /** 向上下文中赋值（内部使用） */
+    private Map<String ,Object> contextMap;
     
     
     
@@ -193,6 +199,57 @@ public class MTItem extends ConditionItem
             this.timeout = ValueHelp.standardRefID(i_Timeout);
         }
     }
+    
+    
+    /**
+     * 获取：向上下文中赋值（仅向并发项的独立上下文中赋值）
+     */
+    public String getContext()
+    {
+        return context;
+    }
+
+    
+    /**
+     * 设置：向上下文中赋值（仅向并发项的独立上下文中赋值）
+     * 
+     * @param i_Context 向上下文中赋值（仅向并发项的独立上下文中赋值）
+     */
+    @SuppressWarnings("unchecked")
+    public void setContext(String i_Context)
+    {
+        this.context = i_Context;
+        try
+        {
+            if ( !Help.isNull(this.context) )
+            {
+                this.contextMap = (Map<String ,Object>) ValueHelp.getValue(this.context ,Map.class ,null ,null);
+            }
+            else
+            {
+                this.contextMap = null;
+            }
+        }
+        catch (Exception exce)
+        {
+            $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s setContext is error" ,exce);
+        }
+    }
+    
+    
+    /**
+     * 向上下文中赋值（仅向并发项的独立上下文中赋值）（内部使用）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-23
+     * @version     v1.0
+     *
+     * @return
+     */
+    protected Map<String ,Object> gatContextMap()
+    {
+        return this.contextMap;
+    }
 
     
     /**
@@ -251,6 +308,10 @@ public class MTItem extends ConditionItem
         if ( !Help.isNull(this.timeout) && !"0".equals(this.timeout) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
+        }
+        if ( !Help.isNull(this.context) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
         }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));
