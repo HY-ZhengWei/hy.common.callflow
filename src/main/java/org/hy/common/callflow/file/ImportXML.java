@@ -85,7 +85,7 @@ public class ImportXML
      * @createDate  2025-02-28
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）（允许为NULL）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）（允许为NULL）
      * @param i_Xml         XML格式的编排配置
      * @return              返回.getParamStr() 如果有升级的话，是备份文件的全路径
      *                      返回.getParamObj() 导入的最新编制配置
@@ -117,7 +117,7 @@ public class ImportXML
      * @createDate  2025-03-07
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）（允许为NULL）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）（允许为NULL）
      * @param i_Xml         XML格式的编排配置
      * @return              返回.getParamStr() 如果有升级的话，是备份的编排XML字符串
      *                      返回.getParamObj() 导入的最新编制配置

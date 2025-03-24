@@ -449,13 +449,13 @@ public class CallFlow
     
     
     /**
-     * 首个执行、条件逻辑、等待、计算、循环、嵌套和返回元素的执行
+     * 首个执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的执行
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-10
      * @version     v1.0
      *
-     * @param i_ExecXID     执行对象的XID（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecXID     执行对象的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_Context    上下文类型的变量信息
      * @return              返回编排执行链中的最后的执行结果
      *                          1.最后执行结果的开始时间beginTime，也是整个编排的最早起始时间
@@ -470,13 +470,13 @@ public class CallFlow
     
     
     /**
-     * 首个执行、条件逻辑、等待、计算、循环、嵌套和返回元素的执行
+     * 首个执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的执行
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-10
      * @version     v1.0
      *
-     * @param i_ExecXID     执行对象的XID（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecXID     执行对象的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_Context    上下文类型的变量信息
      * @param i_Event       执行监听事件
      * @return              返回编排执行链中的首个执行对象的执行结果
@@ -493,13 +493,13 @@ public class CallFlow
     
     
     /**
-     * 首个执行、条件逻辑、等待、计算、循环、嵌套和返回元素的执行
+     * 首个执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的执行
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_Context    上下文类型的变量信息
      * @return              返回编排执行链中的最后的执行结果
      *                          1.最后执行结果的开始时间beginTime，也是整个编排的最早起始时间
@@ -514,13 +514,13 @@ public class CallFlow
     
     
     /**
-     * 首个执行、条件逻辑、等待、计算、循环、嵌套和返回元素的执行
+     * 首个执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的执行
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_Context    上下文类型的变量信息
      * @param i_Event       执行监听事件
      * @return              返回编排执行链中的首个执行对象的执行结果
@@ -623,7 +623,7 @@ public class CallFlow
      * @createDate  2025-02-15
      * @version     v1.0
      *
-     * @param i_ExecObject      执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject      执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_Context        上下文类型的变量信息
      * @param i_SuperTreeID     执行链：前一个执行对象的树ID
      * @param i_PreviousResult  执行链：前一个执行结果

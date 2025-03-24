@@ -66,7 +66,7 @@ public class ExecuteElementCheckHelp
      * @createDate  2025-03-16
      * @version     v1.0
      *
-     * @param i_ExecObject           执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject           执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @return  Return.get()         表示检测是否通过。
      *          Return.getParamStr() 检测不合格时，表示不合格原因。
      */
@@ -123,7 +123,7 @@ public class ExecuteElementCheckHelp
      * @version     v1.0
      *
      * @param io_Result     表示检测结果
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_XIDs       所有元素的XID，及被引用的数量
      * @param io_ForXIDs    所有For循环的XID，及被引用的数量
      * @return              是否检测合格
@@ -434,7 +434,7 @@ public class ExecuteElementCheckHelp
      *
      * @param i_Condition   条件逻辑
      * @param io_Result     表示检测结果
-     * @param i_ExecObject  （顶级）执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  （顶级）执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_XIDs       所有元素的XID，及被引用的数量
      * @param io_ForXIDs    所有For循环的XID，及被引用的数量
      * @return              是否检测合格
@@ -525,7 +525,7 @@ public class ExecuteElementCheckHelp
      *
      * @param i_Childs      子级路由
      * @param io_Result     表示检测结果
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_XIDs       所有元素的XID，及被引用的数量
      * @param io_ForXIDs    所有For循环的XID，及被引用的数量
      * @return              是否检测合格

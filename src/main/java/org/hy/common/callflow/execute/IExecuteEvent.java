@@ -26,7 +26,7 @@ public interface IExecuteEvent
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_FirstExec  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）（编排中的首个执行元素）
+     * @param i_FirstExec  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）（编排中的首个执行元素）
      * @param io_Context   上下文类型的变量信息
      * @return             是否允许执行，否则中断
      */
@@ -41,7 +41,7 @@ public interface IExecuteEvent
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_FirstExec   执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）（编排中的首个执行元素）
+     * @param i_FirstExec   执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）（编排中的首个执行元素）
      * @param io_Context    上下文类型的变量信息
      * @param i_LastResult  最终的执行结果 
      */
@@ -56,7 +56,7 @@ public interface IExecuteEvent
      * @createDate  2025-02-21
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_Context    上下文类型的变量信息
      * @return              是否允许执行，否则中断
      */
@@ -73,7 +73,7 @@ public interface IExecuteEvent
      * @createDate  2025-02-21
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_Context    上下文类型的变量信息
      * @param i_Result      执行结果 
      * @return              是否允许后续流程的执行，否则中断
@@ -91,7 +91,7 @@ public interface IExecuteEvent
      * @createDate  2025-02-21
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param i_Context     上下文类型的变量信息
      * @param i_Result      执行结果 
      * @return              是否允许后续流程的执行，否则中断
@@ -111,7 +111,7 @@ public interface IExecuteEvent
      * @createDate  2025-02-21
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套和返回元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
      * @param io_Context    上下文类型的变量信息
      * @param i_Result      执行结果 
      * @return              是否允许后续流程的执行，否则中断
