@@ -43,6 +43,12 @@ public class MTConfig extends ExecuteElement implements Cloneable
     /** 并发项的集合 */
     private List<MTItem>        mtitems;
     
+    /** 非并发同时执行，而是一个一个的执行 */
+    private Boolean             oneByOne;
+    
+    /** 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    private String              waitTime;
+    
     /** 向上下文中赋值（向所有并发项的独立上下文中赋值） */
     private String              context;
     
@@ -61,7 +67,9 @@ public class MTConfig extends ExecuteElement implements Cloneable
     public MTConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.mtitems = new ArrayList<MTItem>();
+        this.mtitems  = new ArrayList<MTItem>();
+        this.oneByOne = false;
+        this.waitTime = "0";
     }
     
     
@@ -123,8 +131,82 @@ public class MTConfig extends ExecuteElement implements Cloneable
         return mtitems;
     }
 
+    
+    
+    /**
+     * 获取：非并发同时执行，而是一个一个的执行
+     */
+    public Boolean getOneByOne()
+    {
+        return oneByOne;
+    }
+
 
     
+    /**
+     * 设置：非并发同时执行，而是一个一个的执行
+     * 
+     * @param i_OneByOne 非并发同时执行，而是一个一个的执行
+     */
+    public void setOneByOne(Boolean i_OneByOne)
+    {
+        if ( i_OneByOne == null )
+        {
+            this.oneByOne = false;
+        }
+        else
+        {
+            this.oneByOne = i_OneByOne;
+        }
+    }
+    
+    
+    
+    /**
+     * 获取：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public String getWaitTime()
+    {
+        return waitTime;
+    }
+
+
+    
+    /**
+     * 设置：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_WaitTime 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public void setWaitTime(String i_WaitTime)
+    {
+        if ( Help.isNull(i_WaitTime) )
+        {
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTime is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_WaitTime) )
+        {
+            Long v_WaitTime = Long.valueOf(i_WaitTime);
+            if ( v_WaitTime < 0L )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTime Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.waitTime = i_WaitTime.trim();
+        }
+        else
+        {
+            this.waitTime = ValueHelp.standardRefID(i_WaitTime);
+        }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
     /**
      * 设置：并发项的集合
      * 
@@ -249,7 +331,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
                         // 超时时长
                         MTExecuteResult v_MTExecuteResult = new MTExecuteResult(x ,v_Item ,(ExecuteElement) v_CallObject ,v_Item.gatTimeout(io_Context));
                         v_MTItemResults.add(v_MTExecuteResult);
-                        if ( v_MTExecuteResult.getTimeout() < Long.MAX_VALUE )
+                        if ( !this.oneByOne && v_MTExecuteResult.getTimeout() < Long.MAX_VALUE )
                         {
                             v_IsOrderBy = true;
                         }
@@ -277,16 +359,28 @@ public class MTConfig extends ExecuteElement implements Cloneable
                     v_MTItemResult.setContext(v_MTItemContext);
                 }
                 
+                // 计算并发项间的间隔等待时长
+                Long v_WaitTime = null;
+                if ( Help.isNumber(this.waitTime) )
+                {
+                    v_WaitTime = Long.valueOf(this.waitTime);
+                }
+                else
+                {
+                    v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,0L ,io_Context);
+                }
+                
                 // 执行并发项
                 long v_TimeoutTotal = 0;
-                for (MTExecuteResult v_MTItemResult : v_MTItemResults)
+                for (int x=0; x<v_MTItemResults.size(); x++)
                 {
+                    MTExecuteResult v_MTItemResult = v_MTItemResults.get(x);
                     long v_Timeout = v_MTItemResult.getTimeout();
                     if ( v_Timeout == Long.MAX_VALUE )
                     {
                         v_Timeout = 0L;
                     }
-                    else
+                    else if ( !this.oneByOne )
                     {
                         if ( v_Timeout > v_TimeoutTotal )
                         {
@@ -302,18 +396,44 @@ public class MTConfig extends ExecuteElement implements Cloneable
                     TimeoutConfig<ExecuteResult> v_Future = this.executeAsync(v_Timeout ,v_MTItemResult.getContext() ,v_MTItemResult.getCallObject());
                     v_Future.executeAsync();
                     v_MTItemResult.setTimeoutConfig(v_Future);
+                    
+                    if ( this.oneByOne )
+                    {
+                        ExecuteResult v_ExecResult = v_Future.get();
+                        v_MTItemResult.setResult(v_ExecResult);
+                        if ( !v_ExecResult.isSuccess() )
+                        {
+                            if ( v_Exception == null )
+                            {
+                                v_Exception = v_ExecResult.getException();
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 并发项间的间隔等待时长
+                    if ( v_WaitTime > 0 )
+                    {
+                        if ( x < v_MTItemResults.size() - 1 )
+                        {
+                            Thread.sleep(v_WaitTime ,0);
+                        }
+                    }
                 }
                 
-                // 并发项等待
-                for (MTExecuteResult v_MTItemResult : v_MTItemResults)
+                if ( !this.oneByOne )
                 {
-                    ExecuteResult v_ExecResult = v_MTItemResult.getTimeoutConfig().get();
-                    v_MTItemResult.setResult(v_ExecResult);
-                    if ( !v_ExecResult.isSuccess() )
+                    // 并发项等待
+                    for (MTExecuteResult v_MTItemResult : v_MTItemResults)
                     {
-                        if ( v_Exception == null )
+                        ExecuteResult v_ExecResult = v_MTItemResult.getTimeoutConfig().get();
+                        v_MTItemResult.setResult(v_ExecResult);
+                        if ( !v_ExecResult.isSuccess() )
                         {
-                            v_Exception = v_ExecResult.getException();
+                            if ( v_Exception == null )
+                            {
+                                v_Exception = v_ExecResult.getException();
+                            }
                         }
                     }
                 }
@@ -413,6 +533,15 @@ public class MTConfig extends ExecuteElement implements Cloneable
         }
         
         v_Xml.append(super.toXml(i_Level));
+        
+        if ( this.oneByOne != null && !this.oneByOne )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("oneByOne" ,this.oneByOne));
+        }
+        if ( !Help.isNull(this.waitTime) && !"0".equals(this.waitTime) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("waitTime" ,this.waitTime));
+        }
         
         if ( !Help.isNull(this.mtitems) )
         {
@@ -584,6 +713,10 @@ public class MTConfig extends ExecuteElement implements Cloneable
             }
         }
         
+        v_Clone.oneByOne = this.oneByOne;
+        v_Clone.waitTime = this.waitTime;
+        v_Clone.context  = this.context;
+        
         return v_Clone;
     }
     
@@ -621,6 +754,10 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 v_Clone.setItem(v_CloneItem);
             }
         }
+        
+        v_Clone.oneByOne = this.oneByOne;
+        v_Clone.waitTime = this.waitTime;
+        v_Clone.context  = this.context;
     }
     
     
