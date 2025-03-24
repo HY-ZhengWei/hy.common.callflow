@@ -82,7 +82,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 执行元素的类型
+     * 元素的类型
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-11

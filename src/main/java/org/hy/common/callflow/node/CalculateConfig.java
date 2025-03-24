@@ -108,7 +108,7 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 执行元素的类型
+     * 元素的类型
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-03
@@ -119,6 +119,30 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
     public String getElementType()
     {
         return ElementType.Calculate.getValue();
+    }
+    
+    
+    /**
+     * 计算元素的具体功能类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-24
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String getElementTypeDetail()
+    {
+        // 计算类型
+        if ( Help.isNull(this.returnID) ) 
+        {
+            return ElementType.Calculate.getValue();
+        }
+        // 条件逻辑类型
+        else
+        {
+            return ElementType.Condition.getValue();
+        }
     }
     
     
@@ -216,15 +240,14 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
             if ( Help.isNull(this.returnID) )
             {
                 v_Result.setResult((Boolean) v_CalcRet);
-                this.refreshStatus(io_Context ,v_Result.getStatus());
-                
             }
             else
             {
                 v_Result.setResult(v_CalcRet);
-                this.refreshStatus(io_Context ,v_Result.getStatus());
+                
             }
             
+            this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
             return v_Result;
         }

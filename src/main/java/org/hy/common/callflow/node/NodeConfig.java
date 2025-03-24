@@ -100,7 +100,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     
     
     /**
-     * 执行元素的类型
+     * 元素的类型
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-03
