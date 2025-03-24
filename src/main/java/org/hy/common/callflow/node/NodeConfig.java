@@ -1140,6 +1140,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         v_Clone.callXID    = this.callXID;
         v_Clone.callMethod = this.callMethod; 
         v_Clone.timeout    = this.timeout;
+        v_Clone.context    = this.context;
         
         if ( !Help.isNull(this.callParams) )
         {
@@ -1184,6 +1185,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         v_Clone.callXID    = this.callXID;
         v_Clone.callMethod = this.callMethod; 
         v_Clone.timeout    = this.timeout;
+        v_Clone.context    = this.context;
         
         if ( !Help.isNull(this.callParams) )
         {
