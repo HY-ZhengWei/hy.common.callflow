@@ -435,7 +435,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
             
-            // 真时的路由
+            // 成功路由
             if ( !Help.isNull(this.route.getSucceeds()) )
             {
                 for (RouteItem v_RouteItem : this.route.getSucceeds())

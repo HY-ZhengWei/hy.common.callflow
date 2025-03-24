@@ -7,6 +7,7 @@
 * [主导思想](#主导思想)
 * [概要说明](#概要说明)
 * [主要方法](#主要方法)
+* [元素路由总览](#元素路由总览)
 * 使用举例
     * [执行元素：简单编排](#执行元素举例)
     * [执行元素的多路分支和异常举例](#执行元素的多路分支和异常举例)
@@ -105,6 +106,13 @@
 |CallFlow.getHelpImport().upgradeBackupString(IExecute ,String)|升级编排配置，并备份原编排为文本字符|
 |CallFlow.getHelpLog().logs(ExecuteResult)|生成执行结果的轨迹日志|
 |CallFlow.getHelpClone().clone(IExecute)|深度克隆编排|
+
+
+
+元素路由总览
+------
+
+![image](doc/元素路由总览.png)
 
 
 
