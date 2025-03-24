@@ -274,8 +274,9 @@ public class ExecuteResult implements ITreeID
     
     /**
      * 获取：执行链：前一个
+     * 防止Json死循环
      */
-    public ExecuteResult getPrevious()
+    public ExecuteResult gatPrevious()
     {
         return previous;
     }

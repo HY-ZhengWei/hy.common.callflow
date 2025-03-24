@@ -593,7 +593,7 @@ public class ExecuteTreeHelp
             return i_ExecResult;
         }
         
-        ExecuteResult v_Previous = i_ExecResult.getPrevious();
+        ExecuteResult v_Previous = i_ExecResult.gatPrevious();
         if ( v_Previous == null )
         {
             return i_ExecResult;
