@@ -72,7 +72,7 @@
         
         
         <xnode id="XNode_CF018_1_1">
-            <comment>显示等待秒数</comment>
+            <comment>并发整体完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
         </xnode>
