@@ -134,14 +134,21 @@ public class ExecuteResultLogHelp
             io_Logs.append(Help.NVL(i_Result.getComment())).append("\n\n");
             
             List<MTExecuteResult> v_MTResults = (List<MTExecuteResult>) i_Result.getResult();
-            for (MTExecuteResult v_MTResult : v_MTResults)
+            if ( Help.isNull(v_MTResults) )
             {
-                io_Logs.append("并发：").append(v_MTResult.getIndexNo()).append(" ")
-                       .append(v_MTResult.getCallFlowXID()).append(" ")
-                       .append(Help.NVL(v_MTResult.getComment())).append("\n");
-                
-                ExecuteResult v_MTFirstResult = CallFlow.getFirstResult(v_MTResult.getContext());
-                io_Logs.append(this.logs(v_MTFirstResult)).append("\n");
+                io_Logs.append("并发结果为空\n");
+            }
+            else
+            {
+                for (MTExecuteResult v_MTResult : v_MTResults)
+                {
+                    io_Logs.append("并发：").append(v_MTResult.getIndexNo()).append(" ")
+                           .append(v_MTResult.getCallFlowXID()).append(" ")
+                           .append(Help.NVL(v_MTResult.getComment())).append("\n");
+                    
+                    ExecuteResult v_MTFirstResult = CallFlow.getFirstResult(v_MTResult.getContext());
+                    io_Logs.append(this.logs(v_MTFirstResult)).append("\n");
+                }
             }
         }
         else
