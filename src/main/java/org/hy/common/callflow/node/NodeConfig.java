@@ -70,9 +70,6 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     /** 向上下文中赋值 */
     private String              context;
     
-    /** 向上下文中赋值（内部使用） */
-    private Map<String ,Object> contextMap;
-    
     
     
     public NodeConfig()
@@ -125,6 +122,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
      * @param io_Context     上下文类型的变量信息
      * @return
      */
+    @SuppressWarnings("unchecked")
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime = this.request();
@@ -138,9 +136,22 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             return v_Result;
         }
         
-        if ( !Help.isNull(this.contextMap) )
+        if ( !Help.isNull(this.context) )
         {
-            io_Context.putAll(this.contextMap);
+            try
+            {
+                String v_Context = ValueHelp.replaceByContext(this.context ,io_Context);
+                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,null);
+                io_Context.putAll(v_ContextMap);
+                v_ContextMap.clear();
+                v_ContextMap = null;
+            }
+            catch (Exception exce)
+            {
+                v_Result.setException(exce);
+                this.refreshStatus(io_Context ,v_Result.getStatus());
+                return v_Result;
+            }
         }
         
         // 获取执行对象
@@ -793,25 +804,9 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
      * 
      * @param i_Context 向上下文中赋值
      */
-    @SuppressWarnings("unchecked")
     public void setContext(String i_Context)
     {
         this.context = i_Context;
-        try
-        {
-            if ( !Help.isNull(this.context) )
-            {
-                this.contextMap = (Map<String ,Object>) ValueHelp.getValue(this.context ,Map.class ,null ,null);
-            }
-            else
-            {
-                this.contextMap = null;
-            }
-        }
-        catch (Exception exce)
-        {
-            $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s setContext is error" ,exce);
-        }
     }
 
 
