@@ -287,7 +287,18 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         try
         {
-            Object v_Value = ValueHelp.getValue(this.retValue ,this.gatRetClass() ,this.gatRetDefaultObject() ,io_Context);
+            String v_RetValue = null;
+            if ( !Help.isNull(this.retValue) )
+            {
+                v_RetValue = ValueHelp.replaceByContext(this.retValue ,io_Context);
+            }
+            else
+            {
+                v_RetValue = this.retValue;
+            }
+            
+            Object v_Value = ValueHelp.getValue(v_RetValue ,this.gatRetClass() ,this.gatRetDefaultObject() ,io_Context);
+            
             if ( this.isReturn() )
             {
                 // $CallFlowReturn 只是一种标记，并且在嵌套情况下，它还会被清除
