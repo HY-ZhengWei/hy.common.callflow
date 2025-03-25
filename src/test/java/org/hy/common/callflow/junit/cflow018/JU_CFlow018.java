@@ -86,6 +86,7 @@ public class JU_CFlow018 extends JUBase
             v_Result.getException().printStackTrace();
         }
         
+        System.out.println("并发统一返回结果：" + v_Result.getResult());
         System.out.println("返回值：AReturn=" + v_Context.get("AReturn"));
         System.out.println("返回值：BReturn=" + v_Context.get("BReturn"));
         

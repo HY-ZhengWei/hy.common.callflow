@@ -71,10 +71,28 @@
         </xwait>
         
         
+        <xreturn id="XReturn_CF018_1_1_1">
+            <comment>对外返回并发结果</comment>
+            <retClass>java.util.HashMap</retClass>          <!-- 定义返回值的类型 -->
+            <retValue>
+            {
+                "typeNameA": ":AReturn", 
+                "typeNameB": ":BReturn"
+            }
+            </retValue>                                     <!-- 从每路并发项的返回值中取值，组合成一个新的数据格式统一返回 -->
+        </xreturn>
+        
+        
         <xnode id="XNode_CF018_1_1">
             <comment>并发整体完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XReturn_CF018_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
         </xnode>
         
         
