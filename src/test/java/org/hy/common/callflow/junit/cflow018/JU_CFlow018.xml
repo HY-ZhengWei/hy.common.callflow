@@ -85,7 +85,7 @@
                 <callFlowXID>:XWait_CF018_A_1</callFlowXID>
                 <context>
                 {
-                    "typeName": "A"
+                    "typeName": ":typeNameA"
                 }
                 </context>
                 <returnID>AReturn</returnID>
@@ -95,7 +95,7 @@
                 <callFlowXID>:XWait_CF018_B_1</callFlowXID>
                 <context>
                 {
-                    "typeName": "B"
+                    "typeName": ":typeNameB"
                 }
                 </context>
                 <returnID>BReturn</returnID>

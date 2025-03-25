@@ -67,6 +67,9 @@ public class JU_CFlow018 extends JUBase
         MTConfig            v_MT      = (MTConfig) XJava.getObject("XMT_CF018_1");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
+        v_Context.put("typeNameA" ,"A");
+        v_Context.put("typeNameB" ,"B");
+        
         ExecuteResult v_Result = CallFlow.execute(v_MT ,v_Context);
         if ( v_Result.isSuccess() )
         {

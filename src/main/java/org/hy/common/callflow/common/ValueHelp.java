@@ -1,9 +1,11 @@
 package org.hy.common.callflow.common;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJSON;
@@ -352,6 +354,33 @@ public class ValueHelp
         }
         
         return v_Builder.toString();
+    }
+    
+    
+    
+    /**
+     * 用上下文中的内容替换（简单的粗狂替换）文本中的占位符
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-25
+     * @version     v1.0
+     *
+     * @param i_Value    文本字符
+     * @param i_Context  上下文内容
+     * @return
+     */
+    public static String replaceByContext(String i_Value ,Map<String ,Object> i_Context)
+    {
+        Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        for (Map.Entry<String ,Object> v_Item : i_Context.entrySet())
+        {
+            v_Context.put(DBSQL.$Placeholder + v_Item.getKey() ,v_Item.getValue());
+        }
+        
+        String v_NewValue = StringHelp.replaceAll(i_Value ,v_Context);
+        v_Context.clear();
+        v_Context = null;
+        return v_NewValue;
     }
     
 }

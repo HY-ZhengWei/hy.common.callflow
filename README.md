@@ -2240,18 +2240,20 @@ __编排配置__
                 <callFlowXID>:XWait_CF018_A_1</callFlowXID>
                 <context>
                 {
-                    "typeName": "A"
+                    "typeName": ":typeNameA"
                 }
                 </context>
+                <returnID>AReturn</returnID>
             </item>
             <item>
                 <comment>并发项：模拟等待5秒</comment>
                 <callFlowXID>:XWait_CF018_B_1</callFlowXID>
                 <context>
                 {
-                    "typeName": "B"
+                    "typeName": ":typeNameB"
                 }
                 </context>
+                <returnID>BReturn</returnID>
             </item>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
@@ -2277,6 +2279,8 @@ MTConfig            v_MT        = (MTConfig) XJava.getObject("XMT_CF018_1");
 
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+v_Context.put("typeNameA" ,"A");
+v_Context.put("typeNameB" ,"B");
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result    = CallFlow.execute(v_MT ,v_Context);

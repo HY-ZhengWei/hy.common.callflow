@@ -41,19 +41,16 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
 
     /** 并发项的集合 */
-    private List<MTItem>        mtitems;
+    private List<MTItem> mtitems;
     
     /** 非并发同时执行，而是一个一个的执行 */
-    private Boolean             oneByOne;
+    private Boolean      oneByOne;
     
     /** 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String              waitTime;
+    private String       waitTime;
     
     /** 向上下文中赋值（向所有并发项的独立上下文中赋值） */
-    private String              context;
-    
-    /** 向上下文中赋值（内部使用） */
-    private Map<String ,Object> contextMap;
+    private String       context;
     
     
     
@@ -243,25 +240,9 @@ public class MTConfig extends ExecuteElement implements Cloneable
      * 
      * @param i_Context 向上下文中赋值（仅向并发项的独立上下文中赋值）
      */
-    @SuppressWarnings("unchecked")
     public void setContext(String i_Context)
     {
         this.context = i_Context;
-        try
-        {
-            if ( !Help.isNull(this.context) )
-            {
-                this.contextMap = (Map<String ,Object>) ValueHelp.getValue(this.context ,Map.class ,null ,null);
-            }
-            else
-            {
-                this.contextMap = null;
-            }
-        }
-        catch (Exception exce)
-        {
-            $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s setContext is error" ,exce);
-        }
     }
     
     
@@ -277,6 +258,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
      * @param io_Context     上下文类型的变量信息
      * @return
      */
+    @SuppressWarnings("unchecked")
     @Override
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
@@ -290,9 +272,13 @@ public class MTConfig extends ExecuteElement implements Cloneable
             boolean               v_IsOrderBy     = false;
             Exception             v_Exception     = null;
             
-            if ( !Help.isNull(this.contextMap) )
+            if ( !Help.isNull(this.context) )
             {
-                io_Context.putAll(this.contextMap);
+                String v_Context = ValueHelp.replaceByContext(this.context ,io_Context);
+                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,null);
+                io_Context.putAll(v_ContextMap);
+                v_ContextMap.clear();
+                v_ContextMap = null;
             }
             
             // 先判定允许执行的并发项
@@ -352,10 +338,16 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 {
                     Map<String ,Object> v_MTItemContext = new HashMap<String ,Object>();
                     v_MTItemContext.putAll(io_Context);
-                    if ( !Help.isNull(v_MTItemResult.getMtItem().gatContextMap()) )
+                    
+                    if ( !Help.isNull(v_MTItemResult.getMtItem().getContext()) )
                     {
-                        v_MTItemContext.putAll(v_MTItemResult.getMtItem().gatContextMap());
+                        String v_Context = ValueHelp.replaceByContext(v_MTItemResult.getMtItem().getContext() ,v_MTItemContext);
+                        Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,null);
+                        v_MTItemContext.putAll(v_ContextMap);
+                        v_ContextMap.clear();
+                        v_ContextMap = null;
                     }
+                    
                     v_MTItemResult.setContext(v_MTItemContext);
                 }
                 
