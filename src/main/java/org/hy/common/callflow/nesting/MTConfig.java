@@ -409,6 +409,10 @@ public class MTConfig extends ExecuteElement implements Cloneable
                                 break;
                             }
                         }
+                        else 
+                        {
+                            this.refreshReturn(io_Context ,v_MTItemResult.getContext() ,v_MTItemResult.getMtItem().getReturnID());
+                        }
                     }
                     
                     // 并发项间的间隔等待时长
@@ -434,6 +438,10 @@ public class MTConfig extends ExecuteElement implements Cloneable
                             {
                                 v_Exception = v_ExecResult.getException();
                             }
+                        }
+                        else
+                        {
+                            this.refreshReturn(io_Context ,v_MTItemResult.getContext() ,v_MTItemResult.getMtItem().getReturnID());
                         }
                     }
                 }
@@ -488,6 +496,26 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] executeAsync error", exce);
             }
         });
+    }
+    
+    
+    /**
+     * 刷新返回值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-25
+     * @version     v1.0
+     *
+     * @param io_Context       上下文类型的变量信息
+     * @param i_MTItemContext  并发项的独立上下文
+     * @param i_ReturnID       返回值变量名称ID
+     */
+    private void refreshReturn(Map<String ,Object> io_Context ,Map<String ,Object> i_MTItemContext ,String i_ReturnID)
+    {
+        if ( !Help.isNull(i_ReturnID) && io_Context != null )
+        {
+            io_Context.put(i_ReturnID ,CallFlow.getLastResult(i_MTItemContext).getResult());
+        }
     }
     
     

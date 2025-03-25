@@ -83,6 +83,9 @@ public class JU_CFlow018 extends JUBase
             v_Result.getException().printStackTrace();
         }
         
+        System.out.println("返回值：AReturn=" + v_Context.get("AReturn"));
+        System.out.println("返回值：BReturn=" + v_Context.get("BReturn"));
+        
         // 打印执行路径
         ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
         CallFlow.getHelpLog().logs(v_FirstResult);

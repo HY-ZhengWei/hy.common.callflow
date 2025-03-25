@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.Comparer;
 import org.hy.common.callflow.execute.ExecuteElement;
@@ -40,6 +41,9 @@ public class MTItem extends ConditionItem
     
     /** 向上下文中赋值（内部使用） */
     private Map<String ,Object> contextMap;
+    
+    /** 为返回值定义的变量ID（返回最后的结果） */          
+    private String              returnID;
     
     
     
@@ -250,6 +254,31 @@ public class MTItem extends ConditionItem
     {
         return this.contextMap;
     }
+    
+    
+    /**
+     * 获取：为返回值定义的变量ID（返回最后的结果）
+     */
+    public String getReturnID()
+    {
+        return returnID;
+    }
+    
+    
+    /**
+     * 设置：为返回值定义的变量ID（返回最后的结果）
+     * 
+     * @param i_ReturnID 为返回值定义的变量ID（返回最后的结果）
+     */
+    public void setReturnID(String i_ReturnID)
+    {
+        if ( CallFlow.isSystemXID(i_ReturnID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s returnID[" + i_ReturnID + "] is SystemXID.");
+        }
+        
+        this.returnID = ValueHelp.standardValueID(i_ReturnID);
+    }
 
     
     /**
@@ -312,6 +341,10 @@ public class MTItem extends ConditionItem
         if ( !Help.isNull(this.context) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
+        }
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
         }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));
@@ -487,6 +520,9 @@ public class MTItem extends ConditionItem
         v_Clone.valueXIDA   = this.valueXIDA;
         v_Clone.valueXIDB   = this.valueXIDB; 
         v_Clone.callFlowXID = this.callFlowXID; 
+        v_Clone.timeout     = this.timeout; 
+        v_Clone.context     = this.context;
+        v_Clone.returnID    = this.returnID;
         
         return v_Clone;
     }
@@ -518,6 +554,9 @@ public class MTItem extends ConditionItem
         v_Clone.valueXIDA   = this.valueXIDA;
         v_Clone.valueXIDB   = this.valueXIDB;
         v_Clone.callFlowXID = this.callFlowXID;
+        v_Clone.timeout     = this.timeout; 
+        v_Clone.context     = this.context;
+        v_Clone.returnID    = this.returnID;
     }
     
 }

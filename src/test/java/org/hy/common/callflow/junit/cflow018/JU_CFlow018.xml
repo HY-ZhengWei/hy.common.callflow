@@ -88,6 +88,7 @@
                     "typeName": "A"
                 }
                 </context>
+                <returnID>AReturn</returnID>
             </item>
             <item>
                 <comment>并发项：模拟等待5秒</comment>
@@ -97,6 +98,7 @@
                     "typeName": "B"
                 }
                 </context>
+                <returnID>BReturn</returnID>
             </item>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->

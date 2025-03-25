@@ -16,9 +16,10 @@ import org.hy.common.Date;
 public class Program
 {
     
-    public void method_ShowWaitTime(long i_TimeLen ,String i_TypeName)
+    public String method_ShowWaitTime(long i_TimeLen ,String i_TypeName)
     {
         System.out.println(Date.getNowTime().getFullMilli() + " call method_ShowWaitTime：" + i_TimeLen + " ,typeName=" + i_TypeName);
+        return i_TypeName + ":" + i_TimeLen;
     }
     
     
