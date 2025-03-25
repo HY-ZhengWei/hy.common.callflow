@@ -79,7 +79,7 @@ public class JU_CFlow014 extends JUBase
         
         // 打印执行路径
         ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
-        CallFlow.getHelpLog().logs(v_FirstResult);
+        System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
         
         System.out.println();
         

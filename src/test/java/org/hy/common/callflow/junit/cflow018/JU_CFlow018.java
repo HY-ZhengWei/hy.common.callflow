@@ -92,7 +92,7 @@ public class JU_CFlow018 extends JUBase
         
         // 打印执行路径
         ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
-        CallFlow.getHelpLog().logs(v_FirstResult);
+        System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
         System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
         
         // 导出
