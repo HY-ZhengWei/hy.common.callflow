@@ -435,9 +435,19 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         v_Builder.append("Return：");
         
+        String v_RetValue = null;
+        if ( !Help.isNull(this.retValue) )
+        {
+            v_RetValue = ValueHelp.replaceByContext(this.retValue ,i_Context);
+        }
+        else
+        {
+            v_RetValue = this.retValue;
+        }
+        
         try
         {
-            v_Value = ValueHelp.getValue(this.retValue ,this.gatRetClass() ,this.gatRetDefaultObject() ,i_Context);
+            v_Value = ValueHelp.getValue(v_RetValue ,this.gatRetClass() ,this.gatRetDefaultObject() ,i_Context);
         }
         catch (Exception exce)
         {
