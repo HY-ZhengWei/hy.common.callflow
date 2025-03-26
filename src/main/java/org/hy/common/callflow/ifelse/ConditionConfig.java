@@ -435,7 +435,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                 {
                     v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Error.getXmlName()));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Error.getXmlName()));
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Error.getXmlName()));
                 }
             }
             
