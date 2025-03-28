@@ -19,6 +19,19 @@ public interface NodeConfigBase
 {
     
     /**
+     * 元素的类型
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-03
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String getElementType();
+   
+    
+    
+    /**
      * 执行方法前，对执行对象的处理
      * 
      * 建议：子类重写此方法
