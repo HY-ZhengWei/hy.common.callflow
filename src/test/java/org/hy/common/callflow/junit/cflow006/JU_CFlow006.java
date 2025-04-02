@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
@@ -76,6 +77,14 @@ public class JU_CFlow006 extends JUBase
         v_Context.put("NumParam"  ,9);
         // 传值 null 或 不为 null
         v_Context.put("NULLValue" ,null);
+        
+        // 执行前的静态检查
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
+        if ( !v_CheckRet.get() )
+        {
+            System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
+            return;
+        }
         
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
         if ( v_Result.isSuccess() )

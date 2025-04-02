@@ -8,6 +8,9 @@
 * [概要说明](#概要说明)
 * [主要方法](#主要方法)
 * [元素路由总览](#元素路由总览)
+* [执行前的静态检查](#执行前的静态检查)
+* [编排的执行](#编排的执行)
+* [编排执行结果的轨迹](#编排执行结果的轨迹)
 * 使用举例
     * [执行元素：简单编排](#执行元素举例)
     * [执行元素的多路分支和异常举例](#执行元素的多路分支和异常举例)
@@ -128,6 +131,60 @@
     当它为条件逻辑类型时，有真、假和异常三种路由。
 
 ![image](doc/元素路由总览.png)
+
+
+
+执行前的静态检查
+------
+```java
+// 获取编排中的首个元素
+NodeConfig     v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_1");
+
+// 执行前的静态检查
+Return<Object> v_CheckRet  = CallFlow.getHelpCheck().check(v_FirstNode);
+if ( !v_CheckRet.get() )
+{
+    System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
+    return;
+}
+```
+
+
+
+编排的执行
+------
+```java
+// 获取编排中的首个元素
+NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_FirstNode ,v_Context);
+```
+
+
+
+编排执行结果的轨迹
+------
+```java
+// 执行编排。返回执行结果       
+ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
+if ( v_Result.isSuccess() )
+{
+    System.out.println("Success");
+}
+else
+{
+    System.out.println("Error XID = " + v_Result.getExecuteXID());
+    v_Result.getException().printStackTrace();  // 打印异常
+}
+
+// 打印执行路径（从首个执行的元素开始打印）
+ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
+System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
+```
 
 
 

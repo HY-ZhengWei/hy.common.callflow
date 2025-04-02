@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hy.common.Date;
+import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.forloop.ForConfig;
@@ -96,6 +97,14 @@ public class JU_CFlow012 extends JUBase
         v_MapDatas.put("K456" ,456);
         v_MapDatas.put("K789" ,789);
         v_Context.put("Datas" ,v_MapDatas);
+        
+        // 执行前的静态检查
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_ForConfig);
+        if ( !v_CheckRet.get() )
+        {
+            System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
+            return;
+        }
         
         ExecuteResult v_Result = CallFlow.execute(v_ForConfig ,v_Context);
         if ( v_Result.isSuccess() )

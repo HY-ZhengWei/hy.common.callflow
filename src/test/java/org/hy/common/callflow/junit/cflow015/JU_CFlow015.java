@@ -3,6 +3,7 @@ package org.hy.common.callflow.junit.cflow015;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
@@ -58,6 +59,14 @@ public class JU_CFlow015 extends JUBase
         
         // 真时：返回元素生效，仅部分元素被执行。假时：其它元素均被执行
         v_Context.put("IsReturn" ,true);
+        
+        // 执行前的静态检查
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
+        if ( !v_CheckRet.get() )
+        {
+            System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
+            return;
+        }
         
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
         System.out.println("结果：" + v_Result.getResult());

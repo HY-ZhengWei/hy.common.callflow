@@ -3,6 +3,7 @@ package org.hy.common.callflow.junit.cflow016;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
@@ -55,6 +56,14 @@ public class JU_CFlow016 extends JUBase
         // 获取编排中的首个元素
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF016_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+        
+        // 执行前的静态检查
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
+        if ( !v_CheckRet.get() )
+        {
+            System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
+            return;
+        }
         
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
         System.out.println("结果：" + v_Result.getResult());

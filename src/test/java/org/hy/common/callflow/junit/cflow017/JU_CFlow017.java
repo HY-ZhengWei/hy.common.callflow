@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
+import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
@@ -69,6 +70,14 @@ public class JU_CFlow017 extends JUBase
         
         // 大于10秒 或 小于10秒
         v_Context.put("TimeoutLen" ,1000L * 3L);
+        
+        // 执行前的静态检查
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_Nesting);
+        if ( !v_CheckRet.get() )
+        {
+            System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
+            return;
+        }
         
         ExecuteResult v_Result = CallFlow.execute(v_Nesting ,v_Context);
         if ( v_Result.isSuccess() )
