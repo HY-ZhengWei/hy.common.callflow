@@ -275,7 +275,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
             if ( !Help.isNull(this.context) )
             {
                 String v_Context = ValueHelp.replaceByContext(this.context ,io_Context);
-                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,null);
+                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
                 io_Context.putAll(v_ContextMap);
                 v_ContextMap.clear();
                 v_ContextMap = null;

@@ -232,14 +232,20 @@ public class ValueHelp
      * @param i_Value
      * @param i_ValueClass
      * @return
+     * @throws Exception 
      */
-    private static Object toObject(Object i_Value ,Class<?> i_ValueClass)
+    private static Object toObject(Object i_Value ,Class<?> i_ValueClass) throws Exception
     {
         if ( i_Value != null && i_ValueClass != null )
         {
             if ( Help.isBasicDataType(i_ValueClass) )
             {
                 return Help.toObject(i_ValueClass ,i_Value.toString());
+            }
+            else if ( String.class.equals(i_Value.getClass()) && MethodReflect.isExtendImplement(i_ValueClass ,Map.class) )
+            {
+                XJSON v_XJson = new XJSON();
+                return v_XJson.toJava(i_Value.toString() ,Map.class);
             }
         }
         

@@ -22,6 +22,7 @@ import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.timeout.TimeoutConfig;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xml.XHttp;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
 
@@ -141,7 +142,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             try
             {
                 String v_Context = ValueHelp.replaceByContext(this.context ,io_Context);
-                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,null);
+                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
                 io_Context.putAll(v_ContextMap);
                 v_ContextMap.clear();
                 v_ContextMap = null;
@@ -193,6 +194,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         try
         {
             this.init(v_CallObject ,v_ParamValues);
+            v_ParamValues = this.generateParams(io_Context ,v_ParamValues);
         }
         catch (Exception exce)
         {
@@ -201,38 +203,39 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             return v_Result;
         }
         
-        v_ParamValues = this.generateParams(io_Context ,v_ParamValues);
-        
         try
         {
-            Long v_Timeout = this.gatTimeout(io_Context);
+            Return<Object> v_ExceRet = null;
+            Long           v_Timeout = this.gatTimeout(io_Context);
             if ( v_Timeout > 0L )
             {
-                TimeoutConfig<Object> v_Future = this.executeAsync(v_Timeout ,io_Context ,v_CallObject ,v_ParamValues);
-                Object v_ExceRet = v_Future.execute();  // 阻塞等待任务完成
-                if ( v_Future.isSucceed() )
-                {
-                    v_Result.setResult(v_ExceRet);
-                }
-                else
+                TimeoutConfig<Object> v_Future  = this.executeAsync(v_Timeout ,io_Context ,v_CallObject ,v_ParamValues);
+                v_ExceRet = (Return<Object>) v_Future.execute();  // 阻塞等待任务完成
+                if ( !v_Future.isSucceed() )
                 {
                     throw v_Future.getException();
                 }
             }
             else
             {
-                Object v_ExceRet = Void.TYPE;
                 if ( Void.TYPE.equals(this.callMethodObject.getReturnType()) )
                 {
                     this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+                    v_ExceRet = this.generateReturn(io_Context ,Void.TYPE);
                 }
                 else
                 {
-                    v_ExceRet = this.callMethodObject.invoke(v_CallObject ,v_ParamValues);
+                    v_ExceRet = this.generateReturn(io_Context ,this.callMethodObject.invoke(v_CallObject ,v_ParamValues));
                 }
-                
-                this.generateReturn(io_Context ,v_ExceRet);
-                v_Result.setResult(v_ExceRet);
+            }
+            
+            if ( v_ExceRet.get() )
+            {
+                v_Result.setResult(v_ExceRet.getParamObj());
+            }
+            else
+            {
+                throw v_ExceRet.getException();
             }
             
             this.refreshReturn(io_Context ,v_Result.getResult());
@@ -443,11 +446,13 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
      *
      * @param io_Context        上下文类型的变量信息
      * @param io_ExecuteReturn  执行结果。已用NodeConfig自己的力量获取了执行结果。
-     * @return
+     * @return                  Return.get()          是否执行成功
+     *                          Return.getParamObj()  执行结果
+     *                          Return.getException() 执行异常
      */
-    public Object generateReturn(Map<String ,Object> io_Context ,Object io_ExecuteReturn)
+    public Return<Object> generateReturn(Map<String ,Object> io_Context ,Object io_ExecuteReturn)
     {
-        return io_ExecuteReturn;
+        return new Return<Object>(true).setParamObj(io_ExecuteReturn);
     }
     
     
@@ -608,12 +613,17 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                 }
                 else
                 {
-                    throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is find " + v_CallMethods.size() + " methods.");
+                    this.isInit           = true;
+                    this.callMethodObject = v_CallMethods.get(0);
+                    if ( !(i_CallObject instanceof XHttp) )
+                    {
+                        $Logger.warn("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is find " + v_CallMethods.size() + " methods.");
+                    }
                 }
             }
             else
             {
-                throw new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is not find.");
+                throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is not find.");
             }
         }
     }

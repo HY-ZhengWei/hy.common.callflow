@@ -17,6 +17,7 @@ import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
+import org.hy.common.callflow.node.APIConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
@@ -64,6 +65,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Calculate.getXmlName() ,CalculateConfig.class);
         getInstance().addImportHead(ElementType.Condition.getXmlName() ,ConditionConfig.class);
         getInstance().addImportHead(ElementType.Return.getXmlName()    ,ReturnConfig.class);
+        getInstance().addImportHead(ElementType.Api.getXmlName()       ,APIConfig.class);
     }
     
     
@@ -315,7 +317,11 @@ public class ExportXml
         // 没有XID时，自动生成
         if ( Help.isNull(i_ExecObject.getXJavaID()) )
         {
-            if ( i_ExecObject instanceof NodeConfig )
+            if ( i_ExecObject instanceof APIConfig )
+            {
+                i_ExecObject.setXJavaID("XAPI_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof NodeConfig )
             {
                 i_ExecObject.setXJavaID("XNode_" + StringHelp.getUUID9n());
             }

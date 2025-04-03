@@ -14,7 +14,9 @@ package org.hy.common.callflow.enums;
 public enum ElementType
 {
     
-    Node(     "NODE"      ,"xnode"      ,"执行节点"),
+    Node(     "NODE"      ,"xnode"      ,"执行元素"),
+    
+    Api (     "API"       ,"xapi"       ,"接口元素"),
     
     Condition("CONDITION" ,"xcondition" ,"条件逻辑"),
     

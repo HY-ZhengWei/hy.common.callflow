@@ -661,11 +661,12 @@ public class RouteItem implements IToXml ,CloneableCallFlow
         
         if ( this.next != null )
         {
+            // 执行元素不一样，它可以衍生
             if ( this.next instanceof NodeConfig )
             {
-                NodeConfig v_CloneNode = new NodeConfig();
-                ((NodeConfig) this.next).clone(v_CloneNode ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
-                v_Clone.next = v_CloneNode;
+                Object v_CloneNode = this.next.newMy();
+                ((CloneableCallFlow) v_CloneNode).clone(v_CloneNode ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = (ExecuteElement) v_CloneNode;
             }
             else if ( this.next instanceof WaitConfig )
             {

@@ -367,7 +367,7 @@ public class ExecuteElementCheckHelp
                 {
                     x++;
                     
-                    if ( Help.isNull(v_NodeParam.getValue()) && Help.isNull(v_NodeParam.getValueDefault()) )
+                    if ( v_NodeParam.getValue() == null && v_NodeParam.getValueDefault() == null )
                     {
                         // 方法参数及默认值均会空时异常
                         io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(v_Node.getXid()) + "].callParams[" + x + "] value and valueDefault is null.");

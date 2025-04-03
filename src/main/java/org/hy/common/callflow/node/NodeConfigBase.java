@@ -2,6 +2,7 @@ package org.hy.common.callflow.node;
 
 import java.util.Map;
 
+import org.hy.common.Return;
 import org.hy.common.callflow.execute.ExecuteElement;
 
 
@@ -78,9 +79,11 @@ public interface NodeConfigBase
      *
      * @param io_Context        上下文类型的变量信息
      * @param io_ExecuteReturn  执行结果。已用NodeConfig自己的力量获取了执行结果。
-     * @return
+     * @return                  Return.get()          是否执行成功
+     *                          Return.getParamObj()  执行结果
+     *                          Return.getException() 执行异常
      */
-    public Object generateReturn(Map<String ,Object> io_Context ,Object io_ExecuteReturn);
+    public Return<Object> generateReturn(Map<String ,Object> io_Context ,Object io_ExecuteReturn);
     
     
     
