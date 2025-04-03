@@ -9,6 +9,7 @@
 * [主要方法](#主要方法)
 * [元素路由总览](#元素路由总览)
 * 编码示范
+    * [执行前生成树ID](#执行前生成树ID)
     * [执行前的静态检查](#执行前的静态检查)
     * [编排的执行](#编排的执行)
     * [编排执行结果的轨迹](#编排执行结果的轨迹)
@@ -135,13 +136,26 @@
 
 
 
+执行前生成树ID
+------
+```java
+// 获取编排中的首个元素
+NodeConfig v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_1");
+
+// 编排结构未变时，仅须生成一次树ID
+CallFlow.getHelpExecute().clearTree(v_FirstNode);  // 清空树ID及寻址相关的信息
+CallFlow.getHelpExecute().calcTree(v_FirstNode);   // 计算树ID及寻址相关的信息
+```
+
+
+
 执行前的静态检查
 ------
 ```java
 // 获取编排中的首个元素
 NodeConfig     v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_1");
 
-// 执行前的静态检查
+// 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
 Return<Object> v_CheckRet  = CallFlow.getHelpCheck().check(v_FirstNode);
 if ( !v_CheckRet.get() )
 {

@@ -98,7 +98,7 @@ public class JU_CFlow012 extends JUBase
         v_MapDatas.put("K789" ,789);
         v_Context.put("Datas" ,v_MapDatas);
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_ForConfig);
         if ( !v_CheckRet.get() )
         {

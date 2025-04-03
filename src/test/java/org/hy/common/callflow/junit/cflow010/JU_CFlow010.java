@@ -70,7 +70,7 @@ public class JU_CFlow010 extends JUBase
         // 传数字 或 字符类的数字
         v_Context.put("Value" ,99);
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_Calculate);
         if ( !v_CheckRet.get() )
         {

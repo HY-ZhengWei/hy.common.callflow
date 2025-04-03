@@ -67,7 +67,7 @@ public class JU_CFlow011 extends JUBase
         ForConfig           v_ForConfig = (ForConfig) XJava.getObject("XFor_CF011_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_ForConfig);
         if ( !v_CheckRet.get() )
         {

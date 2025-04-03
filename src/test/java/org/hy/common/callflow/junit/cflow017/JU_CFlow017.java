@@ -71,7 +71,7 @@ public class JU_CFlow017 extends JUBase
         // 大于10秒 或 小于10秒
         v_Context.put("TimeoutLen" ,1000L * 3L);
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_Nesting);
         if ( !v_CheckRet.get() )
         {

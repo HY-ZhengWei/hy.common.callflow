@@ -67,7 +67,11 @@ public class JU_CFlow001 extends JUBase
         NodeConfig          v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF001_1");
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
-        // 执行前的静态检查
+        // 结构未变时，仅须生成一次树ID
+        CallFlow.getHelpExecute().clearTree(v_FirstNode);  // 清空树ID及寻址相关的信息
+        CallFlow.getHelpExecute().calcTree(v_FirstNode);   // 计算树ID及寻址相关的信息
+        
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
         if ( !v_CheckRet.get() )
         {

@@ -60,7 +60,7 @@ public class JU_CFlow015 extends JUBase
         // 真时：返回元素生效，仅部分元素被执行。假时：其它元素均被执行
         v_Context.put("IsReturn" ,true);
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
         if ( !v_CheckRet.get() )
         {

@@ -71,7 +71,7 @@ public class JU_CFlow018 extends JUBase
         v_Context.put("typeNameA" ,"A");
         v_Context.put("typeNameB" ,"B");
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_MT);
         if ( !v_CheckRet.get() )
         {

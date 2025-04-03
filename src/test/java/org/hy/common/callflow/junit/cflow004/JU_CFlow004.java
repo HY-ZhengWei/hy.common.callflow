@@ -94,7 +94,7 @@ public class JU_CFlow004 extends JUBase
         // 获取编排中的首个元素
         NodeConfig v_FirstNode = (NodeConfig) XJava.getObject("XNode_CF004_1");
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
         if ( !v_CheckRet.get() )
         {

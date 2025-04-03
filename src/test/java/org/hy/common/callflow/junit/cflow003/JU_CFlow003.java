@@ -74,7 +74,7 @@ public class JU_CFlow003 extends JUBase
         // 传值 null 或 不为 null
         v_Context.put("NULLValue" ,null);
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
         if ( !v_CheckRet.get() )
         {

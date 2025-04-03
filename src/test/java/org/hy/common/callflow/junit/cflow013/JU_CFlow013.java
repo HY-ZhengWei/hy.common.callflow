@@ -72,7 +72,7 @@ public class JU_CFlow013 extends JUBase
         // 大于5秒 或 小于5秒
         v_Context.put("SleepTime" ,1000L * 10L);
         
-        // 执行前的静态检查
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
         if ( !v_CheckRet.get() )
         {
