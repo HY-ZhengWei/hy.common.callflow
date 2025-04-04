@@ -11,6 +11,7 @@ import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.xml.XHttp;
+import org.hy.common.xml.XJSON;
 import org.hy.common.xml.XJava;
 
 
@@ -197,6 +198,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         }
         
         this.url = i_Url;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
     
@@ -244,6 +247,9 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
                 this.callObject.setRequestType(XHttp.$Request_Type_Get);
             }
         }
+        
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
     
@@ -266,6 +272,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     public void setContentType(String i_ContentType)
     {
         this.callObject.setContentType(i_ContentType);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -288,6 +296,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     public void setConnectTimeout(int i_ConnectTimeout)
     {
         this.callObject.setConnectTimeout(i_ConnectTimeout);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -310,6 +320,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     public void setReadTimeout(int i_ReadTimeout)
     {
         this.callObject.setReadTimeout(i_ReadTimeout);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -332,6 +344,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     public void setParam(String i_Param)
     {
         this.param = i_Param;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -354,6 +368,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     public void setBody(String i_Body)
     {
         this.body = i_Body;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -376,6 +392,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     public void setHead(String i_Head)
     {
         this.head = i_Head;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
@@ -416,6 +434,27 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     public String getReturnClass()
     {
         return returnClass;
+    }
+    
+    
+    
+    /**
+     * 设置：返回结果的元类型。返回结果的数据为数值类型时生效
+     * 
+     * @param i_ReturnClass 返回结果的元类型。返回结果的数据为数值类型时生效
+     */
+    public void setReturnClass(String i_ReturnClass)
+    {
+        if ( Void.class.getName().equals(i_ReturnClass) )
+        {
+            this.returnClass = null;
+        }
+        else
+        {
+            this.returnClass = i_ReturnClass;
+        }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -511,6 +550,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      * @return                  Return.get()          是否执行成功
      *                          Return.getParamObj()  执行结果
      *                          Return.getException() 执行异常
+     * @throws Exception 
      */
     public Return<Object> generateReturn(Map<String ,Object> io_Context ,Object io_ExecuteReturn)
     {
@@ -518,7 +558,29 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         
         if ( v_XHttpRet.get() )
         {
-            return new Return<Object>(true).setParamObj(v_XHttpRet.getParamStr());
+            Object v_ReturnValue = v_XHttpRet.getParamStr();
+            if ( !Help.isNull(this.returnClass) )
+            {
+                Class<?> v_ReturnClass = this.gatReturnClass();
+                if ( Help.isBasicDataType(v_ReturnClass) )
+                {
+                    v_ReturnValue = Help.toObject(v_ReturnClass ,v_ReturnValue.toString());
+                }
+                else
+                {
+                    XJSON v_XJson = new XJSON();
+                    try
+                    {
+                        v_ReturnValue = v_XJson.toJava(v_ReturnValue.toString() ,v_ReturnClass);
+                    }
+                    catch (Exception exce)
+                    {
+                        throw new RuntimeException(exce);
+                    }
+                }
+            }
+            
+            return new Return<Object>(true).setParamObj(v_ReturnValue);
         }
         else
         {
@@ -553,6 +615,18 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         {
             io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("url" ,this.url));
         }
+        if ( !Help.isNull(this.param) )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("param" ,this.param));
+        }
+        if ( !Help.isNull(this.body) )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("body" ,this.body));
+        }
+        if ( !Help.isNull(this.head) )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("head" ,this.head));
+        }
         if ( !Help.isNull(this.getRequestType()) && this.callObject.getRequestType() != XHttp.$Request_Type_Get )
         {
             io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("requestType" ,this.getRequestType()));
@@ -568,6 +642,10 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         if ( this.getReadTimeout() != 300 * 1000 )
         {
             io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("readTimeout" ,this.getReadTimeout()));
+        }
+        if ( !Help.isNull(this.returnClass) )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("returnClass" ,this.returnClass));
         }
     }
     
