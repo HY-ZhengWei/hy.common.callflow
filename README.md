@@ -32,6 +32,7 @@
     * [返回元素的举例](#返回元素的举例)
     * [递归的举例](#递归的举例)
     * [并发元素的举例](#并发元素的举例)
+    * [接口元素的举例](#接口元素的举例)
 
 
 
@@ -89,11 +90,14 @@
         
         3.3 路由与循环可以组合后共存（12种），即：成功路由+For循环路由组成一条成功时For循环的路由。
         
-    4. 2种衍生元素。
+    4. 3种衍生元素。
     
         4.1. IOT读元素，衍生于执行元素，用于读取PLC数据。
         
         4.2. IOT写元素，衍生于执行元素，用于向PLC写入数据。
+        
+        4.3. 接口元素，衍生于执行元素，用于API接口请求访问。
+
 
 
 主要方法
@@ -228,6 +232,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -301,6 +306,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -422,6 +428,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -611,6 +618,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -719,6 +727,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -828,6 +837,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -994,6 +1004,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -1121,6 +1132,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -1267,6 +1279,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -1332,6 +1345,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -1410,6 +1424,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -1533,6 +1548,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -1648,6 +1664,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -1755,6 +1772,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -1868,6 +1886,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -2011,6 +2030,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -2166,6 +2186,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -2243,6 +2264,7 @@ __编排配置__
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
@@ -2379,6 +2401,105 @@ v_Context.put("typeNameB" ,"B");
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result    = CallFlow.execute(v_MT ,v_Context);
+```
+
+
+
+接口元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow019) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow019/JU_CFlow019.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xapi id="XAPI_CF019_1_1_1">
+            <comment>接口请求，转换响应结果</comment>
+            <url>http://ip-api.com/json/</url>              <!-- 定义接口请求URL地址 -->
+            <param>114.114.115.115</param>                  <!-- 定义URL地址固定参数 -->
+            <returnID>IPRetB</returnID>                     <!-- 定义接口返回结果变量名称 -->
+            <returnClass>java.util.Map</returnClass>        <!-- 定义接口返回结果转换为的类型 -->
+        </xapi>
+    
+    
+        <xnode id="XNode_CF019_1_1">
+            <comment>二次加工接口结果</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.String</valueClass>   <!-- 定义入参类型 -->
+                <value>:IPRet</value>                       <!-- 定义入参变量名称 -->
+            </callParam>
+            <callParam>
+                <valueClass>java.util.Map</valueClass>
+                <value>:IPRet</value>                       <!-- 相同变量名称，不同类型 -->
+            </callParam>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XAPI_CF019_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xapi id="XAPI_CF019_1">
+            <comment>接口请求</comment>
+            <url>http://ip-api.com/json/</url>              <!-- 定义接口请求URL地址 -->
+            <param>:IP</param>                              <!-- 定义URL地址参数变量名称 -->
+            <returnID>IPRetA</returnID>                     <!-- 定义接口返回结果变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF019_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xapi>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+APIConfig           v_API     = (APIConfig) XJava.getObject("XAPI_CF019_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("IP" ,"114.114.114.114");
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result    = CallFlow.execute(v_API ,v_Context);
 ```
 
 

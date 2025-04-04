@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xapi id="XAPI_CF019_1_1_1">
+            <comment>接口请求，转换响应结果</comment>
+            <url>http://ip-api.com/json/</url>              <!-- 定义接口请求URL地址 -->
+            <param>114.114.115.115</param>                  <!-- 定义URL地址固定参数 -->
+            <returnID>IPRetB</returnID>                     <!-- 定义接口返回结果变量名称 -->
+            <returnClass>java.util.Map</returnClass>        <!-- 定义接口返回结果转换为的类型 -->
+        </xapi>
+    
+    
+        <xnode id="XNode_CF019_1_1">
+            <comment>二次加工接口结果</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.String</valueClass>   <!-- 定义入参类型 -->
+                <value>:IPRet</value>                       <!-- 定义入参变量名称 -->
+            </callParam>
+            <callParam>
+                <valueClass>java.util.Map</valueClass>
+                <value>:IPRet</value>                       <!-- 相同变量名称，不同类型 -->
+            </callParam>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XAPI_CF019_1_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xapi id="XAPI_CF019_1">
+            <comment>接口请求</comment>
+            <url>http://ip-api.com/json/</url>              <!-- 定义接口请求URL地址 -->
+            <param>:IP</param>                              <!-- 定义URL地址参数变量名称 -->
+            <returnID>IPRetA</returnID>                     <!-- 定义接口返回结果变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF019_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xapi>
+        
+    </xconfig>
+    
+</config>
