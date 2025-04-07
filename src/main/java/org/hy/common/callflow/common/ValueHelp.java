@@ -164,6 +164,11 @@ public class ValueHelp
                 // 实例异常的结果
                 return CallFlow.getErrorResult(i_Context);
             }
+            else if ( CallFlow.$WorkID.equals(v_ValueID) )
+            {
+                // 编排执行实例ID
+                return CallFlow.getWorkID(i_Context);
+            }
             
             String v_YYYZZZ = null;
             int    v_Index  = v_ValueID.indexOf($Split);
