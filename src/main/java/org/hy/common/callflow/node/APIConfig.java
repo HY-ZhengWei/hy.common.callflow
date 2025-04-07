@@ -48,6 +48,9 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      */
     private String returnClass;
     
+    /** 请求成功时的成功标记。无此标记即表示请求异常（抛APIException异常）。为空时，表示不用判定 */
+    private String succeedFlag;
+    
     /** 接口请求对象(内部使用) */
     private XHttp  callObject;
     
@@ -458,6 +461,35 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     }
 
 
+    
+    /**
+     * 获取：请求成功时的成功标记。无此标记即表示请求异常（抛APIException异常）。为空时，表示不用判定
+     */
+    public String getSucceedFlag()
+    {
+        return succeedFlag;
+    }
+
+
+    
+    /**
+     * 设置：请求成功时的成功标记。无此标记即表示请求异常（抛APIException异常）。为空时，表示不用判定
+     * 
+     * @param i_SucceedFlag 请求成功时的成功标记。无此标记即表示请求异常。为空时，表示不用判定
+     */
+    public void setSucceedFlag(String i_SucceedFlag)
+    {
+        if ( Help.isNull(i_SucceedFlag) )
+        {
+            this.succeedFlag = null;
+        }
+        else
+        {
+            this.succeedFlag = i_SucceedFlag;
+        }
+    }
+
+
 
     /**
      * 元素的类型
@@ -580,7 +612,21 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
                 }
             }
             
-            return new Return<Object>(true).setParamObj(v_ReturnValue);
+            if ( !Help.isNull(this.succeedFlag) )
+            {
+                if ( v_XHttpRet.getParamStr().indexOf(this.succeedFlag) >= 0 )
+                {
+                    return new Return<Object>(true).setParamObj(v_ReturnValue);
+                }
+                else
+                {
+                    return new Return<Object>(false).setException(new APIException(v_XHttpRet.getParamObj() == null ? "" : v_XHttpRet.getParamObj().toString() ,v_XHttpRet.getParamStr() ,v_ReturnValue));
+                }
+            }
+            else
+            {
+                return new Return<Object>(true).setParamObj(v_ReturnValue);
+            }
         }
         else
         {

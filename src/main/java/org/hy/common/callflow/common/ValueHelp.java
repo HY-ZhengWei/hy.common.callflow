@@ -159,6 +159,11 @@ public class ValueHelp
                 // 上下文当作参数值
                 return i_Context;
             }
+            else if ( CallFlow.$ErrorResult.equals(v_ValueID) )
+            {
+                // 实例异常的结果
+                return CallFlow.getErrorResult(i_Context);
+            }
             
             String v_YYYZZZ = null;
             int    v_Index  = v_ValueID.indexOf($Split);

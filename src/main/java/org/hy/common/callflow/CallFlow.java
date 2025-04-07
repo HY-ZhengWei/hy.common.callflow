@@ -786,6 +786,11 @@ public class CallFlow
                 // 当没有异常处理时，应结束整个编排，退出结束整个编排
                 CallFlow.putError(io_Context ,v_Result);
             }
+            else
+            {
+                // 仅记录异常信息，不标记异常
+                io_Context.put($ErrorResult ,v_Result);
+            }
         }
         
         // 事件：执行后
