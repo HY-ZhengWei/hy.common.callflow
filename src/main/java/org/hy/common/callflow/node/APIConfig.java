@@ -693,6 +693,10 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         {
             io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("returnClass" ,this.returnClass));
         }
+        if ( !Help.isNull(this.succeedFlag) )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("succeedFlag" ,this.succeedFlag));
+        }
     }
     
     

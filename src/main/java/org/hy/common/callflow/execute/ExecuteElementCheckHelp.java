@@ -14,6 +14,7 @@ import org.hy.common.callflow.ifelse.IfElse;
 import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.MTItem;
 import org.hy.common.callflow.nesting.NestingConfig;
+import org.hy.common.callflow.node.APIConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.NodeParam;
@@ -342,6 +343,16 @@ public class ExecuteElementCheckHelp
             }
             
             this.check_Condition(v_Condition ,io_Result ,i_ExecObject ,io_XIDs ,io_ForXIDs);
+        }
+        else if ( i_ExecObject instanceof APIConfig )
+        {
+            APIConfig v_API = (APIConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_API.getUrl()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：APIConfig[" + Help.NVL(v_API.getXid()) + "].url is null.");
+                return false;
+            }
         }
         else if ( i_ExecObject instanceof NodeConfig )
         {
