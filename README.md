@@ -97,6 +97,14 @@
         4.2. IOT写元素，衍生于执行元素，用于向PLC写入数据。
         
         4.3. 接口元素，衍生于执行元素，用于API接口请求访问。
+        
+    5. 常用的系统预设变量。
+    
+        4.1. :CallFlowContext，编排实例ID的变量名称。
+        
+        4.2. :CallFlowContext，编排实例上下文的变量名称。它作为参数向Java方法传参，可读可写其内容。
+        
+        4.3. :CallFlowErrorResult，编排实例异常的变量名称。仅最后一次异常的信息。
 
 
 
@@ -2437,19 +2445,37 @@ __编排配置__
     <!-- CFlow编排引擎配置 -->
     <xconfig>
     
+        <xnode id="XNode_CF019_1_1_1_1">
+            <comment>业务逻辑异常时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>org.hy.common.callflow.execute.ExecuteResult</valueClass>  <!-- 可免定义 -->
+                <value>:CallFlowErrorResult</value>         <!-- 系统预设的编排实例异常结果的变量名称 -->
+            </callParam>
+        </xnode>
+    
+    
         <xapi id="XAPI_CF019_1_1_1">
             <comment>接口请求，转换响应结果</comment>
             <url>http://ip-api.com/json/</url>              <!-- 定义接口请求URL地址 -->
             <param>114.114.115.115</param>                  <!-- 定义URL地址固定参数 -->
             <returnID>IPRetB</returnID>                     <!-- 定义接口返回结果变量名称 -->
             <returnClass>java.util.Map</returnClass>        <!-- 定义接口返回结果转换为的类型 -->
+            <succeedFlag>模拟测试</succeedFlag>
+            <route>
+                <error>                                     <!-- 业务逻辑异常时，关联后置节点 -->
+                    <next ref="XNode_CF019_1_1_1_1" />
+                    <comment>成功时</comment>
+                </error>
+            </route>
         </xapi>
     
     
         <xnode id="XNode_CF019_1_1">
             <comment>二次加工接口结果</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+            <callMethod>method_Succeed</callMethod>         <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.String</valueClass>   <!-- 定义入参类型 -->
                 <value>:IPRet</value>                       <!-- 定义入参变量名称 -->
@@ -2471,7 +2497,7 @@ __编排配置__
             <comment>接口请求</comment>
             <url>http://ip-api.com/json/</url>              <!-- 定义接口请求URL地址 -->
             <param>:IP</param>                              <!-- 定义URL地址参数变量名称 -->
-            <returnID>IPRetA</returnID>                     <!-- 定义接口返回结果变量名称 -->
+            <returnID>IPRet</returnID>                      <!-- 定义接口返回结果变量名称 -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF019_1_1" />
