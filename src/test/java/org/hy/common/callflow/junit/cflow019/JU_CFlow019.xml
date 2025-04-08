@@ -33,7 +33,6 @@
             <comment>接口请求，转换响应结果</comment>
             <url>http://ip-api.com/json/</url>              <!-- 定义接口请求URL地址 -->
             <param>114.114.115.115</param>                  <!-- 定义URL地址固定参数 -->
-            <returnID>IPRetB</returnID>                     <!-- 定义接口返回结果变量名称 -->
             <returnClass>java.util.Map</returnClass>        <!-- 定义接口返回结果转换为的类型 -->
             <succeedFlag>模拟测试</succeedFlag>
             <route>
