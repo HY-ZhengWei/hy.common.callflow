@@ -824,7 +824,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
         }
         if ( !Help.isNull(this.elementID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("indexID" ,this.indexID));
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("elementID" ,this.elementID));
         }
         
         if ( !Help.isNull(this.route.getSucceeds()) 
