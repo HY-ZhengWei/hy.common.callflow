@@ -335,6 +335,14 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("counterMax" ,this.counterMax));
         }
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
+        }
+        if ( !Help.isNull(this.statusID) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("statusID" ,this.statusID));
+        }
         
         if ( !Help.isNull(this.route.getSucceeds()) 
           || !Help.isNull(this.route.getFaileds())
