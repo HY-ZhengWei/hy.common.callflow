@@ -24,7 +24,9 @@ import org.hy.common.callflow.timeout.TimeoutConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XHttp;
 import org.hy.common.xml.XJava;
+import org.hy.common.xml.XSQL;
 import org.hy.common.xml.log.Logger;
+import org.hy.common.xml.plugins.XSQLGroup;
 
 
 
@@ -615,7 +617,9 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                 {
                     this.isInit           = true;
                     this.callMethodObject = v_CallMethods.get(0);
-                    if ( !(i_CallObject instanceof XHttp) )
+                    if ( !(i_CallObject instanceof XHttp) 
+                      && !(i_CallObject instanceof XSQL)
+                      && !(i_CallObject instanceof XSQLGroup) )
                     {
                         $Logger.warn("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is find " + v_CallMethods.size() + " methods.");
                     }

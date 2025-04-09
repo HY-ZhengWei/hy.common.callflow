@@ -5,36 +5,28 @@ package org.hy.common.callflow.enums;
 
 
 /**
- * 执行元素类型的枚举
+ * XSQL元素类型的枚举
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-03-03
+ * @createDate  2025-04-09
  * @version     v1.0
  */
-public enum ElementType
+public enum XSQLType
 {
     
-    Node(     "NODE"      ,"xnode"      ,"执行元素"),
+    Auto     ("Auto"      ,"运行时自动识别"),
     
-    Api (     "API"       ,"xapi"       ,"接口元素"),
+    Create   ("C"         ,"新增数据"),
     
-    XSQL(     "XSQL"      ,"xsql"       ,"XSQL元素"),
+    Read     ("R"         ,"查询数据"),
     
-    Condition("CONDITION" ,"xcondition" ,"条件逻辑"),
+    Update   ("U"         ,"修改数据"),
     
-    Wait(     "WAIT"      ,"xwait"      ,"等待元素"),
+    Delete   ("D"         ,"删除数据"),
     
-    Calculate("CALCULATE" ,"xcalculate" ,"计算元素"),
+    DDL      ("DDL"       ,"数据定义语言"),
     
-    For(      "FOR"       ,"xfor"       ,"For循环"),
-    
-    MT(       "MT"        ,"xmt"        ,"并发元素"),
-    
-    Nesting(  "NESTING"   ,"xnesting"   ,"嵌套子编排"),
-    
-    Return(   "RETURN"    ,"xreturn"    ,"返回元素"),
-    
-    SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
+    XSQLGroup("XSQLGroup" ,"XSQL组"),
     
     ;
     
@@ -42,9 +34,6 @@ public enum ElementType
     
     /** 值 */
     private String  value;
-    
-    /** XML名称 */
-    private String  xmlName;
     
     /** 描述 */
     private String  comment;
@@ -61,7 +50,7 @@ public enum ElementType
      * @param i_Value
      * @return
      */
-    public static ElementType get(String i_Value)
+    public static XSQLType get(String i_Value)
     {
         if ( i_Value == null )
         {
@@ -69,7 +58,7 @@ public enum ElementType
         }
         
         String v_Value = i_Value.trim();
-        for (ElementType v_Enum : ElementType.values())
+        for (XSQLType v_Enum : XSQLType.values())
         {
             if ( v_Enum.value.equalsIgnoreCase(v_Value) )
             {
@@ -82,10 +71,9 @@ public enum ElementType
     
     
     
-    ElementType(String i_Value ,String i_XmlName ,String i_Comment)
+    XSQLType(String i_Value ,String i_Comment)
     {
         this.value   = i_Value;
-        this.xmlName = i_XmlName;
         this.comment = i_Comment;
     }
 
@@ -98,13 +86,6 @@ public enum ElementType
     
     
     
-    public String getXmlName()
-    {
-        return xmlName;
-    }
-
-
-
     public String getComment()
     {
         return this.comment;

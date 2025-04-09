@@ -21,6 +21,7 @@ import org.hy.common.callflow.node.APIConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
@@ -66,6 +67,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Condition.getXmlName() ,ConditionConfig.class);
         getInstance().addImportHead(ElementType.Return.getXmlName()    ,ReturnConfig.class);
         getInstance().addImportHead(ElementType.Api.getXmlName()       ,APIConfig.class);
+        getInstance().addImportHead(ElementType.XSQL.getXmlName()      ,XSQLConfig.class);
     }
     
     
