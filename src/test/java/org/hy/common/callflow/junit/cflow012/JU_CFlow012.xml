@@ -11,6 +11,7 @@
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     
     
     
