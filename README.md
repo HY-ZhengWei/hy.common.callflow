@@ -555,7 +555,7 @@ __编排配置__
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Map</callMethod>             <!-- 定义执行方法 -->
             <callParam>
-                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型。占位符变量时，可免定义 -->
                 <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
             </callParam>
             <route>
@@ -1906,7 +1906,7 @@ __编排配置__
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
             <callParam>
-                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型 -->
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型。占位符变量时，可免定义 -->
                 <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
             </callParam>
         </xnode>
@@ -2450,7 +2450,7 @@ __编排配置__
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
             <callParam>
-                <valueClass>org.hy.common.callflow.execute.ExecuteResult</valueClass>  <!-- 可免定义 -->
+                <valueClass>org.hy.common.callflow.execute.ExecuteResult</valueClass>  <!-- 定义入参类型。占位符变量时，可免定义 -->
                 <value>:CallFlowErrorResult</value>         <!-- 系统预设的编排实例异常结果的变量名称 -->
             </callParam>
         </xnode>

@@ -8,13 +8,17 @@ import java.util.Map;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.Return;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.XSQLType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xml.XJava;
 import org.hy.common.xml.XSQL;
+import org.hy.common.xml.XSQLData;
 import org.hy.common.xml.plugins.XSQLGroup;
+import org.hy.common.xml.plugins.XSQLGroupResult;
 
 
 
@@ -296,6 +300,50 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 执行成功时，对执行结果的处理
+     * 
+     * 注：此时执行结果还没有保存到上下文中
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-04-10
+     * @version     v1.0
+     *
+     * @param io_Context        上下文类型的变量信息
+     * @param io_ExecuteReturn  执行结果。已用NodeConfig自己的力量获取了执行结果。
+     * @return                  Return.get()          是否执行成功
+     *                          Return.getParamObj()  执行结果
+     *                          Return.getException() 执行异常
+     * @throws Exception 
+     */
+    public Return<Object> generateReturn(Map<String ,Object> io_Context ,Object io_ExecuteReturn)
+    {
+        if ( io_ExecuteReturn instanceof XSQLData )
+        {
+            return new Return<Object>(true).setParamObj(((XSQLData) io_ExecuteReturn).getDatas());
+        }
+        else if ( io_ExecuteReturn instanceof XSQLGroupResult )
+        {
+            XSQLGroupResult v_XSQLGRet = (XSQLGroupResult) io_ExecuteReturn;
+            if ( v_XSQLGRet.isSuccess() ) 
+            {
+                return new Return<Object>(true).setParamObj(v_XSQLGRet.getReturns());
+            }
+            else
+            {
+                return new Return<Object>(false).setException(v_XSQLGRet.getException());
+            }
+        }
+        else
+        {
+            return new Return<Object>(true).setParamObj(io_ExecuteReturn);
+        }
+    }
+    
+    
+    
+    /**
      * 生成或写入个性化的XML内容
      * 
      * 建议：子类重写此方法
@@ -351,7 +399,63 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      */
     public String toString(Map<String ,Object> i_Context)
     {
-        return super.toString(i_Context);
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Builder.append(DBSQL.$Placeholder).append(this.returnID).append(" = ");
+        }
+        
+        v_Builder.append(DBSQL.$Placeholder);
+        if ( !Help.isNull(this.callXID) )
+        {
+            v_Builder.append(this.callXID);
+            if ( XJava.getObject(this.callXID) == null )
+            {
+                v_Builder.append(" is NULL");
+            }
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        v_Builder.append(ValueHelp.$Split);
+        
+        if ( Help.isNull(this.callMethod) )
+        {
+            initCallMethod(XJava.getObject(this.callXID));
+        }
+        if ( !Help.isNull(this.callMethod) )
+        {
+            v_Builder.append(this.callMethod);
+            this.init(i_Context);
+            if ( this.callMethodObject == null )
+            {
+                v_Builder.append(" not find");
+            }
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        
+        v_Builder.append("(");
+        
+        if ( !Help.isNull(this.callParams) )
+        {
+            for (int x=0; x<this.callParams.size(); x++)
+            {
+                if ( x >= 1 )
+                {
+                    v_Builder.append(" ,");
+                }
+                v_Builder.append(this.callParams.get(x).toString(i_Context));
+            }
+        }
+        
+        v_Builder.append(")");
+        
+        return v_Builder.toString();
     }
     
     
@@ -370,7 +474,61 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     @Override
     public String toString()
     {
-        return super.toString();
+        StringBuilder v_Builder = new StringBuilder();
+        
+        if ( !Help.isNull(this.returnID) )
+        {
+            v_Builder.append(DBSQL.$Placeholder).append(this.returnID).append(" = ");
+        }
+        
+        v_Builder.append(DBSQL.$Placeholder);
+        if ( !Help.isNull(this.callXID) )
+        {
+            v_Builder.append(this.callXID);
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        v_Builder.append(ValueHelp.$Split);
+        
+        if ( Help.isNull(this.callMethod) )
+        {
+            try
+            {
+                initCallMethod(XJava.getObject(this.callXID));
+            }
+            catch (Exception exce)
+            {
+                // Nothing.
+            }
+        }
+        if ( !Help.isNull(this.callMethod) )
+        {
+            v_Builder.append(this.callMethod);
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        
+        v_Builder.append("(");
+        
+        if ( !Help.isNull(this.callParams) )
+        {
+            for (int x=0; x<this.callParams.size(); x++)
+            {
+                if ( x >= 1 )
+                {
+                    v_Builder.append(" ,");
+                }
+                v_Builder.append(this.callParams.get(x).toString());
+            }
+        }
+        
+        v_Builder.append(")");
+        
+        return v_Builder.toString();
     }
     
     

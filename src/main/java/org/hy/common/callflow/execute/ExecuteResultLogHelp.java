@@ -151,6 +151,10 @@ public class ExecuteResultLogHelp
                 }
             }
         }
+        else if ( ElementType.XSQL.getValue().equals(i_Result.getElementType()) )
+        {
+            io_Logs.append(Help.NVL(i_Result.getComment())).append("\n");
+        }
         else
         {
             io_Logs.append(Help.NVL(i_Result.getResult())).append(" ");
