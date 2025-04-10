@@ -53,25 +53,25 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     
     
     /** 执行对象的XID */
-    private String              callXID;
+    protected String          callXID;
     
     /** 执行方法名称 */
-    private String              callMethod;
+    protected String          callMethod;
     
     /** 执行方法对象（仅内部使用） */
-    private Method              callMethodObject;
+    protected Method          callMethodObject;
     
     /** 是否初始化（仅内部使用） */
-    private boolean             isInit;
+    protected boolean         isInit;
     
     /** 执行方法的参数 */
-    private List<NodeParam>     callParams;
+    protected List<NodeParam> callParams;
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String              timeout;
+    protected String          timeout;
     
     /** 向上下文中赋值 */
-    private String              context;
+    protected String          context;
     
     
     
