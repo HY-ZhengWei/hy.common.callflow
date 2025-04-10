@@ -244,6 +244,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -318,6 +319,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -440,6 +442,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -630,6 +633,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -739,6 +743,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -849,6 +854,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1016,6 +1022,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1144,6 +1151,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1291,6 +1299,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1357,6 +1366,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1436,6 +1446,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1560,6 +1571,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1676,6 +1688,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1784,6 +1797,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -1898,6 +1912,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -2042,6 +2057,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -2198,6 +2214,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -2276,6 +2293,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
@@ -2442,6 +2460,7 @@ __编排配置__
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     
     
     
