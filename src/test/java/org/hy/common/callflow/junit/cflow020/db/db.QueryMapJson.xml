@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="sqls"            class="java.util.ArrayList" />
+    <import name="sqlGroup"        class="org.hy.common.xml.plugins.XSQLGroup" />
+    <import name="sql"             class="org.hy.common.xml.XSQL" />
+
+
+
+    <sqls>
+    
+        <sql id="XSQL_CFlow020_Query_MapJson"> 
+        
+            <dataSourceGroup ref="DSG" />
+            
+            <content>
+                <![CDATA[
+                SELECT  DATE_FORMAT(A.createTime ,'%Y-%m-%d %H:%i') AS "totalTime"
+                       ,A.id                                        AS "totals.id"
+                       ,A.waterValue                                AS "totals.waterValue"
+                       ,A.createTime                                AS "totals.createTime"
+                  FROM  `data`.TSurfaceHumidity  A
+                 WHERE  A.createTime >= ':beginTime' 
+                   AND  A.createTime <  ':endTime' 
+                 ORDER  BY A.createTime
+                ]]>
+            </content>
+            
+            <result>
+                <table>java.util.ArrayList</table>
+                <fill>add(row)</fill>
+                <row>org.hy.common.MapJson</row>
+                <cfill>put(colName ,colValue)</cfill>
+                <cstyle>NORMAL</cstyle>
+                <relationKeys>totalTime</relationKeys>
+            </result>
+            
+        </sql>
+        
+    </sqls>
+    
+</config>

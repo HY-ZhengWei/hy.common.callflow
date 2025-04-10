@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="sqls"            class="java.util.ArrayList" />
+    <import name="dataSource"      class="com.alibaba.druid.pool.DruidDataSource" />
+    <import name="dataSourceGroup" class="org.hy.common.db.DataSourceGroup" />
+    <import name="xparam"          class="java.util.Hashtable" />
+    <import name="item"            class="org.hy.common.app.Param" />
+
+
+
+    <!-- 数据库配置信息 -->
+    <sqls>
+    
+        <item id="DataSourceType">
+            <name>DataSourceType</name>
+            <value>MYSQL</value>
+            <comment>配置数据库是什么类型的。详见：org.hy.common.db.DataSourceGroup</comment>
+        </item>
+        
+    
+        <!-- Oracle数据库 -->
+        <dataSource id="DS_01" if="ORACLE == DataSourceType.getValue">
+            <driverClass>oracle.jdbc.driver.OracleDriver</driverClass>
+            <jdbcUrl>jdbc:oracle:thin:@127.0.0.1:1521:orcl</jdbcUrl>
+            <user>callflow</user>
+            <password encrypt="true"></password>                <!-- 明文自动加密成密文 -->
+            <filters>stat,wall,log4j2</filters>
+            <initialSize>1</initialSize>
+            <minIdle>1</minIdle>
+            <maxActive>5</maxActive>
+            <maxWait>60000</maxWait>
+            <connectTimeout>30000</connectTimeout>
+            <socketTimeout>900000</socketTimeout>
+            <timeBetweenEvictionRunsMillis>60000</timeBetweenEvictionRunsMillis>
+            <minEvictableIdleTimeMillis>300000</minEvictableIdleTimeMillis>
+            <validationQuery>SELECT 1</validationQuery>
+            <validationQuery if="oracle.jdbc.OracleDriver == this.getDriverClassName">SELECT 1 FROM DUAL</validationQuery>
+            <testWhileIdle>true</testWhileIdle>
+            <testOnBorrow>false</testOnBorrow>
+            <testOnReturn>false</testOnReturn>
+            
+            <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+            <!-- 如果用0racle，则把poolPreparedStatements配置为true，mysql可以配置为false。分库分表较多的数据库，建议配置为false -->
+            <poolPreparedStatements>false</poolPreparedStatements>
+            <maxPoolPreparedStatementPerConnectionSize>20</maxPoolPreparedStatementPerConnectionSize>
+            <call name="clearFilters" />
+        </dataSource>
+        
+        
+        <!-- MySQL数据库 -->
+        <dataSource id="DS_01" if="MYSQL == DataSourceType.getValue">
+            <driverClass>com.mysql.cj.jdbc.Driver</driverClass>
+            <url><![CDATA[jdbc:mysql://127.0.0.1:3306/data?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8]]></url>
+            <username>root</username>
+            <password encrypt="true"></password>                <!-- 明文自动加密成密文 -->
+            <filters>stat,wall,log4j2</filters>
+            <initialSize>1</initialSize>
+            <minIdle>1</minIdle>
+            <maxActive>5</maxActive>
+            <maxWait>60000</maxWait>
+            <connectTimeout>30000</connectTimeout>
+            <socketTimeout>900000</socketTimeout>
+            <timeBetweenEvictionRunsMillis>60000</timeBetweenEvictionRunsMillis>
+            <minEvictableIdleTimeMillis>300000</minEvictableIdleTimeMillis>
+            <validationQuery>SELECT 1</validationQuery>
+            <validationQuery if="oracle.jdbc.OracleDriver == this.getDriverClassName">SELECT 1 FROM DUAL</validationQuery>
+            <testWhileIdle>true</testWhileIdle>
+            <testOnBorrow>false</testOnBorrow>
+            <testOnReturn>false</testOnReturn>
+            
+            <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+            <!-- 如果用0racle，则把poolPreparedStatements配置为true，mysql可以配置为false。分库分表较多的数据库，建议配置为false -->
+            <poolPreparedStatements>false</poolPreparedStatements>
+            <maxPoolPreparedStatementPerConnectionSize>20</maxPoolPreparedStatementPerConnectionSize>
+            <call name="clearFilters" />
+        </dataSource>
+        
+        
+        <!-- SQL Server数据库 -->
+        <dataSource id="DS_01" if="SQLSERVER == DataSourceType.getValue">
+            <driverClass>net.sourceforge.jtds.jdbc.Driver</driverClass>
+            <jdbcUrl>jdbc:jtds:sqlserver://127.0.0.1:1433;DatabaseName=callflow</jdbcUrl>
+            <user>sa</user>
+            <password encrypt="true"></password>                <!-- 明文自动加密成密文 -->
+            <filters>stat,wall,log4j2</filters>
+            <initialSize>1</initialSize>
+            <minIdle>1</minIdle>
+            <maxActive>5</maxActive>
+            <maxWait>60000</maxWait>
+            <connectTimeout>30000</connectTimeout>
+            <socketTimeout>900000</socketTimeout>
+            <timeBetweenEvictionRunsMillis>60000</timeBetweenEvictionRunsMillis>
+            <minEvictableIdleTimeMillis>300000</minEvictableIdleTimeMillis>
+            <validationQuery>SELECT 1</validationQuery>
+            <validationQuery if="oracle.jdbc.OracleDriver == this.getDriverClassName">SELECT 1 FROM DUAL</validationQuery>
+            <testWhileIdle>true</testWhileIdle>
+            <testOnBorrow>false</testOnBorrow>
+            <testOnReturn>false</testOnReturn>
+            
+            <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+            <!-- 如果用0racle，则把poolPreparedStatements配置为true，mysql可以配置为false。分库分表较多的数据库，建议配置为false -->
+            <poolPreparedStatements>false</poolPreparedStatements>
+            <maxPoolPreparedStatementPerConnectionSize>20</maxPoolPreparedStatementPerConnectionSize>
+            <call name="clearFilters" />
+        </dataSource>
+        
+        
+        
+        <!-- 数据库连接池组 -->
+        <dataSourceGroup id="DSG">
+            <call name="add">
+                <dataSource ref="DS_01" />
+            </call>
+        </dataSourceGroup>
+        
+    </sqls>
+    
+</config>

@@ -130,7 +130,7 @@
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Map</callMethod>             <!-- 定义执行方法 -->
             <callParam>
-                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型。可免定义 -->
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型。占位符变量时，可免定义 -->
                 <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
             </callParam>
             <route>

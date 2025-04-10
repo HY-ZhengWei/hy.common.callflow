@@ -33,6 +33,7 @@
     * [递归的举例](#递归的举例)
     * [并发元素的举例](#并发元素的举例)
     * [接口元素的举例](#接口元素的举例)
+    * [XSQL元素的举例](#XSQL元素的举例)
 
 
 
@@ -90,13 +91,15 @@
         
         3.3 路由与循环可以组合后共存（12种），即：成功路由+For循环路由组成一条成功时For循环的路由。
         
-    4. 3种衍生元素。
+    4. 4种衍生元素。
     
         4.1. IOT读元素，衍生于执行元素，用于读取PLC数据。
         
         4.2. IOT写元素，衍生于执行元素，用于向PLC写入数据。
         
         4.3. 接口元素，衍生于执行元素，用于API接口请求访问。
+        
+        4.4. XSQL元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
         
     5. 常用的系统预设变量。
     
@@ -2524,5 +2527,125 @@ Map<String ,Object> v_Context = new HashMap<String ,Object>();
 v_Context.put("IP" ,"114.114.114.114");
 
 // 执行编排。返回执行结果       
-ExecuteResult       v_Result    = CallFlow.execute(v_API ,v_Context);
+ExecuteResult       v_Result  = CallFlow.execute(v_API ,v_Context);
+```
+
+
+
+
+
+XSQL元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow020) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow020/JU_CFlow020.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF020_1_1_1_1">
+            <comment>处理完成</comment>
+            <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>           <!-- 定义执行方法 -->
+        </xnode>
+    
+        
+        <xnode id="XNode_CF020_1_1_1">
+            <comment>处理数据库查询出的每行数据</comment>
+            <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callMethod>method_ForElement</callMethod>       <!-- 定义执行方法 -->
+            <callParam>
+                <value>:ForElement</value>                   <!-- 定义执行方法参数，来源于循环SQL结果 -->
+            </callParam>
+            <callParam>
+                <value>:ForElement.totalTime</value>         <!-- 定义执行方法参数，来源于循环SQL结果的字段 -->
+            </callParam>
+            <route>
+                <succeed>                                    <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF020_1_1</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>                                    <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF020_1_1_1_1" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xfor id="XFor_CF020_1_1">
+            <comment>循环：List集合</comment>
+            <end>:MapJsonDatas</end>                         <!-- 集合对象的变量名称 -->
+            <indexID>ForIndex</indexID>                      <!-- 序号变量名称（可选的） -->
+            <elementID>ForElement</elementID>                <!-- 每次循环元素的变量名称（可选的） -->
+            <route>
+                <succeed>                                    <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF020_1_1_1" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+        </xfor>
+        
+    
+        <xsql id="XSQLC_CF020_1">
+            <comment>查询SQL</comment>
+            <callXID>:XSQL_CFlow020_Query_MapJson</callXID>  <!-- XSQL对象的ID -->
+            <callParam>
+                <valueClass>java.util.Map</valueClass>       <!-- 定义入参类型。占位符变量时，可免定义 -->
+                <value>:CallFlowContext</value>              <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+            <returnID>MapJsonDatas</returnID>
+            <route>
+                <succeed>                                    <!-- 成功时，关联后置节点 -->
+                    <next ref="XFor_CF020_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xsql>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+XSQLConfig           v_XSQLC  = (XSQLConfig) XJava.getObject("XSQLC_CF020_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("beginTime" ,"2025-04-09 09:00:00");
+v_Context.put("endTime"   ,"2025-04-09 10:00:00");
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
 ```
