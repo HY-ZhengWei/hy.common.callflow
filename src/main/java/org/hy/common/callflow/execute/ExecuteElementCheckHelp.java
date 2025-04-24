@@ -7,6 +7,8 @@ import java.util.Map;
 import org.hy.common.Help;
 import org.hy.common.Return;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.enums.JobIntervalType;
+import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.ifelse.ConditionItem;
@@ -23,6 +25,7 @@ import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
+import org.hy.common.db.DBSQL;
 
 
 
@@ -68,7 +71,7 @@ public class ExecuteElementCheckHelp
      * @createDate  2025-03-16
      * @version     v1.0
      *
-     * @param i_ExecObject           执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
+     * @param i_ExecObject           执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @return  Return.get()         表示检测是否通过。
      *          Return.getParamStr() 检测不合格时，表示不合格原因。
      */
@@ -125,7 +128,7 @@ public class ExecuteElementCheckHelp
      * @version     v1.0
      *
      * @param io_Result     表示检测结果
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param io_XIDs       所有元素的XID，及被引用的数量
      * @param io_ForXIDs    所有For循环的XID，及被引用的数量
      * @return              是否检测合格
@@ -359,7 +362,7 @@ public class ExecuteElementCheckHelp
         {
             XSQLConfig v_API = (XSQLConfig) i_ExecObject;
             
-            // 执行元素的执行对象不能为空
+            // 执行对象不能为空
             if ( Help.isNull(v_API.getCallXID()) )
             {
                 io_Result.set(false).setParamStr("CFlowCheck：XSQLConfig[" + Help.NVL(v_API.getXid()) + "].callXID is null.");
@@ -405,6 +408,56 @@ public class ExecuteElementCheckHelp
                             }
                         }
                     }
+                }
+            }
+        }
+        else if ( i_ExecObject instanceof JOBConfig )
+        {
+            JOBConfig v_API = (JOBConfig) i_ExecObject;
+            
+            // 子编排的XID不能为空
+            if ( Help.isNull(v_API.getCallFlowXID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(v_API.getXid()) + "].callFlowXID is null.");
+                return false;
+            }
+            
+            // 间隔类型
+            if ( Help.isNull(v_API.getIntervalType()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(v_API.getXid()) + "].intervalType is null.");
+                return false;
+            }
+            
+            if ( !v_API.getIntervalType().startsWith(DBSQL.$Placeholder) )
+            {
+                if ( JobIntervalType.get(v_API.getIntervalType()) == null )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(v_API.getXid()) + "].intervalType is invalid.");
+                    return false;
+                }
+            }
+            
+            // 间隔时长
+            if ( Help.isNull(v_API.getIntervalLen()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(v_API.getXid()) + "].intervalLen is null.");
+                return false;
+            }
+            
+            if ( !v_API.getIntervalLen().startsWith(DBSQL.$Placeholder) )
+            {
+                if ( !Help.isNumber(v_API.getIntervalLen()) )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(v_API.getXid()) + "].intervalLen is invalid.");
+                    return false;
+                }
+                
+                int v_IntervalLen = Integer.parseInt(v_API.getIntervalLen());
+                if ( v_IntervalLen <= 0 )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(v_API.getXid()) + "].intervalLen <= 0.");
+                    return false;
                 }
             }
         }
@@ -499,7 +552,7 @@ public class ExecuteElementCheckHelp
      *
      * @param i_Condition   条件逻辑
      * @param io_Result     表示检测结果
-     * @param i_ExecObject  （顶级）执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
+     * @param i_ExecObject  （顶级）执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param io_XIDs       所有元素的XID，及被引用的数量
      * @param io_ForXIDs    所有For循环的XID，及被引用的数量
      * @return              是否检测合格
@@ -590,7 +643,7 @@ public class ExecuteElementCheckHelp
      *
      * @param i_Childs      子级路由
      * @param io_Result     表示检测结果
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param io_XIDs       所有元素的XID，及被引用的数量
      * @param io_ForXIDs    所有For循环的XID，及被引用的数量
      * @return              是否检测合格

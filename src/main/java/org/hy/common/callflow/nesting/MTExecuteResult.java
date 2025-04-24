@@ -80,7 +80,7 @@ public class MTExecuteResult
     
     
     /**
-     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     public String getCallFlowXID()
     {

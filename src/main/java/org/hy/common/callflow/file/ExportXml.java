@@ -12,6 +12,8 @@ import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.enums.ElementType;
+import org.hy.common.callflow.event.JOBConfig;
+import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
@@ -68,6 +70,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Return.getXmlName()    ,ReturnConfig.class);
         getInstance().addImportHead(ElementType.Api.getXmlName()       ,APIConfig.class);
         getInstance().addImportHead(ElementType.XSQL.getXmlName()      ,XSQLConfig.class);
+        getInstance().addImportHead(ElementType.Job.getXmlName()       ,JOBConfig.class);
     }
     
     
@@ -149,7 +152,7 @@ public class ExportXml
      * @createDate  2025-02-26
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
+     * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @return               返回保存文件的全路径
      * @throws IOException 
      */
@@ -171,7 +174,7 @@ public class ExportXml
      * @createDate  2025-02-26
      * @version     v1.0
      *
-     * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
+     * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param i_SavePath     保存目录
      * @return               返回保存文件的全路径
      * @throws IOException 
@@ -229,7 +232,7 @@ public class ExportXml
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @return
      */
     public String export(IExecute i_ExecObject)
@@ -265,7 +268,7 @@ public class ExportXml
      * @createDate  2025-02-25
      * @version     v1.0
      *
-     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素）
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param i_TreeID      执行对象的树ID
      * @return
      */
@@ -323,9 +326,20 @@ public class ExportXml
             {
                 i_ExecObject.setXJavaID("XAPI_" + StringHelp.getUUID9n());
             }
+            else if ( i_ExecObject instanceof JOBConfig )
+            {
+                i_ExecObject.setXJavaID("XJOB_" + StringHelp.getUUID9n());
+            }
             else if ( i_ExecObject instanceof NodeConfig )
             {
-                i_ExecObject.setXJavaID("XNode_" + StringHelp.getUUID9n());
+                if ( i_ExecObject.getClass().equals(NodeConfig.class) )
+                {
+                    i_ExecObject.setXJavaID("XNode_" + StringHelp.getUUID9n());
+                }
+                else
+                {
+                    i_ExecObject.setXJavaID("X" + ((ExecuteElement) i_ExecObject).getElementType() + "_" + StringHelp.getUUID9n());
+                }
             }
             else if ( i_ExecObject instanceof WaitConfig )
             {

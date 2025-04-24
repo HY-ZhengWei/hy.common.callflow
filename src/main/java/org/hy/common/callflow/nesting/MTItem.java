@@ -30,7 +30,7 @@ public class MTItem extends ConditionItem
     
     
     
-    /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式 */
+    /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
     private String callFlowXID;
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
@@ -105,7 +105,7 @@ public class MTItem extends ConditionItem
     
     
     /**
-     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     public String getCallFlowXID()
     {
@@ -114,7 +114,7 @@ public class MTItem extends ConditionItem
     
     
     /**
-     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     protected String gatCallFlowXID()
     {
@@ -123,9 +123,9 @@ public class MTItem extends ConditionItem
 
     
     /**
-     * 设置：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * 设置：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      * 
-     * @param i_CallFlowXID 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * @param i_CallFlowXID 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     public void setCallFlowXID(String i_CallFlowXID)
     {

@@ -9,6 +9,7 @@ import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.enums.SelfLoopType;
+import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.forloop.ForConfig;
@@ -702,6 +703,12 @@ public class RouteItem implements IToXml ,CloneableCallFlow
             {
                 ReturnConfig v_CloneReturn = new ReturnConfig();
                 ((ReturnConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneReturn;
+            }
+            else if ( this.next instanceof JOBConfig )
+            {
+                JOBConfig v_CloneReturn = new JOBConfig();
+                ((JOBConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
                 v_Clone.next = v_CloneReturn;
             }
             else if ( this.next instanceof SelfLoop )
