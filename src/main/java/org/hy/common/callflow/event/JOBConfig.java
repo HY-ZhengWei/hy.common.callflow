@@ -52,13 +52,13 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     /** 任务组的XID。为空时从XJava对象池中获取首个 */
     private String     jobsXID;
     
-    /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式 */
+    /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
     private String     callFlowXID;
     
-    /** 间隔类型 */
+    /** 间隔类型。可以是数值、上下文变量、XID标识 */
     private String     intervalType;
     
-    /** 间隔长度 */
+    /** 间隔长度。可以是数值、上下文变量、XID标识 */
     private String     intervalLen;
     
     /**
@@ -156,7 +156,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     public String getCallFlowXID()
     {
@@ -165,7 +165,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     private String gatCallFlowXID()
     {
@@ -174,9 +174,9 @@ public class JOBConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * 设置：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      * 
-     * @param i_CallFlowXID 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素的XID）。采用弱关联的方式
+     * @param i_CallFlowXID 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     public void setCallFlowXID(String i_CallFlowXID)
     {
@@ -186,7 +186,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
 
 
     /**
-     * 获取：间隔类型
+     * 获取：间隔类型。可以是数值、上下文变量、XID标识
      */
     public String getIntervalType()
     {
@@ -195,9 +195,9 @@ public class JOBConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：间隔类型
+     * 设置：间隔类型。可以是数值、上下文变量、XID标识
      * 
-     * @param i_IntervalType 间隔类型
+     * @param i_IntervalType 间隔类型。可以是数值、上下文变量、XID标识
      */
     public void setIntervalType(String i_IntervalType)
     {
@@ -208,7 +208,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 获取：间隔长度
+     * 获取：间隔长度。可以是数值、上下文变量、XID标识
      */
     public String getIntervalLen()
     {
@@ -217,9 +217,9 @@ public class JOBConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：间隔长度
+     * 设置：间隔长度。可以是数值、上下文变量、XID标识
      * 
-     * @param i_IntervalLen 间隔长度
+     * @param i_IntervalLen 间隔长度。可以是数值、上下文变量、XID标识
      */
     public void setIntervalLen(String i_IntervalLen)
     {
@@ -471,6 +471,13 @@ public class JOBConfig extends ExecuteElement implements Cloneable
                 return v_Result;
             }
             
+            List<Date> v_StartTimes = this.getStartTimes();
+            if ( Help.isNull(v_StartTimes) )
+            {
+                v_StartTimes = new ArrayList<Date>();
+                v_StartTimes.add(new Date());
+            }
+            
             Jobs v_Jobs = null;
             if ( Help.isNull(this.jobsXID) )
             {
@@ -507,7 +514,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
             this.job.setComment(     this.getComment());
             this.job.setIntervalType(v_JobIntervalType.getInterval());
             this.job.setIntervalLen( v_IntervalLen);
-            this.job.setStartTimes(  this.getStartTimes());
+            this.job.setStartTimes(  v_StartTimes);
             this.job.setCondition(   this.getCondition());
             this.job.setXid(         this.getXid());
             this.job.setMethodName(  "executeJobForCallFlow");
