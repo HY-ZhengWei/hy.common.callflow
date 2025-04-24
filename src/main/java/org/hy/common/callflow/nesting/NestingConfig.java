@@ -445,7 +445,7 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         
         v_Xml.append(super.toXml(i_Level));
         
-        if ( !Help.isNull(this.callFlowXID) )
+        if ( !Help.isNull(this.getCallFlowXID()) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
         }

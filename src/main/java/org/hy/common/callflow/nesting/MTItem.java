@@ -296,7 +296,7 @@ public class MTItem extends ConditionItem
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDB" ,this.valueXIDB));
         }
-        if ( !Help.isNull(this.callFlowXID) )
+        if ( !Help.isNull(this.gatCallFlowXID()) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
         }

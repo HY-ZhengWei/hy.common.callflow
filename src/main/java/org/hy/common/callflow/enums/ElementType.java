@@ -34,6 +34,8 @@ public enum ElementType
     
     Return(   "RETURN"    ,"xreturn"    ,"返回元素"),
     
+    Job(      "JOB"       ,"xjob"       ,"定时元素"),
+    
     SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
     
     ;
