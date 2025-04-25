@@ -19,25 +19,13 @@
     
     <!-- CFlow编排引擎配置 -->
     <xconfig>
-        
-        <xnode id="XNode_CF001_1_1">
-            <comment>节点002，后面节点配置在XML前</comment>
-            <callXID>:XProgram</callXID>
-            <callMethod>method002</callMethod>
-        </xnode>
-        
-        
-        <xnode id="XNode_CF001_1">
-            <comment>节点001</comment>
-            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
-            <callMethod>method001</callMethod>              <!-- 定义执行方法 -->
-            <route>
-                <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF001_1_1" />
-                    <comment>成功时</comment>
-                </succeed>
-            </route>
-        </xnode>
+    
+        <xjob id="XJOB_CF021_1">
+            <comment>定时元素</comment>
+            <callFlowXID>:XAPI_CF019_1</callFlowXID>           <!-- 编排XID -->
+            <intervalType>S</intervalType>                     <!-- 间隔类型。S表示秒 -->
+            <intervalLen>5</intervalLen>                       <!-- 间隔时长 -->
+        </xjob>
         
     </xconfig>
     

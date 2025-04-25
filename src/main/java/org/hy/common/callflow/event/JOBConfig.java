@@ -50,16 +50,16 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     
 
     /** 任务组的XID。为空时从XJava对象池中获取首个 */
-    private String     jobsXID;
+    private String              jobsXID;
     
-    /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
-    private String     callFlowXID;
+    /** 编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
+    private String              callFlowXID;
     
     /** 间隔类型。可以是数值、上下文变量、XID标识 */
-    private String     intervalType;
+    private String              intervalType;
     
     /** 间隔长度。可以是数值、上下文变量、XID标识 */
-    private String     intervalLen;
+    private String              intervalLen;
     
     /**
      * 允许执行的条件。
@@ -73,16 +73,19 @@ public class JOBConfig extends ExecuteElement implements Cloneable
      *    :S    表示秒
      *    :YMD  表示年月日，格式为YYYYMMDD 样式的整数类型。整数类型是为了方便比较
      */
-    private String     condition;
+    private String              condition;
     
     /** 开始时间组。多个开始时间用分号分隔。多个开始时间对 "间隔类型:秒、分" 是无效的（只取最小时间为开始时间） */
-    private List<Date> startTimes;
+    private List<Date>          startTimes;
     
     /** 向上下文中赋值 */
-    protected String   context;
+    protected String            context;
     
     /** 任务对象（仅内部使用） */
-    private Job        job;
+    private Job                 job;
+    
+    /** 执行定时元素时的运行时的向上下文（） */
+    private Map<String ,Object> executeContext;
     
     
     
@@ -156,7 +159,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
+     * 获取：编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     public String getCallFlowXID()
     {
@@ -165,7 +168,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
+     * 获取：编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
      */
     private String gatCallFlowXID()
     {
@@ -348,6 +351,11 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     public void executeJobForCallFlow()
     {
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        if ( !Help.isNull(this.executeContext) )
+        {
+            // 克隆运行时上下文，确保每次运行时，都是一样的参数，不受上次执行的影响
+            v_Context.putAll(this.executeContext);
+        }
         
         if ( !Help.isNull(this.context) )
         {
@@ -400,6 +408,9 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         // 打印执行路径
         ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
         $Logger.info("\n" + CallFlow.getHelpLog().logs(v_FirstResult));
+        
+        v_Context.clear();
+        v_Context = null;
     }
 
 
@@ -475,7 +486,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
             if ( Help.isNull(v_StartTimes) )
             {
                 v_StartTimes = new ArrayList<Date>();
-                v_StartTimes.add(new Date());
+                v_StartTimes.add(Date.getNowTime().getFirstTimeOfDay());
             }
             
             Jobs v_Jobs = null;
@@ -500,6 +511,19 @@ public class JOBConfig extends ExecuteElement implements Cloneable
                 v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s Jobs[" + Help.NVL(this.jobsXID ,"?") + "] is null."));
                 this.refreshStatus(io_Context ,v_Result.getStatus());
                 return v_Result;
+            }
+            
+            this.executeContext = new HashMap<String ,Object>();
+            if ( !Help.isNull(io_Context) )
+            {
+                for (Map.Entry<String ,Object> v_Item : io_Context.entrySet())
+                {
+                    if ( CallFlow.isSystemXID(v_Item.getKey()) )
+                    {
+                        continue;
+                    }
+                    this.executeContext.put(v_Item.getKey() ,v_Item.getValue());
+                }
             }
             
             if ( this.job != null )

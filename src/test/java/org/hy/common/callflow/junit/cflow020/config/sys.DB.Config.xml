@@ -52,9 +52,9 @@
         <!-- MySQL数据库 -->
         <dataSource id="DS_01" if="MYSQL == DataSourceType.getValue">
             <driverClass>com.mysql.cj.jdbc.Driver</driverClass>
-            <url><![CDATA[jdbc:mysql://127.0.0.1:3306/data?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8]]></url>
+            <url><![CDATA[jdbc:mysql://10.0.2.16:3306/data?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8]]></url>
             <username>root</username>
-            <password encrypt="true"></password>                <!-- 明文自动加密成密文 -->
+            <password encrypt="org.hy.common.StringHelp">sys!@#456</password>                <!-- 明文自动加密成密文 -->
             <filters>stat,wall,log4j2</filters>
             <initialSize>1</initialSize>
             <minIdle>1</minIdle>
