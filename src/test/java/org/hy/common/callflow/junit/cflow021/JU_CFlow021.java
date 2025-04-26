@@ -74,7 +74,7 @@ public class JU_CFlow021 extends JUBase
         JOBConfig           v_JOB     = (JOBConfig) XJava.getObject("XJOB_CF021_1");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
-        v_Context.put("IP" ,"114.114.114.114"); // 它是给019执行用的上下文参数
+        v_Context.put("IP" ,"114.114.114.114"); // 它是给19号编排执行用的上下文参数
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_JOB);
@@ -111,7 +111,7 @@ public class JU_CFlow021 extends JUBase
         toJson(v_JOB);
         toJson(v_FirstResult);
         
-        $Jobs.startup();
+        $Jobs.startup();  // 首个秒级周期的定时任务，需要在最后启动任务组
         Thread.sleep(5 * 60 * 1000);
     }
     

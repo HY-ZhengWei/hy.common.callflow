@@ -34,6 +34,7 @@
     * [并发元素的举例](#并发元素的举例)
     * [接口元素的举例](#接口元素的举例)
     * [XSQL元素的举例](#XSQL元素的举例)
+    * [定时元素的举例](#定时元素的举例)
 
 
 
@@ -55,7 +56,7 @@
 概要说明
 ------
 
-    1. 8种编排元素。
+    1. 9种编排元素。
     
         1.1. 执行元素，配置及执行Java方法。可轻松扩展它，衍生成特定的业务元素。
     
@@ -72,6 +73,8 @@
         1.7. 返回元素，返回数据并结束执行。在嵌套子编排中，仅结束子编排，返回到主编排继续执行。
         
         1.8. 并发元素，同时执行多个独立的编排，全都执行完成后，并发元素才视为执行完成。
+        
+        1.9. 定时元素，定时的周期性的驱动编排执行。
         
     2. 4种编排路由。
         
@@ -245,6 +248,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -320,6 +324,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -443,6 +448,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -634,6 +640,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -744,6 +751,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -855,6 +863,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1023,6 +1032,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1152,6 +1162,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1300,6 +1311,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1367,6 +1379,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1447,6 +1460,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1572,6 +1586,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1689,6 +1704,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1798,6 +1814,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -1913,6 +1930,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -2058,6 +2076,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -2215,6 +2234,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -2294,6 +2314,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -2461,6 +2482,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -2580,6 +2602,7 @@ __编排配置__
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
     
@@ -2667,4 +2690,76 @@ v_Context.put("endTime"   ,"2025-04-09 10:00:00");
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
+```
+
+
+
+
+
+定时元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow021) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow021/JU_CFlow021.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xjob id="XJOB_CF021_1">
+            <comment>定时元素</comment>
+            <callFlowXID>:XAPI_CF019_1</callFlowXID>           <!-- 另一个编排XID -->
+            <intervalType>S</intervalType>                     <!-- 间隔类型。S表示秒 -->
+            <intervalLen>5</intervalLen>                       <!-- 间隔时长 -->
+        </xjob>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 按需创建定时任务组
+Jobs $Jobs = new Jobs();
+
+// 初始化被编排的执行对象方法（按业务需要）（注：这里是019的对象）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+JOBConfig           v_JOB     = (JOBConfig) XJava.getObject("XJOB_CF021_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("IP" ,"114.114.114.114"); // 它是给19号编排执行用的上下文参数
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
+
+$Jobs.startup();  // 首个秒级周期的定时任务，需要在最后启动任务组
 ```

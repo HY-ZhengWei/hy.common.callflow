@@ -22,7 +22,7 @@
     
         <xjob id="XJOB_CF021_1">
             <comment>定时元素</comment>
-            <callFlowXID>:XAPI_CF019_1</callFlowXID>           <!-- 编排XID -->
+            <callFlowXID>:XAPI_CF019_1</callFlowXID>           <!-- 另一个编排XID -->
             <intervalType>S</intervalType>                     <!-- 间隔类型。S表示秒 -->
             <intervalLen>5</intervalLen>                       <!-- 间隔时长 -->
         </xjob>
