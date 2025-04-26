@@ -511,78 +511,79 @@ public class RouteItem implements IToXml ,CloneableCallFlow
     @Override
     public String toXml(int i_Level ,String i_SuperTreeID)
     {
-        StringBuilder v_Xml    = new StringBuilder();
-        String        v_Level1 = "    ";
-        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level + 1 ,v_Level1);
+        StringBuilder v_Xml      = new StringBuilder();
+        String        v_Level1   = "    ";
+        String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level + 1 ,v_Level1);
+        String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( this.id != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("id" ,this.id));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("id" ,this.id));
         }
         if ( !Help.isNull(this.lineStyle) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineStyle" ,this.lineStyle));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("lineStyle" ,this.lineStyle));
         }
         if ( !Help.isNull(this.lineColor) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineColor" ,this.lineColor));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("lineColor" ,this.lineColor));
         }
         if ( !Help.isNull(this.lineSize) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineSize" ,this.lineSize));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("lineSize" ,this.lineSize));
         }
         if ( !Help.isNull(this.fontColor) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontColor" ,this.fontColor));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontColor" ,this.fontColor));
         }
         if ( !Help.isNull(this.fontFamily) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontFamily" ,this.fontFamily));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontFamily" ,this.fontFamily));
         }
         if ( !Help.isNull(this.fontWeight) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontWeight" ,this.fontWeight));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontWeight" ,this.fontWeight));
         }
         if ( !Help.isNull(this.fontSize) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontSize" ,this.fontSize));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontSize" ,this.fontSize));
         }
         if ( !Help.isNull(this.fontAlign) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontAlign" ,this.fontAlign));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontAlign" ,this.fontAlign));
         }
         if ( !Help.isNull(this.createUserID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createUserID" ,this.createUserID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("createUserID" ,this.createUserID));
         }
         if ( !Help.isNull(this.updateUserID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateUserID" ,this.updateUserID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("updateUserID" ,this.updateUserID));
         }
         if ( this.createTime != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
         }
         if ( this.updateTime != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
         }
         if ( !Help.isNull(this.pathDatas) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("pathDatas" ,this.pathDatas));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("pathDatas" ,this.pathDatas ,v_NewSpace));
         }
         if ( !Help.isNull(this.comment) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
         }
         
         if ( this.next instanceof SelfLoop )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("next" ,((SelfLoop) this.next).getRefXID()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("next" ,((SelfLoop) this.next).getRefXID()));
         }
         else if ( !Help.isNull(this.next.getXJavaID()) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toRef("next" ,this.next.getXJavaID()));
+            v_Xml.append(v_NewSpace).append(IToXml.toRef("next" ,this.next.getXJavaID()));
         }
         else
         {

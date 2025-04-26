@@ -1,6 +1,7 @@
 package org.hy.common.callflow.file;
 
 import org.hy.common.StringHelp;
+import org.hy.common.xml.XJSON;
 
 
 
@@ -51,7 +52,7 @@ public interface IToXml
     {
         if ( StringHelp.isContains(i_Value.toString() ,"<" ,">") )
         {
-            return toValueCDATA(i_TagName ,i_Value);
+            return toValueCDATA(i_TagName ,i_Value ,"");
         }
         else
         {
@@ -67,15 +68,58 @@ public interface IToXml
      * 生成形式如：<标记名称>值</标记名称>
      * 
      * @author      ZhengWei(HY)
+     * @createDate  2025-04-26
+     * @version     v1.0
+     *
+     * @param i_TagName   标记名称
+     * @param i_Value     值
+     * @param i_NewSpace  \n+行前端的空格和TAB
+     * @return
+     */
+    static String toValue(String i_TagName ,Object i_Value ,String i_NewSpace)
+    {
+        if ( StringHelp.isContains(i_Value.toString() ,"<" ,">") )
+        {
+            return toValueCDATA(i_TagName ,i_Value ,i_NewSpace);
+        }
+        else
+        {
+            if ( i_Value instanceof String )
+            {
+                if ( XJSON.isJson(i_Value.toString()) )
+                {
+                    return toBegin(i_TagName) + i_NewSpace + XJSON.format(i_Value.toString() ,"    " ," " ,i_NewSpace) + i_NewSpace + toEnd(i_TagName);
+                }
+            }
+            return toBegin(i_TagName) + i_Value + toEnd(i_TagName);
+        }
+    }
+    
+    
+    
+    /**
+     * 生成普通值标记
+     * 
+     * 生成形式如：<标记名称>值</标记名称>
+     * 
+     * @author      ZhengWei(HY)
      * @createDate  2025-02-24
      * @version     v1.0
      *
-     * @param i_TagName  标记名称
-     * @param i_Value    值
+     * @param i_TagName   标记名称
+     * @param i_Value     值
+     * @param i_NewSpace  \n+行前端的空格和TAB
      * @return
      */
-    static String toValueCDATA(String i_TagName ,Object i_Value)
+    static String toValueCDATA(String i_TagName ,Object i_Value ,String i_NewSpace)
     {
+        if ( i_Value instanceof String )
+        {
+            if ( XJSON.isJson(i_Value.toString()) )
+            {
+                return toBegin(i_TagName) + i_NewSpace + "<![CDATA[" + i_NewSpace + XJSON.format(i_Value.toString() ,"    " ," " ,i_NewSpace) + i_NewSpace + "]]>" + i_NewSpace + toEnd(i_TagName);
+            }
+        }
         return toBegin(i_TagName) + "<![CDATA[" + i_Value + "]]>" + toEnd(i_TagName);
     }
     

@@ -538,10 +538,11 @@ public class MTConfig extends ExecuteElement implements Cloneable
             }
         }
         
-        StringBuilder v_Xml    = new StringBuilder();
-        String        v_Level1 = "    ";
-        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = ElementType.MT.getXmlName();
+        StringBuilder v_Xml      = new StringBuilder();
+        String        v_Level1   = "    ";
+        String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_XName    = ElementType.MT.getXmlName();
+        String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -554,13 +555,13 @@ public class MTConfig extends ExecuteElement implements Cloneable
         
         v_Xml.append(super.toXml(i_Level));
         
-        if ( this.oneByOne != null && !this.oneByOne )
+        if ( this.oneByOne != null && this.oneByOne )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("oneByOne" ,this.oneByOne));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("oneByOne" ,this.oneByOne));
         }
         if ( !Help.isNull(this.waitTime) && !"0".equals(this.waitTime) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("waitTime" ,this.waitTime));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("waitTime" ,this.waitTime));
         }
         
         if ( !Help.isNull(this.mtitems) )
@@ -572,30 +573,30 @@ public class MTConfig extends ExecuteElement implements Cloneable
         }
         if ( !Help.isNull(this.context) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
         }
         if ( !Help.isNull(this.returnID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID" ,this.returnID));
         }
         if ( !Help.isNull(this.statusID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("statusID" ,this.statusID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("statusID" ,this.statusID));
         }
         
         if ( !Help.isNull(this.route.getSucceeds()) 
           || !Help.isNull(this.route.getExceptions()) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
+            v_Xml.append(v_NewSpace).append(IToXml.toBegin("route"));
             
             // 成功路由
             if ( !Help.isNull(this.route.getSucceeds()) )
             {
                 for (RouteItem v_RouteItem : this.route.getSucceeds())
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Succeed.getXmlName()));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBegin(RouteType.Succeed.getXmlName()));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Succeed.getXmlName()));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(RouteType.Succeed.getXmlName()));
                 }
             }
             // 异常路由
@@ -603,13 +604,13 @@ public class MTConfig extends ExecuteElement implements Cloneable
             {
                 for (RouteItem v_RouteItem : this.route.getExceptions())
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Error.getXmlName()));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBegin(RouteType.Error.getXmlName()));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Error.getXmlName()));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(RouteType.Error.getXmlName()));
                 }
             }
             
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));
+            v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
         }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));

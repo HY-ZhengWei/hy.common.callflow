@@ -657,45 +657,47 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      */
     public void toXmlContent(StringBuilder io_Xml ,int i_Level ,String i_Level1 ,String i_LevelN ,String i_SuperTreeID ,String i_TreeID)
     {
+        String v_NewSpace = "\n" + i_LevelN + i_Level1;
+        
         if ( !Help.isNull(this.url) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("url" ,this.url));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("url" ,this.url));
         }
         if ( !Help.isNull(this.param) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("param" ,this.param));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("param" ,this.param));
         }
         if ( !Help.isNull(this.body) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("body" ,this.body));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("body" ,this.body ,v_NewSpace));
         }
         if ( !Help.isNull(this.head) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("head" ,this.head));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("head" ,this.head));
         }
         if ( !Help.isNull(this.getRequestType()) && this.callObject.getRequestType() != XHttp.$Request_Type_Get )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("requestType" ,this.getRequestType()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("requestType" ,this.getRequestType()));
         }
         if ( !Help.isNull(this.getContentType()) && !"application/json".equalsIgnoreCase(this.getContentType()) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("contentType" ,this.getContentType()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("contentType" ,this.getContentType()));
         }
         if ( this.getConnectTimeout() != 30 * 1000 )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("connectTimeout" ,this.getConnectTimeout()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("connectTimeout" ,this.getConnectTimeout()));
         }
         if ( this.getReadTimeout() != 300 * 1000 )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("readTimeout" ,this.getReadTimeout()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("readTimeout" ,this.getReadTimeout()));
         }
         if ( !Help.isNull(this.returnClass) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("returnClass" ,this.returnClass));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("returnClass" ,this.returnClass));
         }
         if ( !Help.isNull(this.succeedFlag) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("succeedFlag" ,this.succeedFlag));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("succeedFlag" ,this.succeedFlag));
         }
     }
     

@@ -387,10 +387,11 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      */
     public String toXml(int i_Level ,String i_SuperTreeID)
     {
-        StringBuilder v_Xml    = new StringBuilder();
-        String        v_Level1 = "    ";
-        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = "callParam";
+        StringBuilder v_Xml      = new StringBuilder();
+        String        v_Level1   = "    ";
+        String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_XName    = "callParam";
+        String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -403,19 +404,19 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
         
         if ( !Help.isNull(this.comment) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
         }
         if ( this.valueClass != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
         }
         if ( !Help.isNull(this.value) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("value" ,this.value));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("value" ,this.value ,v_NewSpace));
         }
         if ( !Help.isNull(this.valueDefault) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueDefault" ,this.valueDefault));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueDefault" ,this.valueDefault ,v_NewSpace));
         }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));

@@ -263,10 +263,11 @@ public class MTItem extends ConditionItem
      */
     public String toXml(int i_Level ,String i_SuperTreeID)
     {
-        StringBuilder v_Xml    = new StringBuilder();
-        String        v_Level1 = "    ";
-        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = "item";
+        StringBuilder v_Xml      = new StringBuilder();
+        String        v_Level1   = "    ";
+        String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_XName    = "item";
+        String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -278,39 +279,39 @@ public class MTItem extends ConditionItem
         }
         if ( !Help.isNull(this.comment) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
         }
         if ( this.valueClass != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
         }
         if ( !Help.isNull(this.valueXIDA) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDA" ,this.valueXIDA));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueXIDA" ,this.valueXIDA));
         }
         if ( this.comparer != null && Comparer.Equal != this.comparer )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comparer" ,this.comparer.getValue()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("comparer" ,this.comparer.getValue()));
         }
         if ( !Help.isNull(this.valueXIDB) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDB" ,this.valueXIDB));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueXIDB" ,this.valueXIDB));
         }
         if ( !Help.isNull(this.gatCallFlowXID()) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
         }
         if ( !Help.isNull(this.timeout) && !"0".equals(this.timeout) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("timeout" ,this.timeout));
         }
         if ( !Help.isNull(this.context) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
         }
         if ( !Help.isNull(this.returnID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID" ,this.returnID));
         }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));

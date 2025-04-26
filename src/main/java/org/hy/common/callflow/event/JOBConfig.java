@@ -79,7 +79,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     private List<Date>          startTimes;
     
     /** 向上下文中赋值 */
-    protected String            context;
+    private String              context;
     
     /** 任务对象（仅内部使用） */
     private Job                 job;
@@ -615,10 +615,11 @@ public class JOBConfig extends ExecuteElement implements Cloneable
             }
         }
         
-        StringBuilder v_Xml    = new StringBuilder();
-        String        v_Level1 = "    ";
-        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = ElementType.Job.getXmlName();
+        StringBuilder v_Xml      = new StringBuilder();
+        String        v_Level1   = "    ";
+        String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_XName    = ElementType.Job.getXmlName();
+        String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -633,57 +634,57 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         
         if ( !Help.isNull(this.jobsXID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("jobsXID" ,this.jobsXID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("jobsXID" ,this.jobsXID));
         }
         if ( !Help.isNull(this.gatCallFlowXID()) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
         }
         if ( !Help.isNull(this.intervalType) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("intervalType" ,this.intervalType));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("intervalType" ,this.intervalType));
         }
         if ( !Help.isNull(this.intervalLen) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("intervalLen" ,this.intervalLen));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("intervalLen" ,this.intervalLen));
         }
         if ( !Help.isNull(this.condition) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("condition" ,this.condition));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("condition" ,this.condition));
         }
         if ( !Help.isNull(this.startTimes) )
         {
             for (Date v_StartTime : this.startTimes)
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("startTime" ,v_StartTime));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("startTime" ,v_StartTime));
             }
         }
         
         if ( !Help.isNull(this.context) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
         }
         if ( !Help.isNull(this.returnID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID" ,this.returnID));
         }
         if ( !Help.isNull(this.statusID) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("statusID" ,this.statusID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("statusID" ,this.statusID));
         }
         if ( !Help.isNull(this.route.getSucceeds()) 
           || !Help.isNull(this.route.getExceptions()) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
+            v_Xml.append(v_NewSpace).append(IToXml.toBegin("route"));
             
             // 成功路由
             if ( !Help.isNull(this.route.getSucceeds()) )
             {
                 for (RouteItem v_RouteItem : this.route.getSucceeds())
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Succeed.getXmlName()));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBegin(RouteType.Succeed.getXmlName()));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Succeed.getXmlName()));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(RouteType.Succeed.getXmlName()));
                 }
             }
             // 异常路由
@@ -691,13 +692,13 @@ public class JOBConfig extends ExecuteElement implements Cloneable
             {
                 for (RouteItem v_RouteItem : this.route.getExceptions())
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toBegin(RouteType.Error.getXmlName()));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBegin(RouteType.Error.getXmlName()));
                     v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(v_Level1).append(IToXml.toEnd(RouteType.Error.getXmlName()));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(RouteType.Error.getXmlName()));
                 }
             }
             
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));
+            v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
         }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));
