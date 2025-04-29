@@ -9,6 +9,7 @@ import org.hy.common.Return;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.JobIntervalType;
 import org.hy.common.callflow.event.JOBConfig;
+import org.hy.common.callflow.event.PublishConfig;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.ifelse.ConditionItem;
@@ -347,6 +348,21 @@ public class ExecuteElementCheckHelp
             }
             
             this.check_Condition(v_Condition ,io_Result ,i_ExecObject ,io_XIDs ,io_ForXIDs);
+        }
+        else if ( i_ExecObject instanceof PublishConfig )
+        {
+            PublishConfig v_Publish = (PublishConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_Publish.getPublishXID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getPublishXID()) + "].publishXID is null.");
+                return false;
+            }
+            if ( Help.isNull(v_Publish.getMessage()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getMessage()) + "].message is null.");
+                return false;
+            }
         }
         else if ( i_ExecObject instanceof APIConfig )
         {

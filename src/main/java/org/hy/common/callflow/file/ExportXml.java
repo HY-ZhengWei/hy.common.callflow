@@ -13,6 +13,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.event.JOBConfig;
+import org.hy.common.callflow.event.PublishConfig;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.forloop.ForConfig;
@@ -60,17 +61,18 @@ public class ExportXml
     {
         // 预定义的引用类
         getInstance().addImportHead("xconfig"                          ,ArrayList.class);
-        getInstance().addImportHead(ElementType.MT.getXmlName()        ,MTConfig.class);
-        getInstance().addImportHead(ElementType.Nesting.getXmlName()   ,NestingConfig.class);
-        getInstance().addImportHead(ElementType.For.getXmlName()       ,ForConfig.class);
-        getInstance().addImportHead(ElementType.Node.getXmlName()      ,NodeConfig.class);
-        getInstance().addImportHead(ElementType.Wait.getXmlName()      ,WaitConfig.class);
+        getInstance().addImportHead(ElementType.MT       .getXmlName() ,MTConfig.class);
+        getInstance().addImportHead(ElementType.Nesting  .getXmlName() ,NestingConfig.class);
+        getInstance().addImportHead(ElementType.For      .getXmlName() ,ForConfig.class);
+        getInstance().addImportHead(ElementType.Node     .getXmlName() ,NodeConfig.class);
+        getInstance().addImportHead(ElementType.Wait     .getXmlName() ,WaitConfig.class);
         getInstance().addImportHead(ElementType.Calculate.getXmlName() ,CalculateConfig.class);
         getInstance().addImportHead(ElementType.Condition.getXmlName() ,ConditionConfig.class);
-        getInstance().addImportHead(ElementType.Return.getXmlName()    ,ReturnConfig.class);
-        getInstance().addImportHead(ElementType.Api.getXmlName()       ,APIConfig.class);
-        getInstance().addImportHead(ElementType.XSQL.getXmlName()      ,XSQLConfig.class);
-        getInstance().addImportHead(ElementType.Job.getXmlName()       ,JOBConfig.class);
+        getInstance().addImportHead(ElementType.Return   .getXmlName() ,ReturnConfig.class);
+        getInstance().addImportHead(ElementType.Api      .getXmlName() ,APIConfig.class);
+        getInstance().addImportHead(ElementType.Publish  .getXmlName() ,PublishConfig.class);
+        getInstance().addImportHead(ElementType.XSQL     .getXmlName() ,XSQLConfig.class);
+        getInstance().addImportHead(ElementType.Job      .getXmlName() ,JOBConfig.class);
     }
     
     
@@ -322,7 +324,11 @@ public class ExportXml
         // 没有XID时，自动生成
         if ( Help.isNull(i_ExecObject.getXJavaID()) )
         {
-            if ( i_ExecObject instanceof APIConfig )
+            if ( i_ExecObject instanceof PublishConfig )
+            {
+                i_ExecObject.setXJavaID("XPulish_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof APIConfig )
             {
                 i_ExecObject.setXJavaID("XAPI_" + StringHelp.getUUID9n());
             }

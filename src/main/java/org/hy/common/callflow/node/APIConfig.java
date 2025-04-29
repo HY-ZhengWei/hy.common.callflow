@@ -29,16 +29,16 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
 {
 
     /** 接口请求地址。格式为 http://IP:Port/服务名/xx/yy */
-    private String url;
+    protected String url;
     
     /** 接口请求地址中的参数。URL参数结构，支持占位符。占位符可以是上下文变量、XID标识 */
-    private String param;
+    protected String param;
     
     /** 接口请求体Body中的参数。文本字符结构，支持占位符。占位符可以是上下文变量、XID标识 */
-    private String body;
+    protected String body;
     
     /** 接口请求头Head中的参数。Map结构的Json字符串，支持占位符。占位符可以是上下文变量、XID标识 */
-    private String head;
+    protected String head;
     
     /** 
      * 返回结果的元类型。返回结果的数据为数值类型时生效；或返回结果有默认值时生效 
@@ -46,13 +46,13 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
      * 优点：提高可移植性。
      */
-    private String returnClass;
+    protected String returnClass;
     
     /** 请求成功时的成功标记。无此标记即表示请求异常（抛APIException异常）。为空时，表示不用判定 */
-    private String succeedFlag;
+    protected String succeedFlag;
     
     /** 接口请求对象(内部使用) */
-    private XHttp  callObject;
+    private   XHttp  callObject;
     
     
     
@@ -237,7 +237,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(i_RequestType) )
         {
-            this.callObject.setRequestType(1);
+            this.callObject.setRequestType(XHttp.$Request_Type_Get);
         }
         else
         {
@@ -778,7 +778,6 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         APIConfig v_Clone = new APIConfig();
         
         this.cloneMyOnly(v_Clone);
-        v_Clone.setTimeout(this.getTimeout());
         v_Clone.setContext(this.getContext());
         v_Clone.url = this.url;
         v_Clone.setRequestType(this.getRequestType()); 
@@ -816,7 +815,6 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         APIConfig v_Clone = (APIConfig) io_Clone;
         ((ExecuteElement) this).clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.setTimeout(this.getTimeout());
         v_Clone.setContext(this.getContext());
         v_Clone.url = this.url;
         v_Clone.setRequestType(this.getRequestType()); 

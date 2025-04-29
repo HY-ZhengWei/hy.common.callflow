@@ -18,6 +18,8 @@ public enum ElementType
     
     Api (     "API"       ,"xapi"       ,"接口元素"),
     
+    Publish(  "PUBLISH"   ,"xpublish"   ,"发布元素"),
+    
     XSQL(     "XSQL"      ,"xsql"       ,"XSQL元素"),
     
     Condition("CONDITION" ,"xcondition" ,"条件逻辑"),
