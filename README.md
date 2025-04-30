@@ -35,6 +35,7 @@
     * [接口元素的举例](#接口元素的举例)
     * [XSQL元素的举例](#XSQL元素的举例)
     * [定时元素的举例](#定时元素的举例)
+    * [发布元素的举例](#发布元素的举例)
 
 
 
@@ -56,7 +57,7 @@
 概要说明
 ------
 
-    1. 9种编排元素。
+    1. 9种编排元素（基本元素）。
     
         1.1. 执行元素，配置及执行Java方法。可轻松扩展它，衍生成特定的业务元素。
     
@@ -76,43 +77,43 @@
         
         1.9. 定时元素，定时的周期性的驱动编排执行。
         
-    2. 4种编排路由。
-        
-        2.1 成功路由，元素执行成功时走的路。
-        
-        2.2 异常路由，元素执行出时异常时走的路。
-        
-        2.3 真值路由，条件逻辑元素、计算元素（逻辑类型）与等待元素（计数器类型），结果为真时走的路。
-        
-        2.4 假值路由，条件逻辑元素、计算元素（逻辑类型）与等待元素（计数器类型），结果为假时走的路。
-        
-    3. 2种编排循环。
-        
-        3.1 While循环路由，下层元素回流到上层元素时走的路。
-        
-        3.2 For循环路由，与循环元素配合（至少有一个），回流到循环元素的路。
-        
-        3.3 路由与循环可以组合后共存（12种），即：成功路由+For循环路由组成一条成功时For循环的路由。
-        
-    4. 5种衍生元素。
+    2. 5种衍生元素。
     
-        4.1. IOT读元素，衍生于执行元素，用于读取PLC数据。
+        2.1. IOT读元素，衍生于执行元素，用于读取PLC数据。
         
-        4.2. IOT写元素，衍生于执行元素，用于向PLC写入数据。
+        2.2. IOT写元素，衍生于执行元素，用于向PLC写入数据。
         
-        4.3. 接口元素，衍生于执行元素，用于API接口请求访问。
+        2.3. 接口元素，衍生于执行元素，用于API接口请求访问。
         
-        4.4. 发布元素，衍生于接口元素，支持MQTT发布消息。
+        2.4. 发布元素，衍生于接口元素，支持MQTT发布消息。
         
-        4.5. XSQL元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
+        2.5. XSQL元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
+        
+    3. 4种编排路由。
+        
+        3.1 成功路由，元素执行成功时走的路。
+        
+        3.2 异常路由，元素执行出时异常时走的路。
+        
+        3.3 真值路由，条件逻辑元素、计算元素（逻辑类型）与等待元素（计数器类型），结果为真时走的路。
+        
+        3.4 假值路由，条件逻辑元素、计算元素（逻辑类型）与等待元素（计数器类型），结果为假时走的路。
+        
+    4. 2种编排循环。
+        
+        4.1 While循环路由，下层元素回流到上层元素时走的路。
+        
+        4.2 For循环路由，与循环元素配合（至少有一个），回流到循环元素的路。
+        
+        4.3 路由与循环可以组合后共存（12种），即：成功路由+For循环路由组成一条成功时For循环的路由。
         
     5. 常用的系统预设变量。
     
-        4.1. :CallFlowContext，编排实例ID的变量名称。
+        5.1. :CallFlowContext，编排实例ID的变量名称。
         
-        4.2. :CallFlowContext，编排实例上下文的变量名称。它作为参数向Java方法传参，可读可写其内容。
+        5.2. :CallFlowContext，编排实例上下文的变量名称。它作为参数向Java方法传参，可读可写其内容。
         
-        4.3. :CallFlowErrorResult，编排实例异常的变量名称。仅最后一次异常的信息。
+        5.3. :CallFlowErrorResult，编排实例异常的变量名称。仅最后一次异常的信息。
 
 
 
@@ -2782,7 +2783,105 @@ Map<String ,Object> v_Context = new HashMap<String ,Object>();
 v_Context.put("IP" ,"114.114.114.114"); // 它是给19号编排执行用的上下文参数
 
 // 执行编排。返回执行结果       
-ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
+ExecuteResult       v_Result  = CallFlow.execute(v_JOB ,v_Context);
 
 $Jobs.startup();  // 首个秒级周期的定时任务，需要在最后启动任务组
+```
+
+
+
+
+
+发布元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow022) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow022/JU_CFlow022.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF022_1_1">
+            <comment>消息发布成功时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+        </xnode>
+        
+        
+        <xnode id="XNode_CF022_1_2">
+            <comment>消息发布异常时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <value>:CallFlowErrorResult</value>         <!-- 系统预设的编排实例异常结果的变量名称 -->
+            </callParam>
+        </xnode>
+        
+    
+        <xpublish id="XPublish_CF022_1">
+            <comment>MQTT发布消息</comment>
+            <publishType>MQTT</publishType>                 <!-- 发布消息的类型。（可以不用显式定义。默认为MQTT） -->
+            <publishURL>https://www.lpslab.cn</publishURL>  <!-- 发布微服务地址 -->
+            <publishXID>XPublish</publishXID>               <!-- 数据发布XID。配置在上面的微服务中 -->
+            <message>:Message</message>                     <!-- 定时发布消息的变量名称 -->
+            <userID>:UserID</userID>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF022_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+                <error>                                     <!-- 异常时，关联后置节点 -->
+                    <next ref="XNode_CF022_1_2" />
+                    <comment>异常时</comment>
+                </error>
+            </route>
+        </xpublish>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+PublishConfig       v_Publish = (PublishConfig) XJava.getObject("XPublish_CF022_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("Message" ,"Who am I?"); // 发布的消息内容
+v_Context.put("UserID"  ,"ZhengWei");  // 发布者
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Publish ,v_Context);
 ```
