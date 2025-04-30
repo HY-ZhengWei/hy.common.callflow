@@ -607,7 +607,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
                     }
                     catch (Exception exce)
                     {
-                        throw new RuntimeException(exce);
+                        APIException v_Exce = new APIException(v_XHttpRet.getParamObj() == null ? "" : v_XHttpRet.getParamObj().toString() ,v_XHttpRet.getParamStr() ,exce);
+                        return new Return<Object>(false).setException(v_Exce);
                     }
                 }
             }
@@ -620,7 +621,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
                 }
                 else
                 {
-                    return new Return<Object>(false).setException(new APIException(v_XHttpRet.getParamObj() == null ? "" : v_XHttpRet.getParamObj().toString() ,v_XHttpRet.getParamStr() ,v_ReturnValue));
+                    APIException v_Exce = new APIException(v_XHttpRet.getParamObj() == null ? "" : v_XHttpRet.getParamObj().toString() ,v_XHttpRet.getParamStr() ,v_ReturnValue);
+                    return new Return<Object>(false).setException(v_Exce);
                 }
             }
             else
@@ -630,7 +632,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         }
         else
         {
-            return new Return<Object>(false).setException(v_XHttpRet.getException());
+            APIException v_Exce = new APIException(v_XHttpRet.getParamObj() == null ? "" : v_XHttpRet.getParamObj().toString() ,v_XHttpRet.getException().toString() ,v_XHttpRet.getException());
+            return new Return<Object>(false).setException(v_Exce);
         }
     }
     
