@@ -363,6 +363,19 @@ public class ExecuteElementCheckHelp
                 io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getMessage()) + "].message is null.");
                 return false;
             }
+            if ( Help.isNull(v_Publish.getUserID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getUserID()) + "].userID is null.");
+                return false;
+            }
+            if ( !Help.isNull(v_Publish.getQoS()) )
+            {
+                if ( v_Publish.getQoS() < 0 || v_Publish.getQoS() > 2 )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getQoS()) + "].qoS is invalid.");
+                    return false;
+                }
+            }
         }
         else if ( i_ExecObject instanceof APIConfig )
         {

@@ -36,7 +36,7 @@ public class PublishConfig extends APIConfig
     /** 发布微服务地址。默认为：http://127.0.0.1 */
     private String      publishURL;
     
-    /** 的数据发布XID。可以是数值、上下文变量、XID标识 */
+    /** 数据发布XID。可以是数值、上下文变量、XID标识 */
     private String      publishXID;
     
     /** 发布的消息。可以是数值、上下文变量、XID标识 */
@@ -47,6 +47,9 @@ public class PublishConfig extends APIConfig
     
     /** MQTT是否保留。默认为NULL，表示创建数据发布时定义的值 */
     private Boolean     retain;
+    
+    /** 用户ID。可以是数值、上下文变量、XID标识 */
+    private String      userID;
     
     
     
@@ -80,7 +83,7 @@ public class PublishConfig extends APIConfig
         super(i_RequestTotal ,i_SuccessTotal);
         
         this.publishType = MessageType.MQTT;
-        this.publishURL  = $PublishURL;
+        this.setPublishURL($PublishURL);
         this.setRequestType("POST");
         this.setSucceedFlag("200");
     }
@@ -151,7 +154,7 @@ public class PublishConfig extends APIConfig
 
 
     /**
-     * 获取：MQTT的数据发布XID。可以是数值、上下文变量、XID标识
+     * 获取：数据发布XID。可以是数值、上下文变量、XID标识
      */
     public String getPublishXID()
     {
@@ -161,9 +164,9 @@ public class PublishConfig extends APIConfig
 
     
     /**
-     * 设置：MQTT的数据发布XID。可以是数值、上下文变量、XID标识
+     * 设置：数据发布XID。可以是数值、上下文变量、XID标识
      * 
-     * @param i_PublishXID MQTT的数据发布XID。可以是数值、上下文变量、XID标识
+     * @param i_PublishXID 数据发布XID。可以是数值、上下文变量、XID标识
      */
     public void setPublishXID(String i_PublishXID)
     {
@@ -247,6 +250,28 @@ public class PublishConfig extends APIConfig
     
     
     /**
+     * 获取：用户ID。可以是数值、上下文变量、XID标识
+     */
+    public String getUserID()
+    {
+        return userID;
+    }
+
+
+    
+    /**
+     * 设置：用户ID。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_UserID 用户ID。可以是数值、上下文变量、XID标识
+     */
+    public void setUserID(String i_UserID)
+    {
+        this.userID = i_UserID;
+    }
+
+
+
+    /**
      * 元素的类型
      * 
      * @author      ZhengWei(HY)
@@ -276,6 +301,95 @@ public class PublishConfig extends APIConfig
     public String toXmlName()
     {
         return ElementType.Publish.getXmlName();
+    }
+    
+    
+    
+    /**
+     * 执行方法前，对方法入参的处理、加工、合成
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-04-30
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param io_Params   方法执行参数。已用NodeConfig自己的力量生成了执行参数。
+     * @return
+     * @throws Exception 
+     */
+    public Object [] generateParams(Map<String ,Object> io_Context ,Object [] io_Params)
+    {
+        if ( !Help.isNull(this.param) )
+        {
+            io_Params[0] = ValueHelp.replaceByContext(this.param ,io_Context);
+        }
+        
+        String v_PublishXID = null;
+        if ( !Help.isNull(this.publishXID) )
+        {
+            v_PublishXID = ValueHelp.replaceByContext(this.publishXID ,io_Context);
+        }
+        else
+        {
+            v_PublishXID = "";
+        }
+        
+        String v_Message = null;
+        if ( !Help.isNull(this.message) )
+        {
+            v_Message = ValueHelp.replaceByContext(this.message ,io_Context);
+        }
+        else
+        {
+            v_Message = "";
+        }
+        
+        String v_UserID = null;
+        if ( !Help.isNull(this.userID) )
+        {
+            v_UserID = ValueHelp.replaceByContext(this.userID ,io_Context);
+        }
+        else
+        {
+            v_UserID = "";
+        }
+        
+        StringBuilder v_Body = new StringBuilder();
+        if ( MessageType.MQTT.equals(this.publishType) )
+        {
+            v_Body.append("{");
+            v_Body.append("  \"xid\": \"").append(v_PublishXID).append("\",");
+            v_Body.append("  \"message\": \"").append(v_Message).append("\",");
+            
+            if ( !Help.isNull(this.qoS) )
+            {
+                v_Body.append("  \"qoS\": \"").append(this.qoS).append("\",");
+            }
+            if ( !Help.isNull(this.retain) )
+            {
+                v_Body.append("  \"retain\": \"").append(this.retain ? 1 : 0).append("\",");
+            }
+            
+            v_Body.append("  \"userID\": \"").append(v_UserID).append("\"");
+            v_Body.append("}");
+        }
+        io_Params[1] = v_Body.toString();
+        
+        if ( !Help.isNull(this.head) )
+        {
+            String v_Head = ValueHelp.replaceByContext(this.head ,io_Context);
+            try
+            {
+                io_Params[2] = ValueHelp.getValue(v_Head ,Map.class ,null ,io_Context);
+            }
+            catch (Exception exce)
+            {
+                throw new RuntimeException(exce);
+            }
+        }
+        return io_Params;
     }
     
     
@@ -371,6 +485,23 @@ public class PublishConfig extends APIConfig
         }
         
         v_Builder.append(":");
+        if ( Help.isNull(this.getUserID()) )
+        {
+            v_Builder.append("?");
+        }
+        else
+        {
+            try
+            {
+                v_Builder.append(ValueHelp.getValue(this.getUserID() ,String.class ,this.getUserID() ,i_Context));
+            }
+            catch (Exception exce)
+            {
+                // Nothing.
+            }
+        }
+        
+        v_Builder.append(":");
         if ( Help.isNull(this.getMessage()) )
         {
             v_Builder.append("?");
@@ -414,7 +545,10 @@ public class PublishConfig extends APIConfig
         v_Builder.append(":");
         v_Builder.append(Help.NVL(this.getPublishXID() ,"?"));
         v_Builder.append(":");
+        v_Builder.append(Help.NVL(this.getUserID() ,"?"));
+        v_Builder.append(":");
         v_Builder.append(Help.NVL(this.getMessage() ,"?"));
+        
         
         return v_Builder.toString();
     }
