@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF022_1_1">
+            <comment>消息发布成功时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+        </xnode>
+        
+        
+        <xnode id="XNode_CF022_1_2">
+            <comment>消息发布异常时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <value>:CallFlowErrorResult</value>         <!-- 系统预设的编排实例异常结果的变量名称 -->
+            </callParam>
+        </xnode>
+        
+    
+        <xpublish id="XPublish_CF022_1">
+            <comment>MQTT发布消息</comment>
+            <publishType>MQTT</publishType>                 <!-- 发布消息的类型。（可以不用显式定义。默认为MQTT） -->
+            <publishURL>https://www.lpslab.cn</publishURL>  <!-- 发布微服务地址 -->
+            <publishXID>XPublish</publishXID>               <!-- 数据发布XID。配置在上面的微服务中 -->
+            <message>:Message</message>                     <!-- 定时发布消息的变量名称 -->
+            <userID>:UserID</userID>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF022_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+                <error>                                     <!-- 异常时，关联后置节点 -->
+                    <next ref="XNode_CF022_1_2" />
+                    <comment>异常时</comment>
+                </error>
+            </route>
+        </xpublish>
+        
+    </xconfig>
+    
+</config>
