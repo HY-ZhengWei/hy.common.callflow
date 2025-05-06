@@ -269,6 +269,8 @@ public class PublishConfig extends APIConfig
     public void setUserID(String i_UserID)
     {
         this.userID = i_UserID;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 
@@ -443,6 +445,26 @@ public class PublishConfig extends APIConfig
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("retain" ,this.retain));
         }
+        if ( !Help.isNull(this.userID) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("userID" ,this.userID));
+        }
+        if ( this.getConnectTimeout() != 10 * 1000 )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("connectTimeout" ,this.getConnectTimeout()));
+        }
+        if ( this.getReadTimeout() != 15 * 1000 )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("readTimeout" ,this.getReadTimeout()));
+        }
+        if ( !Help.isNull(this.param) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("param" ,this.param));
+        }
+        if ( !Help.isNull(this.head) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("head" ,this.head));
+        }
     }
     
     
@@ -465,6 +487,7 @@ public class PublishConfig extends APIConfig
     {
         StringBuilder v_Builder = new StringBuilder();
         
+        v_Builder.append("发布");
         v_Builder.append(this.publishType.getValue());
         v_Builder.append(":");
         v_Builder.append(this.publishURL);
@@ -541,6 +564,7 @@ public class PublishConfig extends APIConfig
     {
         StringBuilder v_Builder = new StringBuilder();
         
+        v_Builder.append("发布");
         v_Builder.append(this.publishType.getValue());
         v_Builder.append(":");
         v_Builder.append(this.publishURL);
@@ -598,11 +622,13 @@ public class PublishConfig extends APIConfig
         v_Clone.setMessage(       this.getMessage());
         v_Clone.setQoS(           this.getQoS());
         v_Clone.setRetain(        this.getRetain());
+        v_Clone.setUserID(        this.getUserID());
         v_Clone.setParam(         this.getParam());
         v_Clone.setHead(          this.getHead());
         v_Clone.setContext(       this.getContext());
         v_Clone.setConnectTimeout(this.getConnectTimeout());
         v_Clone.setReadTimeout(   this.getReadTimeout());
+        v_Clone.setTimeout(       this.getTimeout());
         
         return v_Clone;
     }
@@ -641,11 +667,13 @@ public class PublishConfig extends APIConfig
         v_Clone.setMessage(       this.getMessage());
         v_Clone.setQoS(           this.getQoS());
         v_Clone.setRetain(        this.getRetain());
+        v_Clone.setUserID(        this.getUserID());
         v_Clone.setParam(         this.getParam());
         v_Clone.setHead(          this.getHead());
         v_Clone.setContext(       this.getContext());
         v_Clone.setConnectTimeout(this.getConnectTimeout());
         v_Clone.setReadTimeout(   this.getReadTimeout());
+        v_Clone.setTimeout(       this.getTimeout());
     }
     
     
