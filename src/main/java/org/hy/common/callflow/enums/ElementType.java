@@ -20,6 +20,8 @@ public enum ElementType
     
     Publish(  "PUBLISH"   ,"xpublish"   ,"发布元素"),
     
+    Subscribe("SUBSCRIBE" ,"xsubscribe" ,"订阅元素"),
+    
     XSQL(     "XSQL"      ,"xsql"       ,"XSQL元素"),
     
     Condition("CONDITION" ,"xcondition" ,"条件逻辑"),

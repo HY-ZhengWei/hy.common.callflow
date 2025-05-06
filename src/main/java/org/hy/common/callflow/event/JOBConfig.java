@@ -84,7 +84,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     /** 任务对象（仅内部使用） */
     private Job                 job;
     
-    /** 执行定时元素时的运行时的向上下文（） */
+    /** 执行定时元素时的运行时的向上下文（仅内部使用） */
     private Map<String ,Object> executeContext;
     
     

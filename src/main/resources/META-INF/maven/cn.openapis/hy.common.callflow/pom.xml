@@ -100,6 +100,13 @@
         </dependency>
         
         <dependency>
+            <groupId>org</groupId>
+            <artifactId>hy.common.mqtt</artifactId>
+            <version>1.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>3.0-alpha-1</version>
@@ -112,6 +119,7 @@
             <artifactId>ojdbc14</artifactId>
             <version>10.2.0.1.0</version>
             <optional>true</optional>
+            <scope>test</scope>
         </dependency>
         
         <!-- MySQL -->
