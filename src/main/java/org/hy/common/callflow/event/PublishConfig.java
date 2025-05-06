@@ -86,6 +86,8 @@ public class PublishConfig extends APIConfig
         this.setPublishURL($PublishURL);
         this.setRequestType("POST");
         this.setSucceedFlag("200");
+        this.setConnectTimeout(10 * 1000);
+        this.setReadTimeout(   15 * 1000);
     }
 
 
