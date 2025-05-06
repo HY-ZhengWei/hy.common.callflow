@@ -36,6 +36,7 @@
     * [XSQL元素的举例](#XSQL元素的举例)
     * [定时元素的举例](#定时元素的举例)
     * [发布元素的举例](#发布元素的举例)
+    * [订阅元素的举例](#订阅元素的举例)* [发布元素的举例](#发布元素的举例)
 
 
 
@@ -2908,4 +2909,115 @@ v_Context.put("UserID"  ,"ZhengWei");  // 发布者
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_Publish ,v_Context);
+```
+
+
+
+
+
+订阅元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow023) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow023/JU_CFlow023.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+        
+        <xnode id="XNode_CF023_1">
+            <comment>其它编排：收到订阅消息时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Message</callMethod>         <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型。占位符变量时，可免定义 -->
+                <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+        </xnode>
+    
+    
+        <xnode id="XNode_CF023_1_1">
+            <comment>订阅成功时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
+        </xnode>
+        
+        
+        <xnode id="XNode_CF023_1_2">
+            <comment>订阅异常时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <value>:CallFlowErrorResult</value>         <!-- 系统预设的编排实例异常结果的变量名称 -->
+            </callParam>
+        </xnode>
+        
+    
+        <xsubscribe id="XSubscribe_CF023_1">
+            <comment>MQTT订阅消息</comment>
+            <subscribeType>MQTT</subscribeType>             <!-- 订阅消息的类型。（可以不用显式定义。默认为MQTT） -->
+            <subscribeURL>http://127.0.0.1</subscribeURL>   <!-- 订阅微服务地址 -->
+            <subscribeXID>XSubscribe</subscribeXID>         <!-- 数据订阅XID。配置在上面的微服务中 -->
+            <brokerPassword>Lpssys2023</brokerPassword>     <!-- 物联设备的连接密码（MQTT密码） -->
+            <userID>:UserID</userID>                        <!-- 用户ID的变量名称 -->
+            <callFlowXID>:XNode_CF023_1</callFlowXID>       <!-- 收到订阅消息时执行的编排的XID -->
+            <returnID>MQTT-MSG</returnID>                   <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF023_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+                <error>                                     <!-- 异常时，关联后置节点 -->
+                    <next ref="XNode_CF023_1_2" />
+                    <comment>异常时</comment>
+                </error>
+            </route>
+        </xsubscribe>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+SubscribeConfig     v_Subscribe = (SubscribeConfig) XJava.getObject("XSubscribe_CF023_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("UserID" ,"ZhengWei");  // 订阅者
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Subscribe ,v_Context);
 ```
