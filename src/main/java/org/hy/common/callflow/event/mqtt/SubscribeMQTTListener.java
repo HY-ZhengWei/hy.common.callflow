@@ -88,6 +88,11 @@ public class SubscribeMQTTListener implements IMqttMessageListener
         
         try
         {
+            if ( !Help.isNull(i_Config.getBrokerPassword()) )
+            {
+                v_Broker.setUserPassword(i_Config.getBrokerPassword());
+            }
+            
             this.config = i_Config;
             this.broker = new XBroker(v_Broker);
             this.broker.getMqttClient().connect();
@@ -151,9 +156,6 @@ public class SubscribeMQTTListener implements IMqttMessageListener
     @SuppressWarnings("unchecked")
     public void messageArrived(String i_Topic, IMqttMessage i_Message) throws Exception
     {
-        System.out.println(i_Topic);
-        System.out.println(i_Message);
-        
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         if ( !Help.isNull(this.config.gatExecuteContext()) )
         {
@@ -182,7 +184,7 @@ public class SubscribeMQTTListener implements IMqttMessageListener
         if ( !Help.isNull(this.config.getReturnID()) )
         {
             v_Context.put(this.config.getReturnIDTopic()   ,i_Topic);
-            v_Context.put(this.config.getReturnIDMessage() ,i_Message);
+            v_Context.put(this.config.getReturnIDMessage() ,new String(i_Message.getPayload()));
         }
         
         if ( Help.isNull(this.config.gatCallFlowXID()) )

@@ -21,16 +21,27 @@
     
     <!-- CFlow编排引擎配置 -->
     <xconfig>
+        
+        <xnode id="XNode_CF023_1">
+            <comment>收到订阅消息时</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Message</callMethod>         <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.util.Map</valueClass>      <!-- 定义入参类型。占位符变量时，可免定义 -->
+                <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+        </xnode>
     
-        <xnode id="XNode_CF022_1_1">
-            <comment>消息发布成功时</comment>
+    
+        <xnode id="XNode_CF023_1_1">
+            <comment>订阅消息成功时</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
         </xnode>
         
         
-        <xnode id="XNode_CF022_1_2">
-            <comment>消息发布异常时</comment>
+        <xnode id="XNode_CF023_1_2">
+            <comment>订阅消息异常时</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Error</callMethod>           <!-- 定义执行方法 -->
             <callParam>
@@ -39,24 +50,26 @@
         </xnode>
         
     
-        <xpublish id="XPublish_CF022_1">
-            <comment>MQTT发布消息</comment>
-            <publishType>MQTT</publishType>                 <!-- 发布消息的类型。（可以不用显式定义。默认为MQTT） -->
-            <publishURL>http://127.0.0.1</publishURL>       <!-- 发布微服务地址 -->
-            <publishXID>XPublish</publishXID>               <!-- 数据发布XID。配置在上面的微服务中 -->
-            <message>:Message</message>                     <!-- 定义发布消息的变量名称 -->
+        <xsubscribe id="XSubscribe_CF023_1">
+            <comment>MQTT订阅消息</comment>
+            <subscribeType>MQTT</subscribeType>             <!-- 订阅消息的类型。（可以不用显式定义。默认为MQTT） -->
+            <subscribeURL>https://www.lpslab.cn</subscribeURL>  <!-- 订阅微服务地址 -->
+            <subscribeXID>XSubscribe</subscribeXID>         <!-- 数据订阅XID。配置在上面的微服务中 -->
+            <brokerPassword>Lpssys2023</brokerPassword>     <!-- 物联设备的连接密码（MQTT密码） -->
             <userID>:UserID</userID>                        <!-- 用户ID的变量名称 -->
+            <callFlowXID>:XNode_CF023_1</callFlowXID>       <!-- 收到订阅消息时执行的编排的XID -->
+            <returnID>MQTT-MSG</returnID>                   <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF022_1_1" />
+                    <next ref="XNode_CF023_1_1" />
                     <comment>成功时</comment>
                 </succeed>
                 <error>                                     <!-- 异常时，关联后置节点 -->
-                    <next ref="XNode_CF022_1_2" />
+                    <next ref="XNode_CF023_1_2" />
                     <comment>异常时</comment>
                 </error>
             </route>
-        </xpublish>
+        </xsubscribe>
         
     </xconfig>
     

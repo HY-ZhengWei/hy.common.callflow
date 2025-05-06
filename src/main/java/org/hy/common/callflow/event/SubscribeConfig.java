@@ -9,11 +9,12 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.MessageType;
-import org.hy.common.callflow.event.mqtt.SubscribeMQTT;
 import org.hy.common.callflow.event.mqtt.SubscribeMQTTListener;
+import org.hy.common.callflow.event.mqtt.SubscribeMQTTs;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.node.APIConfig;
+import org.hy.common.callflow.node.APIException;
 import org.hy.common.xml.XJava;
 
 
@@ -136,7 +137,8 @@ public class SubscribeConfig extends APIConfig
         
         if ( this.subscribeType.equals(MessageType.MQTT) )
         {
-            this.setReturnClass(SubscribeMQTT.class.getName());
+            this.setReturnClass(SubscribeMQTTs.class.getName());
+            this.setReturnClassKey("data");
         }
         
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
@@ -456,8 +458,14 @@ public class SubscribeConfig extends APIConfig
         
         if ( this.subscribeType.equals(MessageType.MQTT) )
         {
-            SubscribeMQTT         v_Subscribe = (SubscribeMQTT) v_Ret.paramObj;
-            SubscribeMQTTListener v_Listener  = (SubscribeMQTTListener) XJava.getObject(this.getXid() + $ListenerXID);
+            SubscribeMQTTs v_Subscribes = (SubscribeMQTTs) v_Ret.paramObj;
+            if ( Help.isNull(v_Subscribes) )
+            {
+                APIException v_Exce = new APIException(v_Ret.getParamStr() ,"SubscribeMQTTs size is 0." ,v_Ret.getParamObj());
+                return new Return<Object>(false).setException(v_Exce);
+            }
+            
+            SubscribeMQTTListener v_Listener = (SubscribeMQTTListener) XJava.getObject(this.getXid() + $ListenerXID);
             if ( v_Listener != null )
             {
                 v_Listener.unsubscribeClose();
@@ -476,7 +484,7 @@ public class SubscribeConfig extends APIConfig
                 }
             }
             
-            v_Listener = new SubscribeMQTTListener(v_Subscribe ,this);
+            v_Listener = new SubscribeMQTTListener(v_Subscribes.getDatas().get(0) ,this);
             XJava.putObject(this.getXid() + $ListenerXID ,v_Listener);
         }
         
