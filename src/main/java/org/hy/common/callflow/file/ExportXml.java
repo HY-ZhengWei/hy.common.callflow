@@ -14,6 +14,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.event.PublishConfig;
+import org.hy.common.callflow.event.SubscribeConfig;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.forloop.ForConfig;
@@ -71,6 +72,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Return   .getXmlName() ,ReturnConfig.class);
         getInstance().addImportHead(ElementType.Api      .getXmlName() ,APIConfig.class);
         getInstance().addImportHead(ElementType.Publish  .getXmlName() ,PublishConfig.class);
+        getInstance().addImportHead(ElementType.Subscribe.getXmlName() ,SubscribeConfig.class);
         getInstance().addImportHead(ElementType.XSQL     .getXmlName() ,XSQLConfig.class);
         getInstance().addImportHead(ElementType.Job      .getXmlName() ,JOBConfig.class);
     }
@@ -327,6 +329,10 @@ public class ExportXml
             if ( i_ExecObject instanceof PublishConfig )
             {
                 i_ExecObject.setXJavaID("XPulish_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof SubscribeConfig )
+            {
+                i_ExecObject.setXJavaID("XSubscribe_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof APIConfig )
             {

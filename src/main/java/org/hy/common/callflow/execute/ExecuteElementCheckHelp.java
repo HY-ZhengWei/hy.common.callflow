@@ -10,6 +10,7 @@ import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.JobIntervalType;
 import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.event.PublishConfig;
+import org.hy.common.callflow.event.SubscribeConfig;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.ifelse.ConditionItem;
@@ -375,6 +376,26 @@ public class ExecuteElementCheckHelp
                     io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getQoS()) + "].qoS is invalid.");
                     return false;
                 }
+            }
+        }
+        else if ( i_ExecObject instanceof SubscribeConfig )
+        {
+            SubscribeConfig v_Subscribe = (SubscribeConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_Subscribe.getSubscribeXID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getSubscribeXID()) + "].subscribeXID is null.");
+                return false;
+            }
+            if ( Help.isNull(v_Subscribe.getUserID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getUserID()) + "].userID is null.");
+                return false;
+            }
+            if ( Help.isNull(v_Subscribe.getCallFlowXID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getCallFlowXID()) + "].callFlowXID is null.");
+                return false;
             }
         }
         else if ( i_ExecObject instanceof APIConfig )
