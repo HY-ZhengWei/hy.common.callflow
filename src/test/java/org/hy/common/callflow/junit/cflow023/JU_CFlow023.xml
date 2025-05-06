@@ -55,7 +55,7 @@
             <subscribeType>MQTT</subscribeType>             <!-- 订阅消息的类型。（可以不用显式定义。默认为MQTT） -->
             <subscribeURL>http://127.0.0.1</subscribeURL>   <!-- 订阅微服务地址 -->
             <subscribeXID>XSubscribe</subscribeXID>         <!-- 数据订阅XID。配置在上面的微服务中 -->
-            <brokerPassword>Lpssys2023</brokerPassword>     <!-- 物联设备的连接密码（MQTT密码） -->
+            <brokerPassword>password</brokerPassword>       <!-- 物联设备的连接密码（MQTT密码） -->
             <userID>:UserID</userID>                        <!-- 用户ID的变量名称 -->
             <callFlowXID>:XNode_CF023_1</callFlowXID>       <!-- 收到订阅消息时执行的编排的XID -->
             <returnID>MQTT-MSG</returnID>                   <!-- 定义返回结果的变量名称 -->
