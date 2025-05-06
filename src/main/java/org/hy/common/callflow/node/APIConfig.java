@@ -48,6 +48,9 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      */
     protected String returnClass;
     
+    /** 返回结果中截取Json哪个节点转为Java类 */
+    protected String returnClassKey;
+    
     /** 请求成功时的成功标记。无此标记即表示请求异常（抛APIException异常）。为空时，表示不用判定 */
     protected String succeedFlag;
     
@@ -460,8 +463,32 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         this.keyChange();
     }
 
+    
+    
+    /**
+     * 获取：返回结果中截取Json哪个节点转为Java类
+     */
+    public String getReturnClassKey()
+    {
+        return returnClassKey;
+    }
+
 
     
+    /**
+     * 设置：返回结果中截取Json哪个节点转为Java类
+     * 
+     * @param i_ReturnClassKey 返回结果中截取Json哪个节点转为Java类
+     */
+    public void setReturnClassKey(String i_ReturnClassKey)
+    {
+        this.returnClassKey = i_ReturnClassKey;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
     /**
      * 获取：请求成功时的成功标记。无此标记即表示请求异常（抛APIException异常）。为空时，表示不用判定
      */
@@ -603,7 +630,14 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
                     XJSON v_XJson = new XJSON();
                     try
                     {
-                        v_ReturnValue = v_XJson.toJava(v_ReturnValue.toString() ,v_ReturnClass);
+                        if ( Help.isNull(this.returnClassKey) )
+                        {
+                            v_ReturnValue = v_XJson.toJava(v_ReturnValue.toString() ,v_ReturnClass);
+                        }
+                        else
+                        {
+                            v_ReturnValue = v_XJson.toJava(v_ReturnValue.toString() ,this.returnClassKey ,v_ReturnClass);
+                        }
                     }
                     catch (Exception exce)
                     {
@@ -698,6 +732,10 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("returnClass" ,this.returnClass));
         }
+        if ( !Help.isNull(this.returnClassKey) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("returnClassKey" ,this.returnClassKey));
+        }
         if ( !Help.isNull(this.succeedFlag) )
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("succeedFlag" ,this.succeedFlag));
@@ -781,11 +819,19 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         APIConfig v_Clone = new APIConfig();
         
         this.cloneMyOnly(v_Clone);
-        v_Clone.setContext(this.getContext());
-        v_Clone.url = this.url;
-        v_Clone.setRequestType(this.getRequestType()); 
+        v_Clone.setContext(       this.getContext());
+        v_Clone.setContentType(   this.getContentType());
+        v_Clone.setUrl(           this.getUrl());
+        v_Clone.setParam(         this.getParam());
+        v_Clone.setBody(          this.getBody());
+        v_Clone.setHead(          this.getHead());
+        v_Clone.setRequestType(   this.getRequestType()); 
         v_Clone.setConnectTimeout(this.getConnectTimeout());
-        v_Clone.setReadTimeout(this.getReadTimeout());
+        v_Clone.setReadTimeout(   this.getReadTimeout());
+        v_Clone.setTimeout(       this.getTimeout());
+        v_Clone.setReturnClass(   this.getReturnClass());
+        v_Clone.setReturnClassKey(this.getReturnClassKey());
+        v_Clone.setSucceedFlag(   this.getSucceedFlag());
         
         return v_Clone;
     }
@@ -818,11 +864,19 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         APIConfig v_Clone = (APIConfig) io_Clone;
         ((ExecuteElement) this).clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.setContext(this.getContext());
-        v_Clone.url = this.url;
-        v_Clone.setRequestType(this.getRequestType()); 
+        v_Clone.setContext(       this.getContext());
+        v_Clone.setContentType(   this.getContentType());
+        v_Clone.setUrl(           this.getUrl());
+        v_Clone.setParam(         this.getParam());
+        v_Clone.setBody(          this.getBody());
+        v_Clone.setHead(          this.getHead());
+        v_Clone.setRequestType(   this.getRequestType()); 
         v_Clone.setConnectTimeout(this.getConnectTimeout());
-        v_Clone.setReadTimeout(this.getReadTimeout());
+        v_Clone.setReadTimeout(   this.getReadTimeout());
+        v_Clone.setTimeout(       this.getTimeout());
+        v_Clone.setReturnClass(   this.getReturnClass());
+        v_Clone.setReturnClassKey(this.getReturnClassKey());
+        v_Clone.setSucceedFlag(   this.getSucceedFlag());
     }
     
     

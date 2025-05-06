@@ -111,7 +111,7 @@
         
     5. 常用的系统预设变量。
     
-        5.1. :CallFlowContext，编排实例ID的变量名称。
+        5.1. :CallFlowWorkID，编排实例ID的变量名称。
         
         5.2. :CallFlowContext，编排实例上下文的变量名称。它作为参数向Java方法传参，可读可写其内容。
         
@@ -2871,10 +2871,10 @@ __编排配置__
         <xpublish id="XPublish_CF022_1">
             <comment>MQTT发布消息</comment>
             <publishType>MQTT</publishType>                 <!-- 发布消息的类型。（可以不用显式定义。默认为MQTT） -->
-            <publishURL>https://www.lpslab.cn</publishURL>  <!-- 发布微服务地址 -->
+            <publishURL>http://127.0.0.1</publishURL>       <!-- 发布微服务地址 -->
             <publishXID>XPublish</publishXID>               <!-- 数据发布XID。配置在上面的微服务中 -->
-            <message>:Message</message>                     <!-- 定时发布消息的变量名称 -->
-            <userID>:UserID</userID>
+            <message>:Message</message>                     <!-- 定义发布消息的变量名称 -->
+            <userID>:UserID</userID>                        <!-- 用户ID的变量名称 -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF022_1_1" />
