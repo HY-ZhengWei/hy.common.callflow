@@ -11,6 +11,7 @@ import org.hy.common.callflow.enums.MessageType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.node.APIConfig;
+import org.hy.common.mqtt.client.enums.MessageFormat;
 
 
 
@@ -41,6 +42,9 @@ public class PublishConfig extends APIConfig
     
     /** 发布的消息。可以是数值、上下文变量、XID标识 */
     private String      message;
+    
+    /** 发布消息的格式。可以是数值、上下文变量、XID标识 */
+    private String      format;
     
     /** MQTT服务质量等级。默认为NULL，表示创建数据发布时定义的值 */
     private Integer     qoS;
@@ -204,6 +208,30 @@ public class PublishConfig extends APIConfig
 
     
     /**
+     * 获取：发布消息的格式。可以是数值、上下文变量、XID标识
+     */
+    public String getFormat()
+    {
+        return format;
+    }
+
+
+    
+    /**
+     * 设置：发布消息的格式。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_Format 发布消息的格式。可以是数值、上下文变量、XID标识
+     */
+    public void setFormat(String i_Format)
+    {
+        this.format = i_Format;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
+    /**
      * 获取：服务质量等级。默认为NULL，表示创建数据发布时定义的值
      */
     public Integer getQoS()
@@ -350,6 +378,20 @@ public class PublishConfig extends APIConfig
             v_Message = "";
         }
         
+        String v_Format = null;
+        if ( !Help.isNull(this.format) )
+        {
+            v_Format = ValueHelp.replaceByContext(this.format ,io_Context);
+            if ( MessageFormat.get(v_Format) == null )
+            {
+                v_Format = "TEXT";
+            }
+        }
+        else
+        {
+            v_Format = "TEXT";
+        }
+        
         String v_UserID = null;
         if ( !Help.isNull(this.userID) )
         {
@@ -366,6 +408,7 @@ public class PublishConfig extends APIConfig
             v_Body.append("{");
             v_Body.append("  \"xid\": \"").append(v_PublishXID).append("\",");
             v_Body.append("  \"message\": \"").append(v_Message).append("\",");
+            v_Body.append("  \"format\": \"").append(v_Format).append("\",");
             
             if ( !Help.isNull(this.qoS) )
             {
@@ -436,6 +479,10 @@ public class PublishConfig extends APIConfig
         if ( !Help.isNull(this.message) )
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("message" ,this.message ,v_NewSpace));
+        }
+        if ( !Help.isNull(this.format) && !MessageFormat.Text.equals(MessageFormat.get(this.format)) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("format" ,this.format ,v_NewSpace));
         }
         if ( !Help.isNull(this.qoS) )
         {
@@ -620,6 +667,7 @@ public class PublishConfig extends APIConfig
         v_Clone.setPublishURL(    this.getPublishURL());
         v_Clone.setPublishXID(    this.getPublishXID());
         v_Clone.setMessage(       this.getMessage());
+        v_Clone.setFormat(        this.getFormat());
         v_Clone.setQoS(           this.getQoS());
         v_Clone.setRetain(        this.getRetain());
         v_Clone.setUserID(        this.getUserID());
@@ -665,6 +713,7 @@ public class PublishConfig extends APIConfig
         v_Clone.setPublishURL(    this.getPublishURL());
         v_Clone.setPublishXID(    this.getPublishXID());
         v_Clone.setMessage(       this.getMessage());
+        v_Clone.setFormat(        this.getFormat());
         v_Clone.setQoS(           this.getQoS());
         v_Clone.setRetain(        this.getRetain());
         v_Clone.setUserID(        this.getUserID());
