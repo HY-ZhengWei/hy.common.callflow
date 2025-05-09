@@ -15,6 +15,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.node.APIConfig;
 import org.hy.common.callflow.node.APIException;
+import org.hy.common.mqtt.client.enums.MessageFormat;
 import org.hy.common.xml.XJava;
 
 
@@ -65,6 +66,9 @@ public class SubscribeConfig extends APIConfig
     /** 编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
     private String              callFlowXID;
     
+    /** 订阅消息的格式。可以是数值、上下文变量、XID标识 */
+    private String              format;
+    
     /** 执行定时元素时的运行时的向上下文（仅内部使用） */
     private Map<String ,Object> executeContext;
     
@@ -101,6 +105,7 @@ public class SubscribeConfig extends APIConfig
         
         this.setSubscribeType(MessageType.MQTT);
         this.setSubscribeURL(PublishConfig.$PublishURL);
+        this.setFormat(MessageFormat.Text.getValue());
         this.setRequestType("POST");
         this.setSucceedFlag("200");
         this.setConnectTimeout(10 * 1000);
@@ -284,6 +289,30 @@ public class SubscribeConfig extends APIConfig
     
     
     
+    /**
+     * 获取：订阅消息的格式。可以是数值、上下文变量、XID标识
+     */
+    public String getFormat()
+    {
+        return format;
+    }
+
+
+    
+    /**
+     * 设置：订阅消息的格式。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_Format 订阅消息的格式。可以是数值、上下文变量、XID标识
+     */
+    public void setFormat(String i_Format)
+    {
+        this.format = i_Format;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
     /**
      * 获取：执行定时元素时的运行时的向上下文（仅内部使用）
      */
@@ -556,6 +585,10 @@ public class SubscribeConfig extends APIConfig
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("callFlowXID" ,this.getCallFlowXID()));
         }
+        if ( !Help.isNull(this.format) && !MessageFormat.Text.equals(MessageFormat.get(this.format)) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("format" ,this.format ,v_NewSpace));
+        }
     }
     
     
@@ -711,6 +744,7 @@ public class SubscribeConfig extends APIConfig
         v_Clone.setReadTimeout(   this.getReadTimeout());
         v_Clone.setTimeout(       this.getTimeout());
         v_Clone.setCallFlowXID(   this.getCallFlowXID());
+        v_Clone.setFormat(        this.getFormat());
         
         return v_Clone;
     }
@@ -755,6 +789,7 @@ public class SubscribeConfig extends APIConfig
         v_Clone.setReadTimeout(   this.getReadTimeout());
         v_Clone.setTimeout(       this.getTimeout());
         v_Clone.setCallFlowXID(   this.getCallFlowXID());
+        v_Clone.setFormat(        this.getFormat());
     }
     
     

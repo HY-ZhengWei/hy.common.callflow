@@ -3,6 +3,7 @@ package org.hy.common.callflow.event.mqtt;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hy.common.ByteHelp;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.callflow.CallFlow;
@@ -12,6 +13,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.mqtt.broker.BrokerConfig;
 import org.hy.common.mqtt.broker.XBroker;
+import org.hy.common.mqtt.client.enums.MessageFormat;
 import org.hy.common.mqtt.client.subscribe.IMqttMessage;
 import org.hy.common.mqtt.client.subscribe.IMqttMessageListener;
 import org.hy.common.xml.XJava;
@@ -183,8 +185,32 @@ public class SubscribeMQTTListener implements IMqttMessageListener
         // 返回ID在收到消息后，可裂变成两个上下文变量
         if ( !Help.isNull(this.config.getReturnID()) )
         {
+            String v_Message = null;
+            String v_Format  = null;
+            if ( !Help.isNull(this.config.getFormat()) )
+            {
+                v_Format = ValueHelp.replaceByContext(this.config.getFormat() ,v_Context);
+                if ( MessageFormat.get(v_Format) == null )
+                {
+                    v_Format = "TEXT";
+                }
+            }
+            else
+            {
+                v_Format = "TEXT";
+            }
+            
+            if ( MessageFormat.Hex.equals(MessageFormat.get(v_Format)) )
+            {
+                v_Message = ByteHelp.bytesToHex(i_Message.getPayload());
+            }
+            else
+            {
+                v_Message = new String(i_Message.getPayload());
+            }
+            
             v_Context.put(this.config.getReturnIDTopic()   ,i_Topic);
-            v_Context.put(this.config.getReturnIDMessage() ,new String(i_Message.getPayload()));
+            v_Context.put(this.config.getReturnIDMessage() ,v_Message);
         }
         
         if ( Help.isNull(this.config.gatCallFlowXID()) )
