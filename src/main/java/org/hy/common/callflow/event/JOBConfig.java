@@ -141,7 +141,16 @@ public class JOBConfig extends ExecuteElement implements Cloneable
      */
     public String getJobsXID()
     {
-        return jobsXID;
+        return ValueHelp.standardRefID(this.jobsXID);
+    }
+    
+    
+    /**
+     * 获取：编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式
+     */
+    private String gatJobsXID()
+    {
+        return this.jobsXID;
     }
 
     
@@ -152,7 +161,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
      */
     public void setJobsXID(String i_JobsXID)
     {
-        this.jobsXID = i_JobsXID;
+        this.jobsXID = ValueHelp.standardValueID(i_JobsXID);
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -492,13 +501,13 @@ public class JOBConfig extends ExecuteElement implements Cloneable
             }
             
             Jobs v_Jobs = null;
-            if ( Help.isNull(this.jobsXID) )
+            if ( Help.isNull(this.gatJobsXID()) )
             {
                 v_Jobs = XJava.getObject(Jobs.class ,false);
             }
             else
             {
-                Object v_JobsObject = XJava.getObject(this.jobsXID);
+                Object v_JobsObject = XJava.getObject(this.gatJobsXID());
                 if ( !(v_JobsObject instanceof Jobs) )
                 {
                     v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s Jobs[" + this.gatCallFlowXID() + "] is not Jobs."));
@@ -510,7 +519,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
             
             if ( v_Jobs == null )
             {
-                v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s Jobs[" + Help.NVL(this.jobsXID ,"?") + "] is null."));
+                v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s Jobs[" + Help.NVL(this.gatJobsXID() ,"?") + "] is null."));
                 this.refreshStatus(io_Context ,v_Result.getStatus());
                 return v_Result;
             }
@@ -634,9 +643,9 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         
         v_Xml.append(super.toXml(i_Level));
         
-        if ( !Help.isNull(this.jobsXID) )
+        if ( !Help.isNull(this.gatJobsXID()) )
         {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("jobsXID" ,this.jobsXID));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("jobsXID" ,this.getJobsXID()));
         }
         if ( !Help.isNull(this.gatCallFlowXID()) )
         {
