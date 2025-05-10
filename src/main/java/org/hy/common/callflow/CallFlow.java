@@ -573,9 +573,9 @@ public class CallFlow
         
         // 事件：启动前
         String v_TreeID = i_ExecObject.getTreeIDs().iterator().next();
-        if ( i_Event != null && !i_Event.start(i_ExecObject ,io_Context) )
+        if ( i_Event != null && !i_Event.start(i_ExecObject ,v_Context) )
         {
-            return CallFlow.putError(io_Context ,(new ExecuteResult(CallFlow.getNestingLevel(v_Context) ,v_TreeID ,i_ExecObject.getXJavaID() ,"" ,null)).setCancel());
+            return CallFlow.putError(v_Context ,(new ExecuteResult(CallFlow.getNestingLevel(v_Context) ,v_TreeID ,i_ExecObject.getXJavaID() ,"" ,null)).setCancel());
         }
         
         try
@@ -583,7 +583,7 @@ public class CallFlow
             ExecuteResult v_NodeResult = CallFlow.execute(i_ExecObject ,v_Context ,i_ExecObject.getTreeSuperID(v_TreeID) ,null ,i_Event);
             v_LastResult.setPrevious(v_NodeResult);
             
-            if ( !CallFlow.getExecuteIsError(io_Context) )
+            if ( !CallFlow.getExecuteIsError(v_Context) )
             {
                 // 真返回时的返回数值
                 if ( CallFlow.isTrueReturn(v_Context) )
@@ -609,7 +609,7 @@ public class CallFlow
             // 事件：完成后
             if ( i_Event != null )
             {
-                i_Event.finish(i_ExecObject ,io_Context ,v_LastResult);
+                i_Event.finish(i_ExecObject ,v_Context ,v_LastResult);
             }
         }
     }
