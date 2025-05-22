@@ -490,12 +490,14 @@ public class ConditionItem implements IfElse ,XJavaID
         
         if ( this.comparer != null )
         {
-            Object v_ValueA = null;
-            Object v_ValueB = null;
+            Object   v_ValueA = null;
+            Object   v_ValueB = null;
+            Class<?> v_VClass = null;
             
             try
             {
-                v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
+                v_VClass = this.gatValueClass();
+                v_ValueA = ValueHelp.getValue(this.valueXIDA ,v_VClass ,null ,i_Context);
             }
             catch (Exception exce)
             {
@@ -508,50 +510,54 @@ public class ConditionItem implements IfElse ,XJavaID
             {
                 v_Builder.append(this.valueXIDA).append("[");
                 v_Builder.append(ValueHelp.getExpression(v_ValueA));
-                v_Builder.append("]");
+                v_Builder.append("] ");
                 
                 if ( Comparer.Equal.equals(this.comparer) )
                 {
-                    if ( v_ValueA == null )
+                    v_Builder.append(this.comparer.getValue());
+                    
+                    if ( Boolean.class.equals(v_VClass) )
+                    {
+                        v_Builder.append(" TRUE");
+                    }
+                    else if ( v_ValueA == null )
                     {
                         // 等于NULL
-                        v_Builder.append(" ").append(this.comparer.getValue()).append(" NULL");
-                    }
-                    else if ( Boolean.class.equals(v_ValueA.getClass()) )
-                    {
-                        v_Builder.append(" ").append(this.comparer.getValue()).append(" TRUE");
+                        v_Builder.append(" NULL");
                     }
                     else
                     {
-                        v_Builder.append(" ").append(this.comparer.getValue()).append(" NULL");
+                        v_Builder.append(" NULL");
                     }
                 }
                 else if ( Comparer.EqualNot.equals(this.comparer) )
                 {
-                    if ( v_ValueA == null )
+                    v_Builder.append(this.comparer.getValue());
+                    
+                    if ( Boolean.class.equals(v_VClass) )
+                    {
+                        v_Builder.append(" TRUE");
+                    }
+                    else if ( v_ValueA == null )
                     {
                         // 不等于NULL
-                        v_Builder.append(" ").append(this.comparer.getValue()).append(" NULL");
-                    }
-                    else if ( Boolean.class.equals(v_ValueA.getClass()) )
-                    {
-                        v_Builder.append(" ").append(this.comparer.getValue()).append(" TRUE");
+                        v_Builder.append(" NULL");
                     }
                     else
                     {
-                        v_Builder.append(" ").append(this.comparer.getValue()).append(" NULL");
+                        v_Builder.append(" NULL");
                     }
                 }
                 else
                 {
-                    v_Builder.append(" != NULL");
+                    v_Builder.append("!= NULL");
                 }
             }
             else
             {
                 try
                 {
-                    v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.gatValueClass() ,null ,i_Context);
+                    v_ValueB = ValueHelp.getValue(this.valueXIDB ,v_VClass ,null ,i_Context);
                 }
                 catch (Exception exce)
                 {
