@@ -46,7 +46,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
     /** 非并发同时执行，而是一个一个的执行 */
     private Boolean      oneByOne;
     
-    /** 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    /** 每并发项的间隔多少时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
     private String       waitTime;
     
     /** 向上下文中赋值（向所有并发项的独立上下文中赋值） */
