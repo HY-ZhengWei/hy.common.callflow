@@ -27,4 +27,11 @@ public class Program
         System.out.println("call method_Finish.");
     }
     
+    
+    
+    public void method_WaitElse()
+    {
+        System.out.println("call method_WaitElse.");
+    }
+    
 }

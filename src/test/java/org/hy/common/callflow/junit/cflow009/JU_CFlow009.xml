@@ -27,6 +27,13 @@
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
         </xnode>
+        
+        
+        <xnode id="XNode_CF009_1_1_1_1">
+            <comment>完成</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_WaitElse</callMethod>        <!-- 定义执行方法 -->
+        </xnode>
     
         
         <xwait id="XWait_CF009_1_1_1">
@@ -39,6 +46,9 @@
                     <next>:XNode_CF009_1</next>
                     <comment>While循环的下一步</comment>
                 </if>
+                <else>
+                    <next ref="XNode_CF009_1_1_1_1" />
+                </else>
             </route>
         </xwait>
         

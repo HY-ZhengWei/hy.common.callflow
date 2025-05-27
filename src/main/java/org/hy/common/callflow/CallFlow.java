@@ -750,8 +750,9 @@ public class CallFlow
                     }
                     else
                     {
-                        // 当循环结束时
-                        // Nothing.
+                        // 当循环结束时。2025-05-27之前这里不进行任何操作
+                        // 如等待元素到当计数器上限时，走else类型的路由（同时上级元素是自引用的场景）
+                        v_Nexts = ((SelfLoop) i_ExecObject).gatRoute().getFaileds();
                     }
                 }
                 else
