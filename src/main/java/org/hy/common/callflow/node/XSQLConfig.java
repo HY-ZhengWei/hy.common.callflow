@@ -1,10 +1,15 @@
 package org.hy.common.callflow.node;
 
-import java.awt.List;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.hy.common.Busway;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
 import org.hy.common.Return;
@@ -30,12 +35,32 @@ import org.hy.common.xml.plugins.XSQLGroupResult;
  * @author      ZhengWei(HY)
  * @createDate  2025-04-09
  * @version     v1.0
+ *              v2.0  2025-06-04  添加：用于XSQL组的returnID返回ID
+ *                                添加：用于查询类的returnOne
  */
 public class XSQLConfig extends NodeConfig implements NodeConfigBase
 {
     
     /** XSQL元素类型 */
     private XSQLType type;
+    
+    /**
+     * 与 XSQLNode.returnID 同义。
+     * 
+     * 说明代理方法执行结果的返回值是哪个。
+     * 
+     * 只用于XSQLGroup
+     */
+    public String    returnXSGRID;
+    
+    /**
+     * 表示只取查询结果集中的首行记录。即只返回一个对象。
+     * 
+     * 只用于方法。
+     * 只用于查询SQL，并且结果集的类型为List集合。
+     * 当用于XSQL组时，须要与 returnXSGRID 属性配合使用，可以获取XSQL组中有 returnID 标记的首行记录
+     */
+    private boolean  returnOne;
     
     
     
@@ -67,7 +92,8 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     public XSQLConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.type = XSQLType.Auto;
+        this.type      = XSQLType.Auto;
+        this.returnOne = false;
     }
 
 
@@ -103,6 +129,78 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     
     
     
+    /**
+     * 获取：与 XSQLNode.returnID 同义。
+     * 
+     * 说明代理方法执行结果的返回值是哪个。
+     * 
+     * 只用于XSQLGroup
+     */
+    public String getReturnXSGRID()
+    {
+        if ( Help.isNull(this.returnXSGRID) )
+        {
+            return null;
+        }
+        else
+        {
+            return DBSQL.$Placeholder + this.returnXSGRID;
+        }
+    }
+
+
+    
+    /**
+     * 设置：与 XSQLNode.returnID 同义。
+     * 
+     * 说明代理方法执行结果的返回值是哪个。
+     * 
+     * 只用于XSQLGroup
+     * 
+     * @param i_ReturnXSGRID  与 XSQLNode.returnID 同义。
+     */
+    public void setReturnXSGRID(String i_ReturnXSGRID)
+    {
+        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.returnXSGRID = ValueHelp.standardValueID(i_ReturnXSGRID);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
+    /**
+     * 获取：表示只取查询结果集中的首行记录。即只返回一个对象。
+     * 
+     * 只用于方法。
+     * 只用于查询SQL，并且结果集的类型为List集合。
+     * 当用于XSQL组时，须要与 returnXSGRID 属性配合使用，可以获取XSQL组中有 returnID 标记的首行记录
+     */
+    public boolean isReturnOne()
+    {
+        return returnOne;
+    }
+
+
+    
+    /**
+     * 设置：表示只取查询结果集中的首行记录。即只返回一个对象。
+     * 
+     * 只用于方法。
+     * 只用于查询SQL，并且结果集的类型为List集合。
+     * 当用于XSQL组时，须要与 returnXSGRID 属性配合使用，可以获取XSQL组中有 returnID 标记的首行记录
+     * 
+     * @param i_ReturnOne  表示只取查询结果集中的首行记录。即只返回一个对象。
+     */
+    public void setReturnOne(boolean i_ReturnOne)
+    {
+        this.returnOne = i_ReturnOne;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
     /**
      * 按XSQL元素类型初始化执行方法名称
      * 
@@ -321,14 +419,33 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     {
         if ( io_ExecuteReturn instanceof XSQLData )
         {
-            return new Return<Object>(true).setParamObj(((XSQLData) io_ExecuteReturn).getDatas());
+            if ( this.returnOne )
+            {
+                Object v_Datas = ((XSQLData) io_ExecuteReturn).getDatas();
+                return new Return<Object>(true).setParamObj(this.generateReturnOne(v_Datas));
+            }
+            else
+            {
+                return new Return<Object>(true).setParamObj(((XSQLData) io_ExecuteReturn).getDatas());
+            }
         }
         else if ( io_ExecuteReturn instanceof XSQLGroupResult )
         {
             XSQLGroupResult v_XSQLGRet = (XSQLGroupResult) io_ExecuteReturn;
             if ( v_XSQLGRet.isSuccess() ) 
             {
-                return new Return<Object>(true).setParamObj(v_XSQLGRet.getReturns());
+                Object v_Datas = v_XSQLGRet.getReturns();
+                if ( !Help.isNull(this.returnXSGRID) )
+                {
+                    v_Datas = v_XSQLGRet.getReturns().get(this.returnXSGRID);
+                    
+                    if ( this.returnOne )
+                    {
+                        return new Return<Object>(true).setParamObj(this.generateReturnOne(v_Datas));
+                    }
+                }
+                
+                return new Return<Object>(true).setParamObj(v_Datas);
             }
             else
             {
@@ -339,6 +456,115 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         {
             return new Return<Object>(true).setParamObj(io_ExecuteReturn);
         }
+    }
+    
+    
+    
+    /**
+     * 只返回一个对象。即万里挑一
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-06-04
+     * @version     v1.0
+     *
+     * @param i_Datas
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Object generateReturnOne(Object i_Datas)
+    {
+        Object v_Datas = i_Datas;
+        
+        if ( MethodReflect.isExtendImplement(v_Datas ,List.class) )
+        {
+            List<?> v_List = (List<?>)v_Datas;
+            
+            if ( v_List.size() >= 1 )
+            {
+                v_Datas = v_List.get(0);
+                v_List.clear();
+                v_List = null;
+            }
+            else
+            {
+                v_Datas = null;
+            }
+        }
+        // 支持Set集合随机获取一个元素的功能
+        else if ( MethodReflect.isExtendImplement(v_Datas ,Set.class) )
+        {
+            Set<?> v_Set = (Set<?>)v_Datas;
+            
+            if ( v_Set.size() >= 1 )
+            {
+                v_Datas = v_Set.iterator().next();
+                v_Set.clear();
+                v_Set = null;
+            }
+            else
+            {
+                v_Datas = null;
+            }
+        }
+        // 支持Map集合随机获取一个元素的功能
+        else if ( MethodReflect.isExtendImplement(v_Datas ,Map.class) )
+        {
+            Map<? ,?> v_Map = (Map<? ,?>)v_Datas;
+            
+            if ( v_Map.size() >= 1 )
+            {
+                v_Datas = v_Map.values().iterator().next();
+                
+                if ( v_Datas != null )
+                {
+                    // 2024-01-03 Add 预防类似 TablePartitionBusway 结构的数据的 clear() 方法有逐级删除的能力
+                    if ( v_Datas instanceof Busway )
+                    {
+                        v_Datas = new Busway<Object>((Busway<Object>)v_Datas);
+                    }
+                    // 2024-01-03 Add 预防类似 TablePartitionRID 结构的数据的 clear() 方法有逐级删除的能力
+                    if ( MethodReflect.isExtendImplement(v_Datas ,Map.class) )
+                    {
+                        v_Datas = new LinkedHashMap<Object ,Object>((Map<? ,?>)v_Datas);
+                    }
+                    // 2024-01-03 Add 预防类似 TablePartitionSet 结构的数据的 clear() 方法有逐级删除的能力
+                    else if ( MethodReflect.isExtendImplement(v_Datas ,Set.class) )
+                    {
+                        v_Datas = new HashSet<Object>((Set<?>)v_Datas);
+                    }
+                    // 2024-01-03 Add 预防类似 TablePartition \ TablePartitionLink 结构的数据的 clear() 方法有逐级删除的能力
+                    else if ( MethodReflect.isExtendImplement(v_Datas ,List.class) )
+                    {
+                        v_Datas = new ArrayList<Object>((List<?>)v_Datas);
+                    }
+                }
+                
+                v_Map.clear();
+                v_Map = null;
+            }
+            else
+            {
+                v_Datas = null;
+            }
+        }
+        // 支持Collection集合随机获取一个元素的功能
+        else if ( MethodReflect.isExtendImplement(v_Datas ,Collection.class) )
+        {
+            Collection<?> v_Collection = (Collection<?>)v_Datas;
+            
+            if ( v_Collection.size() >= 1 )
+            {
+                v_Datas = v_Collection.iterator().next();
+                v_Collection.clear();
+                v_Collection = null;
+            }
+            else
+            {
+                v_Datas = null;
+            }
+        }
+        
+        return v_Datas;
     }
     
     
@@ -378,6 +604,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
             {
                 io_Xml.append(v_Param.toXml(i_Level + 1 ,i_TreeID));
             }
+        }
+        if ( !Help.isNull(this.returnXSGRID) )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("returnXSGRID" ,this.getReturnXSGRID()));
+        }
+        if ( this.returnOne )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("returnOne" ,this.returnOne));
         }
     }
     
@@ -579,7 +813,10 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         }
         v_Clone.setTimeout(this.getTimeout());
         v_Clone.setContext(this.getContext());
-        v_Clone.type = this.type;
+        v_Clone.type         = this.type;
+        v_Clone.returnXSGRID = this.returnXSGRID;
+        v_Clone.returnOne    = this.returnOne;
+        
         
         return v_Clone;
     }
@@ -623,7 +860,9 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         }
         v_Clone.setTimeout(this.getTimeout());
         v_Clone.setContext(this.getContext());
-        v_Clone.type = this.type;
+        v_Clone.type         = this.type;
+        v_Clone.returnXSGRID = this.returnXSGRID;
+        v_Clone.returnOne    = this.returnOne;
     }
     
     
