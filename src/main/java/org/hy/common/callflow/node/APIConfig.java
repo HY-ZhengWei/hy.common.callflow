@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XHttp;
 import org.hy.common.xml.XJSON;
 import org.hy.common.xml.XJava;
@@ -24,21 +27,31 @@ import org.hy.common.xml.XJava;
  * @author      ZhengWei(HY)
  * @createDate  2025-04-02
  * @version     v1.0
+ *              v2.0  2025-06-09  添加：param、body和head三种已解释完成的占位符，使它们支持面向对象的占位符。
  */
 public class APIConfig extends NodeConfig implements NodeConfigBase
 {
 
     /** 接口请求地址。格式为 http://IP:Port/服务名/xx/yy */
-    protected String url;
+    protected String                        url;
     
     /** 接口请求地址中的参数。URL参数结构，支持占位符。占位符可以是上下文变量、XID标识 */
-    protected String param;
+    protected String                        param;
+    
+    /** 接口请求地址中的参数，已解释完成的占位符（性能有优化，仅内部使用） */
+    protected PartitionMap<String ,Integer> paramPlaceholders;
     
     /** 接口请求体Body中的参数。文本字符结构，支持占位符。占位符可以是上下文变量、XID标识 */
-    protected String body;
+    protected String                        body;
+    
+    /** 接口请求体Body中的参数，已解释完成的占位符（性能有优化，仅内部使用） */
+    protected PartitionMap<String ,Integer> bodyPlaceholders;
     
     /** 接口请求头Head中的参数。Map结构的Json字符串，支持占位符。占位符可以是上下文变量、XID标识 */
-    protected String head;
+    protected String                        head;
+    
+    /** 接口请求头Head中的参数，已解释完成的占位符（性能有优化，仅内部使用） */
+    protected PartitionMap<String ,Integer> headPlaceholders;
     
     /** 
      * 返回结果的元类型。返回结果的数据为数值类型时生效；或返回结果有默认值时生效 
@@ -46,16 +59,16 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
      * 优点：提高可移植性。
      */
-    protected String returnClass;
+    protected String                        returnClass;
     
     /** 返回结果中截取Json哪个节点转为Java类 */
-    protected String returnClassKey;
+    protected String                        returnClassKey;
     
     /** 请求成功时的成功标记。无此标记即表示请求异常（抛APIException异常）。为空时，表示不用判定 */
-    protected String succeedFlag;
+    protected String                        succeedFlag;
     
     /** 接口请求对象(内部使用) */
-    private   XHttp  callObject;
+    private   XHttp                         callObject;
     
     
     
@@ -347,8 +360,19 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      * 
      * @param i_Param 接口请求地址中的参数。URL参数结构，支持占位符。占位符可以是上下文变量、XID标识
      */
-    public void setParam(String i_Param)
+    public synchronized void setParam(String i_Param)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Param ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.paramPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.paramPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.param = i_Param;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
@@ -371,8 +395,19 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      * 
      * @param i_Body 接口请求体Body中的参数。文本字符结构，支持占位符。占位符可以是上下文变量、XID标识
      */
-    public void setBody(String i_Body)
+    public synchronized void setBody(String i_Body)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Body ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.bodyPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.bodyPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.body = i_Body;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
@@ -395,8 +430,19 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      * 
      * @param i_Head 接口请求头Head中的参数。Map结构的Json字符串，支持占位符。占位符可以是上下文变量、XID标识
      */
-    public void setHead(String i_Head)
+    public synchronized void setHead(String i_Head)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Head ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.headPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.headPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.head = i_Head;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
@@ -570,15 +616,15 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     {
         if ( !Help.isNull(this.param) )
         {
-            io_Params[0] = ValueHelp.replaceByContext(this.param ,io_Context);
+            io_Params[0] = ValueHelp.replaceByContext(this.param ,this.paramPlaceholders ,io_Context);
         }
         if ( !Help.isNull(this.body) )
         {
-            io_Params[1] = ValueHelp.replaceByContext(this.body ,io_Context);
+            io_Params[1] = ValueHelp.replaceByContext(this.body ,this.bodyPlaceholders ,io_Context);
         }
         if ( !Help.isNull(this.head) )
         {
-            String v_Head = ValueHelp.replaceByContext(this.head ,io_Context);
+            String v_Head = ValueHelp.replaceByContext(this.head ,this.headPlaceholders ,io_Context);
             try
             {
                 io_Params[2] = ValueHelp.getValue(v_Head ,Map.class ,null ,io_Context);

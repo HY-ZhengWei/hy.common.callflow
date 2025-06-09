@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -15,6 +17,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
+import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJSON;
 import org.hy.common.xml.log.Logger;
 
@@ -39,6 +42,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-03-11
  * @version     v1.0
+ *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  */
 public class ReturnConfig extends ExecuteElement implements Cloneable
 {
@@ -53,16 +57,19 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
      * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
      * 优点：提高可移植性。
      */
-    private String              retClass;
+    private String                          retClass;
     
     /** 返回结果的数据。可以是数值、上下文变量、XID标识 */
-    private String              retValue;
+    private String                          retValue;
+    
+    /** 返回结果的数据。当为数值时，已解释完成的占位符（性能有优化，仅内部使用） */
+    protected PartitionMap<String ,Integer> retValuePlaceholders;
     
     /** 返回结果的默认值的字符形式（参数为上下文变量、XID标识时生效） */
-    private String              retDefault;
+    private String                          retDefault;
     
     /** 返回结果默认值的实例对象(内部使用) */
-    private Object              retDefaultObject;
+    private Object                          retDefaultObject;
     
     
     
@@ -211,8 +218,19 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
      * 
      * @param i_RetValue 返回结果的数据。可以是数值、上下文变量、XID标识
      */
-    public void setRetValue(String i_RetValue)
+    public synchronized void setRetValue(String i_RetValue)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_RetValue ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.retValuePlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.retValuePlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.retValue = i_RetValue;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
@@ -290,7 +308,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
             String v_RetValue = null;
             if ( !Help.isNull(this.retValue) )
             {
-                v_RetValue = ValueHelp.replaceByContext(this.retValue ,io_Context);
+                v_RetValue = ValueHelp.replaceByContext(this.retValue ,this.retValuePlaceholders ,io_Context);
             }
             else
             {
@@ -447,7 +465,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         String v_RetValue = null;
         if ( !Help.isNull(this.retValue) )
         {
-            v_RetValue = ValueHelp.replaceByContext(this.retValue ,i_Context);
+            v_RetValue = ValueHelp.replaceByContext(this.retValue ,this.retValuePlaceholders ,i_Context);
         }
         else
         {

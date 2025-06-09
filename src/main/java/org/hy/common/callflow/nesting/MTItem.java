@@ -3,13 +3,16 @@ package org.hy.common.callflow.nesting;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.PartitionMap;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.Comparer;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.ifelse.ConditionItem;
+import org.hy.common.db.DBSQL;
 import org.hy.common.xml.log.Logger;
 
 
@@ -22,6 +25,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-03-20
  * @version     v1.0
+ *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  */
 public class MTItem extends ConditionItem
 {
@@ -31,16 +35,19 @@ public class MTItem extends ConditionItem
     
     
     /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
-    private String callFlowXID;
+    private String                        callFlowXID;
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String timeout;
+    private String                        timeout;
     
     /** 向上下文中赋值（仅向并发项的独立上下文中赋值） */
-    private String context;
+    private String                        context;
+    
+    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
+    private PartitionMap<String ,Integer> contextPlaceholders;
     
     /** 为返回值定义的变量ID（返回最后的结果） */          
-    private String returnID;
+    private String                        returnID;
     
     
     
@@ -216,12 +223,33 @@ public class MTItem extends ConditionItem
      * 
      * @param i_Context 向上下文中赋值（仅向并发项的独立上下文中赋值）
      */
-    public void setContext(String i_Context)
+    public synchronized void setContext(String i_Context)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.context = i_Context;
     }
     
     
+    
+    /**
+     * 获取：向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用）
+     */
+    protected PartitionMap<String ,Integer> getContextPlaceholders()
+    {
+        return contextPlaceholders;
+    }
+
+
     /**
      * 获取：为返回值定义的变量ID（返回最后的结果）
      */

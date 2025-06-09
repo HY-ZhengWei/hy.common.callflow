@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.PartitionMap;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.db.DBSQL;
@@ -375,7 +376,7 @@ public class ValueHelp
     
     
     /**
-     * 用上下文中的内容替换（简单的粗狂替换）文本中的占位符
+     * 用上下文中的内容替换文本中的占位符
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-03-25
@@ -387,16 +388,65 @@ public class ValueHelp
      */
     public static String replaceByContext(String i_Value ,Map<String ,Object> i_Context)
     {
-        Map<String ,Object> v_Context = new HashMap<String ,Object>();
-        for (Map.Entry<String ,Object> v_Item : i_Context.entrySet())
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Value ,true);
+        if ( Help.isNull(v_PlaceholdersOrg) )
         {
-            v_Context.put(DBSQL.$Placeholder + v_Item.getKey() ,v_Item.getValue());
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+            return i_Value;
+        }
+        
+        PartitionMap<String ,Integer> v_Placeholders = Help.toReverse(v_PlaceholdersOrg);
+        
+        Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        for (String v_Placeholder : v_Placeholders.keySet())
+        {
+            v_Context.put(DBSQL.$Placeholder + v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder));
         }
         
         String v_NewValue = StringHelp.replaceAll(i_Value ,v_Context);
         v_Context.clear();
         v_Context = null;
+        v_Placeholders.clear();
+        v_Placeholders = null;
+        v_PlaceholdersOrg.clear();
+        v_PlaceholdersOrg = null;
         return v_NewValue;
+    }
+    
+    
+    
+    /**
+     * 用上下文中的内容替换文本中的占位符
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-06-05
+     * @version     v1.0
+     *
+     * @param i_Value         文本字符
+     * @param i_Placeholders  占位符
+     * @param i_Context       上下文内容
+     * @return
+     */
+    public static String replaceByContext(String i_Value ,PartitionMap<String ,Integer> i_Placeholders ,Map<String ,Object> i_Context)
+    {
+        if ( !Help.isNull(i_Placeholders) )
+        {
+            Map<String ,Object> v_Context = new HashMap<String ,Object>();
+            for (String v_Placeholder : i_Placeholders.keySet())
+            {
+                v_Context.put(DBSQL.$Placeholder + v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder));
+            }
+            
+            String v_NewValue = StringHelp.replaceAll(i_Value ,v_Context);
+            v_Context.clear();
+            v_Context = null;
+            return v_NewValue;
+        }
+        else
+        {
+            return i_Value;
+        }
     }
     
 }

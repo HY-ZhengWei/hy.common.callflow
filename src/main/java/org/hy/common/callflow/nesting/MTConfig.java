@@ -8,8 +8,10 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -19,6 +21,7 @@ import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.timeout.TimeoutConfig;
+import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
 
@@ -32,6 +35,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-03-20
  * @version     v1.0
+ *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  */
 public class MTConfig extends ExecuteElement implements Cloneable
 {
@@ -41,16 +45,19 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
 
     /** 并发项的集合 */
-    private List<MTItem> mtitems;
+    private List<MTItem>                  mtitems;
     
     /** 非并发同时执行，而是一个一个的执行 */
-    private Boolean      oneByOne;
+    private Boolean                       oneByOne;
     
     /** 每并发项的间隔多少时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String       waitTime;
+    private String                        waitTime;
     
     /** 向上下文中赋值（向所有并发项的独立上下文中赋值） */
-    private String       context;
+    private String                        context;
+    
+    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
+    private PartitionMap<String ,Integer> contextPlaceholders;
     
     
     
@@ -236,13 +243,26 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 设置：向上下文中赋值（向所有并发项的独立上下文中赋值）
+     * 设置：向上下文中赋值
      * 
-     * @param i_Context 向上下文中赋值（仅向并发项的独立上下文中赋值）
+     * @param i_Context 向上下文中赋值
      */
-    public void setContext(String i_Context)
+    public synchronized void setContext(String i_Context)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.context = i_Context;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
@@ -274,7 +294,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
             
             if ( !Help.isNull(this.context) )
             {
-                String v_Context = ValueHelp.replaceByContext(this.context ,io_Context);
+                String v_Context = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,io_Context);
                 Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
                 io_Context.putAll(v_ContextMap);
                 v_ContextMap.clear();
@@ -341,7 +361,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
                     
                     if ( !Help.isNull(v_MTItemResult.getMtItem().getContext()) )
                     {
-                        String v_Context = ValueHelp.replaceByContext(v_MTItemResult.getMtItem().getContext() ,v_MTItemContext);
+                        String v_Context = ValueHelp.replaceByContext(v_MTItemResult.getMtItem().getContext() ,v_MTItemResult.getMtItem().getContextPlaceholders() ,v_MTItemContext);
                         Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,null);
                         v_MTItemContext.putAll(v_ContextMap);
                         v_ContextMap.clear();

@@ -69,7 +69,7 @@ public class SubscribeConfig extends APIConfig
     /** 订阅消息的格式。可以是数值、上下文变量、XID标识 */
     private String              format;
     
-    /** 执行定时元素时的运行时的向上下文（仅内部使用） */
+    /** 执行定时元素时的运行时的上下文（仅内部使用） */
     private Map<String ,Object> executeContext;
     
     
@@ -314,7 +314,7 @@ public class SubscribeConfig extends APIConfig
 
 
     /**
-     * 获取：执行定时元素时的运行时的向上下文（仅内部使用）
+     * 获取：执行定时元素时的运行时的上下文（仅内部使用）
      */
     public Map<String ,Object> gatExecuteContext()
     {

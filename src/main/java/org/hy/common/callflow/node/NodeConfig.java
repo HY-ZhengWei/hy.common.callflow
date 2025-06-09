@@ -10,8 +10,10 @@ import java.util.concurrent.TimeoutException;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -44,6 +46,7 @@ import org.hy.common.xml.plugins.XSQLGroup;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-11
  * @version     v1.0
+ *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  */
 public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
@@ -53,25 +56,28 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     
     
     /** 执行对象的XID */
-    protected String          callXID;
+    protected String                        callXID;
     
     /** 执行方法名称 */
-    protected String          callMethod;
+    protected String                        callMethod;
     
     /** 执行方法对象（仅内部使用） */
-    protected Method          callMethodObject;
+    protected Method                        callMethodObject;
     
     /** 是否初始化（仅内部使用） */
-    protected boolean         isInit;
+    protected boolean                       isInit;
     
     /** 执行方法的参数 */
-    protected List<NodeParam> callParams;
+    protected List<NodeParam>               callParams;
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    protected String          timeout;
+    protected String                        timeout;
     
     /** 向上下文中赋值 */
-    protected String          context;
+    protected String                        context;
+    
+    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
+    protected PartitionMap<String ,Integer> contextPlaceholders;
     
     
     
@@ -143,7 +149,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         {
             try
             {
-                String v_Context = ValueHelp.replaceByContext(this.context ,io_Context);
+                String v_Context = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,io_Context);
                 Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
                 io_Context.putAll(v_ContextMap);
                 v_ContextMap.clear();
@@ -818,9 +824,22 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
      * 
      * @param i_Context 向上下文中赋值
      */
-    public void setContext(String i_Context)
+    public synchronized void setContext(String i_Context)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.context = i_Context;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
 
 

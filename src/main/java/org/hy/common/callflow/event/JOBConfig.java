@@ -9,8 +9,10 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -20,6 +22,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
+import org.hy.common.db.DBSQL;
 import org.hy.common.thread.Job;
 import org.hy.common.thread.Jobs;
 import org.hy.common.xml.XJava;
@@ -41,6 +44,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-04-21
  * @version     v1.0
+ *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  */
 public class JOBConfig extends ExecuteElement implements Cloneable
 {
@@ -50,16 +54,16 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     
 
     /** 任务组的XID。为空时从XJava对象池中获取首个 */
-    private String              jobsXID;
+    private String                        jobsXID;
     
     /** 编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
-    private String              callFlowXID;
+    private String                        callFlowXID;
     
     /** 间隔类型。可以是数值、上下文变量、XID标识 */
-    private String              intervalType;
+    private String                        intervalType;
     
     /** 间隔长度。可以是数值、上下文变量、XID标识 */
-    private String              intervalLen;
+    private String                        intervalLen;
     
     /**
      * 允许执行的条件。
@@ -73,19 +77,22 @@ public class JOBConfig extends ExecuteElement implements Cloneable
      *    :S    表示秒
      *    :YMD  表示年月日，格式为YYYYMMDD 样式的整数类型。整数类型是为了方便比较
      */
-    private String              condition;
+    private String                        condition;
     
     /** 开始时间组。多个开始时间用分号分隔。多个开始时间对 "间隔类型:秒、分" 是无效的（只取最小时间为开始时间） */
-    private List<Date>          startTimes;
+    private List<Date>                    startTimes;
     
     /** 向上下文中赋值 */
-    private String              context;
+    private String                        context;
+    
+    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
+    private PartitionMap<String ,Integer> contextPlaceholders;
     
     /** 任务对象（仅内部使用） */
-    private Job                 job;
+    private Job                           job;
     
     /** 执行定时元素时的运行时的向上下文（仅内部使用） */
-    private Map<String ,Object> executeContext;
+    private Map<String ,Object>           executeContext;
     
     
     
@@ -344,9 +351,22 @@ public class JOBConfig extends ExecuteElement implements Cloneable
      * 
      * @param i_Context 向上下文中赋值
      */
-    public void setContext(String i_Context)
+    public synchronized void setContext(String i_Context)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.context = i_Context;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
@@ -372,7 +392,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         {
             try
             {
-                String v_ContextValue = ValueHelp.replaceByContext(this.context ,v_Context);
+                String v_ContextValue = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,v_Context);
                 Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_ContextValue ,Map.class ,null ,v_Context);
                 v_Context.putAll(v_ContextMap);
                 v_ContextMap.clear();
