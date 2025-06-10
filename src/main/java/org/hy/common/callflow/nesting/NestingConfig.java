@@ -7,8 +7,10 @@ import java.util.concurrent.TimeoutException;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -39,6 +41,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-28
  * @version     v1.0
+ *              v2.0  2025-06-10  添加：向上下文中赋值及占位符支持面向对象
  */
 public class NestingConfig extends ExecuteElement implements Cloneable
 {
@@ -48,10 +51,16 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     
 
     /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
-    private String callFlowXID;
+    private String                        callFlowXID;
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String timeout;
+    private String                        timeout;
+    
+    /** 向上下文中赋值 */
+    private String                        context;
+    
+    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
+    private PartitionMap<String ,Integer> contextPlaceholders;
     
     
     
@@ -97,6 +106,7 @@ public class NestingConfig extends ExecuteElement implements Cloneable
      * @param io_Context     上下文类型的变量信息
      * @return
      */
+    @SuppressWarnings("unchecked")
     @Override
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
@@ -111,6 +121,24 @@ public class NestingConfig extends ExecuteElement implements Cloneable
             v_NestingBegin.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID is null."));
             this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
             return v_NestingBegin;
+        }
+        
+        if ( !Help.isNull(this.context) )
+        {
+            try
+            {
+                String v_Context = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,io_Context);
+                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
+                io_Context.putAll(v_ContextMap);
+                v_ContextMap.clear();
+                v_ContextMap = null;
+            }
+            catch (Exception exce)
+            {
+                v_NestingBegin.setException(exce);
+                this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
+                return v_NestingBegin;
+            }
         }
         
         // 获取执行对象
@@ -402,6 +430,40 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 获取：向上下文中赋值
+     */
+    public String getContext()
+    {
+        return context;
+    }
+
+    
+    /**
+     * 设置：向上下文中赋值
+     * 
+     * @param i_Context 向上下文中赋值
+     */
+    public synchronized void setContext(String i_Context)
+    {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
+        this.context = i_Context;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
      * 转为Xml格式的内容
      * 
      * @author      ZhengWei(HY)
@@ -452,6 +514,10 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         if ( !Help.isNull(this.timeout) && !"0".equals(this.timeout) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
+        }
+        if ( !Help.isNull(this.context) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
         }
         if ( !Help.isNull(this.returnID) )
         {
@@ -606,6 +672,7 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         this.cloneMyOnly(v_Clone);
         v_Clone.callFlowXID = this.callFlowXID;
         v_Clone.timeout     = this.timeout;
+        v_Clone.context     = this.context;
         
         return v_Clone;
     }
@@ -637,6 +704,7 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         
         v_Clone.callFlowXID = this.callFlowXID;
         v_Clone.timeout     = this.timeout;
+        v_Clone.context     = this.context;
     }
     
     

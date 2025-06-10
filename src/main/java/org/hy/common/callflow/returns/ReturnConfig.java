@@ -57,19 +57,19 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
      * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
      * 优点：提高可移植性。
      */
-    private String                          retClass;
+    private String                        retClass;
     
     /** 返回结果的数据。可以是数值、上下文变量、XID标识 */
-    private String                          retValue;
+    private String                        retValue;
     
     /** 返回结果的数据。当为数值时，已解释完成的占位符（性能有优化，仅内部使用） */
-    protected PartitionMap<String ,Integer> retValuePlaceholders;
+    private PartitionMap<String ,Integer> retValuePlaceholders;
     
     /** 返回结果的默认值的字符形式（参数为上下文变量、XID标识时生效） */
-    private String                          retDefault;
+    private String                        retDefault;
     
     /** 返回结果默认值的实例对象(内部使用) */
-    private Object                          retDefaultObject;
+    private Object                        retDefaultObject;
     
     
     
