@@ -445,7 +445,12 @@ public class NestingConfig extends ExecuteElement implements Cloneable
      */
     public synchronized void setContext(String i_Context)
     {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_Context) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
+        }
+        
         if ( !Help.isNull(v_PlaceholdersOrg) )
         {
             this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);

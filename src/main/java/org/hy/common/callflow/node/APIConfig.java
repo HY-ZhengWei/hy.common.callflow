@@ -362,7 +362,12 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      */
     public synchronized void setParam(String i_Param)
     {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Param ,true);
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_Param) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Param ,true);
+        }
+        
         if ( !Help.isNull(v_PlaceholdersOrg) )
         {
             this.paramPlaceholders = Help.toReverse(v_PlaceholdersOrg);
@@ -397,7 +402,12 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      */
     public synchronized void setBody(String i_Body)
     {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Body ,true);
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_Body) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Body ,true);
+        }
+        
         if ( !Help.isNull(v_PlaceholdersOrg) )
         {
             this.bodyPlaceholders = Help.toReverse(v_PlaceholdersOrg);
@@ -432,7 +442,12 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      */
     public synchronized void setHead(String i_Head)
     {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Head ,true);
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_Head) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Head ,true);
+        }
+        
         if ( !Help.isNull(v_PlaceholdersOrg) )
         {
             this.headPlaceholders = Help.toReverse(v_PlaceholdersOrg);

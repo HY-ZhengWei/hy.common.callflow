@@ -220,7 +220,12 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
      */
     public synchronized void setRetValue(String i_RetValue)
     {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_RetValue ,true);
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_RetValue) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_RetValue ,true);
+        }
+        
         if ( !Help.isNull(v_PlaceholdersOrg) )
         {
             this.retValuePlaceholders = Help.toReverse(v_PlaceholdersOrg);

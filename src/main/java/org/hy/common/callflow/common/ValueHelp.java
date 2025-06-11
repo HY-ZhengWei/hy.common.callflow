@@ -388,11 +388,14 @@ public class ValueHelp
      */
     public static String replaceByContext(String i_Value ,Map<String ,Object> i_Context)
     {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Value ,true);
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_Value) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Value ,true);
+        }
+        
         if ( Help.isNull(v_PlaceholdersOrg) )
         {
-            v_PlaceholdersOrg.clear();
-            v_PlaceholdersOrg = null;
             return i_Value;
         }
         
