@@ -14,33 +14,33 @@ package org.hy.common.callflow.enums;
 public enum ElementType
 {
     
-    Node(     "NODE"      ,"xnode"      ,"执行元素"),
+    Node(      "NODE"       ,"xnode"       ,"执行元素"),
     
-    Api (     "API"       ,"xapi"       ,"接口元素"),
+    Api (      "API"        ,"xapi"        ,"接口元素"),
     
-    Publish(  "PUBLISH"   ,"xpublish"   ,"发布元素"),
+    Publish(   "PUBLISH"    ,"xpublish"    ,"发布元素"),
     
-    Subscribe("SUBSCRIBE" ,"xsubscribe" ,"订阅元素"),
+    Subscribe( "SUBSCRIBE"  ,"xsubscribe"  ,"订阅元素"),
     
-    XSQL(     "XSQL"      ,"xsql"       ,"XSQL元素"),
+    XSQL(      "XSQL"       ,"xsql"        ,"XSQL元素"),
     
-    Condition("CONDITION" ,"xcondition" ,"条件逻辑"),
+    Condition( "CONDITION"  ,"xcondition"  ,"条件逻辑"),
     
-    Wait(     "WAIT"      ,"xwait"      ,"等待元素"),
+    Wait(      "WAIT"       ,"xwait"       ,"等待元素"),
     
-    Calculate("CALCULATE" ,"xcalculate" ,"计算元素"),
+    Calculate( "CALCULATE"  ,"xcalculate"  ,"计算元素"),
     
-    For(      "FOR"       ,"xfor"       ,"For循环"),
+    For(       "FOR"        ,"xfor"        ,"For循环"),
     
-    MT(       "MT"        ,"xmt"        ,"并发元素"),
+    MT(        "MT"         ,"xmt"         ,"并发元素"),
     
-    Nesting(  "NESTING"   ,"xnesting"   ,"嵌套子编排"),
+    Nesting(   "NESTING"    ,"xnesting"    ,"嵌套子编排"),
     
-    Return(   "RETURN"    ,"xreturn"    ,"返回元素"),
+    Return(    "RETURN"     ,"xreturn"     ,"返回元素"),
     
-    Job(      "JOB"       ,"xjob"       ,"定时元素"),
+    Job(       "JOB"        ,"xjob"        ,"定时元素"),
     
-    SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
+    SelfLoop(  "SELFLOOP"   ,""            ,"自循环"),
     
     ;
     

@@ -6,7 +6,7 @@
 
     <groupId>org</groupId>
     <artifactId>hy.common.callflow</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
     <packaging>jar</packaging>
 
     <name>org.hy.common.callflow</name>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org</groupId>
             <artifactId>hy.common.base</artifactId>
-            <version>1.0.196</version>
+            <version>1.0.197</version>
             <scope>provided</scope>
         </dependency>
 

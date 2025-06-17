@@ -21,29 +21,35 @@ import org.junit.Test;
 public class JU_ValueHelp
 {
     
-    private String  name;
+    private String                        name;
     
-    private Double  age;
+    private Double                        age;
     
-    private Date    createTime = new Date("2025-06-05");
+    private Date                          createTime = new Date("2025-06-05");
     
-    private String  comment    = null;
+    private String                        comment    = null;
+    
+    private Map<String ,JU_ValueHelpUser> users;
     
     
     
     @Test
     public void test_replaceByContext()
     {
-        String              v_Text    = """
-                                        {
-                                          "name": ":User.name",
-                                          "age": :User.age,
-                                          "time": ":User.createTime",
-                                          "comment": ":User.comment",
-                                        }
-                                        """;
+        String v_Text = """
+                        {
+                          "name": ":School.name",
+                          "age": :School.age,
+                          "time": ":School.createTime",
+                          "comment": ":School.comment",
+                          "factory": ":Factory.name",
+                          "factoryFriend": ":Factory.users.$get(A).name",
+                          "factorySchool": ":Factory.users.$get({:School.users.$get(A).ref}).name",
+                        }
+                        """;
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
-        v_Context.put("User" ,new JU_ValueHelp().setName("ZhengWei").setAge(3.14));
+        v_Context.put("School"  ,new JU_ValueHelp().setName("XiBeiGuoMianErChang").setAge(3.14159));
+        v_Context.put("Factory" ,new JU_ValueHelp().setName("LPS").setAge(2.71828));
         
         System.out.println(ValueHelp.replaceByContext(v_Text ,v_Context));
     }
@@ -52,6 +58,10 @@ public class JU_ValueHelp
     
     public JU_ValueHelp()
     {
+        this.users = new HashMap<String ,JU_ValueHelpUser>();
+        this.users.put("A" ,new JU_ValueHelpUser("张三" ,18 ,"B"));
+        this.users.put("B" ,new JU_ValueHelpUser("李四" ,19 ,"C"));
+        this.users.put("C" ,new JU_ValueHelpUser("王五" ,20 ,"A"));
     }
     
     
@@ -112,6 +122,20 @@ public class JU_ValueHelp
     {
         this.comment = i_Comment;
         return this;
+    }
+
+
+    
+    public Map<String ,JU_ValueHelpUser> getUsers()
+    {
+        return users;
+    }
+
+
+    
+    public void setUsers(Map<String ,JU_ValueHelpUser> i_Users)
+    {
+        this.users = i_Users;
     }
     
 }

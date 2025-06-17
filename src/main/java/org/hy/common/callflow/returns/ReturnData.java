@@ -3,6 +3,7 @@ package org.hy.common.callflow.returns;
 import java.util.List;
 import java.util.Map;
 
+import org.hy.common.Date;
 import org.hy.common.xml.XJSON;
 
 
@@ -33,6 +34,15 @@ public class ReturnData
     
     /** 返回字符串 */
     private String              retText;
+    
+    /** 返回字符串信息 */
+    private String              retInfo;
+    
+    /** 返回字符串数据 */
+    private String              retData;
+    
+    /** 返回时间 */
+    private Date                retDate;
     
     /** 返回Map集合数据 */
     private Map<String ,Object> retMap;
@@ -140,8 +150,68 @@ public class ReturnData
     {
         this.retText = i_RetText;
     }
+    
+    
+    /**
+     * 获取：返回字符串信息
+     */
+    public String getRetInfo()
+    {
+        return retInfo;
+    }
 
     
+    /**
+     * 设置：返回字符串信息
+     * 
+     * @param i_RetInfo 返回字符串信息
+     */
+    public void setRetInfo(String i_RetInfo)
+    {
+        this.retInfo = i_RetInfo;
+    }
+
+    
+    /**
+     * 获取：返回字符串数据
+     */
+    public String getRetData()
+    {
+        return retData;
+    }
+
+    
+    /**
+     * 设置：返回字符串数据
+     * 
+     * @param i_RetData 返回字符串数据
+     */
+    public void setRetData(String i_RetData)
+    {
+        this.retData = i_RetData;
+    }
+
+
+    /**
+     * 获取：返回时间
+     */
+    public Date getRetDate()
+    {
+        return retDate;
+    }
+
+    
+    /**
+     * 设置：返回时间
+     * 
+     * @param i_RetDate 返回时间
+     */
+    public void setRetDate(Date i_RetDate)
+    {
+        this.retDate = i_RetDate;
+    }
+
+
     /**
      * 获取：返回Map集合数据
      */

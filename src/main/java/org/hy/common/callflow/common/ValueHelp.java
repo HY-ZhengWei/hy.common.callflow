@@ -381,6 +381,9 @@ public class ValueHelp
      * @author      ZhengWei(HY)
      * @createDate  2025-03-25
      * @version     v1.0
+     *              v2.0  2025-06-17  添加：支持多层组的占位符。如内层占位符当作外层占位符的参数
+     *                                     举例：Factory.users.$get({:School.users.$get(A).ref}).name
+     *                                     详见：JU_ValueHelp
      *
      * @param i_Value    文本字符
      * @param i_Context  上下文内容
@@ -404,7 +407,16 @@ public class ValueHelp
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         for (String v_Placeholder : v_Placeholders.keySet())
         {
-            v_Context.put(DBSQL.$Placeholder + v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder));
+            // 格式为  {:占位符}
+            if ( v_Placeholder.startsWith("{") )
+            {
+                v_Context.put(v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder.substring(2 ,v_Placeholder.length() - 1)));
+            }
+            // 格式为  :占位符
+            else
+            {
+                v_Context.put(DBSQL.$Placeholder + v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder));
+            }
         }
         
         String v_NewValue = StringHelp.replaceAll(i_Value ,v_Context);
@@ -414,6 +426,18 @@ public class ValueHelp
         v_Placeholders = null;
         v_PlaceholdersOrg.clear();
         v_PlaceholdersOrg = null;
+        
+        String v_OldValue = "";
+        do 
+        {
+            v_OldValue = v_NewValue;
+            if ( v_NewValue.indexOf(":") >= 0 )
+            {
+                // 逐层级解析
+                v_NewValue = replaceByContext(v_NewValue ,i_Context);
+            }
+        }
+        while ( !v_OldValue.equals(v_OldValue) );
         return v_NewValue;
     }
     
@@ -425,6 +449,9 @@ public class ValueHelp
      * @author      ZhengWei(HY)
      * @createDate  2025-06-05
      * @version     v1.0
+     *              v2.0  2025-06-17  添加：支持多层组的占位符。如内层占位符当作外层占位符的参数
+     *                                     举例：Factory.users.$get({:School.users.$get(A).ref}).name
+     *                                     详见：JU_ValueHelp
      *
      * @param i_Value         文本字符
      * @param i_Placeholders  占位符
@@ -438,12 +465,34 @@ public class ValueHelp
             Map<String ,Object> v_Context = new HashMap<String ,Object>();
             for (String v_Placeholder : i_Placeholders.keySet())
             {
-                v_Context.put(DBSQL.$Placeholder + v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder));
+                // 格式为  {:占位符}
+                if ( v_Placeholder.startsWith("{") )
+                {
+                    v_Context.put(v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder.substring(2 ,v_Placeholder.length() - 1)));
+                }
+                // 格式为  :占位符
+                else
+                {
+                    v_Context.put(DBSQL.$Placeholder + v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder));
+                }
             }
             
             String v_NewValue = StringHelp.replaceAll(i_Value ,v_Context);
             v_Context.clear();
             v_Context = null;
+            
+            String v_OldValue = "";
+            do 
+            {
+                v_OldValue = v_NewValue;
+                if ( v_NewValue.indexOf(":") >= 0 )
+                {
+                    // 逐层级解析
+                    v_NewValue = replaceByContext(v_NewValue ,i_Context);
+                }
+            }
+            while ( !v_OldValue.equals(v_OldValue) );
+            
             return v_NewValue;
         }
         else
