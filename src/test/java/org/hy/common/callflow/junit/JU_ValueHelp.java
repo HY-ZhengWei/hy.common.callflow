@@ -43,13 +43,22 @@ public class JU_ValueHelp
                           "time": ":School.createTime",
                           "comment": ":School.comment",
                           "factory": ":Factory.name",
-                          "factoryFriend": ":Factory.users.$get(A).name",
+                          "factoryFriend1": ":Factory.users.$get(A).name",
+                          "factoryFriend2": ":Factory.users.A.name",
                           "factorySchool": ":Factory.users.$get({:School.users.$get(A).ref}).name",
+                          "typeX": ":Types.X"
                         }
                         """;
+        
+        Map<String ,String> v_Types = new HashMap<String ,String>();
+        v_Types.put("X" ,"9");
+        v_Types.put("Y" ,"8");
+        v_Types.put("Z" ,"7");
+        
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         v_Context.put("School"  ,new JU_ValueHelp().setName("XiBeiGuoMianErChang").setAge(3.14159));
         v_Context.put("Factory" ,new JU_ValueHelp().setName("LPS").setAge(2.71828));
+        v_Context.put("Types"   ,v_Types);
         
         System.out.println(ValueHelp.replaceByContext(v_Text ,v_Context));
     }

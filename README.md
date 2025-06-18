@@ -37,6 +37,7 @@
     * [定时元素的举例](#定时元素的举例)
     * [发布元素的举例](#发布元素的举例)
     * [订阅元素的举例](#订阅元素的举例)
+    * [占位符的举例](#占位符的举例)
 
 
 
@@ -3017,6 +3018,101 @@ SubscribeConfig     v_Subscribe = (SubscribeConfig) XJava.getObject("XSubscribe_
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context = new HashMap<String ,Object>();
 v_Context.put("UserID" ,"ZhengWei");  // 订阅者
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Subscribe ,v_Context);
+```
+
+
+
+
+
+占位符的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow024) [返回目录](#目录)
+
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+        
+        <xreturn id="XNode_CF024_1_1">
+            <comment>内层占位符做外层占位符的参数</comment>
+            <retValue>
+            {
+                "retInt": 200,
+                "retText": "任务数值：:TaskCode，任务描述：:TaskTypes.{:TaskCode}"
+            }
+            </retValue>
+        </xreturn>
+        
+        
+        <xnode id="XNode_CF024_1">
+            <comment>显示上下文内容</comment>
+            <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
+            <callMethod>method_Info</callMethod>            <!-- 定义执行方法 -->
+            <callParam>
+                <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+            <context>
+                {
+                    "TaskCode": 6,
+                    "TaskTypes": {
+                        "0": "无任务",
+                        "1": "请求",
+                        "2": "接收中",
+                        "4": "完成",
+                        "6": "等待"
+                    }
+                }
+            </context>
+            <route>
+                <succeed>
+                    <next ref="XNode_CF024_1_1" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NodeConfig          v_NodeConfig = (NodeConfig) XJava.getObject("XNode_CF024_1");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_Subscribe ,v_Context);
