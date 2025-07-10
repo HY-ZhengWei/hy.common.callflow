@@ -104,6 +104,11 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         
         try
         {
+            if ( !this.handleContext(io_Context ,v_Result) )
+            {
+                return v_Result;
+            }
+            
             boolean v_ExceRet = this.allow(io_Context);
             
             if ( !Help.isNull(this.returnID) )

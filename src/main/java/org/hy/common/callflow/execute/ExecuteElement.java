@@ -10,7 +10,9 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.KVKLinkMap;
+import org.hy.common.PartitionMap;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.TotalNano;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.TreeIDHelp;
@@ -19,6 +21,7 @@ import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.callflow.route.RouteItem;
+import org.hy.common.db.DBSQL;
 
 
 
@@ -41,100 +44,106 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     
     
     /** 关键属性有改动 */
-    private   boolean                    keyChange;
+    private   boolean                       keyChange;
     
     /** 主键标识 */
-    protected String                     id;
+    protected String                        id;
                                          
     /** 全局惟一标识ID */                
-    protected String                     xid;
+    protected String                        xid;
     
     /** 层级树ID。Map.key为本级树ID，Map.value为上级树ID */
-    protected KVKLinkMap<String ,String> treeIDs;
+    protected KVKLinkMap<String ,String>    treeIDs;
     
     /** 树层级。Map.key为本级树ID，Map.value为层次 */
-    protected Map<String ,Integer>       treeLevels;
+    protected Map<String ,Integer>          treeLevels;
     
     /** 树中同层同父的序号编号。Map.key为本级树ID，Map.value为序号编号 */
-    protected Map<String ,Integer>       treeNos;
+    protected Map<String ,Integer>          treeNos;
     
     /** 注释。可用于日志的输出等帮助性的信息 */
-    protected String                     comment;
+    protected String                        comment;
                                          
     /** 整体样式名称 */                  
-    protected String                     styleName;
+    protected String                        styleName;
                                          
     /** 位置x坐标值 */                   
-    protected Double                     x;
+    protected Double                        x;
                                          
     /** 位置y坐标值 */                   
-    protected Double                     y;
+    protected Double                        y;
                                          
     /** 位置z坐标值 */                   
-    protected Double                     z;
+    protected Double                        z;
                                          
     /** 图标高度 */                      
-    protected Double                     height;
+    protected Double                        height;
                                          
     /** 图标宽度 */                      
-    protected Double                     width;
+    protected Double                        width;
                                          
     /** 图标路径 */                      
-    protected String                     iconURL;
+    protected String                        iconURL;
                                          
     /** 透明度 */                        
-    protected Double                     opacity;
+    protected Double                        opacity;
                                          
     /** 背景色 */                        
-    protected String                     backgroudColor;
+    protected String                        backgroudColor;
                                          
     /** 边框线样式 */                    
-    protected String                     lineStyle;
+    protected String                        lineStyle;
                                          
     /** 边框线颜色 */                    
-    protected String                     lineColor;
+    protected String                        lineColor;
                                          
     /** 边框线粗细 */                    
-    protected Double                     lineSize;
+    protected Double                        lineSize;
                                          
     /** 文字颜色 */                      
-    protected String                     fontColor;
+    protected String                        fontColor;
                                          
     /** 文字名称 */                      
-    protected String                     fontFamily;
+    protected String                        fontFamily;
                                          
     /** 文字粗体 */                      
-    protected String                     fontWeight;
+    protected String                        fontWeight;
                                          
     /** 文字大小 */                      
-    protected Double                     fontSize;
+    protected Double                        fontSize;
                                          
     /** 文字对齐方式 */                  
-    protected String                     fontAlign;
+    protected String                        fontAlign;
                                          
     /** 创建人编号 */                    
-    protected String                     createUserID;
+    protected String                        createUserID;
                                          
     /** 修改者编号 */                    
-    protected String                     updateUserID;
+    protected String                        updateUserID;
                                          
     /** 创建时间 */                      
-    protected Date                       createTime;
+    protected Date                          createTime;
                                          
     /** 最后修改时间 */                  
-    protected Date                       updateTime;
+    protected Date                          updateTime;
                                          
     /** 为返回值定义的变量ID */          
-    protected String                     returnID;
+    protected String                        returnID;
     
     /** 执行状态定义的变量ID */
-    protected String                     statusID;
+    protected String                        statusID;
                                          
     /** 执行链：双向链表：前几个 */             
-    protected List<IExecute>             previous;
+    protected List<IExecute>                previous;
                                          
     /** 执行链：双向链表：其后多个路由 */
-    protected RouteConfig                route;
+    protected RouteConfig                   route;
+    
+    /** 向上下文中赋值 */
+    protected String                        context;
+    
+    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
+    protected PartitionMap<String ,Integer> contextPlaceholders;
     
     
     
@@ -269,6 +278,83 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     public String getXJavaID()
     {
         return this.xid;
+    }
+    
+    
+    
+    /**
+     * 获取：向上下文中赋值
+     */
+    public synchronized String getContext()
+    {
+        return context;
+    }
+
+    
+    
+    /**
+     * 设置：向上下文中赋值
+     * 
+     * @param i_Context 向上下文中赋值
+     */
+    public synchronized void setContext(String i_Context)
+    {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_Context) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
+        }
+        
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
+        this.context = i_Context;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 处理与解释自定义的上下文内容
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-07-09
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @param io_Result   编排结果
+     * @return            是否处理与解释成功
+     */
+    @SuppressWarnings("unchecked")
+    protected boolean handleContext(Map<String ,Object> io_Context ,ExecuteResult io_Result)
+    {
+        if ( !Help.isNull(this.context) )
+        {
+            try
+            {
+                String v_Context = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,io_Context);
+                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
+                io_Context.putAll(v_ContextMap);
+                v_ContextMap.clear();
+                v_ContextMap = null;
+            }
+            catch (Exception exce)
+            {
+                io_Result.setException(exce);
+                this.refreshStatus(io_Context ,io_Result.getStatus());
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     

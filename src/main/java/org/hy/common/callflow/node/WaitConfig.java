@@ -225,6 +225,11 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         
         try
         {
+            if ( !this.handleContext(io_Context ,v_Result) )
+            {
+                return v_Result;
+            }
+            
             Long v_WaitTime = null;
             if ( Help.isNumber(this.waitTime) )
             {

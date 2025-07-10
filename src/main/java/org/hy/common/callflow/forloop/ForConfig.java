@@ -287,6 +287,11 @@ public class ForConfig extends ExecuteElement implements Cloneable
         
         try
         {
+            if ( !this.handleContext(io_Context ,v_Result) )
+            {
+                return v_Result;
+            }
+            
             String  v_WorkID     = CallFlow.getWorkID(io_Context);
             String  v_Prefix     = v_WorkID + "@" + this.getXid() + "@For@";
             String  v_IndexID    = v_Prefix + "index";

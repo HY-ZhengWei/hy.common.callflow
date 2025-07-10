@@ -7,10 +7,8 @@ import java.util.concurrent.TimeoutException;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
-import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
-import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -51,16 +49,10 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     
 
     /** 子编排的XID（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等的XID）。采用弱关联的方式 */
-    private String                        callFlowXID;
+    private String callFlowXID;
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
-    private String                        timeout;
-    
-    /** 向上下文中赋值 */
-    private String                        context;
-    
-    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
-    private PartitionMap<String ,Integer> contextPlaceholders;
+    private String timeout;
     
     
     
@@ -106,7 +98,6 @@ public class NestingConfig extends ExecuteElement implements Cloneable
      * @param io_Context     上下文类型的变量信息
      * @return
      */
-    @SuppressWarnings("unchecked")
     @Override
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
@@ -123,22 +114,9 @@ public class NestingConfig extends ExecuteElement implements Cloneable
             return v_NestingBegin;
         }
         
-        if ( !Help.isNull(this.context) )
+        if ( !this.handleContext(io_Context ,v_NestingBegin) )
         {
-            try
-            {
-                String v_Context = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,io_Context);
-                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
-                io_Context.putAll(v_ContextMap);
-                v_ContextMap.clear();
-                v_ContextMap = null;
-            }
-            catch (Exception exce)
-            {
-                v_NestingBegin.setException(exce);
-                this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
-                return v_NestingBegin;
-            }
+            return v_NestingBegin;
         }
         
         // 获取执行对象
@@ -425,45 +403,6 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         {
             this.timeout = ValueHelp.standardRefID(i_Timeout);
         }
-    }
-    
-    
-    
-    /**
-     * 获取：向上下文中赋值
-     */
-    public String getContext()
-    {
-        return context;
-    }
-
-    
-    /**
-     * 设置：向上下文中赋值
-     * 
-     * @param i_Context 向上下文中赋值
-     */
-    public synchronized void setContext(String i_Context)
-    {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
-        if ( !Help.isNull(i_Context) )
-        {
-            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
-        }
-        
-        if ( !Help.isNull(v_PlaceholdersOrg) )
-        {
-            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
-            v_PlaceholdersOrg.clear();
-            v_PlaceholdersOrg = null;
-        }
-        else
-        {
-            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
-        }
-        this.context = i_Context;
-        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
-        this.keyChange();
     }
     
     

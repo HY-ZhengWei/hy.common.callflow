@@ -10,10 +10,8 @@ import java.util.concurrent.TimeoutException;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
-import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
-import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -72,12 +70,6 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
     protected String                        timeout;
-    
-    /** 向上下文中赋值 */
-    protected String                        context;
-    
-    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
-    protected PartitionMap<String ,Integer> contextPlaceholders;
     
     
     
@@ -145,22 +137,9 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             return v_Result;
         }
         
-        if ( !Help.isNull(this.context) )
+        if ( !handleContext(io_Context ,v_Result) )
         {
-            try
-            {
-                String v_Context = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,io_Context);
-                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
-                io_Context.putAll(v_ContextMap);
-                v_ContextMap.clear();
-                v_ContextMap = null;
-            }
-            catch (Exception exce)
-            {
-                v_Result.setException(exce);
-                this.refreshStatus(io_Context ,v_Result.getStatus());
-                return v_Result;
-            }
+            return v_Result;
         }
         
         // 获取执行对象
@@ -810,44 +789,6 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     }
     
     
-    /**
-     * 获取：向上下文中赋值
-     */
-    public String getContext()
-    {
-        return context;
-    }
-
-    
-    /**
-     * 设置：向上下文中赋值
-     * 
-     * @param i_Context 向上下文中赋值
-     */
-    public synchronized void setContext(String i_Context)
-    {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
-        if ( !Help.isNull(i_Context) )
-        {
-            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
-        }
-        
-        if ( !Help.isNull(v_PlaceholdersOrg) )
-        {
-            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
-            v_PlaceholdersOrg.clear();
-            v_PlaceholdersOrg = null;
-        }
-        else
-        {
-            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
-        }
-        this.context = i_Context;
-        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
-        this.keyChange();
-    }
-
-
     /**
      * 获取XML内容中的名称，如<名称>内容</名称>
      * 

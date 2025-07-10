@@ -8,10 +8,8 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
-import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
-import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -21,7 +19,6 @@ import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.timeout.TimeoutConfig;
-import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
 
@@ -52,12 +49,6 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
     /** 每并发项的间隔多少时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
     private String                        waitTime;
-    
-    /** 向上下文中赋值（向所有并发项的独立上下文中赋值） */
-    private String                        context;
-    
-    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
-    private PartitionMap<String ,Integer> contextPlaceholders;
     
     
     
@@ -233,46 +224,6 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：向上下文中赋值（向所有并发项的独立上下文中赋值）
-     */
-    public String getContext()
-    {
-        return context;
-    }
-
-    
-    
-    /**
-     * 设置：向上下文中赋值
-     * 
-     * @param i_Context 向上下文中赋值
-     */
-    public synchronized void setContext(String i_Context)
-    {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
-        if ( !Help.isNull(i_Context) )
-        {
-            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
-        }
-        
-        if ( !Help.isNull(v_PlaceholdersOrg) )
-        {
-            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
-            v_PlaceholdersOrg.clear();
-            v_PlaceholdersOrg = null;
-        }
-        else
-        {
-            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
-        }
-        this.context = i_Context;
-        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
-        this.keyChange();
-    }
-    
-    
-
-    /**
      * 执行
      * 
      * @author      ZhengWei(HY)
@@ -297,13 +248,9 @@ public class MTConfig extends ExecuteElement implements Cloneable
             boolean               v_IsOrderBy     = false;
             Exception             v_Exception     = null;
             
-            if ( !Help.isNull(this.context) )
+            if ( !this.handleContext(io_Context ,v_Result) )
             {
-                String v_Context = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,io_Context);
-                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
-                io_Context.putAll(v_ContextMap);
-                v_ContextMap.clear();
-                v_ContextMap = null;
+                return v_Result;
             }
             
             // 先判定允许执行的并发项

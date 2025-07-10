@@ -9,10 +9,8 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
-import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
-import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -22,7 +20,6 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteItem;
-import org.hy.common.db.DBSQL;
 import org.hy.common.thread.Job;
 import org.hy.common.thread.Jobs;
 import org.hy.common.xml.XJava;
@@ -81,12 +78,6 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     
     /** 开始时间组。多个开始时间用分号分隔。多个开始时间对 "间隔类型:秒、分" 是无效的（只取最小时间为开始时间） */
     private List<Date>                    startTimes;
-    
-    /** 向上下文中赋值 */
-    private String                        context;
-    
-    /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
-    private PartitionMap<String ,Integer> contextPlaceholders;
     
     /** 任务对象（仅内部使用） */
     private Job                           job;
@@ -338,44 +329,6 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：向上下文中赋值
-     */
-    public String getContext()
-    {
-        return context;
-    }
-
-    
-    /**
-     * 设置：向上下文中赋值
-     * 
-     * @param i_Context 向上下文中赋值
-     */
-    public synchronized void setContext(String i_Context)
-    {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
-        if ( !Help.isNull(i_Context) )
-        {
-            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Context ,true);
-        }
-        
-        if ( !Help.isNull(v_PlaceholdersOrg) )
-        {
-            this.contextPlaceholders = Help.toReverse(v_PlaceholdersOrg);
-            v_PlaceholdersOrg.clear();
-            v_PlaceholdersOrg = null;
-        }
-        else
-        {
-            this.contextPlaceholders = new TablePartitionLink<String ,Integer>();
-        }
-        this.context = i_Context;
-        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
-        this.keyChange();
-    }
-    
-    
-    /**
      * 定时执行编排（定时元素的执行核心）
      * 
      * @author      ZhengWei(HY)
@@ -470,6 +423,11 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         
         try
         {
+            if ( !this.handleContext(io_Context ,v_Result) )
+            {
+                return v_Result;
+            }
+            
             if ( Help.isNull(this.xid) )
             {
                 v_Result.setException(new NullPointerException("JOBConfig[" + Help.NVL(this.comment) + "]'s XID is null."));

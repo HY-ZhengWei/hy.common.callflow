@@ -11,7 +11,7 @@ import org.hy.common.callflow.timeout.TimeoutConfig;
 
 
 /**
- * 并发元素
+ * 并发元素的执行结果
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-03-21

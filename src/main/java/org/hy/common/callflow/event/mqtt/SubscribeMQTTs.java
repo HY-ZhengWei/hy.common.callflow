@@ -2,6 +2,17 @@ package org.hy.common.callflow.event.mqtt;
 
 import java.util.List;
 
+
+
+
+
+/**
+ * MQTT订阅消息的配置集合
+ *
+ * @author      ZhengWei(HY)
+ * @createDate  2025-05-06
+ * @version     v1.0
+ */
 public class SubscribeMQTTs
 {
     

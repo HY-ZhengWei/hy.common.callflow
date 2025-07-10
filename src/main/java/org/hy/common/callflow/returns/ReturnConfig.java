@@ -310,6 +310,11 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         try
         {
+            if ( !this.handleContext(io_Context ,v_Result) )
+            {
+                return v_Result;
+            }
+            
             String v_RetValue = null;
             if ( !Help.isNull(this.retValue) )
             {

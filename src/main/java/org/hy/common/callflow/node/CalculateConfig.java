@@ -216,6 +216,11 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
         
         try
         {
+            if ( !this.handleContext(io_Context ,v_Result) )
+            {
+                return v_Result;
+            }
+            
             if ( Help.isNull(this.calc) )
             {
                 v_Result.setException(new NullPointerException("Calculate[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s calc is null"));
