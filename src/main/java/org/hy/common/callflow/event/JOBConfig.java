@@ -654,10 +654,6 @@ public class JOBConfig extends ExecuteElement implements Cloneable
             }
         }
         
-        if ( !Help.isNull(this.context) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
-        }
         if ( !Help.isNull(this.returnID) )
         {
             v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID" ,this.returnID));
@@ -860,7 +856,6 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         v_Clone.intervalType = this.intervalType;
         v_Clone.intervalLen  = this.intervalLen;
         v_Clone.condition    = this.condition;
-        v_Clone.context      = this.context;
         
         if ( !Help.isNull(this.startTimes) )
         {
@@ -905,7 +900,6 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         v_Clone.intervalType = this.intervalType;
         v_Clone.intervalLen  = this.intervalLen;
         v_Clone.condition    = this.condition;
-        v_Clone.context      = this.context;
         
         if ( !Help.isNull(this.startTimes) )
         {

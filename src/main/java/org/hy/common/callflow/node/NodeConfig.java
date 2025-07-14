@@ -896,10 +896,6 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         {
             v_Xml.append(v_NewSpace).append(IToXml.toValue("timeout" ,this.timeout));
         }
-        if ( !Help.isNull(this.context) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
-        }
         if ( !Help.isNull(this.returnID) )
         {
             v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID" ,this.returnID));
@@ -1115,7 +1111,6 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         v_Clone.callXID    = this.callXID;
         v_Clone.callMethod = this.callMethod; 
         v_Clone.timeout    = this.timeout;
-        v_Clone.context    = this.context;
         
         if ( !Help.isNull(this.callParams) )
         {
@@ -1160,7 +1155,6 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         v_Clone.callXID    = this.callXID;
         v_Clone.callMethod = this.callMethod; 
         v_Clone.timeout    = this.timeout;
-        v_Clone.context    = this.context;
         
         if ( !Help.isNull(this.callParams) )
         {

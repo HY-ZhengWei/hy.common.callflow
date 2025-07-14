@@ -543,10 +543,6 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID));
             }
         }
-        if ( !Help.isNull(this.context) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
-        }
         if ( !Help.isNull(this.returnID) )
         {
             v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID" ,this.returnID));
@@ -712,7 +708,6 @@ public class MTConfig extends ExecuteElement implements Cloneable
         
         v_Clone.oneByOne = this.oneByOne;
         v_Clone.waitTime = this.waitTime;
-        v_Clone.context  = this.context;
         
         return v_Clone;
     }
@@ -754,7 +749,6 @@ public class MTConfig extends ExecuteElement implements Cloneable
         
         v_Clone.oneByOne = this.oneByOne;
         v_Clone.waitTime = this.waitTime;
-        v_Clone.context  = this.context;
     }
     
     

@@ -1206,9 +1206,10 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      */
     public String toXml(int i_Level)
     {
-        StringBuilder v_Xml    = new StringBuilder();
-        String        v_Level1 = "    ";
-        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        StringBuilder v_Xml      = new StringBuilder();
+        String        v_Level1   = "    ";
+        String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( !Help.isNull(this.id) )
         {
@@ -1309,6 +1310,10 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
         }
+        if ( !Help.isNull(this.context) )
+        {
+            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
+        }
         
         return v_Xml.toString();
     }
@@ -1356,6 +1361,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         v_Clone.updateTime      = this.updateTime == null ? null : new Date(this.updateTime.getTime());
         v_Clone.returnID        = this.returnID;
         v_Clone.statusID        = this.statusID;
+        v_Clone.context         = this.context;
     }
     
     

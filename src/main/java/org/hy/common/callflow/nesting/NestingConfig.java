@@ -459,10 +459,6 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("timeout" ,this.timeout));
         }
-        if ( !Help.isNull(this.context) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context));
-        }
         if ( !Help.isNull(this.returnID) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("returnID" ,this.returnID));
@@ -616,7 +612,6 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         this.cloneMyOnly(v_Clone);
         v_Clone.callFlowXID = this.callFlowXID;
         v_Clone.timeout     = this.timeout;
-        v_Clone.context     = this.context;
         
         return v_Clone;
     }
@@ -648,7 +643,6 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         
         v_Clone.callFlowXID = this.callFlowXID;
         v_Clone.timeout     = this.timeout;
-        v_Clone.context     = this.context;
     }
     
     
