@@ -69,7 +69,8 @@
                 {
                     "deviceXID": ":Rets.myself.valueString",
                     "cflowXID": ":Rets.valueString",
-                    "userID": "ZhengWei"
+                    "userID": "ZhengWei",
+                    "qq": :qq
                 }
             </body>
             <succeedFlag>200</succeedFlag>

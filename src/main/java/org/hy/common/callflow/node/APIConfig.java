@@ -16,6 +16,7 @@ import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XHttp;
 import org.hy.common.xml.XJSON;
 import org.hy.common.xml.XJava;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -31,6 +32,10 @@ import org.hy.common.xml.XJava;
  */
 public class APIConfig extends NodeConfig implements NodeConfigBase
 {
+    
+    private static final Logger $Logger = new Logger(APIConfig.class);
+    
+    
 
     /** 接口请求地址。格式为 http://IP:Port/服务名/xx/yy */
     protected String                        url;
@@ -69,6 +74,9 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     
     /** 接口请求对象(内部使用) */
     private   XHttp                         callObject;
+    
+    /** 成功情况下是否显示请求&响应日志。默认值：显示 */
+    protected Boolean                       showLog;
     
     
     
@@ -128,6 +136,8 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         v_CallParam.setValueClass(Map.class.getName());
         v_CallParam.setValue("{}");
         this.setCallParam(v_CallParam);
+        
+        this.showLog = true;
     }
     
     
@@ -578,6 +588,28 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     }
 
 
+    
+    /**
+     * 获取：成功情况下是否显示请求&响应日志。默认值：显示
+     */
+    public Boolean getShowLog()
+    {
+        return showLog;
+    }
+
+
+    
+    /**
+     * 设置：成功情况下是否显示请求&响应日志。默认值：显示
+     * 
+     * @param i_ShowLog 成功情况下是否显示请求&响应日志。默认值：显示
+     */
+    public void setShowLog(Boolean i_ShowLog)
+    {
+        this.showLog = i_ShowLog;
+    }
+
+
 
     /**
      * 元素的类型
@@ -629,17 +661,41 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      */
     public Object [] generateParams(Map<String ,Object> io_Context ,Object [] io_Params)
     {
+        StringBuilder v_Log = new StringBuilder();
+        
+        if ( this.showLog )
+        {
+            v_Log.append(this.getXid() + " 请求报文:");
+            v_Log.append(io_Params[0]);
+        }
+        
         if ( !Help.isNull(this.param) )
         {
             io_Params[0] = ValueHelp.replaceByContext(this.param ,this.paramPlaceholders ,io_Context);
+            
+            if ( this.showLog )
+            {
+                v_Log.append("\n").append(io_Params[0]);
+            }
         }
         if ( !Help.isNull(this.body) )
         {
             io_Params[1] = ValueHelp.replaceByContext(this.body ,this.bodyPlaceholders ,io_Context);
+            
+            if ( this.showLog )
+            {
+                v_Log.append("\nBODY：").append(io_Params[1]);
+            }
         }
         if ( !Help.isNull(this.head) )
         {
             String v_Head = ValueHelp.replaceByContext(this.head ,this.headPlaceholders ,io_Context);
+            
+            if ( this.showLog )
+            {
+                v_Log.append("\nHEAD：").append(v_Head);
+            }
+            
             try
             {
                 io_Params[2] = ValueHelp.getValue(v_Head ,Map.class ,null ,io_Context);
@@ -679,6 +735,12 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         if ( v_XHttpRet.get() )
         {
             Object v_ReturnValue = v_XHttpRet.getParamStr();
+            
+            if ( this.showLog )
+            {
+                $Logger.info(this.getXid() + " 响应报文:\n" + v_ReturnValue);
+            }
+            
             if ( !Help.isNull(this.returnClass) )
             {
                 Class<?> v_ReturnClass = this.gatReturnClass();
