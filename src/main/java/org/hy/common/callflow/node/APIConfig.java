@@ -705,6 +705,12 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
                 throw new RuntimeException(exce);
             }
         }
+        
+        if ( this.showLog )
+        {
+            $Logger.info(v_Log.toString());
+        }
+        
         return io_Params;
     }
     
