@@ -869,6 +869,10 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("succeedFlag" ,this.succeedFlag));
         }
+        if ( !Help.isNull(this.showLog) && !this.showLog )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("showLog" ,this.showLog));
+        }
     }
     
     
@@ -961,6 +965,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         v_Clone.setReturnClass(   this.getReturnClass());
         v_Clone.setReturnClassKey(this.getReturnClassKey());
         v_Clone.setSucceedFlag(   this.getSucceedFlag());
+        v_Clone.setShowLog(       this.getShowLog());
         
         return v_Clone;
     }
@@ -1006,6 +1011,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         v_Clone.setReturnClass(   this.getReturnClass());
         v_Clone.setReturnClassKey(this.getReturnClassKey());
         v_Clone.setSucceedFlag(   this.getSucceedFlag());
+        v_Clone.setShowLog(       this.getShowLog());
     }
     
     
