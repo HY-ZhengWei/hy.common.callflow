@@ -22,6 +22,8 @@ public enum ElementType
     
     Subscribe( "SUBSCRIBE"  ,"xsubscribe"  ,"订阅元素"),
     
+    WSPush(    "WSPUSH"     ,"xwspush"     ,"点推元素"),
+    
     XSQL(      "XSQL"       ,"xsql"        ,"XSQL元素"),
     
     Condition( "CONDITION"  ,"xcondition"  ,"条件逻辑"),

@@ -62,6 +62,7 @@ public class JU_Import
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     

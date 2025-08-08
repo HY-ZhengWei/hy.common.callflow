@@ -15,6 +15,7 @@
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
@@ -23,13 +24,13 @@
     <!-- CFlow编排引擎配置 -->
     <xconfig>
     
-        <xnode id="XWait_CF018_B_1_1">
+        <xnode id="XWait_CF025_B_1_1">
             <comment>显示等待秒数</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_ShowWaitTime</callMethod>    <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
-                <value>:XWait_CF018_B_1.waitTime</value>    <!-- 定义入参变量名称 -->
+                <value>:XWait_CF025_B_1.waitTime</value>    <!-- 定义入参变量名称 -->
             </callParam>
             <callParam>
                 <valueClass>java.lang.String</valueClass>
@@ -38,25 +39,25 @@
         </xnode>
         
     
-        <xwait id="XWait_CF018_B_1">
+        <xwait id="XWait_CF025_B_1">
             <comment>等待5秒</comment>
             <waitTime>5000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
             <route>
                 <if>
-                    <next ref="XWait_CF018_B_1_1" />
+                    <next ref="XWait_CF025_B_1_1" />
                     <comment>等待5秒后执行下一步</comment>
                 </if>
             </route>
         </xwait>
         
         
-        <xnode id="XWait_CF018_A_1_1">
+        <xnode id="XWait_CF025_A_1_1">
             <comment>显示等待秒数</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_ShowWaitTime</callMethod>    <!-- 定义执行方法 -->
             <callParam>
                 <valueClass>java.lang.Long</valueClass>     <!-- 定义入参类型 -->
-                <value>:XWait_CF018_A_1.waitTime</value>    <!-- 定义入参变量名称 -->
+                <value>:XWait_CF025_A_1.waitTime</value>    <!-- 定义入参变量名称 -->
             </callParam>
             <callParam>
                 <valueClass>java.lang.String</valueClass>
@@ -65,20 +66,45 @@
         </xnode>
         
         
-        <xwait id="XWait_CF018_A_1">
+        <xwait id="XWait_CF025_A_1">
             <comment>等待3秒</comment>
             <waitTime>3000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
             <route>
                 <if>
-                    <next ref="XWait_CF018_A_1_1" />
+                    <next ref="XWait_CF025_A_1_1" />
                     <comment>等待3秒后执行下一步</comment>
                 </if>
             </route>
         </xwait>
         
         
-        <xreturn id="XReturn_CF018_1_1_1">
-            <comment>对外返回并发结果</comment>
+        <xmt id="XMT_CF025_二层并发开始">
+            <comment>并发两路（二层）</comment>
+            <item>
+                <comment>并发项：模拟等待3秒</comment>
+                <callFlowXID>:XWait_CF025_A_1</callFlowXID>
+                <context>
+                {
+                    "typeName": ":typeNameA"
+                }
+                </context>
+                <returnID>AReturn</returnID>
+            </item>
+            <item>
+                <comment>并发项：模拟等待5秒</comment>
+                <callFlowXID>:XWait_CF025_B_1</callFlowXID>
+                <context>
+                {
+                    "typeName": ":typeNameB"
+                }
+                </context>
+                <returnID>BReturn</returnID>
+            </item>
+        </xmt>
+        
+        
+        <xreturn id="XNode_CF025_完成">
+            <comment>并发整体完成，对外返回并发结果</comment>
             <retClass>java.util.HashMap</retClass>          <!-- 定义返回值的类型 -->
             <retValue>
             {
@@ -89,44 +115,34 @@
         </xreturn>
         
         
-        <xnode id="XNode_CF018_1_1">
+        <xnode id="XNode_CF025_显示时间">
             <comment>并发整体完成</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Finish</callMethod>          <!-- 定义执行方法 -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XReturn_CF018_1_1_1" />
+                    <next ref="XNode_CF025_完成" />
                     <comment>成功时</comment>
                 </succeed>
             </route>
         </xnode>
         
         
-        <xmt id="XMT_CF018_1">
-            <comment>并发两种</comment>
+        <xmt id="XMT_CF025_开始">
+            <comment>并发两路（顶层）</comment>
             <item>
-                <comment>并发项：模拟等待3秒</comment>
-                <callFlowXID>:XWait_CF018_A_1</callFlowXID>
-                <context>
-                {
-                    "typeName": ":typeNameA"
-                }
-                </context>
+                <comment>并发项：并发嵌套并发</comment>
+                <callFlowXID>:XMT_CF025_二层并发开始</callFlowXID>
                 <returnID>AReturn</returnID>
             </item>
             <item>
-                <comment>并发项：模拟等待5秒</comment>
-                <callFlowXID>:XWait_CF018_B_1</callFlowXID>
-                <context>
-                {
-                    "typeName": ":typeNameB"
-                }
-                </context>
+                <comment>并发项：并发嵌套并发</comment>
+                <callFlowXID>:XMT_CF025_二层并发开始</callFlowXID>
                 <returnID>BReturn</returnID>
             </item>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF018_1_1" />
+                    <next ref="XNode_CF025_显示时间" />
                     <comment>成功时</comment>
                 </succeed>
             </route>

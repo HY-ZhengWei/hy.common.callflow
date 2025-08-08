@@ -15,6 +15,7 @@
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
@@ -23,12 +24,11 @@
     <!-- CFlow编排引擎配置 -->
     <xconfig>
     
-        <xjob id="XJOB_CF021_1">
-            <comment>定时元素</comment>
-            <callFlowXID>:XAPI_CF019_1</callFlowXID>           <!-- 另一个编排XID -->
-            <intervalType>S</intervalType>                     <!-- 间隔类型。S表示秒 -->
-            <intervalLen>5</intervalLen>                       <!-- 间隔时长 -->
-        </xjob>
+        <xwspush id="XWSPush">
+            <comment>点推元素</comment>
+            <name>pushName</name>
+            <newMessage>:Message</newMessage>
+        </xwspush>
         
     </xconfig>
     

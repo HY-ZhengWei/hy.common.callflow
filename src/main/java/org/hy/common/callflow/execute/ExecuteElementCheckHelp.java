@@ -11,6 +11,7 @@ import org.hy.common.callflow.enums.JobIntervalType;
 import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.event.PublishConfig;
 import org.hy.common.callflow.event.SubscribeConfig;
+import org.hy.common.callflow.event.WSPushConfig;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.ifelse.ConditionItem;
@@ -349,6 +350,21 @@ public class ExecuteElementCheckHelp
             }
             
             this.check_Condition(v_Condition ,io_Result ,i_ExecObject ,io_XIDs ,io_ForXIDs);
+        }
+        else if ( i_ExecObject instanceof WSPushConfig )
+        {
+            WSPushConfig v_WSPush = (WSPushConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_WSPush.getName()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(v_WSPush.getName()) + "].name is null.");
+                return false;
+            }
+            if ( Help.isNull(v_WSPush.getNewMessage()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(v_WSPush.getNewMessage()) + "].newMessage is null.");
+                return false;
+            }
         }
         else if ( i_ExecObject instanceof PublishConfig )
         {
