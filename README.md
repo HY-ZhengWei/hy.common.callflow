@@ -3082,7 +3082,7 @@ ExecuteResult       v_Result  = CallFlow.execute(v_Subscribe ,v_Context);
 
 
 
-订阅元素的举例
+命令元素的举例
 ------
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow027) [返回目录](#目录)
