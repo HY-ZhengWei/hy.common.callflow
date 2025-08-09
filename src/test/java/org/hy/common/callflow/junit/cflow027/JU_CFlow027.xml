@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_处理结果02">
+            <comment>处理命令执行的结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:Ret02</value>
+            </callParam>
+        </xnode>
+        
+        
+        <xcommand id="XCMD_查看目录">
+            <comment>按占位符参数，查看某个目录中的文件</comment>
+            <command>cmd.exe /c dir :DIRName</command>
+            <charEncoding>GBK</charEncoding>
+            <returnID>Ret02</returnID>
+            <route>
+                <succeed>
+                    <next ref="XNode_处理结果02" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcommand>
+        
+        
+        <xnode id="XNode_处理结果01">
+            <comment>处理命令执行的结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:Ret01</value>              <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>                          <!-- 成功时，关联后置节点 -->
+                    <next ref="XCMD_查看目录" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xcommand id="XCMD">
+            <comment>查看操作信息</comment>
+            <command>systeminfo</command>          <!-- 操作系统的命令或脚本 -->
+            <charEncoding>GBK</charEncoding>       <!-- 命令结果的字符集 -->
+            <returnID>Ret01</returnID>             <!-- 定义返回结果的变量名称。当有时将接收命令的返回结果，否则仅执行命令 -->
+            <route>
+                <succeed>                          <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_处理结果01" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcommand>
+        
+    </xconfig>
+    
+</config>

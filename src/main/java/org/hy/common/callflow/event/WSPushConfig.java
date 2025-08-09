@@ -545,23 +545,14 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         {
             try
             {
-                Object v_NewMessage = ValueHelp.replaceByContext(this.newMessage ,this.newMessagePlaceholders ,i_Context);
-                if ( v_NewMessage == null )
+                String v_NewMessage = ValueHelp.replaceByContext(this.newMessage ,this.newMessagePlaceholders ,i_Context);
+                if ( Help.isNull(v_NewMessage) )
                 {
                     v_Builder.append("?");
                 }
-                else if ( v_NewMessage instanceof String )
-                {
-                    v_Builder.append(v_NewMessage);
-                }
-                else if ( WSContentType.Json.getValue().equalsIgnoreCase(this.getContentType()) )
-                {
-                    XJSON v_XJson = new XJSON();
-                    v_Builder.append(v_XJson.toJson(v_NewMessage).toJSONString());
-                }
                 else
                 {
-                    v_Builder.append(v_NewMessage.toString());
+                    v_Builder.append(v_NewMessage);
                 }
                 
             }
@@ -698,7 +689,7 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone XSQLConfig xid is null.");
+            throw new NullPointerException("Clone WSPushConfig xid is null.");
         }
         
         WSPushConfig v_Clone = (WSPushConfig) io_Clone;

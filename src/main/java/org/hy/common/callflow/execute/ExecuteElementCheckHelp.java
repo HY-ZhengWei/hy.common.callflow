@@ -21,6 +21,7 @@ import org.hy.common.callflow.nesting.MTItem;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.APIConfig;
 import org.hy.common.callflow.node.CalculateConfig;
+import org.hy.common.callflow.node.CommandConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.NodeParam;
 import org.hy.common.callflow.node.WaitConfig;
@@ -525,6 +526,16 @@ public class ExecuteElementCheckHelp
                     io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(v_API.getXid()) + "].intervalLen <= 0.");
                     return false;
                 }
+            }
+        }
+        else if ( i_ExecObject instanceof CommandConfig )
+        {
+            CommandConfig v_Command = (CommandConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_Command.getCommand()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：CommandConfig[" + Help.NVL(v_Command.getCommand()) + "].command is null.");
+                return false;
             }
         }
         else if ( i_ExecObject instanceof NodeConfig )

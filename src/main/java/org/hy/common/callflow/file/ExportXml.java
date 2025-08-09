@@ -24,6 +24,7 @@ import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.APIConfig;
 import org.hy.common.callflow.node.CalculateConfig;
+import org.hy.common.callflow.node.CommandConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
@@ -75,6 +76,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Publish  .getXmlName() ,PublishConfig.class);
         getInstance().addImportHead(ElementType.Subscribe.getXmlName() ,SubscribeConfig.class);
         getInstance().addImportHead(ElementType.WSPush   .getXmlName() ,WSPushConfig.class);
+        getInstance().addImportHead(ElementType.Command  .getXmlName() ,CommandConfig.class);
         getInstance().addImportHead(ElementType.XSQL     .getXmlName() ,XSQLConfig.class);
         getInstance().addImportHead(ElementType.Job      .getXmlName() ,JOBConfig.class);
     }
@@ -328,7 +330,11 @@ public class ExportXml
         // 没有XID时，自动生成
         if ( Help.isNull(i_ExecObject.getXJavaID()) )
         {
-            if ( i_ExecObject instanceof WSPushConfig )
+            if ( i_ExecObject instanceof CommandConfig )
+            {
+                i_ExecObject.setXJavaID("XCMD_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof WSPushConfig )
             {
                 i_ExecObject.setXJavaID("XWSPush_" + StringHelp.getUUID9n());
             }

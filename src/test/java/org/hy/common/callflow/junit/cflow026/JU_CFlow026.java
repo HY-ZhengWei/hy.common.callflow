@@ -66,6 +66,8 @@ public class JU_CFlow026 extends JUBase
         
         v_Context.put("Message" ,"文本消息");
         v_Context.put("Message" ,new Param("对象信息" ,"对象数据"));
+        v_Context.put("K1"      ,"V1");
+        v_Context.put("K2"      ,"V2");
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_WSPush);

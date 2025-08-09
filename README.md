@@ -37,6 +37,7 @@
     * [定时元素的举例](#定时元素的举例)
     * [发布元素的举例](#发布元素的举例)
     * [订阅元素的举例](#订阅元素的举例)
+    * [命令元素的举例](#命令元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -79,25 +80,27 @@
         
         1.9. 定时元素，定时的周期性的驱动编排执行。
         
-    2. 9种衍生元素。
+    2. 10种衍生元素。
     
-        2.1. IOT读元素，衍生于执行元素，用于读取PLC数据。
+        2.1.  IOT读元素，衍生于执行元素，用于读取PLC数据。
         
-        2.2. IOT写元素，衍生于执行元素，用于向PLC写入数据。
+        2.2.  IOT写元素，衍生于执行元素，用于向PLC写入数据。
         
-        2.3. API接口元素，衍生于执行元素，用于API接口请求访问。
+        2.3.  API接口元素，衍生于执行元素，用于API接口请求访问。
         
-        2.4. PUB发布元素，衍生于接口元素，支持MQTT发布消息。
+        2.4.  PUB发布元素，衍生于接口元素，支持MQTT发布消息。
         
-        2.5. SUB订阅元素，衍生于接口元素，支持MQTT订阅消息。
+        2.5.  SUB订阅元素，衍生于接口元素，支持MQTT订阅消息。
         
-        2.6. XSQL元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
+        2.6.  XSQL元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
         
-        2.7. DAG数采读元素，衍生于执行元素，用于读取Modbus数据。
+        2.7.  DAG数采读元素，衍生于执行元素，用于读取Modbus数据。
         
-        2.8. DAS数采写元素，衍生于执行元素，用于向Modbus写入数据。
+        2.8.  DAS数采写元素，衍生于执行元素，用于向Modbus写入数据。
         
-        2.9. WSS点推元素，衍生于执行元素，用于WebSocket服务端推送消息给客户端。
+        2.9.  WSS点推元素，衍生于执行元素，用于WebSocket服务端推送消息给客户端。
+        
+        2.10. CMD命令元素，衍生于执行元素，执行操作系统命令。
         
     3. 4种编排路由。
         
@@ -254,16 +257,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -333,16 +337,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -460,16 +465,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -655,16 +661,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -769,16 +776,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -884,16 +892,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1056,16 +1065,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1189,16 +1199,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1341,16 +1352,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1412,16 +1424,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1496,16 +1509,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1625,16 +1639,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1746,16 +1761,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1859,16 +1875,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1978,16 +1995,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2127,16 +2145,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2288,16 +2307,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2371,16 +2391,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2542,16 +2563,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2665,16 +2687,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2789,16 +2812,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2864,16 +2888,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2964,16 +2989,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -3056,6 +3082,123 @@ ExecuteResult       v_Result  = CallFlow.execute(v_Subscribe ,v_Context);
 
 
 
+订阅元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow027) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow027/JU_CFlow027.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_处理结果02">
+            <comment>处理命令执行的结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:Ret02</value>
+            </callParam>
+        </xnode>
+        
+        
+        <xcommand id="XCMD_查看目录">
+            <comment>按占位符参数，查看某个目录中的文件</comment>
+            <command>cmd.exe /c dir :DIRName</command>
+            <charEncoding>GBK</charEncoding>
+            <returnID>Ret02</returnID>
+            <route>
+                <succeed>
+                    <next ref="XNode_处理结果02" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcommand>
+        
+        
+        <xnode id="XNode_处理结果01">
+            <comment>处理命令执行的结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:Ret01</value>              <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>                          <!-- 成功时，关联后置节点 -->
+                    <next ref="XCMD_查看目录" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xcommand id="XCMD">
+            <comment>查看操作信息</comment>
+            <command>systeminfo</command>          <!-- 操作系统的命令或脚本 -->
+            <charEncoding>GBK</charEncoding>       <!-- 命令结果的字符集 -->
+            <returnID>Ret01</returnID>             <!-- 定义返回结果的变量名称。当有时将接收命令的返回结果，否则仅执行命令 -->
+            <route>
+                <succeed>                          <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_处理结果01" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcommand>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+CommandConfig       v_CMD     = (CommandConfig) XJava.getObject("XCMD");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("DIRName" ,"C:\\Windows");
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_CMD ,v_Context);
+```
+
+
+
+
+
 占位符的举例
 ------
 
@@ -3073,16 +3216,17 @@ __编排配置__
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     

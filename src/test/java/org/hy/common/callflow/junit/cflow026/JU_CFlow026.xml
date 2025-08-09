@@ -6,17 +6,17 @@
     <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
     <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -27,7 +27,13 @@
         <xwspush id="XWSPush">
             <comment>点推元素</comment>
             <name>pushName</name>
-            <newMessage>:Message</newMessage>
+            <newMessage>
+                {
+                    "Message": :Message,
+                    "K1": ":K1",
+                    "K2": ":K2"
+                }
+            </newMessage>
         </xwspush>
         
     </xconfig>

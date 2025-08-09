@@ -26,6 +26,8 @@ public enum ElementType
     
     XSQL(      "XSQL"       ,"xsql"        ,"XSQL元素"),
     
+    Command(   "COMMAND"    ,"xcommand"    ,"命令元素"),
+    
     Condition( "CONDITION"  ,"xcondition"  ,"条件逻辑"),
     
     Wait(      "WAIT"       ,"xwait"       ,"等待元素"),
