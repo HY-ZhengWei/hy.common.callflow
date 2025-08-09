@@ -33,7 +33,7 @@ public class CommandConfig extends NodeConfig implements NodeConfigBase
     /** 执行命令。可以是常量、上下文变量、XID标识，并且支持多个占位符 */
     private String                        command;
     
-    /** 新消息，已解释完成的占位符（性能有优化，仅内部使用） */
+    /** 执行命令，已解释完成的占位符（性能有优化，仅内部使用） */
     private PartitionMap<String ,Integer> commandPlaceholders;
     
     /** 是否等待命令执行完成。当等待时调用线程将被阻塞。默认为：true */
