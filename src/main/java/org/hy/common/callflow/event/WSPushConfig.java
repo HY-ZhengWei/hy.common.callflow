@@ -8,8 +8,11 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.MethodReflect;
+import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StaticReflect;
+import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.common.FindClass;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -19,6 +22,7 @@ import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.NodeConfigBase;
 import org.hy.common.callflow.node.NodeParam;
+import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJSON;
 import org.hy.common.xml.log.Logger;
 
@@ -43,14 +47,20 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
     
     
     
-    /** 新消息的参数信息（仅内部使用） */
-    private NodeParam nameParam;
+    /** WS发布的URL路径中推送名称（仅内部使用） */
+    private NodeParam                     nameParam;
     
-    /** 新消息的参数信息（仅内部使用） */
-    private NodeParam newMessageParam;
+    /** 新消息。可以是常量、上下文变量、XID标识，并且支持多个占位符 */
+    private String                        newMessage;
     
-    /** 全部消息的参数信息（仅内部使用） */
-    private NodeParam allMessageParam;
+    /** 新消息，已解释完成的占位符（性能有优化，仅内部使用） */
+    private PartitionMap<String ,Integer> newMessagePlaceholders;
+    
+    /** 客户端首次连接时的全部消息。可以是常量、上下文变量、XID标识，并且支持多个占位符 */
+    private String    allMessage;
+    
+    /** 全部消息，已解释完成的占位符（性能有优化，仅内部使用） */
+    private PartitionMap<String ,Integer> allMessagePlaceholders;
     
     /** 消息体的格式类型 */
     private String    contentType;
@@ -90,11 +100,15 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         this.nameParam.setValueClass(String.class.getName());
         this.setCallParam(this.nameParam);
         
-        this.newMessageParam = new NodeParam();
-        this.setCallParam(this.newMessageParam);
+        NodeParam v_CallParam = new NodeParam();
+        v_CallParam.setValueClass(null);
+        v_CallParam.setValue("");
+        this.setCallParam(v_CallParam);
         
-        this.allMessageParam = new NodeParam();
-        this.setCallParam(this.allMessageParam);
+        v_CallParam = new NodeParam();
+        v_CallParam.setValueClass(null);
+        v_CallParam.setValue("");
+        this.setCallParam(v_CallParam);
         
         this.setName(null);
         this.setCallMethod("pushMessages");
@@ -170,23 +184,39 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
-     * 获取：新消息。可以是常量、上下文变量、XID标识
+     * 获取：新消息。可以是常量、上下文变量、XID标识，并且支持多个占位符
      */
     public String getNewMessage()
     {
-        return this.newMessageParam.getValue();
+        return this.newMessage;
     }
 
 
     
     /**
-     * 设置：新消息。可以是常量、上下文变量、XID标识
+     * 设置：新消息。可以是常量、上下文变量、XID标识，并且支持多个占位符
      * 
-     * @param i_NewMessage 新消息。可以是常量、上下文变量、XID标识
+     * @param i_NewMessage 新消息。可以是常量、上下文变量、XID标识，并且支持多个占位符
      */
     public void setNewMessage(String i_NewMessage)
     {
-        this.newMessageParam.setValue(i_NewMessage);
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_NewMessage) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_NewMessage ,true);
+        }
+        
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.newMessagePlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.newMessagePlaceholders = new TablePartitionLink<String ,Integer>();
+        }
+        this.newMessage = i_NewMessage;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -194,23 +224,39 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
 
     
     /**
-     * 获取：客户端首次连接时的全部消息。可以是常量、上下文变量、XID标识
+     * 获取：客户端首次连接时的全部消息。可以是常量、上下文变量、XID标识，并且支持多个占位符
      */
     public String getAllMessage()
     {
-        return this.allMessageParam.getValue();
+        return this.allMessage;
     }
     
     
     
     /**
-     * 设置：客户端首次连接时的全部消息。可以是常量、上下文变量、XID标识
+     * 设置：客户端首次连接时的全部消息。可以是常量、上下文变量、XID标识，并且支持多个占位符
      * 
-     * @param i_AllMessage 客户端首次连接时的全部消息。可以是常量、上下文变量、XID标识
+     * @param i_AllMessage 客户端首次连接时的全部消息。可以是常量、上下文变量、XID标识，并且支持多个占位符
      */
     public void setAllMessage(String i_AllMessage)
     {
-        this.allMessageParam.setValue(i_AllMessage);
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_AllMessage) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_AllMessage ,true);
+        }
+        
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.allMessagePlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.allMessagePlaceholders = new TablePartitionLink<String ,Integer>();
+        }
+        this.allMessage = i_AllMessage;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -243,6 +289,8 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
 
     /**
      * 设置XJava池中对象的ID标识。此方法不用用户调用设置值，是自动的。
+     * 
+     * 自己反射调用自己的实例中的方法
      * 
      * @param i_XJavaID
      */
@@ -325,6 +373,16 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
      */
     public Object [] generateParams(Map<String ,Object> io_Context ,Object [] io_Params)
     {
+        if ( !Help.isNull(this.newMessage) )
+        {
+            io_Params[1] = ValueHelp.replaceByContext(this.newMessage ,this.newMessagePlaceholders ,io_Context);
+        }
+        
+        if ( !Help.isNull(this.allMessage) )
+        {
+            io_Params[2] = ValueHelp.replaceByContext(this.allMessage ,this.allMessagePlaceholders ,io_Context);
+        }
+        
         return io_Params;
     }
     
@@ -392,7 +450,7 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
                 v_AllMsg = i_AllMessage.toString();
             }
             
-            StaticReflect.invoke($WSMethod ,this.getName() ,v_NewMsg ,v_AllMsg);
+            StaticReflect.invoke($WSMethod ,this.getName() ,v_NewMsg ,Help.NVL(v_AllMsg ,v_NewMsg));
             return true;
         }
         catch (Exception exce)
@@ -486,8 +544,25 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         {
             try
             {
-                String v_NewMessage = (String) ValueHelp.getValue(this.newMessageParam.getValue() ,this.newMessageParam.gatValueClass() ,this.newMessageParam.gatValueDefaultObject() ,i_Context);
-                v_Builder.append(v_NewMessage);
+                Object v_NewMessage = ValueHelp.replaceByContext(this.newMessage ,this.newMessagePlaceholders ,i_Context);
+                if ( v_NewMessage == null )
+                {
+                    v_Builder.append("?");
+                }
+                else if ( v_NewMessage instanceof String )
+                {
+                    v_Builder.append(v_NewMessage);
+                }
+                else if ( WSContentType.Json.getValue().equalsIgnoreCase(this.getContentType()) )
+                {
+                    XJSON v_XJson = new XJSON();
+                    v_Builder.append(v_XJson.toJson(v_NewMessage).toJSONString());
+                }
+                else
+                {
+                    v_Builder.append(v_NewMessage.toString());
+                }
+                
             }
             catch (Exception exce)
             {
@@ -585,6 +660,9 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         v_Clone.callMethod  = this.callMethod; 
         v_Clone.timeout     = this.timeout;
         
+        v_Clone.setNewMessage(this.getNewMessage());
+        v_Clone.setAllMessage(this.getAllMessage());
+        
         if ( !Help.isNull(this.callParams) )
         {
             v_Clone.callParams = new ArrayList<NodeParam>();
@@ -629,6 +707,9 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         v_Clone.contentType = this.contentType;
         v_Clone.callMethod  = this.callMethod; 
         v_Clone.timeout     = this.timeout;
+        
+        v_Clone.setNewMessage(this.getNewMessage());
+        v_Clone.setAllMessage(this.getAllMessage());
         
         if ( !Help.isNull(this.callParams) )
         {
