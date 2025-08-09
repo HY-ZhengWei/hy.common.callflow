@@ -57,13 +57,13 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
     private PartitionMap<String ,Integer> newMessagePlaceholders;
     
     /** 客户端首次连接时的全部消息。可以是常量、上下文变量、XID标识，并且支持多个占位符 */
-    private String    allMessage;
+    private String                        allMessage;
     
     /** 全部消息，已解释完成的占位符（性能有优化，仅内部使用） */
     private PartitionMap<String ,Integer> allMessagePlaceholders;
     
     /** 消息体的格式类型 */
-    private String    contentType;
+    private String                        contentType;
     
     
     
@@ -402,14 +402,12 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         this.findWSClass();
         if ( $WSMethod == null )
         {
-            $Logger.error(new ClassNotFoundException("WebSocketServer is not find."));
-            return false;
+            throw new RuntimeException("WebSocketServer is not find.");
         }
         
         if ( i_NewMessage == null )
         {
-            $Logger.error(new ClassNotFoundException("NewMessage is null."));
-            return false;
+            throw new NullPointerException("NewMessage is null.");
         }
         
         try
@@ -455,8 +453,7 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         }
         catch (Exception exce)
         {
-            $Logger.error(exce);
-            return false;
+            throw new RuntimeException(exce);
         }
     }
     
