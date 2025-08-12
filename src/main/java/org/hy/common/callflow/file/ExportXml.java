@@ -399,11 +399,11 @@ public class ExportXml
             }
             else if ( i_ExecObject instanceof CacheGetConfig )
             {
-                i_ExecObject.setXJavaID("XCGet_" + StringHelp.getUUID9n());
+                i_ExecObject.setXJavaID("XCG_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof CacheSetConfig )
             {
-                i_ExecObject.setXJavaID("XCSet_" + StringHelp.getUUID9n());
+                i_ExecObject.setXJavaID("XCS_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof SelfLoop )
             {

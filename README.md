@@ -103,7 +103,9 @@
         
         2.10. CMD命令元素，衍生于执行元素，执行操作系统命令。
         
-        2.11. CGet缓存读元素，读取Redis数据，反序列化转对象，支持库、表、行关系。
+        2.11. CG缓存读元素，读取Redis数据，反序列化转对象，支持库、表、行关系。
+        
+        2.12. CS缓存写元素，创建、修改或删除Redis数据，支持库、表、行关系。
         
     3. 4种编排路由。
         
@@ -262,8 +264,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -344,8 +346,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -474,8 +476,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -672,8 +674,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -789,8 +791,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -907,8 +909,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1082,8 +1084,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1218,8 +1220,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1373,8 +1375,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1447,8 +1449,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1534,8 +1536,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1666,8 +1668,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1790,8 +1792,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -1906,8 +1908,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2028,8 +2030,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2180,8 +2182,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2344,8 +2346,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2430,8 +2432,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2604,8 +2606,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2730,8 +2732,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2857,8 +2859,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -2935,8 +2937,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -3038,8 +3040,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -3153,8 +3155,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -3272,8 +3274,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
@@ -3309,7 +3311,7 @@ __编排配置__
         </xnode>
         
         
-        <xcget id="XCGet_Query_RowObject">
+        <xcg id="XCG_Query_RowObject">
             <comment>行数据反序列化为Java实例</comment>
             <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
@@ -3323,10 +3325,10 @@ __编排配置__
                     <comment>成功时</comment>
                 </succeed>
             </route>
-        </xcget>
+        </xcg>
         
     
-        <xcget id="XCGet_Query_Row">
+        <xcg id="XCG_Query_Row">
             <comment>有库、表、主键ID时，查一行数据</comment>
             <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
@@ -3335,14 +3337,14 @@ __编排配置__
             <returnID>RetRow</returnID>                    <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed>
-                    <next ref="XCGet_Query_RowObject" />
+                    <next ref="XCG_Query_RowObject" />
                     <comment>成功时</comment>
                 </succeed>
             </route>
-        </xcget>
+        </xcg>
     
     
-        <xcget id="XCGet_Query_AllDatas">
+        <xcg id="XCG_Query_AllDatas">
             <comment>仅有库、表名称时，查表中所有行数据</comment>
             <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
@@ -3350,25 +3352,25 @@ __编排配置__
             <returnID>RetDatas</returnID>                  <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed>
-                    <next ref="XCGet_Query_Row" />
+                    <next ref="XCG_Query_Row" />
                     <comment>成功时</comment>
                 </succeed>
             </route>
-        </xcget>
+        </xcg>
         
     
-        <xcget id="XCGet_Query_AllTables">
+        <xcg id="XCG_Query_AllTables">
             <comment>仅有库名称时，查库中所有表信息</comment>
             <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <returnID>RetTables</returnID>                 <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed>
-                    <next ref="XCGet_Query_AllDatas" />
+                    <next ref="XCG_Query_AllDatas" />
                     <comment>成功时</comment>
                 </succeed>
             </route>
-        </xcget>
+        </xcg>
         
     </xconfig>
     
@@ -3382,13 +3384,13 @@ __执行编排__
 XJava.putObject("XProgram" ,new Program());
         
 // 获取编排中的首个元素
-CacheGetConfig      v_CGet    = (CacheGetConfig) XJava.getObject("XCGet_Query_AllTables");
+CacheGetConfig      v_CG      = (CacheGetConfig) XJava.getObject("XCG_Query_AllTables");
 
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
-ExecuteResult       v_Result  = CallFlow.execute(v_CMD ,v_Context);
+ExecuteResult       v_Result  = CallFlow.execute(v_CG ,v_Context);
 ```
 
 
@@ -3414,8 +3416,8 @@ __编排配置__
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />

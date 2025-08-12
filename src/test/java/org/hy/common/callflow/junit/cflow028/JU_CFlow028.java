@@ -69,18 +69,18 @@ public class JU_CFlow028 extends AppInitConfig
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        CacheGetConfig      v_CGet    = (CacheGetConfig) XJava.getObject("XCGet_Query_AllTables");
+        CacheGetConfig      v_CG      = (CacheGetConfig) XJava.getObject("XCG_Query_AllTables");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
-        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_CGet);
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_CG);
         if ( !v_CheckRet.get() )
         {
             System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
             return;
         }
         
-        ExecuteResult v_Result = CallFlow.execute(v_CGet ,v_Context);
+        ExecuteResult v_Result = CallFlow.execute(v_CG ,v_Context);
         if ( v_Result.isSuccess() )
         {
             System.out.println("Success");
@@ -104,7 +104,7 @@ public class JU_CFlow028 extends AppInitConfig
         System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
         
         // 导出
-        System.out.println(CallFlow.getHelpExport().export(v_CGet));
+        System.out.println(CallFlow.getHelpExport().export(v_CG));
     }
     
 }

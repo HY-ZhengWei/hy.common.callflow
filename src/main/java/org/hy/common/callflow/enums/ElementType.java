@@ -44,9 +44,9 @@ public enum ElementType
     
     Job(      "JOB"       ,"xjob"       ,"定时元素"),
     
-    CacheGet( "CACHEGET"  ,"xcget"      ,"缓存读元素"),
+    CacheGet( "CACHEGET"  ,"xcg"        ,"缓存读元素"),
     
-    CacheSet( "CACHESET"  ,"xcset"      ,"缓存写元素"),
+    CacheSet( "CACHESET"  ,"xcs"        ,"缓存写元素"),
     
     SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
     

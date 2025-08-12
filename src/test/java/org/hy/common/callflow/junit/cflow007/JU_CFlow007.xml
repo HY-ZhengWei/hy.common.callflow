@@ -8,8 +8,8 @@
     <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
     <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
     <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcget"      class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcset"      class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
     <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
     <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
