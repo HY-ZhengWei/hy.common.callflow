@@ -34,7 +34,7 @@ import org.hy.common.xml.log.Logger;
  *           仅在 allowDelTable 为真时才删除
  *           返回类型为：Boolean ，表示是否删除成功。
  *           
- * 约定2：仅有库、表名称时，查表中所有行数据。
+ * 约定2：仅有库、表名称时，删除表中所有行数据。
  *           仅在 allowDelTable 为真时才删除
  *           返回类型为：Boolean ，表示是否删除成功。
  *           
@@ -81,7 +81,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
     /** 过期时间（单位：秒）。可以是数值、上下文变量、XID标识 */
     private String                        expireTime;
     
-    /** 是否允许库或删除表。默认为：false */
+    /** 是否允许删除库或表。默认为：false */
     private Boolean                       allowDelTable;
     
     
@@ -331,7 +331,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 获取：是否允许库或删除表。默认为：false
+     * 获取：是否允许删除库或表。默认为：false
      */
     public Boolean getAllowDelTable()
     {
@@ -341,9 +341,9 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：是否允许库或删除表。默认为：false
+     * 设置：是否允许删除库或表。默认为：false
      * 
-     * @param i_AllowDelTable 是否允许库或删除表。默认为：false
+     * @param i_AllowDelTable 是否允许删除库或表。默认为：false
      */
     public void setAllowDelTable(Boolean i_AllowDelTable)
     {
@@ -481,7 +481,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                     }
                     else
                     {
-                        // 约定2：仅有库、表名称时，查表中所有行数据。
+                        // 约定2：仅有库、表名称时，删除表中所有行数据。
                         if ( this.allowDelTable )
                         {
                             v_CacheRetDatas = v_Cache.dropTable(v_DataBase ,v_Table);
