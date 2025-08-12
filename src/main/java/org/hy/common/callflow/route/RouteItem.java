@@ -5,6 +5,8 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.cache.CacheGetConfig;
+import org.hy.common.callflow.cache.CacheSetConfig;
 import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.RouteType;
@@ -705,6 +707,18 @@ public class RouteItem implements IToXml ,CloneableCallFlow
                 ReturnConfig v_CloneReturn = new ReturnConfig();
                 ((ReturnConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
                 v_Clone.next = v_CloneReturn;
+            }
+            else if ( this.next instanceof CacheGetConfig )
+            {
+                CacheGetConfig v_CloneCacheGet = new CacheGetConfig();
+                ((CacheGetConfig) this.next).clone(v_CloneCacheGet ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneCacheGet;
+            }
+            else if ( this.next instanceof CacheSetConfig )
+            {
+                CacheSetConfig v_CloneCacheSet = new CacheSetConfig();
+                ((CacheSetConfig) this.next).clone(v_CloneCacheSet ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneCacheSet;
             }
             else if ( this.next instanceof JOBConfig )
             {

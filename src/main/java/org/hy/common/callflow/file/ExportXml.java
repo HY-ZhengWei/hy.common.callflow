@@ -11,6 +11,8 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.cache.CacheGetConfig;
+import org.hy.common.callflow.cache.CacheSetConfig;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.event.PublishConfig;
@@ -72,6 +74,8 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Calculate.getXmlName() ,CalculateConfig.class);
         getInstance().addImportHead(ElementType.Condition.getXmlName() ,ConditionConfig.class);
         getInstance().addImportHead(ElementType.Return   .getXmlName() ,ReturnConfig.class);
+        getInstance().addImportHead(ElementType.CacheGet .getXmlName() ,CacheGetConfig.class);
+        getInstance().addImportHead(ElementType.CacheSet .getXmlName() ,CacheSetConfig.class);
         getInstance().addImportHead(ElementType.Api      .getXmlName() ,APIConfig.class);
         getInstance().addImportHead(ElementType.Publish  .getXmlName() ,PublishConfig.class);
         getInstance().addImportHead(ElementType.Subscribe.getXmlName() ,SubscribeConfig.class);
@@ -392,6 +396,14 @@ public class ExportXml
             else if ( i_ExecObject instanceof ReturnConfig )
             {
                 i_ExecObject.setXJavaID("XReturn_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof CacheGetConfig )
+            {
+                i_ExecObject.setXJavaID("XCGet_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof CacheSetConfig )
+            {
+                i_ExecObject.setXJavaID("XCSet_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof SelfLoop )
             {

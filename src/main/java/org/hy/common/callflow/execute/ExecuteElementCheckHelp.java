@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.Return;
+import org.hy.common.callflow.cache.CacheGetConfig;
+import org.hy.common.callflow.cache.CacheSetConfig;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.JobIntervalType;
 import org.hy.common.callflow.event.JOBConfig;
@@ -351,6 +353,62 @@ public class ExecuteElementCheckHelp
             }
             
             this.check_Condition(v_Condition ,io_Result ,i_ExecObject ,io_XIDs ,io_ForXIDs);
+        }
+        else if ( i_ExecObject instanceof CacheGetConfig )
+        {
+            CacheGetConfig v_CacheGet = (CacheGetConfig) i_ExecObject;
+            
+            // 缓存Redis实例的XID不能为空
+            if ( Help.isNull(v_CacheGet.getCacheXID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：CacheGetConfig[" + Help.NVL(v_CacheGet.getCacheXID()) + "].cacheXID is null.");
+                return false;
+            }
+            // 表不空，库不能为空
+            if ( !Help.isNull(v_CacheGet.getTable()) )
+            {
+                if ( Help.isNull(v_CacheGet.getDataBase()) )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：CacheGetConfig[" + Help.NVL(v_CacheGet.getDataBase()) + "].database is null ,but table is not null.");
+                    return false;
+                }
+            }
+            if ( !Help.isNull(v_CacheGet.getPkID()) )
+            {
+                if ( !Help.isNull(v_CacheGet.getDataBase()) && Help.isNull(v_CacheGet.getTable()) )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：CacheGetConfig[" + Help.NVL(v_CacheGet.getTable()) + "].table is null ,but database and pkID are not null.");
+                    return false;
+                }
+            }
+        }
+        else if ( i_ExecObject instanceof CacheSetConfig )
+        {
+            CacheSetConfig v_CacheGet = (CacheSetConfig) i_ExecObject;
+            
+            // 缓存Redis实例的XID不能为空
+            if ( Help.isNull(v_CacheGet.getCacheXID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(v_CacheGet.getCacheXID()) + "].cacheXID is null.");
+                return false;
+            }
+            // 表不空，库不能为空
+            if ( !Help.isNull(v_CacheGet.getTable()) )
+            {
+                if ( Help.isNull(v_CacheGet.getDataBase()) )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(v_CacheGet.getDataBase()) + "].database is null ,but table is not null.");
+                    return false;
+                }
+            }
+            if ( !Help.isNull(v_CacheGet.getPkID()) )
+            {
+                if ( !Help.isNull(v_CacheGet.getDataBase()) && Help.isNull(v_CacheGet.getTable()) )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(v_CacheGet.getTable()) + "].table is null ,but database and pkID are not null.");
+                    return false;
+                }
+            }
         }
         else if ( i_ExecObject instanceof WSPushConfig )
         {
