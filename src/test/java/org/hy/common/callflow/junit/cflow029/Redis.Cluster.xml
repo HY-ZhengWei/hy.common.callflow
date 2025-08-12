@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xobjects"        class="java.util.ArrayList" />
+    <import name="redis"           class="org.hy.common.redis.cluster.RedisConfig" />
+    <import name="redisCluster"    class="org.hy.common.redis.cluster.RedisClusterConfig" />
+    <import name="redisOpt"        class="org.hy.common.redis.lettuce.RedisLettuce" />
+    
+    
+    
+    <xobjects>
+        
+        <!-- 节点参数统一配置模板 -->
+        <redis id="Redis_MS_Common">
+            <pwd encrypt="org.hy.common.StringHelp">sys!@#456</pwd>       <!-- 可选配置：密码 -->
+            <database>0</database>                                        <!-- 可选配置：数据库编号 -->
+            <ssl>false</ssl>                                              <!-- 可选配置：SSL连接协议是否开启 -->
+            <tls>false</tls>                                              <!-- 可选配置：TLS连接协议是否开启 -->
+            <timeout>15</timeout>                                         <!-- 可选配置：超时时长，单位：秒。优先级高于集群配置的超时时长 -->
+        </redis>
+        
+        
+        <redisCluster id="RedisCluster_MS_Common">
+            <autoReconnect>true</autoReconnect>       <!-- 可选配置：自动重新连接 -->
+            <timeout>15</timeout>                     <!-- 可选配置：超时时长，单位：秒。优先级低于每个节点配置的超时时长 -->
+            <charset>UTF-8</charset>                  <!-- 可选配置：字符集 -->
+            <redisVersion>6</redisVersion>            <!-- 可选配置：Redis协议版本 -->
+            <maxRedirects>5</maxRedirects>            <!-- 可选配置：最大重定向次数 -->
+            
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.30</host><port>6371</port></redis></add>
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.30</host><port>6372</port></redis></add>
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.30</host><port>6373</port></redis></add>
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.31</host><port>6374</port></redis></add>
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.31</host><port>6375</port></redis></add>
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.31</host><port>6376</port></redis></add>
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.32</host><port>6377</port></redis></add>
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.32</host><port>6378</port></redis></add>
+            <add><redis><init ref="Redis_MS_Common"/><host>10.0.2.32</host><port>6379</port></redis></add>
+        </redisCluster>
+        
+        
+        <redisOpt id="RedisOperation_MS_Common">
+            <constructor>
+                <redisCluster ref="RedisCluster_MS_Common" />
+            </constructor>
+        </redisOpt>
+        
+    </xobjects>
+
+</config>
