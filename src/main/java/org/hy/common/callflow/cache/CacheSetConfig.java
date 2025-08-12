@@ -715,7 +715,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
         }
         if ( !Help.isNull(this.rowData) )
         {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("rowData"      ,this.rowData));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("rowData"      ,this.rowData ,v_NewSpace));
         }
         if ( this.nullDel != null && this.nullDel )
         {

@@ -39,6 +39,7 @@
     * [订阅元素的举例](#订阅元素的举例)
     * [命令元素的举例](#命令元素的举例)
     * [缓存读元素的举例](#缓存读元素的举例)
+    * [缓存写元素的举例](#缓存写元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -3391,6 +3392,223 @@ Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_CG ,v_Context);
+```
+
+
+
+
+
+
+缓存写元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow029) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow029/JU_CFlow029.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <!-- 可公用的子编排 Begin -->
+        <xnode id="XNode_Show">
+            <comment>显示信息</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:RetRowObject</value>
+            </callParam>
+        </xnode>
+        
+        
+        <xcg id="XCG_Query_ByObject">
+            <comment>行数据反序列化为Java实例</comment>
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
+            <table>TAppConfig</table>                      <!-- 表名称 -->
+            <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
+            <rowClass>org.hy.common.callflow.junit.cflow028.program.AppConfig</rowClass>  <!-- 行类型 -->
+            <returnID>RetRowObject</returnID>              <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed>
+                    <next ref="XNode_Show" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcg>
+        <!-- 可公用的子编排 End -->
+        
+        
+        
+        
+    
+        <xcs id="XCS_Delete_ByPK">
+            <comment>按主键删除一行数据</comment>
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
+            <table>TAppConfig</table>                      <!-- 表名称 -->
+            <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
+        </xcs>
+        
+        
+        <xnesting id="XNesting_Show_Updated_Deleted">
+            <comment>回显修改和删除后的一行数据</comment>
+            <callFlowXID>:XCG_Query_ByObject</callFlowXID> <!-- 子编排的XID -->
+            <route>
+                <succeed>
+                    <next ref="XCS_Delete_ByPK" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnesting>
+        
+    
+        <xcs id="XCS_UpdateDel_ByObject">
+            <comment>按对象，修改和删除字段</comment>
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
+            <table>TAppConfig</table>                      <!-- 表名称 -->
+            <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
+            <nullDel>true</nullDel>                        <!-- 为null的成员属性将从Redis中删除 -->
+            <rowData>:RowDataObject</rowData>
+            <route>
+                <succeed>
+                    <next ref="XNesting_Show_Updated_Deleted" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcs>
+        
+        
+        <xnesting id="XNesting_Show_Updated">
+            <comment>回显修改后的一行数据</comment>
+            <callFlowXID>:XCG_Query_ByObject</callFlowXID> <!-- 子编排的XID -->
+            <route>
+                <succeed>
+                    <next ref="XCS_UpdateDel_ByObject" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnesting>
+        
+    
+        <xcs id="XCS_Update_ByJson">
+            <comment>按Json格式，修改字段</comment>
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
+            <table>TAppConfig</table>                      <!-- 表名称 -->
+            <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
+            <rowData>
+                {
+                    "updateTime": "2025-08-12 01:01:01",
+                    "updateUserID": "郑伟"
+                }
+            </rowData>
+            <route>
+                <succeed>
+                    <next ref="XNesting_Show_Updated" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcs>
+        
+        
+        <xnesting id="XNesting_Show_Created">
+            <comment>回显创建的一行数据</comment>
+            <callFlowXID>:XCG_Query_ByObject</callFlowXID> <!-- 子编排的XID -->
+            <route>
+                <succeed>
+                    <next ref="XCS_Update_ByJson" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnesting>
+        
+        
+        <xcs id="XCS_Create_ByJson">
+            <comment>按Json格式，创建一行数据</comment>
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
+            <table>TAppConfig</table>                      <!-- 表名称 -->
+            <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
+            <rowData>
+                {
+                    "id": ":PKID",
+                    "xid": ":PKID 逻辑主键",
+                    "appName": ":PKID 应用名称",
+                    "comment": ":PKID 注释说明",
+                    "isDel": 1,
+                    "createTime": "2025-08-12 00:00:00",
+                    "updateTime": "2025-08-12 00:00:00",
+                    "createUserID": "ZhengWei",
+                    "updateUserID": "ZhengWei"
+                }
+            </rowData>
+            <route>
+                <succeed>
+                    <next ref="XNesting_Show_Created" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xcs>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+CacheSetConfig      v_CS      = (CacheSetConfig) XJava.getObject("XCS_Create_ByJson");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+AppConfig           v_RowData = new AppConfig();
+
+v_RowData.setId(StringHelp.getUUID9n());
+v_RowData.setUpdateTime(new Date());
+v_RowData.setUpdateUserID("HY");
+v_RowData.setIsDel(1);
+
+v_Context.put("RowDataObject" ,v_RowData);
+v_Context.put("PKID"          ,v_RowData.getId());
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_CS ,v_Context);
 ```
 
 

@@ -30,6 +30,18 @@ public class AppConfig
     
     /** 修改时间 */
     private Date    updateTime;
+    
+    /** 创建人编号 */
+    private String  createUserID;
+    
+    /** 修改者编号 */
+    private String  updateUserID;
+    
+    /** 删除标记。1删除；0未删除 */
+    private Integer isDel;
+    
+    /** 注解说明 */
+    private String  comment;
            
     
     
@@ -139,6 +151,94 @@ public class AppConfig
     public void setUpdateTime(Date updateTime)
     {
         this.updateTime = updateTime;
+    }
+
+
+    
+    /**
+     * 获取：创建人编号
+     */
+    public String getCreateUserID()
+    {
+        return createUserID;
+    }
+
+
+    
+    /**
+     * 设置：创建人编号
+     * 
+     * @param i_CreateUserID 创建人编号
+     */
+    public void setCreateUserID(String i_CreateUserID)
+    {
+        this.createUserID = i_CreateUserID;
+    }
+
+
+    
+    /**
+     * 获取：修改者编号
+     */
+    public String getUpdateUserID()
+    {
+        return updateUserID;
+    }
+
+
+    
+    /**
+     * 设置：修改者编号
+     * 
+     * @param i_UpdateUserID 修改者编号
+     */
+    public void setUpdateUserID(String i_UpdateUserID)
+    {
+        this.updateUserID = i_UpdateUserID;
+    }
+
+
+    
+    /**
+     * 获取：删除标记。1删除；0未删除
+     */
+    public Integer getIsDel()
+    {
+        return isDel;
+    }
+
+
+    
+    /**
+     * 设置：删除标记。1删除；0未删除
+     * 
+     * @param i_IsDel 删除标记。1删除；0未删除
+     */
+    public void setIsDel(Integer i_IsDel)
+    {
+        this.isDel = i_IsDel;
+    }
+
+
+    
+    /**
+     * 获取：注解说明
+     */
+    public String getComment()
+    {
+        return comment;
+    }
+
+
+    
+    /**
+     * 设置：注解说明
+     * 
+     * @param i_Comment 注解说明
+     */
+    public void setComment(String i_Comment)
+    {
+        this.comment = i_Comment;
     }
     
 }
