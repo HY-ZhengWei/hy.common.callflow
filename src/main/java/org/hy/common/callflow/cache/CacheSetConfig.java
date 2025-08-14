@@ -57,7 +57,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
     
     
     
-    /** 缓存Redis实例的XID。可以是数值、上下文变量、XID标识 */
+    /** 缓存实例的XID。可以是数值、上下文变量、XID标识 */
     private String                        cacheXID;
     
     /** 数据库名称。可以是数值、上下文变量、XID标识 */
@@ -84,6 +84,12 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
     /** 是否允许删除库或表。默认为：false */
     private Boolean                       allowDelTable;
     
+    /** 统一缓存接口（仅内部使用） */
+    private ICache<?>                     cache;
+    
+    /** 是否初始化（仅内部使用） */
+    private boolean                       isInit;
+    
     
     
     public CacheSetConfig()
@@ -96,6 +102,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
     public CacheSetConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
+        this.isInit        = false;
         this.nullDel       = false;
         this.expireTime    = "0";
         this.allowDelTable = false;
@@ -104,7 +111,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：缓存Redis实例的XID。可以是数值、上下文变量、XID标识
+     * 获取：缓存实例的XID。可以是数值、上下文变量、XID标识
      */
     public String getCacheXID()
     {
@@ -121,14 +128,15 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：缓存Redis实例的XID。可以是数值、上下文变量、XID标识
+     * 设置：缓存实例的XID。可以是数值、上下文变量、XID标识
      * 
-     * @param i_CacheXID 缓存Redis实例的XID。可以是数值、上下文变量、XID标识
+     * @param i_CacheXID 缓存实例的XID。可以是数值、上下文变量、XID标识
      */
     public void setCacheXID(String i_CacheXID)
     {
         // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
         this.cacheXID = ValueHelp.standardValueID(i_CacheXID);
+        this.isInit   = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -144,28 +152,35 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
      *
      * @return
      */
-    private IRedis gatCache()
+    private synchronized ICache<?> gatCache()
     {
-        if ( !Help.isNull(this.cacheXID) )
+        if ( !this.isInit )
         {
-            Object v_Cache = XJava.getObject(this.cacheXID);
-            if ( v_Cache == null )
+            if ( !Help.isNull(this.cacheXID) )
             {
-                return null;
-            }
-            else if ( v_Cache instanceof IRedis )
-            {
-                return (IRedis) v_Cache;
+                Object v_Cache = XJava.getObject(this.cacheXID);
+                if ( v_Cache == null )
+                {
+                    this.cache = CacheFactory.newInstanceOf(null ,Object.class);
+                }
+                else if ( v_Cache instanceof IRedis )
+                {
+                    this.cache = CacheFactory.newInstanceOf((IRedis) v_Cache ,Object.class);
+                }
+                else
+                {
+                    this.cache = CacheFactory.newInstanceOf(null ,Object.class);
+                }
             }
             else
             {
-                return null;
+                this.cache = CacheFactory.newInstanceOf(null ,Object.class);
             }
+            
+            this.isInit = true;
         }
-        else
-        {
-            return null;
-        }
+        
+        return this.cache;
     }
 
 
@@ -396,13 +411,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                 return v_Result;
             }
             
-            IRedis v_Cache = this.gatCache();
-            if ( v_Cache == null )
-            {
-                v_Result.setException(new RuntimeException(this.getXid() + " cacheXID[" + this.cacheXID + "] is not exists."));
-                this.refreshStatus(io_Context ,v_Result.getStatus());
-                return v_Result;
-            }
+            this.gatCache();
             
             Object v_CacheRetDatas = null;
             if ( !Help.isNull(this.dataBase) )
@@ -445,14 +454,14 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                         Object v_RowData = this.gatRowData(io_Context);
                         if ( v_RowData == null )
                         {
-                            v_CacheRetDatas = v_Cache.delete(v_DataBase ,v_Table ,v_PKID);
+                            v_CacheRetDatas = this.cache.delete(v_DataBase ,v_Table ,v_PKID);
                         }
                         else if ( v_RowData instanceof String )
                         {
                             String v_RowText = (String) v_RowData;
                             if ( Help.isNull(v_RowText) )
                             {
-                                v_CacheRetDatas = v_Cache.delete(v_DataBase ,v_Table ,v_PKID);
+                                v_CacheRetDatas = this.cache.delete(v_DataBase ,v_Table ,v_PKID);
                             }
                             else if ( XJSON.isJson(v_RowText) )
                             {
@@ -460,11 +469,11 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                                 Map<String ,Object> v_RowMap = (Map<String ,Object>) v_XJson.toJava(v_RowText ,HashMap.class);
                                 if ( Help.isNull(v_RowMap) )
                                 {
-                                    v_CacheRetDatas = v_Cache.delete(v_DataBase ,v_Table ,v_PKID);
+                                    v_CacheRetDatas = this.cache.delete(v_DataBase ,v_Table ,v_PKID);
                                 }
                                 else
                                 {
-                                    v_CacheRetDatas = v_Cache.save(v_DataBase ,v_Table ,v_PKID ,v_RowMap ,v_ExpireTime);
+                                    v_CacheRetDatas = this.cache.save(v_DataBase ,v_Table ,v_PKID ,v_RowMap ,v_ExpireTime);
                                 }
                             }
                             else
@@ -476,7 +485,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                         }
                         else 
                         {
-                            v_CacheRetDatas = v_Cache.save(v_DataBase ,v_Table ,v_PKID ,v_RowData ,this.nullDel ,v_ExpireTime);
+                            v_CacheRetDatas = this.cache.save(v_DataBase ,v_Table ,v_PKID ,v_RowData ,this.nullDel ,v_ExpireTime);
                         }
                     }
                     else
@@ -484,7 +493,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                         // 约定2：仅有库、表名称时，删除表中所有行数据。
                         if ( this.allowDelTable )
                         {
-                            v_CacheRetDatas = v_Cache.dropTable(v_DataBase ,v_Table);
+                            v_CacheRetDatas = this.cache.dropTable(v_DataBase ,v_Table);
                         }
                         else
                         {
@@ -500,7 +509,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                     // 约定1：仅有库名称时，删除库。
                     if ( this.allowDelTable )
                     {
-                        v_CacheRetDatas = v_Cache.dropDatabase(v_DataBase);
+                        v_CacheRetDatas = this.cache.dropDatabase(v_DataBase);
                     }
                     else
                     {
@@ -531,20 +540,20 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                 Object v_RowData = this.gatRowData(io_Context);
                 if ( v_RowData == null )
                 {
-                    v_CacheRetDatas = v_Cache.del(v_PKID);
+                    v_CacheRetDatas = this.cache.del(v_PKID);
                 }
                 else if ( v_RowData instanceof String )
                 {
                     String v_RowText = (String) v_RowData;
                     if ( Help.isNull(v_RowText) )
                     {
-                        v_CacheRetDatas = v_Cache.del(v_PKID);
+                        v_CacheRetDatas = this.cache.del(v_PKID);
                     }
                     else
                     {
                         if ( v_ExpireTime > 0L )
                         {
-                            if ( v_Cache.setex(v_PKID ,v_RowText ,v_ExpireTime) )
+                            if ( this.cache.setex(v_PKID ,v_RowText ,v_ExpireTime) ) 
                             {
                                 v_CacheRetDatas = 1L;
                             }
@@ -555,7 +564,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                         }
                         else
                         {
-                            if ( v_Cache.set(v_PKID ,v_RowText) )
+                            if ( this.cache.set(v_PKID ,v_RowText) )
                             {
                                 v_CacheRetDatas = 1L;
                             }
@@ -571,7 +580,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                     String v_RowText = v_RowData.toString();
                     if ( v_ExpireTime > 0L )
                     {
-                        if ( v_Cache.setex(v_PKID ,v_RowText ,v_ExpireTime) )
+                        if ( this.cache.setex(v_PKID ,v_RowText ,v_ExpireTime) )
                         {
                             v_CacheRetDatas = 1L;
                         }
@@ -582,7 +591,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                     }
                     else
                     {
-                        if ( v_Cache.set(v_PKID ,v_RowText) )
+                        if (this.cache.set(v_PKID ,v_RowText) )
                         {
                             v_CacheRetDatas = 1L;
                         }

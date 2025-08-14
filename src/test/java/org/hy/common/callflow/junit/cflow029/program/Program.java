@@ -19,10 +19,17 @@ public class Program
     
     public void method_Show(AppConfig i_AppConfig)
     {
-        XJSON v_XJson = new XJSON();
-        v_XJson.setReturnNVL(false);
-        
-        System.out.println(XJSON.format(v_XJson.toJson(i_AppConfig).toJSONString()));
+        if ( i_AppConfig == null )
+        {
+            System.out.println("{\n}");
+        }
+        else
+        {
+            XJSON v_XJson = new XJSON();
+            v_XJson.setReturnNVL(false);
+            
+            System.out.println(XJSON.format(v_XJson.toJson(i_AppConfig).toJSONString()));
+        }
     }
     
 }

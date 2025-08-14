@@ -47,7 +47,7 @@
         
         <xcg id="XCG_Query_RowObject">
             <comment>行数据反序列化为Java实例</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>App_IOT</pkID>                           <!-- 主键ID名称 -->
@@ -64,7 +64,7 @@
     
         <xcg id="XCG_Query_Row">
             <comment>有库、表、主键ID时，查一行数据</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>App_IOT</pkID>                           <!-- 主键ID名称 -->
@@ -80,7 +80,7 @@
     
         <xcg id="XCG_Query_AllDatas">
             <comment>仅有库、表名称时，查表中所有行数据</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <returnID>RetDatas</returnID>                  <!-- 定义返回结果的变量名称 -->
@@ -95,7 +95,7 @@
     
         <xcg id="XCG_Query_AllTables">
             <comment>仅有库名称时，查库中所有表信息</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <returnID>RetTables</returnID>                 <!-- 定义返回结果的变量名称 -->
             <route>

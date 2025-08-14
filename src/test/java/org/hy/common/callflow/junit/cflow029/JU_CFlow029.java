@@ -80,6 +80,9 @@ public class JU_CFlow029 extends AppInitConfig
         v_RowData.setUpdateUserID("HY");
         v_RowData.setIsDel(1);
         
+        // 删除Redis实例，模拟本地缓存模式
+        // XJava.remove("RedisOperation_MS_Common");
+        
         v_Context.put("RowDataObject" ,v_RowData);
         v_Context.put("PKID"          ,v_RowData.getId());
         

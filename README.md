@@ -82,9 +82,9 @@
         
         1.9.  定时元素，定时的周期性的驱动编排执行。
         
-        1.10. CG缓存读元素，读取Redis数据，反序列化转对象，支持库、表、行关系。
+        1.10. CG缓存读元素，读取Redis或XJava数据，反序列化转对象，支持库、表、行关系。
         
-        1.11. CS缓存写元素，创建、修改或删除Redis数据，支持库、表、行关系。
+        1.11. CS缓存写元素，创建、修改或删除Redis或XJava数据，支持库、表、行关系。
         
     2. 10种衍生元素。
     
@@ -3314,7 +3314,7 @@ __编排配置__
         
         <xcg id="XCG_Query_RowObject">
             <comment>行数据反序列化为Java实例</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>App_IOT</pkID>                           <!-- 主键ID名称 -->
@@ -3331,7 +3331,7 @@ __编排配置__
     
         <xcg id="XCG_Query_Row">
             <comment>有库、表、主键ID时，查一行数据</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>App_IOT</pkID>                           <!-- 主键ID名称 -->
@@ -3347,7 +3347,7 @@ __编排配置__
     
         <xcg id="XCG_Query_AllDatas">
             <comment>仅有库、表名称时，查表中所有行数据</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <returnID>RetDatas</returnID>                  <!-- 定义返回结果的变量名称 -->
@@ -3362,7 +3362,7 @@ __编排配置__
     
         <xcg id="XCG_Query_AllTables">
             <comment>仅有库名称时，查库中所有表信息</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <returnID>RetTables</returnID>                 <!-- 定义返回结果的变量名称 -->
             <route>
@@ -3452,7 +3452,7 @@ __编排配置__
         
         <xcg id="XCG_Query_ByObject">
             <comment>行数据反序列化为Java实例</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
@@ -3469,14 +3469,24 @@ __编排配置__
         
         
         
+        <xnesting id="XNesting_Show_Deleted">
+            <comment>回显删除后能否查到数据</comment>
+            <callFlowXID>:XCG_Query_ByObject</callFlowXID> <!-- 子编排的XID -->
+        </xnesting>
         
-    
+        
         <xcs id="XCS_Delete_ByPK">
             <comment>按主键删除一行数据</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
+            <route>
+                <succeed>
+                    <next ref="XNesting_Show_Deleted" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
         </xcs>
         
         
@@ -3494,7 +3504,7 @@ __编排配置__
     
         <xcs id="XCS_UpdateDel_ByObject">
             <comment>按对象，修改和删除字段</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
@@ -3523,7 +3533,7 @@ __编排配置__
     
         <xcs id="XCS_Update_ByJson">
             <comment>按Json格式，修改字段</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->
@@ -3556,7 +3566,7 @@ __编排配置__
         
         <xcs id="XCS_Create_ByJson">
             <comment>按Json格式，创建一行数据</comment>
-            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存Redis实例的XID -->
+            <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
             <pkID>:PKID</pkID>                             <!-- 主键ID名称 -->

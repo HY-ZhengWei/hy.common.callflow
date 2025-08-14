@@ -3,7 +3,6 @@ package org.hy.common.callflow.junit.cflow028.program;
 import java.util.Map;
 
 import org.hy.common.Help;
-import org.hy.common.TablePartitionRID;
 
 
 
@@ -19,7 +18,7 @@ import org.hy.common.TablePartitionRID;
 public class Program
 {
     
-    public void method_Show(Map<String ,String> i_Tables ,TablePartitionRID<String ,String> i_Datas ,Map<String ,String> i_Row ,AppConfig i_AppConfig)
+    public void method_Show(Map<String ,String> i_Tables ,Map<String ,String> i_Datas ,Map<String ,String> i_Row ,AppConfig i_AppConfig)
     {
         Help.print(i_Tables);
         Help.print(i_Datas);

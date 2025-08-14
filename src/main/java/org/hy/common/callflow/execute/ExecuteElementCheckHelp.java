@@ -358,12 +358,6 @@ public class ExecuteElementCheckHelp
         {
             CacheGetConfig v_CacheGet = (CacheGetConfig) i_ExecObject;
             
-            // 缓存Redis实例的XID不能为空
-            if ( Help.isNull(v_CacheGet.getCacheXID()) )
-            {
-                io_Result.set(false).setParamStr("CFlowCheck：CacheGetConfig[" + Help.NVL(v_CacheGet.getCacheXID()) + "].cacheXID is null.");
-                return false;
-            }
             // 表不空，库不能为空
             if ( !Help.isNull(v_CacheGet.getTable()) )
             {
@@ -373,6 +367,7 @@ public class ExecuteElementCheckHelp
                     return false;
                 }
             }
+            // 主键不空，库不空，表不能为空
             if ( !Help.isNull(v_CacheGet.getPkID()) )
             {
                 if ( !Help.isNull(v_CacheGet.getDataBase()) && Help.isNull(v_CacheGet.getTable()) )
@@ -384,28 +379,23 @@ public class ExecuteElementCheckHelp
         }
         else if ( i_ExecObject instanceof CacheSetConfig )
         {
-            CacheSetConfig v_CacheGet = (CacheSetConfig) i_ExecObject;
+            CacheSetConfig v_CacheSet = (CacheSetConfig) i_ExecObject;
             
-            // 缓存Redis实例的XID不能为空
-            if ( Help.isNull(v_CacheGet.getCacheXID()) )
-            {
-                io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(v_CacheGet.getCacheXID()) + "].cacheXID is null.");
-                return false;
-            }
             // 表不空，库不能为空
-            if ( !Help.isNull(v_CacheGet.getTable()) )
+            if ( !Help.isNull(v_CacheSet.getTable()) )
             {
-                if ( Help.isNull(v_CacheGet.getDataBase()) )
+                if ( Help.isNull(v_CacheSet.getDataBase()) )
                 {
-                    io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(v_CacheGet.getDataBase()) + "].database is null ,but table is not null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(v_CacheSet.getDataBase()) + "].database is null ,but table is not null.");
                     return false;
                 }
             }
-            if ( !Help.isNull(v_CacheGet.getPkID()) )
+            // 主键不空，库不空，表不能为空
+            if ( !Help.isNull(v_CacheSet.getPkID()) )
             {
-                if ( !Help.isNull(v_CacheGet.getDataBase()) && Help.isNull(v_CacheGet.getTable()) )
+                if ( !Help.isNull(v_CacheSet.getDataBase()) && Help.isNull(v_CacheSet.getTable()) )
                 {
-                    io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(v_CacheGet.getTable()) + "].table is null ,but database and pkID are not null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(v_CacheSet.getTable()) + "].table is null ,but database and pkID are not null.");
                     return false;
                 }
             }

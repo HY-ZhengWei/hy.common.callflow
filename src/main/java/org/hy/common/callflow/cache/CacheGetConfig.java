@@ -54,26 +54,32 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
     
     
     
-    /** 缓存Redis实例的XID。可以是数值、上下文变量、XID标识 */
-    private String  cacheXID;
+    /** 缓存实例的XID。可以是数值、上下文变量、XID标识 */
+    private String    cacheXID;
     
     /** 数据库名称。可以是数值、上下文变量、XID标识 */
-    private String  dataBase;
+    private String    dataBase;
     
     /** 表名称。可以是数值、上下文变量、XID标识 */
-    private String  table;
+    private String    table;
     
     /** 主键ID（要求：全域、全库、全表均是惟一的）。可以是数值、上下文变量、XID标识 */
-    private String  pkID;
+    private String    pkID;
     
     /** 获取数据并删除（仅对只通Key获取Value的情况有效，对库表行无效）。默认为：false */
-    private Boolean allowDelValue;
+    private Boolean   allowDelValue;
     
     /** 行数据的元类型。未直接使用Class<?>原因是：允许类不存在，仅在要执行时存在即可。优点：提高可移植性。 */
-    private String  rowClass;
+    private String    rowClass;
     
     /** 如果获取多行数据时，按List（false时）或Map（true时）结构返回的。默认为：true */
-    private Boolean returnListOrMap;
+    private Boolean   returnListOrMap;
+    
+    /** 统一缓存接口（仅内部使用） */
+    private ICache<?> cache;
+    
+    /** 是否初始化（仅内部使用） */
+    private boolean   isInit;
     
     
     
@@ -87,7 +93,8 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
     public CacheGetConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.allowDelValue           = false;
+        this.isInit          = false;
+        this.allowDelValue   = false;
         this.returnListOrMap = true;
         this.rowClass        = null;
     }
@@ -95,7 +102,7 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：缓存Redis实例的XID。可以是数值、上下文变量、XID标识
+     * 获取：缓存实例的XID。可以是数值、上下文变量、XID标识
      */
     public String getCacheXID()
     {
@@ -112,14 +119,15 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：缓存Redis实例的XID。可以是数值、上下文变量、XID标识
+     * 设置：缓存实例的XID。可以是数值、上下文变量、XID标识
      * 
-     * @param i_CacheXID 缓存Redis实例的XID。可以是数值、上下文变量、XID标识
+     * @param i_CacheXID 缓存实例的XID。可以是数值、上下文变量、XID标识
      */
     public void setCacheXID(String i_CacheXID)
     {
         // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
         this.cacheXID = ValueHelp.standardValueID(i_CacheXID);
+        this.isInit   = false;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -135,28 +143,41 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
      *
      * @return
      */
-    private IRedis gatCache()
+    private synchronized ICache<?> gatCache()
     {
-        if ( !Help.isNull(this.cacheXID) )
+        if ( !this.isInit )
         {
-            Object v_Cache = XJava.getObject(this.cacheXID);
-            if ( v_Cache == null )
+            Class<?> v_RowClass = this.gatRowClass();
+            if ( v_RowClass == null )
             {
-                return null;
+                v_RowClass = HashMap.class;
             }
-            else if ( v_Cache instanceof IRedis )
+            
+            if ( !Help.isNull(this.cacheXID) )
             {
-                return (IRedis) v_Cache;
+                Object v_Cache = XJava.getObject(this.cacheXID);
+                if ( v_Cache == null )
+                {
+                    this.cache = CacheFactory.newInstanceOf(null ,v_RowClass);
+                }
+                else if ( v_Cache instanceof IRedis )
+                {
+                    this.cache = CacheFactory.newInstanceOf((IRedis) v_Cache ,v_RowClass);
+                }
+                else
+                {
+                    this.cache = CacheFactory.newInstanceOf(null ,v_RowClass);
+                }
             }
             else
             {
-                return null;
+                this.cache = CacheFactory.newInstanceOf(null ,v_RowClass);
             }
+            
+            this.isInit = true;
         }
-        else
-        {
-            return null;
-        }
+        
+        return this.cache;
     }
 
 
@@ -353,6 +374,9 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
     public void setRowClass(String i_RowClass)
     {
         this.rowClass = i_RowClass;
+        this.isInit   = false;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     
@@ -398,13 +422,7 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
                 return v_Result;
             }
             
-            IRedis v_Cache = this.gatCache();
-            if ( v_Cache == null )
-            {
-                v_Result.setException(new RuntimeException(this.getXid() + " cacheXID[" + this.cacheXID + "] is not exists."));
-                this.refreshStatus(io_Context ,v_Result.getStatus());
-                return v_Result;
-            }
+            this.gatCache();
             
             Object v_CacheRetDatas = null;
             if ( !Help.isNull(this.dataBase) )
@@ -419,8 +437,7 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
                 
                 if ( !Help.isNull(this.table) )
                 {
-                    Class<?> v_RowClass = this.gatRowClass();
-                    String   v_Table    = (String) ValueHelp.getValue(this.table ,String.class ,"" ,io_Context);
+                    String v_Table = (String) ValueHelp.getValue(this.table ,String.class ,"" ,io_Context);
                     if ( Help.isNull(v_Table) )
                     {
                         v_Result.setException(new RuntimeException(this.getXid() + " table[" + this.table + "] is not exists."));
@@ -439,46 +456,25 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
                         }
                         
                         // 约定3：有库、表、主键ID时，查一行数据。
-                        if ( v_RowClass == null )
-                        {
-                            v_CacheRetDatas = v_Cache.getRow(v_DataBase ,v_Table ,v_PKID ,HashMap.class);
-                        }
-                        else
-                        {
-                            v_CacheRetDatas = v_Cache.getRow(v_DataBase ,v_Table ,v_PKID ,v_RowClass);
-                        }
+                        v_CacheRetDatas = this.cache.getRow(v_DataBase ,v_Table ,v_PKID);
                     }
                     else
                     {
                         // 约定2：仅有库、表名称时，查表中所有行数据。
-                        if ( v_RowClass == null )
+                        if ( this.returnListOrMap )
                         {
-                            if ( this.returnListOrMap )
-                            {
-                                v_CacheRetDatas = v_Cache.getRows    (v_DataBase ,v_Table);
-                            }
-                            else
-                            {
-                                v_CacheRetDatas = v_Cache.getRowsList(v_DataBase ,v_Table);
-                            }
+                            v_CacheRetDatas = this.cache.getRowsMap(v_DataBase ,v_Table);
                         }
                         else
                         {
-                            if ( this.returnListOrMap )
-                            {
-                                v_CacheRetDatas = v_Cache.getRows    (v_DataBase ,v_Table ,v_RowClass);
-                            }
-                            else
-                            {
-                                v_CacheRetDatas = v_Cache.getRowsList(v_DataBase ,v_Table ,v_RowClass);
-                            }
+                            v_CacheRetDatas = this.cache.getRowsList(v_DataBase ,v_Table);
                         }
                     }
                 }
                 else
                 {
                     // 约定1：仅有库名称时，查库中所有表信息。
-                    v_CacheRetDatas = v_Cache.getRows(v_DataBase);
+                    v_CacheRetDatas = this.cache.getRows(v_DataBase);
                 }
             }
             else if ( !Help.isNull(this.pkID) )
@@ -494,11 +490,11 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
                 // 约定4：仅有主键ID时，按Key、Value查一个普通字符串。
                 if ( this.allowDelValue )
                 {
-                    v_CacheRetDatas = v_Cache.getdel(v_PKID);
+                    v_CacheRetDatas = this.cache.getdel(v_PKID);
                 }
                 else
                 {
-                    v_CacheRetDatas = v_Cache.get(v_PKID);
+                    v_CacheRetDatas = this.cache.get(v_PKID);
                 }
             }
             
