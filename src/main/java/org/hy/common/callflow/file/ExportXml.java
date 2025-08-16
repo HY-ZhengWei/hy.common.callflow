@@ -14,6 +14,8 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.cache.CacheGetConfig;
 import org.hy.common.callflow.cache.CacheSetConfig;
 import org.hy.common.callflow.enums.ElementType;
+import org.hy.common.callflow.enums.ExportType;
+import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.event.PublishConfig;
 import org.hy.common.callflow.event.SubscribeConfig;
@@ -47,6 +49,7 @@ import org.hy.common.license.IHash;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-24
  * @version     v1.0
+ *              v2.0  2025-08-16  添加：注释说明和导出类型
  */
 public class ExportXml
 {
@@ -83,6 +86,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Command  .getXmlName() ,CommandConfig.class);
         getInstance().addImportHead(ElementType.XSQL     .getXmlName() ,XSQLConfig.class);
         getInstance().addImportHead(ElementType.Job      .getXmlName() ,JOBConfig.class);
+        getInstance().addImportHead(ElementType.RouteItem.getXmlName() ,RouteItem.class);
     }
     
     
@@ -170,7 +174,7 @@ public class ExportXml
      */
     public String save(IExecute io_ExecObject) throws IOException
     {
-        return save(io_ExecObject ,CallFlow.$SavePath);
+        return save(io_ExecObject ,"" ,ExportType.All ,CallFlow.$SavePath);
     }
     
     
@@ -185,13 +189,41 @@ public class ExportXml
      * @author      ZhengWei(HY)
      * @createDate  2025-02-26
      * @version     v1.0
+     *              v2.0  2025-08-16  添加：注释说明和导出类型
      *
      * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
+     * @param i_Comment      注释说明
+     * @param i_ExportType   导出类型
+     * @return               返回保存文件的全路径
+     * @throws IOException 
+     */
+    public String save(IExecute io_ExecObject ,String i_Comment ,ExportType i_ExportType) throws IOException
+    {
+        return save(io_ExecObject ,i_Comment ,i_ExportType ,CallFlow.$SavePath);
+    }
+    
+    
+    
+    /**
+     * 保存编排为文件
+     * 
+     * 注1：同一天保存多次，如果编排配置没有发生改变时，只生成一份保存文件。
+     * 注2：当执行对象没有XID时，会自动生成
+     * 注3：没有XID时会自动生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-26
+     * @version     v1.0
+     *              v2.0  2025-08-16  添加：注释说明和导出类型
+     *
+     * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
+     * @param i_Comment      注释说明
+     * @param i_ExportType   导出类型
      * @param i_SavePath     保存目录
      * @return               返回保存文件的全路径
      * @throws IOException 
      */
-    public String save(IExecute io_ExecObject ,String i_SavePath) throws IOException
+    public String save(IExecute io_ExecObject ,String i_Comment ,ExportType i_ExportType ,String i_SavePath) throws IOException
     {
         if ( Help.isNull(io_ExecObject.getXJavaID()) )
         {
@@ -214,7 +246,7 @@ public class ExportXml
         }
         
         FileHelp v_FileHelp   = new FileHelp();
-        String   v_XmlContent = export(io_ExecObject);
+        String   v_XmlContent = export(io_ExecObject ,i_Comment ,i_ExportType);
         String   v_Signature  = $Hash.encrypt(v_XmlContent);
         String   v_SaveName   = v_SavePath.getPath() 
                               + Help.getSysPathSeparator()
@@ -249,6 +281,29 @@ public class ExportXml
      */
     public String export(IExecute i_ExecObject)
     {
+        return export(i_ExecObject ,"" ,ExportType.All);
+    }
+    
+    
+    
+    /**
+     * 导出为XML格式
+     * 
+     * 注1：当没有树ID时，会自动生成
+     * 注2：当执行对象没有XID时，会自动生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-02-25
+     * @version     v1.0
+     *              v2.0  2025-08-15  添加：注释说明和导出类型
+     *
+     * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
+     * @param i_Comment     注释说明
+     * @param i_ExportType  导出类型
+     * @return
+     */
+    public String export(IExecute i_ExecObject ,String i_Comment ,ExportType i_ExportType)
+    {
         if ( i_ExecObject == null )
         {
             throw new NullPointerException("ExecObject is null.");
@@ -260,7 +315,7 @@ public class ExportXml
         }
         
         String v_Imports  = toXmlImportHeads();
-        String v_Content  = exportToChild(i_ExecObject ,i_ExecObject.getTreeIDs().iterator().next());
+        String v_Content  = exportToChild(i_ExecObject ,i_ExecObject.getTreeIDs().iterator().next() ,i_ExportType);
         String v_Template = getTemplateXml();
         
         while ( v_Content.startsWith("\n") )
@@ -268,7 +323,17 @@ public class ExportXml
             v_Content = v_Content.substring(1);
         }
         
-        return StringHelp.replaceAll(v_Template ,new String[]{":Imports" ,":Content"} ,new String[] {v_Imports ,v_Content});
+        String v_Comment = null;
+        if ( Help.isNull(i_Comment) )
+        {
+            v_Comment = "";
+        }
+        else
+        {
+            v_Comment = "：" + i_Comment;
+        }
+        
+        return StringHelp.replaceAll(v_Template ,new String[]{":Imports" ,":Comment" ,":Content"} ,new String[] {v_Imports ,v_Comment ,v_Content});
     }
     
     
@@ -279,12 +344,14 @@ public class ExportXml
      * @author      ZhengWei(HY)
      * @createDate  2025-02-25
      * @version     v1.0
+     *              v2.0  2025-08-15  添加：导出类型
      *
      * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param i_TreeID      执行对象的树ID
+     * @param i_ExportType  导出类型
      * @return
      */
-    private String exportToChild(IExecute i_ExecObject ,String i_TreeID)
+    private String exportToChild(IExecute i_ExecObject ,String i_TreeID ,ExportType i_ExportType)
     {
         StringBuilder   v_Xml    = new StringBuilder();
         List<RouteItem> v_Childs = null;
@@ -292,42 +359,78 @@ public class ExportXml
         v_Childs = i_ExecObject.getRoute().getSucceeds();
         if ( !Help.isNull(v_Childs) )
         {
+            int v_Index = 0;
             for (RouteItem v_RouteItem : v_Childs)
             {
+                // 没有XID时，自动生成
+                if ( Help.isNull(v_RouteItem.getXJavaID()) )
+                {
+                    String v_RouteCode = RouteType.Succeed.getCode();
+                    if ( i_ExecObject instanceof WaitConfig
+                      || i_ExecObject instanceof ConditionConfig )
+                    {
+                        v_RouteCode = RouteType.If.getCode();
+                    }
+                    else if ( i_ExecObject instanceof CalculateConfig )
+                    {
+                        CalculateConfig v_Calculate = (CalculateConfig) i_ExecObject;
+                        if ( Help.isNull(v_Calculate.getReturnID()) )
+                        {
+                            v_RouteCode = RouteType.If.getCode();
+                        }
+                    }
+                    
+                    v_RouteItem.setXJavaID(i_ExecObject.getXJavaID() + "_" + v_RouteCode + StringHelp.lpad(++v_Index ,3 ,"0"));
+                }
+                
                 IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
                 }
-                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
+                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID) ,i_ExportType));
             }
         }
         
         v_Childs = i_ExecObject.getRoute().getFaileds();
         if ( !Help.isNull(v_Childs) )
         {
+            int v_Index = 0;
             for (RouteItem v_RouteItem : v_Childs)
             {
+                // 没有XID时，自动生成
+                if ( Help.isNull(v_RouteItem.getXJavaID()) )
+                {
+                    v_RouteItem.setXJavaID(i_ExecObject.getXJavaID() + "_" + RouteType.Else.getCode() + StringHelp.lpad(++v_Index ,3 ,"0"));
+                }
+                
                 IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
                 }
-                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
+                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID) ,i_ExportType));
             }
         }
         
         v_Childs = i_ExecObject.getRoute().getExceptions();
         if ( !Help.isNull(v_Childs) )
         {
+            int v_Index = 0;
             for (RouteItem v_RouteItem : v_Childs)
             {
+                // 没有XID时，自动生成
+                if ( Help.isNull(v_RouteItem.getXJavaID()) )
+                {
+                    v_RouteItem.setXJavaID(i_ExecObject.getXJavaID() + "_" + RouteType.Error.getCode() + StringHelp.lpad(++v_Index ,3 ,"0"));
+                }
+                
                 IExecute v_Child = v_RouteItem.gatNext();
                 if ( v_Child instanceof SelfLoop )
                 {
                     continue;
                 }
-                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID)));
+                v_Xml.append(exportToChild(v_Child ,v_Child.getTreeID(i_TreeID) ,i_ExportType));
             }
         }
         
@@ -416,7 +519,7 @@ public class ExportXml
             }
         }
         
-        String v_ExecXml = i_ExecObject.toXml(2 ,i_ExecObject.getTreeSuperID(i_TreeID));
+        String v_ExecXml = i_ExecObject.toXml(2 ,i_ExecObject.getTreeSuperID(i_TreeID) ,i_ExportType);
         if ( !Help.isNull(v_ExecXml) )
         {
             v_Xml.append("\n\n").append(v_ExecXml);

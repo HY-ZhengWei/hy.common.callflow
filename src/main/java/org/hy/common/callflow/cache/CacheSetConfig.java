@@ -12,11 +12,11 @@ import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
+import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
-import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.db.DBSQL;
 import org.hy.common.redis.IRedis;
 import org.hy.common.xml.XJSON;
@@ -49,6 +49,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-08-11
  * @version     v1.0
+ *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  */
 public class CacheSetConfig extends ExecuteElement implements Cloneable
 {
@@ -668,15 +669,18 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
      * @author      ZhengWei(HY)
      * @createDate  2025-08-11
      * @version     v1.0
+     *              v2.0  2025-08-15  添加：导出类型
      *
      * @param i_Level        层级。最小下标从0开始。
      *                           0表示每行前面有0个空格；
      *                           1表示每行前面有4个空格；
      *                           2表示每行前面有8个空格；
      * @param i_SuperTreeID  上级树ID
+     * @param i_ExportType   导出类型
      * @return
      */
-    public String toXml(int i_Level ,String i_SuperTreeID)
+    @Override
+    public String toXml(int i_Level ,String i_SuperTreeID ,ExportType i_ExportType)
     {
         String v_TreeID = this.getTreeID(i_SuperTreeID);
         if ( this.getTreeIDs().size() >= 2 )
@@ -697,87 +701,93 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(IToXml.toBeginID(v_XName ,this.getXJavaID()));
+            if ( ExportType.UI.equals(i_ExportType) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(IToXml.toBeginThis(v_XName ,this.getXJavaID()));
+            }
+            else
+            {
+                v_Xml.append("\n").append(v_LevelN).append(IToXml.toBeginID(  v_XName ,this.getXJavaID()));
+            }
         }
         else
         {
             v_Xml.append("\n").append(v_LevelN).append(IToXml.toBegin(v_XName));
         }
         
-        v_Xml.append(super.toXml(i_Level));
+        v_Xml.append(super.toXml(i_Level ,i_ExportType));
         
-        if ( !Help.isNull(this.cacheXID) )
+        if ( !ExportType.UI.equals(i_ExportType) )
         {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("cacheXID"     ,this.getCacheXID()));
-        }
-        if ( !Help.isNull(this.dataBase) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("dataBase"     ,this.dataBase));
-        }
-        if ( !Help.isNull(this.table) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("table"        ,this.table));
-        }
-        if ( !Help.isNull(this.pkID) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("pkID"         ,this.pkID));
-        }
-        if ( !Help.isNull(this.rowData) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("rowData"      ,this.rowData ,v_NewSpace));
-        }
-        if ( this.nullDel != null && this.nullDel )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("nullDel"       ,this.nullDel));
-        }
-        if ( !Help.isNull(this.expireTime) && !"0".equals(this.expireTime) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("expireTime"    ,this.expireTime));
-        }
-        if ( this.allowDelTable != null && this.allowDelTable )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("allowDelTable" ,this.allowDelTable));
-        }
-        if ( !Help.isNull(this.returnID) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID"      ,this.returnID));
-        }
-        if ( !Help.isNull(this.statusID) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("statusID"      ,this.statusID));
-        }
-        
-        if ( !Help.isNull(this.route.getSucceeds()) 
-          || !Help.isNull(this.route.getFaileds())
-          || !Help.isNull(this.route.getExceptions()) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
-            
-            // 成功路由
-            if ( !Help.isNull(this.route.getSucceeds()) )
+            if ( !Help.isNull(this.cacheXID) )
             {
-                for (RouteItem v_RouteItem : this.route.getSucceeds())
-                {
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBegin(RouteType.Succeed.getXmlName()));
-                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(RouteType.Succeed.getXmlName()));
-                }
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("cacheXID"     ,this.getCacheXID()));
             }
-            // 异常路由
-            if ( !Help.isNull(this.route.getExceptions()) )
+            if ( !Help.isNull(this.dataBase) )
             {
-                for (RouteItem v_RouteItem : this.route.getExceptions())
-                {
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBegin(RouteType.Error.getXmlName()));
-                    v_Xml.append(v_RouteItem.toXml(i_Level + 1 ,v_TreeID));
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(RouteType.Error.getXmlName()));
-                }
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("dataBase"     ,this.dataBase));
+            }
+            if ( !Help.isNull(this.table) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("table"        ,this.table));
+            }
+            if ( !Help.isNull(this.pkID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("pkID"         ,this.pkID));
+            }
+            if ( !Help.isNull(this.rowData) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("rowData"      ,this.rowData ,v_NewSpace));
+            }
+            if ( this.nullDel != null && this.nullDel )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("nullDel"       ,this.nullDel));
+            }
+            if ( !Help.isNull(this.expireTime) && !"0".equals(this.expireTime) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("expireTime"    ,this.expireTime));
+            }
+            if ( this.allowDelTable != null && this.allowDelTable )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("allowDelTable" ,this.allowDelTable));
+            }
+            if ( !Help.isNull(this.returnID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID"      ,this.returnID));
+            }
+            if ( !Help.isNull(this.statusID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("statusID"      ,this.statusID));
             }
             
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));
+            if ( !Help.isNull(this.route.getSucceeds()) 
+              || !Help.isNull(this.route.getExceptions()) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
+                
+                // 成功路由
+                this.toXmlRouteItems(v_Xml ,this.route.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                // 异常路由
+                this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error.getXmlName()   ,i_Level ,v_TreeID ,i_ExportType);
+                
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));
+            }
         }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));
+        
+        // 编排流图时，提升路由项的层次，同时独立输出每个路由项
+        if ( ExportType.UI.equals(i_ExportType) )
+        {
+            if ( !Help.isNull(this.route.getSucceeds()) 
+              || !Help.isNull(this.route.getExceptions()) )
+            {
+                // 成功路由
+                this.toXmlRouteItems(v_Xml ,this.route.getSucceeds()   ,ElementType.RouteItem.getXmlName() ,i_Level - 2 ,v_TreeID ,i_ExportType);
+                // 异常路由
+                this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,ElementType.RouteItem.getXmlName() ,i_Level - 2 ,v_TreeID ,i_ExportType);
+            }
+        }
         
         return v_Xml.toString();
     }

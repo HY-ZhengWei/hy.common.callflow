@@ -1,6 +1,7 @@
 package org.hy.common.callflow.file;
 
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.xml.XJSON;
 
 
@@ -23,15 +24,17 @@ public interface IToXml
      * @author      ZhengWei(HY)
      * @createDate  2025-02-24
      * @version     v1.0
+     *              v2.0  2025-08-15  添加：导出类型
      *
      * @param i_Level        层级。最小下标从0开始。
      *                           0表示每行前面有0个空格；
      *                           1表示每行前面有4个空格；
      *                           2表示每行前面有8个空格；
      * @param i_SuperTreeID  上级树ID
+     * @param i_ExportType   导出类型
      * @return
      */
-    public String toXml(int i_Level ,String i_SuperTreeID);
+    public String toXml(int i_Level ,String i_SuperTreeID ,ExportType i_ExportType);
     
     
     
@@ -208,6 +211,26 @@ public interface IToXml
     static String toBeginID(String i_TagName ,String i_ID)
     {
         return "<" + i_TagName + " id=\"" + i_ID + "\">";
+    }
+    
+    
+    
+    /**
+     * 按标记名称生成 xml 格式的标记开始（带有this复用）
+     * 
+     * 生成形式如：<标记名称 id="ID值" this="ID值">
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-08-15
+     * @version     v1.0
+     *
+     * @param i_TagName  标记名称
+     * @param i_ID       ID值
+     * @return
+     */
+    static String toBeginThis(String i_TagName ,String i_ID)
+    {
+        return "<" + i_TagName + " id=\"" + i_ID + "\" this=\"" + i_ID + "\">";
     }
     
     

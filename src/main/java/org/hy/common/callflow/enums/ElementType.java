@@ -50,6 +50,8 @@ public enum ElementType
     
     SelfLoop( "SELFLOOP"  ,""           ,"自循环"),
     
+    RouteItem("ROUTEITEM" ,"xrouteItem" ,"路径项"),
+    
     ;
     
     

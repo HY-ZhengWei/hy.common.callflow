@@ -5,10 +5,13 @@ import java.util.Map;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.XJavaID;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.cache.CacheGetConfig;
 import org.hy.common.callflow.cache.CacheSetConfig;
 import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.enums.ElementType;
+import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.enums.SelfLoopType;
 import org.hy.common.callflow.event.JOBConfig;
@@ -32,8 +35,9 @@ import org.hy.common.callflow.returns.ReturnConfig;
  * @author      ZhengWei(HY)
  * @createDate  2025-03-09
  * @version     v1.0
+ *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  */
-public class RouteItem implements IToXml ,CloneableCallFlow
+public class RouteItem implements IToXml ,CloneableCallFlow ,XJavaID
 {
     
     /** 归属者（仅对外开放setter方法，为防止死循环）（内部使用） */
@@ -44,6 +48,9 @@ public class RouteItem implements IToXml ,CloneableCallFlow
     
     /** 主键标识 */
     private String         id;
+    
+    /** 全局惟一标识ID */                
+    private String         xid;
     
     /** 注释。可用于日志的输出等帮助性的信息 */
     private String         comment;
@@ -502,16 +509,18 @@ public class RouteItem implements IToXml ,CloneableCallFlow
      * @author      ZhengWei(HY)
      * @createDate  2025-02-24
      * @version     v1.0
+     *              v2.0  2025-08-15  添加：导出类型
      *
      * @param i_Level        层级。最小下标从0开始。
      *                           0表示每行前面有0个空格；
      *                           1表示每行前面有4个空格；
      *                           2表示每行前面有8个空格；
      * @param i_SuperTreeID  上级树ID
+     * @param i_ExportType   导出类型
      * @return
      */
     @Override
-    public String toXml(int i_Level ,String i_SuperTreeID)
+    public String toXml(int i_Level ,String i_SuperTreeID ,ExportType i_ExportType)
     {
         StringBuilder v_Xml      = new StringBuilder();
         String        v_Level1   = "    ";
@@ -522,74 +531,81 @@ public class RouteItem implements IToXml ,CloneableCallFlow
         {
             v_Xml.append(v_NewSpace).append(IToXml.toValue("id" ,this.id));
         }
-        if ( !Help.isNull(this.lineStyle) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("lineStyle" ,this.lineStyle));
-        }
-        if ( !Help.isNull(this.lineColor) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("lineColor" ,this.lineColor));
-        }
-        if ( !Help.isNull(this.lineSize) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("lineSize" ,this.lineSize));
-        }
-        if ( !Help.isNull(this.fontColor) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontColor" ,this.fontColor));
-        }
-        if ( !Help.isNull(this.fontFamily) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontFamily" ,this.fontFamily));
-        }
-        if ( !Help.isNull(this.fontWeight) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontWeight" ,this.fontWeight));
-        }
-        if ( !Help.isNull(this.fontSize) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontSize" ,this.fontSize));
-        }
-        if ( !Help.isNull(this.fontAlign) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("fontAlign" ,this.fontAlign));
-        }
-        if ( !Help.isNull(this.createUserID) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("createUserID" ,this.createUserID));
-        }
-        if ( !Help.isNull(this.updateUserID) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("updateUserID" ,this.updateUserID));
-        }
-        if ( this.createTime != null )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
-        }
-        if ( this.updateTime != null )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
-        }
-        if ( !Help.isNull(this.pathDatas) )
-        {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("pathDatas" ,this.pathDatas ,v_NewSpace));
-        }
         if ( !Help.isNull(this.comment) )
         {
             v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
         }
         
-        if ( this.next instanceof SelfLoop )
+        if ( ExportType.UI.equals(i_ExportType) || ExportType.All.equals(i_ExportType) )
         {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("next" ,((SelfLoop) this.next).getRefXID()));
+            if ( !Help.isNull(this.lineStyle) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("lineStyle" ,this.lineStyle));
+            }
+            if ( !Help.isNull(this.lineColor) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("lineColor" ,this.lineColor));
+            }
+            if ( !Help.isNull(this.lineSize) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("lineSize" ,this.lineSize));
+            }
+            if ( !Help.isNull(this.fontColor) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontColor" ,this.fontColor));
+            }
+            if ( !Help.isNull(this.fontFamily) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontFamily" ,this.fontFamily));
+            }
+            if ( !Help.isNull(this.fontWeight) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontWeight" ,this.fontWeight));
+            }
+            if ( !Help.isNull(this.fontSize) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontSize" ,this.fontSize));
+            }
+            if ( !Help.isNull(this.fontAlign) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontAlign" ,this.fontAlign));
+            }
+            if ( !Help.isNull(this.createUserID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("createUserID" ,this.createUserID));
+            }
+            if ( !Help.isNull(this.updateUserID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("updateUserID" ,this.updateUserID));
+            }
+            if ( this.createTime != null )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
+            }
+            if ( this.updateTime != null )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
+            }
+            if ( !Help.isNull(this.pathDatas) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("pathDatas" ,this.pathDatas ,v_NewSpace));
+            }
         }
-        else if ( !Help.isNull(this.next.getXJavaID()) )
+        
+        if ( !ExportType.UI.equals(i_ExportType) )
         {
-            v_Xml.append(v_NewSpace).append(IToXml.toRef("next" ,this.next.getXJavaID()));
-        }
-        else
-        {
-            v_Xml.append(this.next.toXml(i_Level + 1 ,i_SuperTreeID));
+            if ( this.next instanceof SelfLoop )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("next" ,((SelfLoop) this.next).getRefXID()));
+            }
+            else if ( !Help.isNull(this.next.getXJavaID()) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toRef("next" ,this.next.getXJavaID()));
+            }
+            else
+            {
+                v_Xml.append(this.next.toXml(i_Level + 1 ,i_SuperTreeID ,i_ExportType));
+            }
         }
         
         return v_Xml.toString();
@@ -756,6 +772,56 @@ public class RouteItem implements IToXml ,CloneableCallFlow
     {
         // 无须克隆路由项，也不允许调用此方法
         throw new RuntimeException("Not allowed to call RouteItem.clone().");
+    }
+    
+    
+    /**
+     * 获取：全局惟一标识ID
+     */
+    public String getXid()
+    {
+        return xid;
+    }
+
+    
+    /**
+     * 设置：全局惟一标识ID
+     * 
+     * @param i_Xid 全局惟一标识ID
+     */
+    public void setXid(String i_Xid)
+    {
+        if ( CallFlow.isSystemXID(i_Xid) )
+        {
+            throw new IllegalArgumentException("RouteItem XID[" + i_Xid + "] is SystemXID.");
+        }
+        this.xid = i_Xid;
+    }
+
+
+    /**
+     * 设置XJava池中对象的ID标识。此方法不用用户调用设置值，是自动的。
+     * 
+     * @param i_XJavaID
+     */
+    public void setXJavaID(String i_XJavaID)
+    {
+        if ( CallFlow.isSystemXID(i_XJavaID) )
+        {
+            throw new IllegalArgumentException("RouteItem XJavaID[" + i_XJavaID + "] is SystemXID.");
+        }
+        this.xid = i_XJavaID;
+    }
+    
+    
+    /**
+     * 获取XJava池中对象的ID标识。
+     * 
+     * @return
+     */
+    public String getXJavaID()
+    {
+        return this.xid;
     }
     
 }

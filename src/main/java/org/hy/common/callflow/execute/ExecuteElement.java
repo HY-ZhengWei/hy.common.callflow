@@ -18,6 +18,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
+import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.callflow.route.RouteItem;
@@ -35,6 +36,7 @@ import org.hy.common.db.DBSQL;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-24
  * @version     v1.0
+ *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  */
 public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
@@ -1196,15 +1198,17 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      * @author      ZhengWei(HY)
      * @createDate  2025-02-24
      * @version     v1.0
+     *              v2.0  2025-08-15  添加：导出类型
      *
-     * @param i_Level  层级。最小下标从0开始。
-     *                   0表示每行前面有0个空格；
-     *                   1表示每行前面有4个空格；
-     *                   2表示每行前面有8个空格；
+     * @param i_Level       层级。最小下标从0开始。
+     *                         0表示每行前面有0个空格；
+     *                         1表示每行前面有4个空格；
+     *                         2表示每行前面有8个空格；
+     * @param i_ExportType  导出类型
      *                  
      * @return
      */
-    public String toXml(int i_Level)
+    public String toXml(int i_Level ,ExportType i_ExportType)
     {
         StringBuilder v_Xml      = new StringBuilder();
         String        v_Level1   = "    ";
@@ -1215,107 +1219,167 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("id" ,this.id));
         }
-        if ( !Help.isNull(this.treeIDs) )
+        if ( !ExportType.UI.equals(i_ExportType) )
         {
-            for (String v_TreeID : this.treeIDs.keySet())
+            if ( !Help.isNull(this.treeIDs) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("treeID" ,v_TreeID));
+                for (String v_TreeID : this.treeIDs.keySet())
+                {
+                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("treeID" ,v_TreeID));
+                }
             }
         }
         if ( !Help.isNull(this.comment) )
         {
             v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
         }
-        if ( !Help.isNull(this.styleName) )
+        if ( !ExportType.UI.equals(i_ExportType) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("styleName" ,this.styleName));
+            if ( !Help.isNull(this.context) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
+            }
         }
-        if ( this.x != null )
+        if ( ExportType.UI.equals(i_ExportType) || ExportType.All.equals(i_ExportType) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("x" ,this.x));
-        }
-        if ( this.y != null )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("y" ,this.y));
-        }
-        if ( this.z != null )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("z" ,this.z));
-        }
-        if ( this.height != null )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("height" ,this.height));
-        }
-        if ( this.width != null )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("width" ,this.width));
-        }
-        if ( !Help.isNull(this.iconURL) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("iconURL" ,this.iconURL));
-        }
-        if ( this.opacity != null )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("opacity" ,this.opacity));
-        }
-        if ( !Help.isNull(this.backgroudColor) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("backgroudColor" ,this.backgroudColor));
-        }
-        if ( !Help.isNull(this.lineStyle) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineStyle" ,this.lineStyle));
-        }
-        if ( !Help.isNull(this.lineColor) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineColor" ,this.lineColor));
-        }
-        if ( !Help.isNull(this.lineSize) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineSize" ,this.lineSize));
-        }
-        if ( !Help.isNull(this.fontColor) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontColor" ,this.fontColor));
-        }
-        if ( !Help.isNull(this.fontFamily) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontFamily" ,this.fontFamily));
-        }
-        if ( !Help.isNull(this.fontWeight) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontWeight" ,this.fontWeight));
-        }
-        if ( !Help.isNull(this.fontSize) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontSize" ,this.fontSize));
-        }
-        if ( !Help.isNull(this.fontAlign) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontAlign" ,this.fontAlign));
-        }
-        if ( !Help.isNull(this.createUserID) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createUserID" ,this.createUserID));
-        }
-        if ( !Help.isNull(this.updateUserID) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateUserID" ,this.updateUserID));
-        }
-        if ( this.createTime != null )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
-        }
-        if ( this.updateTime != null )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
-        }
-        if ( !Help.isNull(this.context) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
+            if ( !Help.isNull(this.styleName) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("styleName" ,this.styleName));
+            }
+            if ( this.x != null )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("x" ,this.x));
+            }
+            if ( this.y != null )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("y" ,this.y));
+            }
+            if ( this.z != null )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("z" ,this.z));
+            }
+            if ( this.height != null )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("height" ,this.height));
+            }
+            if ( this.width != null )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("width" ,this.width));
+            }
+            if ( !Help.isNull(this.iconURL) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("iconURL" ,this.iconURL));
+            }
+            if ( this.opacity != null )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("opacity" ,this.opacity));
+            }
+            if ( !Help.isNull(this.backgroudColor) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("backgroudColor" ,this.backgroudColor));
+            }
+            if ( !Help.isNull(this.lineStyle) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineStyle" ,this.lineStyle));
+            }
+            if ( !Help.isNull(this.lineColor) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineColor" ,this.lineColor));
+            }
+            if ( !Help.isNull(this.lineSize) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineSize" ,this.lineSize));
+            }
+            if ( !Help.isNull(this.fontColor) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontColor" ,this.fontColor));
+            }
+            if ( !Help.isNull(this.fontFamily) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontFamily" ,this.fontFamily));
+            }
+            if ( !Help.isNull(this.fontWeight) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontWeight" ,this.fontWeight));
+            }
+            if ( !Help.isNull(this.fontSize) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontSize" ,this.fontSize));
+            }
+            if ( !Help.isNull(this.fontAlign) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontAlign" ,this.fontAlign));
+            }
+            if ( !Help.isNull(this.createUserID) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createUserID" ,this.createUserID));
+            }
+            if ( !Help.isNull(this.updateUserID) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateUserID" ,this.updateUserID));
+            }
+            if ( this.createTime != null )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
+            }
+            if ( this.updateTime != null )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
+            }
         }
         
         return v_Xml.toString();
+    }
+    
+    
+    
+    /**
+     * 转为Xml格式的内容
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-08-16
+     * @version     v1.0
+     *
+     * @param io_Xml        输出的字符串缓存
+     * @param i_RouteItems  输出的字符串缓存
+     * @param i_XmlName     XML节点名称
+     * @param i_Level       层级。最小下标从0开始。
+     *                         0表示每行前面有0个空格；
+     *                         1表示每行前面有4个空格；
+     *                         2表示每行前面有8个空格；
+     * @param i_SuperTreeID 上级树ID
+     * @param i_ExportType  导出类型
+     *                  
+     * @return
+     */
+    protected void toXmlRouteItems(StringBuilder   io_Xml 
+                                  ,List<RouteItem> i_RouteItems 
+                                  ,String          i_XmlName 
+                                  ,int             i_Level
+                                  ,String          i_SuperTreeID
+                                  ,ExportType      i_ExportType)
+    {
+        if ( !Help.isNull(i_RouteItems) )
+        {
+            String v_Level1   = "    ";
+            String v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+            String v_NewSpace = "\n" + v_LevelN + v_Level1;
+            
+            for (RouteItem v_RouteItem : i_RouteItems)
+            {
+                if ( ExportType.UI.equals(i_ExportType) )
+                {
+                    io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBeginThis(i_XmlName ,v_RouteItem.getXJavaID()));
+                }
+                else
+                {
+                    io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBeginID(i_XmlName ,v_RouteItem.getXJavaID()));
+                }
+                
+                io_Xml.append(v_RouteItem.toXml(i_Level + 1 ,i_SuperTreeID ,i_ExportType));
+                io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(i_XmlName));
+            }
+        }
     }
     
     

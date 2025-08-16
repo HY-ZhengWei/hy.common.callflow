@@ -8,6 +8,7 @@ import org.hy.common.Help;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
+import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
@@ -325,15 +326,18 @@ public class SelfLoop extends ExecuteElement
      * @author      ZhengWei(HY)
      * @createDate  2025-03-03
      * @version     v1.0
+     *              v2.0  2025-08-15  添加：导出类型
      *
      * @param i_Level        层级。最小下标从0开始。
      *                           0表示每行前面有0个空格；
      *                           1表示每行前面有4个空格；
      *                           2表示每行前面有8个空格；
      * @param i_SuperTreeID  上级树ID
+     * @param i_ExportType   导出类型
      * @return
      */
-    public String toXml(int i_Level ,String i_SuperTreeID)
+    @Override
+    public String toXml(int i_Level ,String i_SuperTreeID ,ExportType i_ExportType)
     {
         // 无须由自己生成，也不允许调用此方法
         throw new RuntimeException("Not allowed to call SelfLoop.toXml().");

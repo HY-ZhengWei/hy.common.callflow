@@ -27,6 +27,8 @@
     <xconfig>
     
         <xnode id="XNode_CF003_1_1_2及1_1_1_2">
+            <id>1</id>
+            <x>0</x>
             <comment>五个环节，为假时的走向</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_False</callMethod>

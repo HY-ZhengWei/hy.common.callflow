@@ -5,22 +5,20 @@ package org.hy.common.callflow.enums;
 
 
 /**
- * 路由类型的枚举
+ * 编排导出类型的枚举
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-03-09
+ * @createDate  2025-08-15
  * @version     v1.0
  */
-public enum RouteType
+public enum ExportType
 {
     
-    Succeed("SUCCEED" ,"succeed" ,"成功路由" ,"1S"),
+    Logic("LOGIC" ,"编排逻辑"),
     
-    If(     "IF"      ,"if"      ,"真值路由" ,"2I"),
+    UI   ("UI"    ,"编排流图"),
     
-    Else(   "ELSE"    ,"else"    ,"假值路由" ,"3E"),
-    
-    Error(  "ERROR"   ,"error"   ,"异常路由" ,"4E"),
+    All  ("ALL"   ,"编排逻辑与流图"),
     
     ;
     
@@ -29,14 +27,8 @@ public enum RouteType
     /** 值 */
     private String  value;
     
-    /** XML名称 */
-    private String  xmlName;
-    
     /** 描述 */
     private String  comment;
-    
-    /** 统一长度的编码 */
-    private String  code;
     
     
     
@@ -44,13 +36,13 @@ public enum RouteType
      * 数值转为常量
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-02-11
+     * @createDate  2025-08-15
      * @version     v1.0
      *
      * @param i_Value
      * @return
      */
-    public static RouteType get(String i_Value)
+    public static ExportType get(String i_Value)
     {
         if ( i_Value == null )
         {
@@ -58,7 +50,7 @@ public enum RouteType
         }
         
         String v_Value = i_Value.trim();
-        for (RouteType v_Enum : RouteType.values())
+        for (ExportType v_Enum : ExportType.values())
         {
             if ( v_Enum.value.equalsIgnoreCase(v_Value) )
             {
@@ -71,51 +63,28 @@ public enum RouteType
     
     
     
-    RouteType(String i_Value ,String i_XmlName ,String i_Comment ,String i_Code)
+    ExportType(String i_Value ,String i_Comment)
     {
         this.value   = i_Value;
-        this.xmlName = i_XmlName;
         this.comment = i_Comment;
-        this.code    = i_Code;
     }
 
     
-    /**
-     * 获取：值
-     */
+    
     public String getValue()
     {
         return this.value;
     }
     
     
-    /**
-     * 获取：XML名称
-     */
-    public String getXmlName()
-    {
-        return xmlName;
-    }
-
-
-    /**
-     * 获取：描述
-     */
+    
     public String getComment()
     {
         return this.comment;
     }
+    
+    
 
-    
-    /**
-     * 获取：统一长度的编码
-     */
-    public String getCode()
-    {
-        return code;
-    }
-    
-    
     public String toString()
     {
         return this.value + "";
