@@ -527,13 +527,23 @@ public class RouteItem implements IToXml ,CloneableCallFlow ,XJavaID
         String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level + 1 ,v_Level1);
         String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
-        if ( this.id != null )
+        if ( !ExportType.UI.equals(i_ExportType) )
         {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("id" ,this.id));
+            if ( this.id != null )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("id" ,this.id));
+            }
+            if ( !Help.isNull(this.comment) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
+            }
         }
-        if ( !Help.isNull(this.comment) )
+        else
         {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
+            if ( !Help.isNull(this.comment) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toComment(this.comment));
+            }
         }
         
         if ( ExportType.UI.equals(i_ExportType) || ExportType.All.equals(i_ExportType) )

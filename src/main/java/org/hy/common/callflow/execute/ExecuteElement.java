@@ -1215,12 +1215,16 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
         String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
-        if ( !Help.isNull(this.id) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("id" ,this.id));
-        }
         if ( !ExportType.UI.equals(i_ExportType) )
         {
+            if ( !Help.isNull(this.comment) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
+            }
+            if ( !Help.isNull(this.id) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("id" ,this.id));
+            }
             if ( !Help.isNull(this.treeIDs) )
             {
                 for (String v_TreeID : this.treeIDs.keySet())
@@ -1228,18 +1232,19 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
                     v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("treeID" ,v_TreeID));
                 }
             }
-        }
-        if ( !Help.isNull(this.comment) )
-        {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
-        }
-        if ( !ExportType.UI.equals(i_ExportType) )
-        {
             if ( !Help.isNull(this.context) )
             {
                 v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
             }
         }
+        else
+        {
+            if ( !Help.isNull(this.comment) )
+            {
+                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toComment(this.comment));
+            }
+        }
+        
         if ( ExportType.UI.equals(i_ExportType) || ExportType.All.equals(i_ExportType) )
         {
             if ( !Help.isNull(this.styleName) )

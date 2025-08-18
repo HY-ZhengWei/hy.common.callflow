@@ -39,6 +39,23 @@ public interface IToXml
     
     
     /**
+     * 生成注释说明
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-08-18
+     * @version     v1.0
+     *
+     * @param i_Commend  注释说明的文本内容
+     * @return
+     */
+    static String toComment(String i_Commend)
+    {
+        return "<!-- " + i_Commend + " -->";
+    }
+    
+    
+    
+    /**
      * 生成普通值标记
      * 
      * 生成形式如：<标记名称>值</标记名称>
