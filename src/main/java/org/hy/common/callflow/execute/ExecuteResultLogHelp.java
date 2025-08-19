@@ -55,6 +55,11 @@ public class ExecuteResultLogHelp
      */
     public String logs(ExecuteResult i_Result)
     {
+        if ( i_Result == null )
+        {
+            throw new NullPointerException("ExecuteResult is null.");
+        }
+        
         StringBuilder v_Buffer = new StringBuilder();
         
         int[] v_Lens = calcMaxLen(i_Result);

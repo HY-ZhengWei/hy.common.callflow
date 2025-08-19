@@ -403,7 +403,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         v_Xml.append(super.toXml(i_Level ,i_ExportType));
         
-        if ( ExportType.UI.equals(i_ExportType) )
+        if ( !ExportType.UI.equals(i_ExportType) )
         {
             if ( !Help.isNull(this.retClass) )
             {
