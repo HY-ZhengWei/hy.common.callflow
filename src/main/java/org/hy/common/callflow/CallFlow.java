@@ -25,6 +25,7 @@ import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
 import org.hy.common.xml.XJava;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -36,48 +37,51 @@ import org.hy.common.xml.XJava;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-15
  * @version     v1.0
+ *              v1.1  2025-08-20  修正：静态检查出异常时，未能在上下文记录异常。发现人：李浩
  */
 public class CallFlow
 {
     
+    private static final Logger $Logger                  = new Logger(CallFlow.class);
+    
     /** 编排XML配置文件的保存路径 */
-    public static       String $SavePath                = Help.getSysTempPath();
+    public static        String $SavePath                = Help.getSysTempPath();
     
     /** 变量ID名称：编排执行实例ID */
-    public static final String $WorkID                  = "CallFlowWorkID";
+    public static final  String $WorkID                  = "CallFlowWorkID";
     
     /** 变量ID名称：编排执行实例的首个执行对象的执行结果 */
-    public static final String $FirstExecuteResult      = "CallFlowFirstExecuteResult";
+    public static final  String $FirstExecuteResult      = "CallFlowFirstExecuteResult";
     
     /** 变量ID名称：编排执行实例的最后执行对象的执行结果（但不包括异常的） */
-    public static final String $LastExecuteResult       = "CallFlowLastExecuteResult";
+    public static final  String $LastExecuteResult       = "CallFlowLastExecuteResult";
     
     /** 变量ID名称：编排执行实例的最后执行嵌套的开始部分的结果（瞬息间的值，用完就即时释放了） */
-    public static final String $LastNestingBeginResult  = "CallFlowLastNestingBeginResult";
+    public static final  String $LastNestingBeginResult  = "CallFlowLastNestingBeginResult";
     
     /** 变量ID名称：编排执行实例的嵌套层次 */
-    public static final String $NestingLevel            = "CallFlowNestingLevel";
+    public static final  String $NestingLevel            = "CallFlowNestingLevel";
     
     /** 变量ID名称：编排执行实例是否异常 */
-    public static final String $ExecuteIsError          = "CallFlowExecuteIsError";
+    public static final  String $ExecuteIsError          = "CallFlowExecuteIsError";
     
     /** 变量ID名称：编排执行实例的返回元素执行真返回时的标记 */
-    public static final String $CallFlowReturn          = "CallFlowReturn";
+    public static final  String $CallFlowReturn          = "CallFlowReturn";
     
     /** 变量ID名称：编排执行实例的返回元素执行真返回时的返回值 */
-    public static final String $CallFlowReturnValue     = "CallFlowReturnValue";
+    public static final  String $CallFlowReturnValue     = "CallFlowReturnValue";
     
     /** 变量ID名称：编排执行实例异常的结果 */
-    public static final String $ErrorResult             = "CallFlowErrorResult";
+    public static final  String $ErrorResult             = "CallFlowErrorResult";
     
     /** 变量ID名称：编排执行实例的监听事件（事件可以传递到嵌套子编排中去） */
-    public static final String $ExecuteEvent            = "CallFlowExecuteEvent";
+    public static final  String $ExecuteEvent            = "CallFlowExecuteEvent";
     
     /** 变量ID名称：编排执行实例的上下文当参数传输到方法中时的系统预设的变量名 */
-    public static final String $Context                 = "CallFlowContext";
+    public static final  String $Context                 = "CallFlowContext";
     
     /** 变量ID名称：编排执行实例的等待元素的计数器的系统预设的变量名 */
-    public static final String $WaitCounter             = "CallFlowWaitCounter";
+    public static final  String $WaitCounter             = "CallFlowWaitCounter";
     
     
     
@@ -519,6 +523,7 @@ public class CallFlow
      * @author      ZhengWei(HY)
      * @createDate  2025-02-15
      * @version     v1.0
+     *              v1.1  2025-08-20  修正：静态检查出异常时，未能在上下文记录异常。发现人：李浩
      *
      * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param io_Context    上下文类型的变量信息
@@ -540,7 +545,9 @@ public class CallFlow
             Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(i_ExecObject);
             if ( !v_CheckRet.get() )
             {
-                return v_LastResult.setException(new RuntimeException(v_CheckRet.getParamStr()));
+                v_LastResult.setException(new RuntimeException(v_CheckRet.getParamStr()));
+                $Logger.error("静态检测未通过：" + v_CheckRet.getParamStr());
+                return CallFlow.putError(io_Context ,v_LastResult);
             }
         }
         
