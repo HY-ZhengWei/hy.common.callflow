@@ -1658,6 +1658,10 @@ __编排图例演示__
 
 ![image](src/test/java/org/hy/common/callflow/junit/cflow030Nesting/JU_CFlow030.png)
 
+__编排执行日志__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow030Nesting/JU_CFlow030_Log.png)
+
 __编排配置__
 
 ```xml
