@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：多级嵌套 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF030_爸爸">
+            <comment>爸爸</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Father</callMethod>
+        </xnode>
+        
+        
+        
+        <xnesting id="XNesting_CF030_妈妈">
+            <comment>妈妈</comment>
+            <callFlowXID>:XNode_CF030_女儿</callFlowXID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF030_爸爸" />
+                </succeed>
+            </route>
+        </xnesting>
+        
+        
+        
+        <xnode id="XNode_CF030_女儿">
+            <comment>女儿</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Daughter</callMethod>
+        </xnode>
+        
+        
+    
+        <xnesting id="XNesting_CF030_奶奶">
+            <comment>奶奶</comment>
+            <callFlowXID>:XNesting_CF030_妈妈</callFlowXID>
+        </xnesting>
+        
+        
+        <xnesting id="XNesting_CF030_爷爷">
+            <comment>爷爷</comment>
+            <callFlowXID>:XNode_CF030_爸爸</callFlowXID>
+            <route>
+                <succeed> 
+                    <next ref="XNesting_CF030_奶奶" />
+                </succeed>
+            </route>
+        </xnesting>
+        
+    </xconfig>
+    
+</config>
