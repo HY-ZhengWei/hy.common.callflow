@@ -236,7 +236,7 @@ public class CallFlow
     
     
     /**
-     * 从执行上下文中，获取最后执行对象的执行结果
+     * 从执行上下文中，获取最后执行对象的执行结果（区分嵌套层组的）
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-28
@@ -247,7 +247,94 @@ public class CallFlow
      */
     public static ExecuteResult getLastResult(Map<String ,Object> i_Context)
     {
-        return (ExecuteResult) i_Context.get($LastExecuteResult);
+        return getLastResult(i_Context ,getNestingLevel(i_Context));
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，获取最后执行对象的执行结果（获取哪个嵌套层组上的）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-08-27
+     * @version     v1.0
+     *
+     * @param i_Context       上下文类型的变量信息
+     * @param i_NestingLevel  嵌套层次
+     * @return
+     */
+    public static ExecuteResult getLastResult(Map<String ,Object> i_Context ,Integer i_NestingLevel)
+    {
+        return (ExecuteResult) i_Context.get($LastExecuteResult + i_NestingLevel);
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，获取并删除最后执行对象的执行结果（获取哪个嵌套层组上的）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-08-27
+     * @version     v1.0
+     *
+     * @param i_Context       上下文类型的变量信息
+     * @param i_NestingLevel  嵌套层次
+     * @return
+     */
+    public static ExecuteResult removeLastResult(Map<String ,Object> i_Context ,Integer i_NestingLevel)
+    {
+        return (ExecuteResult) i_Context.remove($LastExecuteResult + i_NestingLevel);
+    }
+    
+    
+    
+    /**
+     * 向执行上下文中添加最后执行对象的执行结果（区分嵌套层组的）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-08-27
+     * @version     v1.0
+     *
+     * @param io_Context
+     * @param i_Result
+     */
+    private static void putLastResult(Map<String ,Object> io_Context ,ExecuteResult i_Result)
+    {
+        io_Context.put($LastExecuteResult + getNestingLevel(io_Context) ,i_Result);
+    }
+    
+    
+    
+    /**
+     * 向执行上下文中添加编排执行实例的最后执行嵌套的开始部分的结果（区分嵌套层组的）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-08-27
+     * @version     v1.0
+     *
+     * @param io_Context
+     * @param i_Result
+     */
+    public static void putLastNestingBeginResult(Map<String ,Object> io_Context ,ExecuteResult i_Result)
+    {
+        io_Context.put($LastNestingBeginResult + getNestingLevel(io_Context) ,i_Result);
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，获取并删除编排执行实例的最后执行嵌套的开始部分的结果（区分嵌套层组的）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-08-27
+     * @version     v1.0
+     *
+     * @param i_Context       上下文类型的变量信息
+     * @return
+     */
+    public static ExecuteResult removeLastNestingBeginResult(Map<String ,Object> i_Context)
+    {
+        return (ExecuteResult) i_Context.remove($LastNestingBeginResult + getNestingLevel(i_Context));
     }
     
     
@@ -666,7 +753,7 @@ public class CallFlow
             // 有两种可能造成上个结果为NULL
             //     原因1：主编排中首个执行结果
             //     原因2：子编排中首个执行结果
-            ExecuteResult v_NestingBegin = (ExecuteResult) io_Context.remove($LastNestingBeginResult);
+            ExecuteResult v_NestingBegin = CallFlow.removeLastNestingBeginResult(io_Context);
             if ( v_NestingBegin != null )
             {
                 // 原因2：子编排中首个执行结果。如果嵌套的情况，也只用一次
@@ -689,7 +776,7 @@ public class CallFlow
         {
             v_Result.setPrevious(i_PreviousResult);
         }
-        io_Context.put($LastExecuteResult ,v_Result);
+        CallFlow.putLastResult(io_Context ,v_Result);
         
         List<RouteItem> v_Nexts  = null;
         if ( v_Result.isSuccess() )

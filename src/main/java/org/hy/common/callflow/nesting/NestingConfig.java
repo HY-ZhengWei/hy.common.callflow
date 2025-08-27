@@ -41,6 +41,7 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  *              v2.0  2025-06-10  添加：向上下文中赋值及占位符支持面向对象
  *              v3.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v3.1  2025-08-27  修正：三层以上的多组嵌套组成的复合编排，在执行顺序上混乱。发现人：王雨墨
  */
 public class NestingConfig extends ExecuteElement implements Cloneable
 {
@@ -174,8 +175,8 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         synchronized ( this )
         {
             // 最后执行的嵌套对象（自己），为已编排生成树ID用
-            io_Context.put(CallFlow.$LastNestingBeginResult ,v_NestingBegin);
-            io_Context.put(CallFlow.$NestingLevel           ,v_NestingLevel + 1);  // 嵌套层级++
+            io_Context.put(CallFlow.$NestingLevel ,v_NestingLevel + 1);     // 嵌套层级++，并且它必须在前
+            CallFlow.putLastNestingBeginResult(io_Context ,v_NestingBegin);
         }
         
         ExecuteElement   v_CallFlow    = (ExecuteElement) v_CallObject;
@@ -273,7 +274,7 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         // 执行成功
         else
         {
-            ExecuteResult v_LastResult = CallFlow.getLastResult(io_Context);
+            ExecuteResult v_LastResult = CallFlow.removeLastResult(io_Context ,v_NestingLevel + 1);
             v_LastResult.addNext(v_NestingEnd);                        // 子编排完成后的下一步关联到本层编排的嵌套配置
             v_NestingEnd.setPrevious(v_LastResult);                    // 关联最后执行对象的结果
             v_NestingEnd.setResult(v_ExceRet.getResult());             // 子编排的结果就是我的结果
