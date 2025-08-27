@@ -25,6 +25,7 @@
     * [嵌套元素举例](#嵌套元素举例)
     * [嵌套元素的嵌套多个举例](#嵌套元素的嵌套多个举例)
     * [嵌套元素的超时和异常举例](#嵌套元素的超时和异常举例)
+    * [嵌套多级与执行顺序举例](#嵌套多级与执行顺序举例)
     * [等待元素和While循环举例](#等待元素和While循环举例)
     * [计算元素和While循环举例](#计算元素和While循环举例)
     * [循环元素的For循环数列举例](#循环元素的For循环数列举例)
@@ -1638,8 +1639,116 @@ XJava.putObject("XProgram" ,new Program());
 // 获取编排中的首个元素
 NestingConfig       v_Nesting = (NodeConfig) XJava.getObject("XNesting_CF017_1");
 
-// 大于10秒 或 小于10秒
-v_Context.put("TimeoutLen" ,1000L * 3L);
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context   = new HashMap<String ,Object>();
+v_Context.put("TimeoutLen" ,1000L * 3L);   // 大于10秒 或 小于10秒
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Nesting ,v_Context);
+```
+
+
+
+嵌套多级与执行顺序举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow030Nesting) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow030Nesting/JU_CFlow030.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：多级嵌套 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF030_爸爸">
+            <comment>爸爸</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Father</callMethod>
+        </xnode>
+        
+        
+        
+        <xnesting id="XNesting_CF030_妈妈">
+            <comment>妈妈</comment>
+            <callFlowXID>:XNode_CF030_女儿</callFlowXID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF030_爸爸" />
+                </succeed>
+            </route>
+        </xnesting>
+        
+        
+        
+        <xnode id="XNode_CF030_女儿">
+            <comment>女儿</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Daughter</callMethod>
+        </xnode>
+        
+        
+    
+        <xnesting id="XNesting_CF030_奶奶">
+            <comment>奶奶</comment>
+            <callFlowXID>:XNesting_CF030_妈妈</callFlowXID>
+        </xnesting>
+        
+        
+        <xnesting id="XNesting_CF030_爷爷">
+            <comment>爷爷</comment>
+            <callFlowXID>:XNode_CF030_爸爸</callFlowXID>
+            <route>
+                <succeed> 
+                    <next ref="XNesting_CF030_奶奶" />
+                </succeed>
+            </route>
+        </xnesting>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NestingConfig       v_Nesting = (NestingConfig) XJava.getObject("XNesting_CF030_爷爷");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_Nesting ,v_Context);
