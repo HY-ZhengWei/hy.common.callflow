@@ -161,10 +161,10 @@
 |CallFlow.getHelpImport().upgradeBackupString(IExecute ,String)|升级编排配置，并备份原编排为文本字符|
 |CallFlow.getHelpLog().logs(ExecuteResult)|生成执行结果的轨迹日志|
 |CallFlow.getHelpClone().clone(IExecute)|深度克隆编排|
-|节点实例(ExecuteElement).getRoute().getSucceeds().get(索引号).getSelfLoopType()|成功路由的循环类型|
-|节点实例(ExecuteElement).getRoute().getErrors()  .get(索引号).getSelfLoopType()|异常路由的循环类型|
-|节点实例(ExecuteElement).getRoute().getIfs()     .get(索引号).getSelfLoopType()|真值路由的循环类型|
-|节点实例(ExecuteElement).getRoute().getElses()   .get(索引号).getSelfLoopType()|假值路由的循环类型|
+|元素实例.getRoute().getSucceeds().get(索引).getSelfLoopType()|成功路由的循环类型|
+|元素实例.getRoute().getErrors()  .get(索引).getSelfLoopType()|异常路由的循环类型|
+|元素实例.getRoute().getIfs()     .get(索引).getSelfLoopType()|真值路由的循环类型|
+|元素实例.getRoute().getElses()   .get(索引).getSelfLoopType()|假值路由的循环类型|
 
 
 
