@@ -126,14 +126,28 @@ public class RouteItem implements IToXml ,CloneableCallFlow ,XJavaID
         }
         else if ( this.next instanceof SelfLoop )
         {
-            ExecuteElement v_RefExecute = ((SelfLoop) this.next).gatExecuteElement();
+            SelfLoop       v_SelfLoop   = (SelfLoop) this.next;
+            ExecuteElement v_Owner      = this.owner.gatOwner();         // 自引用元素归属的元素
+            ExecuteElement v_RefExecute = v_SelfLoop.gatExecuteElement();
+            
             if ( ElementType.For.getValue().equals(v_RefExecute.getElementType()) )
             {
+                if ( v_Owner == v_RefExecute || v_Owner.getXid().equals(v_RefExecute.getXid()) )
+                {
+                    throw new RuntimeException("SelfLoop.RefXID[" + v_SelfLoop.getRefXID() + "] ref ForConfig[" + v_Owner.getXid() + "] myself.");
+                }
                 return SelfLoopType.For;
             }
             else
             {
-                return SelfLoopType.While;
+                if ( v_Owner == v_RefExecute || v_Owner.getXid().equals(v_RefExecute.getXid()) )
+                {
+                    return SelfLoopType.MySelf;
+                }
+                else
+                {
+                    return SelfLoopType.While;
+                }
             }
         }
         else
@@ -475,7 +489,7 @@ public class RouteItem implements IToXml ,CloneableCallFlow ,XJavaID
      */
     public void setNext(String i_RefXID)
     {
-        this.setNext(new SelfLoop(i_RefXID));
+        this.setNext(new SelfLoop(this ,i_RefXID));
         this.owner.orderBy();
     }
     

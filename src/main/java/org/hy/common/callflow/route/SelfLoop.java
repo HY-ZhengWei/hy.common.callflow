@@ -29,6 +29,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-03-03
  * @version     v1.0
+ *              v2.0  2025-08-27  添加：归属者
  */
 public class SelfLoop extends ExecuteElement
 {
@@ -36,13 +37,15 @@ public class SelfLoop extends ExecuteElement
     private static final Logger $Logger = new Logger(SelfLoop.class);
     
     
+    /** 归属者（内部使用） */
+    private RouteItem owner;
     
     /** 所在编排内其它元素的XID */
-    private String refXID;
+    private String    refXID;
     
     
     
-    public SelfLoop(String i_RefXID)
+    public SelfLoop(RouteItem i_Owner ,String i_RefXID)
     {
         super(0L ,0L);
         if ( Help.isNull(i_RefXID) )
@@ -56,11 +59,23 @@ public class SelfLoop extends ExecuteElement
         }
         
         // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.owner  = i_Owner;
         this.refXID = ValueHelp.standardValueID(i_RefXID);
     }
     
     
     
+    
+    /**
+     * 获取：归属者（内部使用，为防止死循环）
+     */
+    public RouteItem gatOwner()
+    {
+        return owner;
+    }
+
+
+
     /**
      * 元素的类型
      * 
