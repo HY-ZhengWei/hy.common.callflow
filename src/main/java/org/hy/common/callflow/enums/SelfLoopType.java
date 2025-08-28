@@ -20,6 +20,8 @@ public enum SelfLoopType
 
     For(   "FOR"    ,"For循环"),
     
+    MySelf("MYSELF" ,"自循环"),
+    
     ;
     
     

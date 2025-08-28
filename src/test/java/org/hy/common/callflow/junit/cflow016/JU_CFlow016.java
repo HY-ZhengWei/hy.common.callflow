@@ -65,6 +65,9 @@ public class JU_CFlow016 extends JUBase
             return;
         }
         
+        System.out.println("成功路由的自引用的类型：" + v_FirstNode.getRoute().getSucceeds().get(0).getSelfLoopType());
+        System.out.println("异常路由的自引用的类型：" + v_FirstNode.getRoute().getErrors()  .get(0).getSelfLoopType() + "\n\n");
+        
         ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
         System.out.println("结果：" + v_Result.getResult());
         

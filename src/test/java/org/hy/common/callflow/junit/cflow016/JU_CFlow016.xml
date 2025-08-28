@@ -38,7 +38,8 @@
             <callXID>:XProgram</callXID>
             <callMethod>method_1</callMethod>
             <route>
-                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                <succeed id="XID987654321">                 <!-- 成功时，关联后置节点 -->
+                    <id>123456789</id>
                     <next>:XNode_CF016_1</next>
                     <comment>自引用、自循环、递归</comment>
                 </succeed>

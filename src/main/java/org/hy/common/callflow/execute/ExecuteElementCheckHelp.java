@@ -43,6 +43,8 @@ import org.hy.common.db.DBSQL;
  * @author      ZhengWei(HY)
  * @createDate  2025-03-16
  * @version     v1.0
+ *              v2.0  2025-08-27  添加：For循环元素的必须有下一个成功路由
+ *                                添加：For元素禁止自已引用自己，即：禁止递归
  */
 public class ExecuteElementCheckHelp
 {
@@ -179,6 +181,13 @@ public class ExecuteElementCheckHelp
             if ( Help.isNull(v_For.getEnd()) )
             {
                 io_Result.set(false).setParamStr("CFlowCheck：ForConfig[" + Help.NVL(v_For.getXid()) + "].end is null.");
+                return false;
+            }
+            
+            // For循环元素的必须有下一个成功路由
+            if ( Help.isNull(v_For.getRoute().getSucceeds()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ForConfig[" + Help.NVL(v_For.getXid()) + "].Succeed route is null.");
                 return false;
             }
             
@@ -790,9 +799,21 @@ public class ExecuteElementCheckHelp
                 
                 if ( v_Child instanceof SelfLoop )
                 {
-                    SelfLoop v_SelfLoop = (SelfLoop) v_Child;
-                    String   v_RefXID   = v_SelfLoop.gatRefXID();
-                    Integer  v_RefCount = io_XIDs.get(v_RefXID);
+                    SelfLoop       v_SelfLoop = (SelfLoop) v_Child;
+                    ExecuteElement v_Owner    = v_SelfLoop.gatOwner().gatOwner().gatOwner();  // 自引用元素归属的元素
+                    String         v_RefXID   = v_SelfLoop.gatRefXID();
+                    Integer        v_RefCount = io_XIDs.get(v_RefXID);
+                    
+                    if ( v_Owner instanceof ForConfig )
+                    {
+                        if ( v_Owner.getXid().equals(v_SelfLoop.getRefXID()) )
+                        {
+                            // For元素禁止自已引用自己，即：禁止递归
+                            io_Result.set(false).setParamStr("CFlowCheck：SelfLoop.RefXID[" + v_SelfLoop.getRefXID() + "] ref ForConfig[" + v_Owner.getXid() + "] myself.");
+                            return false;
+                        }
+                    }
+                    
                     if ( v_RefCount == null )
                     {
                         // 自引用必须是本编排内的
