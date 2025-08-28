@@ -119,13 +119,17 @@
         
         3.4 假值路由，条件逻辑元素、计算元素（逻辑类型）与等待元素（计数器类型），结果为假时走的路。
         
-    4. 2种编排循环。
+    4. 3种编排循环。
+    
+        4.1 除了普通路由（成功、异常、真值、假值路由）外，还有3种循环路由（While循环、For循环、自循环）。
         
-        4.1 While循环路由，下层元素回流到上层元素时走的路。
+        4.2 While循环路由，下层元素回流到上层元素时走的路。
         
-        4.2 For循环路由，与循环元素配合（至少有一个），回流到循环元素的路。
+        4.3 For循环路由，与循环元素配合（至少有一个），回流到循环元素的路。
         
-        4.3 路由与循环可以组合后共存（12种），即：成功路由+For循环路由组成一条成功时For循环的路由。
+        4.4 自循环路由，某个元素的下一下路由节点指向自己，可用于实现递归操作。
+        
+        4.5 路由与循环可以组合后共存（16种），即：成功路由+For循环路由组成一条成功时For循环的路由。
         
     5. 常用的系统预设变量。
     
@@ -157,6 +161,10 @@
 |CallFlow.getHelpImport().upgradeBackupString(IExecute ,String)|升级编排配置，并备份原编排为文本字符|
 |CallFlow.getHelpLog().logs(ExecuteResult)|生成执行结果的轨迹日志|
 |CallFlow.getHelpClone().clone(IExecute)|深度克隆编排|
+|节点实例(ExecuteElement).getRoute().getSucceeds().get(索引号).getSelfLoopType()|成功路由的循环类型|
+|节点实例(ExecuteElement).getRoute().getErrors()  .get(索引号).getSelfLoopType()|异常路由的循环类型|
+|节点实例(ExecuteElement).getRoute().getIfs()     .get(索引号).getSelfLoopType()|真值路由的循环类型|
+|节点实例(ExecuteElement).getRoute().getElses()   .get(索引号).getSelfLoopType()|假值路由的循环类型|
 
 
 
