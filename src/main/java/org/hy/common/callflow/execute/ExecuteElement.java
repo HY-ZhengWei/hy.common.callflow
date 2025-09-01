@@ -51,7 +51,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     /** 主键标识 */
     protected String                        id;
                                          
-    /** 全局惟一标识ID */                
+    /** 全局惟一标识ID */
     protected String                        xid;
     
     /** 层级树ID。Map.key为本级树ID，Map.value为上级树ID */

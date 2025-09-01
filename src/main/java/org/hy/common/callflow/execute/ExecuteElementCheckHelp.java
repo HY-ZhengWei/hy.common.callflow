@@ -13,6 +13,7 @@ import org.hy.common.callflow.enums.JobIntervalType;
 import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.event.PublishConfig;
 import org.hy.common.callflow.event.SubscribeConfig;
+import org.hy.common.callflow.event.WSPullConfig;
 import org.hy.common.callflow.event.WSPushConfig;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
@@ -415,12 +416,27 @@ public class ExecuteElementCheckHelp
             
             if ( Help.isNull(v_WSPush.getName()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(v_WSPush.getName()) + "].name is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(v_WSPush.getXid()) + "].name is null.");
                 return false;
             }
             if ( Help.isNull(v_WSPush.getNewMessage()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(v_WSPush.getNewMessage()) + "].newMessage is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(v_WSPush.getXid()) + "].newMessage is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof WSPullConfig )
+        {
+            WSPullConfig v_WSPull = (WSPullConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_WSPull.getWsURL()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：WSPullConfig[" + Help.NVL(v_WSPull.getXid()) + "].wsURL is null.");
+                return false;
+            }
+            if ( Help.isNull(v_WSPull.getCallFlowXID()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：WSPullConfig[" + Help.NVL(v_WSPull.getXid()) + "].callFlowXID is null.");
                 return false;
             }
         }
@@ -430,24 +446,24 @@ public class ExecuteElementCheckHelp
             
             if ( Help.isNull(v_Publish.getPublishXID()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getPublishXID()) + "].publishXID is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getXid()) + "].publishXID is null.");
                 return false;
             }
             if ( Help.isNull(v_Publish.getMessage()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getMessage()) + "].message is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getXid()) + "].message is null.");
                 return false;
             }
             if ( Help.isNull(v_Publish.getUserID()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getUserID()) + "].userID is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getXid()) + "].userID is null.");
                 return false;
             }
             if ( !Help.isNull(v_Publish.getQoS()) )
             {
                 if ( v_Publish.getQoS() < 0 || v_Publish.getQoS() > 2 )
                 {
-                    io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getQoS()) + "].qoS is invalid.");
+                    io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(v_Publish.getXid()) + "].qoS is invalid.");
                     return false;
                 }
             }
@@ -458,17 +474,17 @@ public class ExecuteElementCheckHelp
             
             if ( Help.isNull(v_Subscribe.getSubscribeXID()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getSubscribeXID()) + "].subscribeXID is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getXid()) + "].subscribeXID is null.");
                 return false;
             }
             if ( Help.isNull(v_Subscribe.getUserID()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getUserID()) + "].userID is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getXid()) + "].userID is null.");
                 return false;
             }
             if ( Help.isNull(v_Subscribe.getCallFlowXID()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getCallFlowXID()) + "].callFlowXID is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(v_Subscribe.getXid()) + "].callFlowXID is null.");
                 return false;
             }
         }

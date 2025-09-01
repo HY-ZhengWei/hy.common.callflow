@@ -19,6 +19,7 @@ import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.event.PublishConfig;
 import org.hy.common.callflow.event.SubscribeConfig;
+import org.hy.common.callflow.event.WSPullConfig;
 import org.hy.common.callflow.event.WSPushConfig;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
@@ -83,6 +84,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Publish  .getXmlName() ,PublishConfig.class);
         getInstance().addImportHead(ElementType.Subscribe.getXmlName() ,SubscribeConfig.class);
         getInstance().addImportHead(ElementType.WSPush   .getXmlName() ,WSPushConfig.class);
+        getInstance().addImportHead(ElementType.WSPull   .getXmlName() ,WSPullConfig.class);
         getInstance().addImportHead(ElementType.Command  .getXmlName() ,CommandConfig.class);
         getInstance().addImportHead(ElementType.XSQL     .getXmlName() ,XSQLConfig.class);
         getInstance().addImportHead(ElementType.Job      .getXmlName() ,JOBConfig.class);

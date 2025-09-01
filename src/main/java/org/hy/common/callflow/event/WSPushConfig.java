@@ -144,6 +144,7 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
                 }
                 else
                 {
+                    // 注：不 throw 异常。因为它的父方法会返回是否执行成功标识 
                     $Logger.error(new ClassNotFoundException("Found multiple(" + v_Methods.size() + ") matching classes(WebSocketServer)."));
                 }
             }
@@ -480,25 +481,23 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
      */
     public void toXmlContent(StringBuilder io_Xml ,int i_Level ,String i_Level1 ,String i_LevelN ,String i_SuperTreeID ,String i_TreeID)
     {
-        String v_Level1   = "    ";
-        String v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String v_NewSpace = "\n" + v_LevelN + v_Level1;
+        String v_NewSpace = "\n" + i_LevelN + i_Level1;
         
         if ( !Help.isNull(this.getName()) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("name"        ,this.getName()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("name"        ,this.getName()));
         }
         if ( !Help.isNull(this.getNewMessage()) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("newMessage"  ,this.getNewMessage() ,v_NewSpace));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("newMessage"  ,this.getNewMessage() ,v_NewSpace));
         }
         if ( !Help.isNull(this.getAllMessage()) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("allMessage"  ,this.getAllMessage() ,v_NewSpace));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("allMessage"  ,this.getAllMessage() ,v_NewSpace));
         }
         if ( !Help.isNull(this.getContentType()) && !WSContentType.Json.getValue().equalsIgnoreCase(this.getContentType()) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("contentType" ,this.getContentType()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("contentType" ,this.getContentType()));
         }
     }
     

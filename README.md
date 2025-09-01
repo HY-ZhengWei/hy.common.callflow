@@ -87,11 +87,11 @@
         
         1.11. CS缓存写元素，创建、修改或删除Redis远程缓存或XJava本地缓存，支持库、表、行关系。
         
-    2. 10种衍生元素。
+    2. 11种衍生元素。
     
-        2.1.  IOT读元素，衍生于执行元素，用于读取PLC数据。
+        2.1.  IOT读元素，衍生于执行元素，用于读取PLC数据。依赖于PLC微服务。
         
-        2.2.  IOT写元素，衍生于执行元素，用于向PLC写入数据。
+        2.2.  IOT写元素，衍生于执行元素，用于向PLC写入数据。依赖于PLC微服务。
         
         2.3.  API接口元素，衍生于执行元素，用于API接口请求访问。
         
@@ -101,13 +101,15 @@
         
         2.6.  XSQL元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
         
-        2.7.  DAG数采读元素，衍生于执行元素，用于读取Modbus数据。
+        2.7.  DAG数采读元素，衍生于执行元素，用于读取Modbus数据。依赖于Modbus微服务。
         
-        2.8.  DAS数采写元素，衍生于执行元素，用于向Modbus写入数据。
+        2.8.  DAS数采写元素，衍生于执行元素，用于向Modbus写入数据。依赖于Modbus微服务。
         
-        2.9.  WSS点推元素，衍生于执行元素，用于WebSocket服务端推送消息给客户端。
+        2.9.  WSS点推元素，衍生于执行元素，用于WebSocket服务端推送消息给客户端。依赖于基座微服务。
         
-        2.10. CMD命令元素，衍生于执行元素，执行操作系统命令。
+        2.10. WSG点位元素，衍生于执行元素，用于WebSocket客户端拉取消息。依赖于基座微服务。
+        
+        2.11. CMD命令元素，衍生于执行元素，执行操作系统命令。
         
     3. 4种编排路由。
         
@@ -285,6 +287,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -367,6 +370,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -497,6 +501,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -695,6 +700,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -812,6 +818,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -930,6 +937,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1105,6 +1113,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1241,6 +1250,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1396,6 +1406,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1470,6 +1481,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1557,6 +1569,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1694,6 +1707,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1801,6 +1815,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -1925,6 +1940,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2041,6 +2057,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2163,6 +2180,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2315,6 +2333,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2479,6 +2498,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2565,6 +2585,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2739,6 +2760,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2865,6 +2887,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -2992,6 +3015,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -3070,6 +3094,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -3173,6 +3198,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -3288,6 +3314,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -3407,6 +3434,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -3553,6 +3581,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     
@@ -3776,6 +3805,7 @@ __编排配置__
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
     <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
     
     

@@ -24,6 +24,8 @@ public enum ElementType
     
     WSPush(   "WSPUSH"    ,"xwspush"    ,"点推元素"),
     
+    WSPull(   "WSPULL"    ,"xwspull"    ,"点拉元素"),
+    
     XSQL(     "XSQL"      ,"xsql"       ,"XSQL元素"),
     
     Command(  "COMMAND"   ,"xcommand"   ,"命令元素"),
