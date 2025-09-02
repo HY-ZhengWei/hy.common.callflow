@@ -46,6 +46,7 @@ import org.hy.common.xml.plugins.XSQLGroup;
  * @version     v1.0
  *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  *              v3.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v4.0  2025-09-02  添加：执行元素的首次初始化成功后触发
  */
 public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
@@ -181,8 +182,8 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         
         try
         {
-            this.init(v_CallObject ,v_ParamValues);
             v_ParamValues = this.generateParams(io_Context ,v_ParamValues);
+            this.init(io_Context ,v_CallObject ,v_ParamValues);
         }
         catch (Exception exce)
         {
@@ -421,6 +422,26 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     }
     
     
+    
+    /**
+     * 执行元素的首次初始化成功后触发
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-02
+     * @version     v1.0
+     *
+     * @param io_Context       上下文类型的变量信息
+     * @param i_ExecuteObject  执行对象。    已通过generateObject()处理过的。
+     * @param i_Params         方法执行参数。已通过generateParams()处理过的。
+     */
+    public void generateInit(Map<String ,Object> io_Context ,Object i_ExecuteObject ,Object [] i_Params)
+    {
+        
+    }
+    
+    
     /**
      * 执行成功时，对执行结果的处理
      * 
@@ -504,7 +525,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             v_ParamValues = new Object[0];
         }
         
-        this.init(v_CallObject ,v_ParamValues);
+        this.init(io_Context ,v_CallObject ,v_ParamValues);
     }
     
     
@@ -518,10 +539,11 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
      * @createDate  2025-02-18
      * @version     v1.0
      *
+     * @param io_Context     上下文类型的变量信息
      * @param i_CallObject   执行对象的实例
      * @param i_ParamValues  方法的执行参数
      */
-    private synchronized void init(Object i_CallObject ,Object [] i_ParamValues)
+    private synchronized void init(Map<String ,Object> io_Context ,Object i_CallObject ,Object [] i_ParamValues)
     {
         if ( this.isInit )
         {
@@ -616,6 +638,8 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                 throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallMethod[" + this.callMethod + "(" + i_ParamValues.length + ")] is not find.");
             }
         }
+        
+        this.generateInit(io_Context ,v_CallMethods ,i_ParamValues);
     }
     
     

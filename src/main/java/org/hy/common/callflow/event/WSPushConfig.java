@@ -1,22 +1,18 @@
 package org.hy.common.callflow.event;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Help;
-import org.hy.common.MethodReflect;
 import org.hy.common.PartitionMap;
 import org.hy.common.Return;
-import org.hy.common.StaticReflect;
 import org.hy.common.StringHelp;
 import org.hy.common.TablePartitionLink;
-import org.hy.common.callflow.common.FindClass;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.WSContentType;
+import org.hy.common.callflow.event.websocket.WSPushExecuter;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.node.NodeConfig;
@@ -24,6 +20,7 @@ import org.hy.common.callflow.node.NodeConfigBase;
 import org.hy.common.callflow.node.NodeParam;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJSON;
+import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
 
 
@@ -36,14 +33,15 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-08-08
  * @version     v1.0
+ *              v2.0  2025-09-02  添加：通过点推元素的执行者接口WSPushExecuter来发消息
+ *                                删除：之前用指定静态类名称反射后获取消息执行者的方式
  */
 public class WSPushConfig extends NodeConfig implements NodeConfigBase
 {
     
-    private static final Logger   $Logger   = new Logger(WSPushConfig.class);
+    private static final Logger   $Logger         = new Logger(WSPushConfig.class);
     
-    /** WebSocketServer类的推送方法 */
-    private static       Method   $WSMethod = null;
+    private static WSPushExecuter $WSPushExecuter = null;
     
     
     
@@ -64,6 +62,15 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
     
     /** 消息体的格式类型 */
     private String                        contentType;
+    
+    /** 服务类型的名称。仅是常量 */
+    private String                        serviceTypeName;
+    
+    /** 模块编号。仅是常量 */
+    private String                        moduleCode;
+    
+    /** 模块名称。仅是常量 */
+    private String                        moduleName;
     
     
     
@@ -127,27 +134,26 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
      */
     private synchronized void findWSClass()
     {
-        if ( $WSMethod != null )
+        if ( $WSPushExecuter != null )
         {
             return;
         }
         
-        Class<?> v_WSClass = FindClass.finds("WebSocketServer");
-        if ( v_WSClass != null )
+        Object v_Executer = XJava.getObject("WebSocketPushExecuter");
+        if ( v_Executer != null )
         {
-            List<Method> v_Methods = MethodReflect.getMethods(v_WSClass ,this.getCallMethod() ,3);
-            if ( !Help.isNull(v_Methods) )
+            if ( v_Executer instanceof WSPushExecuter )
             {
-                if ( v_Methods.size() == 1 )
-                {
-                    $WSMethod = v_Methods.get(0);
-                }
-                else
-                {
-                    // 注：不 throw 异常。因为它的父方法会返回是否执行成功标识 
-                    $Logger.error(new ClassNotFoundException("Found multiple(" + v_Methods.size() + ") matching classes(WebSocketServer)."));
-                }
+                $WSPushExecuter = (WSPushExecuter) v_Executer;
             }
+            else
+            {
+                $Logger.error(new ClassNotFoundException("Found XID[WebSocketPushExecuter] is not instanceof WSPushExecuter."));
+            }
+        }
+        else
+        {
+            $Logger.error(new ClassNotFoundException("Not found XID[WebSocketPushExecuter]."));
         }
     }
     
@@ -184,6 +190,72 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
     
     
     
+    /**
+     * 获取：服务类型的名称。仅是常量
+     */
+    public String getServiceTypeName()
+    {
+        return serviceTypeName;
+    }
+
+
+    
+    /**
+     * 设置：服务类型的名称。仅是常量
+     * 
+     * @param i_ServiceTypeName 服务类型的名称。仅是常量
+     */
+    public void setServiceTypeName(String i_ServiceTypeName)
+    {
+        this.serviceTypeName = i_ServiceTypeName;
+    }
+
+
+    
+    /**
+     * 获取：模块编号。仅是常量
+     */
+    public String getModuleCode()
+    {
+        return moduleCode;
+    }
+
+
+    
+    /**
+     * 设置：模块编号。仅是常量
+     * 
+     * @param i_ModuleCode 模块编号。仅是常量
+     */
+    public void setModuleCode(String i_ModuleCode)
+    {
+        this.moduleCode = i_ModuleCode;
+    }
+
+
+    
+    /**
+     * 获取：模块名称。仅是常量
+     */
+    public String getModuleName()
+    {
+        return moduleName;
+    }
+
+
+    
+    /**
+     * 设置：模块名称。仅是常量
+     * 
+     * @param i_ModuleName 模块名称。仅是常量
+     */
+    public void setModuleName(String i_ModuleName)
+    {
+        this.moduleName = i_ModuleName;
+    }
+
+
+
     /**
      * 获取：新消息。可以是常量、上下文变量、XID标识，并且支持多个占位符
      */
@@ -390,6 +462,41 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 执行元素的首次初始化成功后触发
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-02
+     * @version     v1.0
+     *
+     * @param io_Context       上下文类型的变量信息
+     * @param i_ExecuteObject  执行对象。    已通过generateObject()处理过的。
+     * @param i_Params         方法执行参数。已通过generateParams()处理过的。
+     */
+    public void generateInit(Map<String ,Object> io_Context ,Object i_ExecuteObject ,Object [] i_Params)
+    {
+        this.findWSClass();
+        if ( $WSPushExecuter == null )
+        {
+            throw new RuntimeException("WSPushExecuter is not find.");
+        }
+        
+        String v_ServiceType = (String) i_Params[0];
+        if ( Help.isNull(v_ServiceType)
+          || Help.isNull(this.serviceTypeName)
+          || Help.isNull(this.moduleCode)
+          || Help.isNull(this.moduleName) )
+        {
+            return;
+        }
+        
+        $WSPushExecuter.register(i_Params[0].toString() ,this.serviceTypeName ,this.moduleCode ,this.moduleName);
+    }
+    
+    
+    
+    /**
      * 向客户端群发消息。
      * 
      * 首次接入的客户端，将发送全部消息，之后将只发有变化的消息
@@ -400,12 +507,6 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
      */
     public boolean pushMessages(String i_Name ,Object i_NewMessage ,Object i_AllMessage)
     {
-        this.findWSClass();
-        if ( $WSMethod == null )
-        {
-            throw new RuntimeException("WebSocketServer is not find.");
-        }
-        
         if ( i_NewMessage == null )
         {
             throw new NullPointerException("NewMessage is null.");
@@ -449,7 +550,7 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
                 v_AllMsg = i_AllMessage.toString();
             }
             
-            StaticReflect.invoke($WSMethod ,this.getName() ,v_NewMsg ,Help.NVL(v_AllMsg ,v_NewMsg));
+            $WSPushExecuter.pushMessages(i_Name ,v_NewMsg ,Help.NVL(v_AllMsg ,v_NewMsg));
             return true;
         }
         catch (Exception exce)
@@ -485,19 +586,31 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         
         if ( !Help.isNull(this.getName()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("name"        ,this.getName()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("name"            ,this.getName()));
+        }
+        if ( !Help.isNull(this.getServiceTypeName()) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("serviceTypeName" ,this.getServiceTypeName()));
+        }
+        if ( !Help.isNull(this.getModuleCode()) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("moduleCode"      ,this.getModuleCode()));
+        }
+        if ( !Help.isNull(this.getModuleName()) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("moduleName"      ,this.getModuleName()));
         }
         if ( !Help.isNull(this.getNewMessage()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("newMessage"  ,this.getNewMessage() ,v_NewSpace));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("newMessage"      ,this.getNewMessage() ,v_NewSpace));
         }
         if ( !Help.isNull(this.getAllMessage()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("allMessage"  ,this.getAllMessage() ,v_NewSpace));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("allMessage"      ,this.getAllMessage() ,v_NewSpace));
         }
         if ( !Help.isNull(this.getContentType()) && !WSContentType.Json.getValue().equalsIgnoreCase(this.getContentType()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("contentType" ,this.getContentType()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("contentType"     ,this.getContentType()));
         }
     }
     
@@ -647,9 +760,12 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         
         this.cloneMyOnly(v_Clone);
         // v_Clone.callXID  = this.callXID;     不能克隆callXID，因为它就是类自己的xid
-        v_Clone.contentType = this.contentType;
-        v_Clone.callMethod  = this.callMethod; 
-        v_Clone.timeout     = this.timeout;
+        v_Clone.serviceTypeName = this.serviceTypeName;
+        v_Clone.moduleCode      = this.moduleCode;
+        v_Clone.moduleName      = this.moduleName;
+        v_Clone.contentType     = this.contentType;
+        v_Clone.callMethod      = this.callMethod; 
+        v_Clone.timeout         = this.timeout;
         
         v_Clone.setNewMessage(this.getNewMessage());
         v_Clone.setAllMessage(this.getAllMessage());
@@ -695,9 +811,12 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         ((ExecuteElement) this).clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
         // v_Clone.callXID  = this.callXID;     不能克隆callXID，因为它就是类自己的xid
-        v_Clone.contentType = this.contentType;
-        v_Clone.callMethod  = this.callMethod; 
-        v_Clone.timeout     = this.timeout;
+        v_Clone.serviceTypeName = this.serviceTypeName;
+        v_Clone.moduleCode      = this.moduleCode;
+        v_Clone.moduleName      = this.moduleName;
+        v_Clone.contentType     = this.contentType;
+        v_Clone.callMethod      = this.callMethod; 
+        v_Clone.timeout         = this.timeout;
         
         v_Clone.setNewMessage(this.getNewMessage());
         v_Clone.setAllMessage(this.getAllMessage());
