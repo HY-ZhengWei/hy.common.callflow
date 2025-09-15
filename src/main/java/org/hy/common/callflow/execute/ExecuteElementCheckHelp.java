@@ -27,6 +27,7 @@ import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.CommandConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.NodeParam;
+import org.hy.common.callflow.node.UnzipConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.node.ZipConfig;
@@ -624,6 +625,15 @@ public class ExecuteElementCheckHelp
             if ( Help.isNull(v_Zip.getZipDir()) )
             {
                 io_Result.set(false).setParamStr("CFlowCheck：ZipConfig[" + Help.NVL(v_Zip.getXid()) + "].zipDir is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof UnzipConfig )
+        {
+            UnzipConfig v_Unzip = (UnzipConfig) i_ExecObject;
+            if ( Help.isNull(v_Unzip.getZipFile()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：UnzipConfig[" + Help.NVL(v_Unzip.getXid()) + "].file is null.");
                 return false;
             }
         }

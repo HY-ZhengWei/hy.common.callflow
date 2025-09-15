@@ -17,6 +17,7 @@
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -28,12 +29,27 @@
     <!-- CFlow编排引擎配置：压缩 -->
     <xconfig>
     
+        <xunzip id="XUnzip_CF031">
+            <comment>解压</comment>
+            <zipFile>:ZipFile</zipFile>                   <!-- 压缩包 -->
+            <unzipDir>D:\Unzip</unzipDir>                 <!-- 解压目录 -->
+            <password>:PWD</password>                     <!-- 压缩密码 -->
+            <doneDelete>true</doneDelete>
+        </xunzip>
+        
+        
         <xzip id="XZip_CF031">
             <comment>压缩</comment>
-            <file>C:\Users\ZLX\Desktop\火车票.xlsx</file>
-            <zipDir>D:</zipDir>
-            <zipName>New.zip</zipName>
-            <password>123456</password>
+            <file>C:\Users\ZLX\Desktop\火车票.xlsx</file>  <!-- 被压缩文件。多个文件间用英文分号;分隔 -->
+            <zipDir>D:</zipDir>                           <!-- 压缩包的保存目录 -->
+            <zipName>New.zip</zipName>                    <!-- 压缩包的名称 -->
+            <password>:PWD</password>                     <!-- 压缩密码 -->
+            <returnID>ZipFile</returnID>                  <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed> 
+                    <next ref="XUnzip_CF031" />
+                </succeed>
+            </route>
         </xzip>
         
     </xconfig>

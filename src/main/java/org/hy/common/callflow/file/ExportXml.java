@@ -31,6 +31,7 @@ import org.hy.common.callflow.node.APIConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.CommandConfig;
 import org.hy.common.callflow.node.NodeConfig;
+import org.hy.common.callflow.node.UnzipConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.node.ZipConfig;
@@ -88,6 +89,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.WSPull   .getXmlName() ,WSPullConfig.class);
         getInstance().addImportHead(ElementType.Command  .getXmlName() ,CommandConfig.class);
         getInstance().addImportHead(ElementType.Zip      .getXmlName() ,ZipConfig.class);
+        getInstance().addImportHead(ElementType.Unzip    .getXmlName() ,UnzipConfig.class);
         getInstance().addImportHead(ElementType.XSQL     .getXmlName() ,XSQLConfig.class);
         getInstance().addImportHead(ElementType.Job      .getXmlName() ,JOBConfig.class);
         getInstance().addImportHead(ElementType.RouteItem.getXmlName() ,RouteItem.class);
@@ -443,7 +445,11 @@ public class ExportXml
         {
             if ( i_ExecObject instanceof ZipConfig )
             {
-                i_ExecObject.setXJavaID("XZIP_" + StringHelp.getUUID9n());
+                i_ExecObject.setXJavaID("XZip_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof UnzipConfig )
+            {
+                i_ExecObject.setXJavaID("XUnzip_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof CommandConfig )
             {

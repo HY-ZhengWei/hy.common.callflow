@@ -41,6 +41,7 @@
     * [命令元素的举例](#命令元素的举例)
     * [缓存读元素的举例](#缓存读元素的举例)
     * [缓存写元素的举例](#缓存写元素的举例)
+    * [压缩元素与解压元素的举例](#压缩元素与解压元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -87,7 +88,7 @@
         
         1.11. CS缓存写元素，创建、修改或删除Redis远程缓存或XJava本地缓存，支持库、表、行关系。
         
-    2. 12种衍生元素。
+    2. 13种衍生元素。
     
         2.1.  IOT读元素，衍生于执行元素，用于读取PLC数据。依赖于PLC微服务。
         
@@ -111,7 +112,9 @@
         
         2.11. CMD命令元素，衍生于执行元素，执行操作系统命令。
         
-        2.12. ZIP压缩元素，衍生于执行元素，将文件、文件流、多个文件或目录压缩成一个压缩包。
+        2.12. ZIP压缩元素，衍生于执行元素，文件、文件流、多个文件或目录压缩成一个压缩包。
+        
+        2.13. DEC解压元素，衍生于执行元素，压缩包解压。
         
     3. 4种编排路由。
         
@@ -3769,6 +3772,106 @@ __编排配置__
                 </succeed>
             </route>
         </xcs>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+CacheSetConfig      v_CS      = (CacheSetConfig) XJava.getObject("XCS_Create_ByJson");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+AppConfig           v_RowData = new AppConfig();
+
+v_RowData.setId(StringHelp.getUUID9n());
+v_RowData.setUpdateTime(new Date());
+v_RowData.setUpdateUserID("HY");
+v_RowData.setIsDel(1);
+
+v_Context.put("RowDataObject" ,v_RowData);
+v_Context.put("PKID"          ,v_RowData.getId());
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_CS ,v_Context);
+```
+
+
+
+
+
+压缩元素与解压元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow031Zip) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow031Zip/JU_CFlow031.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：压缩 -->
+    <xconfig>
+    
+        <xunzip id="XUnzip_CF031">
+            <comment>解压</comment>
+            <zipFile>:ZipFile</zipFile>                   <!-- 压缩包 -->
+            <unzipDir>D:\Unzip</unzipDir>                 <!-- 解压目录 -->
+            <password>:PWD</password>                     <!-- 压缩密码 -->
+            <doneDelete>true</doneDelete>
+        </xunzip>
+        
+        
+        <xzip id="XZip_CF031">
+            <comment>压缩</comment>
+            <file>C:\Users\ZLX\Desktop\火车票.xlsx</file>  <!-- 被压缩文件。多个文件间用英文分号;分隔 -->
+            <zipDir>D:</zipDir>                           <!-- 压缩包的保存目录 -->
+            <zipName>New.zip</zipName>                    <!-- 压缩包的名称 -->
+            <password>:PWD</password>                     <!-- 压缩密码 -->
+            <returnID>ZipFile</returnID>                  <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed> 
+                    <next ref="XUnzip_CF031" />
+                </succeed>
+            </route>
+        </xzip>
         
     </xconfig>
     

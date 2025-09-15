@@ -32,6 +32,8 @@ public enum ElementType
     
     Zip(      "ZIP"       ,"xzip"       ,"压缩元素"),
     
+    Unzip(    "UNZIP"     ,"xunzip"     ,"解压元素"),
+    
     Condition("CONDITION" ,"xcondition" ,"条件逻辑"),
     
     Wait(     "WAIT"      ,"xwait"      ,"等待元素"),
