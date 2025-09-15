@@ -25,20 +25,16 @@
     
     
     
-    <!-- CFlow编排引擎配置 -->
+    <!-- CFlow编排引擎配置：压缩 -->
     <xconfig>
     
-        <xwspush id="XWSPush">
-            <comment>点推元素</comment>
-            <name>pushName</name>
-            <newMessage>
-                {
-                    "Message": :Message,
-                    "K1": ":K1",
-                    "K2": ":K2"
-                }
-            </newMessage>
-        </xwspush>
+        <xzip id="XZip_CF031">
+            <comment>压缩</comment>
+            <file>C:\Users\ZLX\Desktop\火车票.xlsx</file>
+            <zipDir>D:</zipDir>
+            <zipName>New.zip</zipName>
+            <password>123456</password>
+        </xzip>
         
     </xconfig>
     

@@ -87,7 +87,7 @@
         
         1.11. CS缓存写元素，创建、修改或删除Redis远程缓存或XJava本地缓存，支持库、表、行关系。
         
-    2. 11种衍生元素。
+    2. 12种衍生元素。
     
         2.1.  IOT读元素，衍生于执行元素，用于读取PLC数据。依赖于PLC微服务。
         
@@ -110,6 +110,8 @@
         2.10. WSG点拉元素，衍生于执行元素，用于WebSocket客户端拉取消息。依赖于基座微服务。
         
         2.11. CMD命令元素，衍生于执行元素，执行操作系统命令。
+        
+        2.12. ZIP压缩元素，衍生于执行元素，将文件、文件流、多个文件或目录压缩成一个压缩包。
         
     3. 4种编排路由。
         
@@ -284,6 +286,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -367,6 +370,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -498,6 +502,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -697,6 +702,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -815,6 +821,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -934,6 +941,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1110,6 +1118,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1247,6 +1256,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1403,6 +1413,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1478,6 +1489,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1566,6 +1578,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1704,6 +1717,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1812,6 +1826,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1937,6 +1952,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2054,6 +2070,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2177,6 +2194,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2330,6 +2348,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2495,6 +2514,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2582,6 +2602,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2757,6 +2778,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2884,6 +2906,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3012,6 +3035,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3091,6 +3115,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3195,6 +3220,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3311,6 +3337,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3431,6 +3458,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3578,6 +3606,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3802,6 +3831,7 @@ __编排配置__
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />

@@ -29,6 +29,7 @@ import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.NodeParam;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
+import org.hy.common.callflow.node.ZipConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
@@ -607,7 +608,22 @@ public class ExecuteElementCheckHelp
             
             if ( Help.isNull(v_Command.getCommand()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：CommandConfig[" + Help.NVL(v_Command.getCommand()) + "].command is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：CommandConfig[" + Help.NVL(v_Command.getXid()) + "].command is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof ZipConfig )
+        {
+            ZipConfig v_Zip = (ZipConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_Zip.getFile()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ZipConfig[" + Help.NVL(v_Zip.getXid()) + "].file is null.");
+                return false;
+            }
+            if ( Help.isNull(v_Zip.getZipDir()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ZipConfig[" + Help.NVL(v_Zip.getXid()) + "].zipDir is null.");
                 return false;
             }
         }

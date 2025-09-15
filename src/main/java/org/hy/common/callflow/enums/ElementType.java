@@ -30,6 +30,8 @@ public enum ElementType
     
     Command(  "COMMAND"   ,"xcommand"   ,"命令元素"),
     
+    Zip(      "ZIP"       ,"xzip"       ,"压缩元素"),
+    
     Condition("CONDITION" ,"xcondition" ,"条件逻辑"),
     
     Wait(     "WAIT"      ,"xwait"      ,"等待元素"),

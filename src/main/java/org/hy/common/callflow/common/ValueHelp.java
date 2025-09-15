@@ -219,6 +219,10 @@ public class ValueHelp
                 v_Value = toObject(i_Default ,i_ValueClass);
             }
         }
+        else if ( Object.class.equals(i_ValueClass) )
+        {
+            // Nothing.
+        }
         else if ( Help.isBasicDataType(i_ValueClass) )
         {
             v_Value = Help.toObject(i_ValueClass ,i_ValueXID);

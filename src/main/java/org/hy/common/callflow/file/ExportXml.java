@@ -33,6 +33,7 @@ import org.hy.common.callflow.node.CommandConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
+import org.hy.common.callflow.node.ZipConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
@@ -86,6 +87,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.WSPush   .getXmlName() ,WSPushConfig.class);
         getInstance().addImportHead(ElementType.WSPull   .getXmlName() ,WSPullConfig.class);
         getInstance().addImportHead(ElementType.Command  .getXmlName() ,CommandConfig.class);
+        getInstance().addImportHead(ElementType.Zip      .getXmlName() ,ZipConfig.class);
         getInstance().addImportHead(ElementType.XSQL     .getXmlName() ,XSQLConfig.class);
         getInstance().addImportHead(ElementType.Job      .getXmlName() ,JOBConfig.class);
         getInstance().addImportHead(ElementType.RouteItem.getXmlName() ,RouteItem.class);
@@ -439,7 +441,11 @@ public class ExportXml
         // 没有XID时，自动生成
         if ( Help.isNull(i_ExecObject.getXJavaID()) )
         {
-            if ( i_ExecObject instanceof CommandConfig )
+            if ( i_ExecObject instanceof ZipConfig )
+            {
+                i_ExecObject.setXJavaID("XZIP_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof CommandConfig )
             {
                 i_ExecObject.setXJavaID("XCMD_" + StringHelp.getUUID9n());
             }
