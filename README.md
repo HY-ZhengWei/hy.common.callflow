@@ -42,6 +42,7 @@
     * [缓存读元素的举例](#缓存读元素的举例)
     * [缓存写元素的举例](#缓存写元素的举例)
     * [压缩元素与解压元素的举例](#压缩元素与解压元素的举例)
+    * [密文元素与解文元素的举例](#密文元素与解文元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -294,6 +295,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -378,6 +382,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -510,6 +517,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -710,6 +720,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -829,6 +842,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -949,6 +965,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1126,6 +1145,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1264,6 +1286,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1421,6 +1446,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1497,6 +1525,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1586,6 +1617,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1725,6 +1759,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1834,6 +1871,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1960,6 +2000,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2078,6 +2121,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2202,6 +2248,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2356,6 +2405,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2522,6 +2574,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2610,6 +2665,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2786,6 +2844,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2914,6 +2975,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3043,6 +3107,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3123,6 +3190,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3228,6 +3298,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3345,6 +3418,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3466,6 +3542,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3614,6 +3693,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3843,6 +3925,8 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3897,7 +3981,103 @@ Map<String ,Object> v_Context = new HashMap<String ,Object>();
 v_Context.put("PWD" ,"123456");  // 加密密码
 
 // 执行编排。返回执行结果       
-ExecuteResult       v_Result  = CallFlow.execute(v_CS ,v_Context);
+ExecuteResult       v_Result  = CallFlow.execute(v_Zip ,v_Context);
+```
+
+
+
+
+密文元素与解文元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow032Safe) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow032Safe/JU_CFlow032.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：密文 -->
+    <xconfig>
+    
+        <xdef id="XDEF_CF032">
+            <comment>解密密文</comment>
+            <file>:EncryptFile.doneFile</file>             <!-- 密文文件 -->
+            <dir>D:\Decrypt</dir>                          <!-- 解密目录 -->
+            <password>:EncryptFile.donePassword</password> <!-- 密文密码 -->
+        </xdef>
+        
+        
+        <xenf id="XENF_CF032">
+            <comment>加密密文</comment>
+            <file>:FileName</file>                         <!-- 被加密文件。支持字符路径和数据流 -->
+            <dir>D:</dir>                                  <!-- 密文的保存目录 -->
+            <name>火车票.xlsx</name>                        <!-- 密文的名称 -->
+            <returnID>EncryptFile</returnID>               <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed> 
+                    <next ref="XDEF_CF032" />
+                </succeed>
+            </route>
+        </xenf>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+EncryptFileConfig   v_EncryptFile = (EncryptFileConfig) XJava.getObject("XENF_CF032");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context     = new HashMap<String ,Object>();
+String              v_FileName    = "C:\\Users\\ZLX\\Desktop\\火车票.xlsx";
+FileHelp            v_FHelp       = new FileHelp();
+InputStream         v_InputStream = new ByteArrayInputStream(v_FHelp.getContentByte(v_FileName));
+
+v_Context.put("FileName" ,v_FileName);      // 测试：字符路径
+v_Context.put("FileName" ,v_InputStream);   // 测试：数据流
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_EncryptFile ,v_Context);
 ```
 
 
@@ -3932,6 +4112,9 @@ __编排配置__
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />

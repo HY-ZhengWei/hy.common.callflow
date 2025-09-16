@@ -33,8 +33,8 @@
     
         <xdef id="XDEF_CF032">
             <comment>解密密文</comment>
-            <file>:EncryptFile.doneFile</file>             <!-- 压缩包 -->
-            <dir>D:\Decrypt</dir>                          <!-- 解压目录 -->
+            <file>:EncryptFile.doneFile</file>             <!-- 密文文件 -->
+            <dir>D:\Decrypt</dir>                          <!-- 解密目录 -->
             <password>:EncryptFile.donePassword</password> <!-- 密文密码 -->
         </xdef>
         
