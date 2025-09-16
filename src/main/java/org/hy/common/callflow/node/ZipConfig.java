@@ -23,7 +23,7 @@ import org.hy.common.xml.log.Logger;
 /**
  * 压缩元素：将一个文件、一个文件流、多个文件或目录压缩成一个压缩包
  * 
- * 压缩成功时返回：压缩文件的全路径
+ * 压缩成功时返回：压缩文件的全路径 和 加密密文
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-09-15
@@ -34,16 +34,22 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
     
     private static final Logger $Logger = new Logger(ZipConfig.class);
     
+    /** 变量名称：压缩文件的全路径 */
+    public  static final String $Key_DoneFile = "doneFile";
+    
+    /** 变量名称：加密密文 */
+    public  static final String $Key_DonePwd  = "donePassword";
+    
     
     
     /** 被压缩的文件、目录、数据流的变量名称。可以是数值、上下文变量、XID标识，但数据流只能是变量名称 */
     private NodeParam                     file;
     
     /** 压缩文件保存的目录。可以是数值、上下文变量、XID标识 */
-    private NodeParam                     zipDir;
+    private NodeParam                     dir;
     
     /** 压缩文件保存的文件名称。可以是数值、上下文变量、XID标识 */
-    private NodeParam                     zipName;
+    private NodeParam                     name;
     
     /** 压缩密码。可以是数值、上下文变量、XID标识 */
     private NodeParam                     password;
@@ -94,13 +100,13 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
         this.file.setValueClass(Object.class.getName());
         this.setCallParam(this.file);
         
-        this.zipDir = new NodeParam();
-        this.zipDir.setValueClass(String.class.getName());
-        this.setCallParam(this.zipDir);
+        this.dir = new NodeParam();
+        this.dir.setValueClass(String.class.getName());
+        this.setCallParam(this.dir);
         
-        this.zipName = new NodeParam();
-        this.zipName.setValueClass(String.class.getName());
-        this.setCallParam(this.zipName);
+        this.name = new NodeParam();
+        this.name.setValueClass(String.class.getName());
+        this.setCallParam(this.name);
         
         this.password = new NodeParam();
         this.password.setValueClass(String.class.getName());
@@ -138,20 +144,20 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
     /**
      * 获取：压缩文件保存的目录。可以是数值、上下文变量、XID标识
      */
-    public String getZipDir()
+    public String getDir()
     {
-        return this.zipDir.getValue();
+        return this.dir.getValue();
     }
 
     
     /**
      * 设置：压缩文件保存的目录。可以是数值、上下文变量、XID标识
      * 
-     * @param i_ZipDir 压缩文件保存的目录。可以是数值、上下文变量、XID标识
+     * @param i_Dir 压缩文件保存的目录。可以是数值、上下文变量、XID标识
      */
-    public void setZipDir(String i_ZipDir)
+    public void setDir(String i_Dir)
     {
-        this.zipDir.setValue(i_ZipDir);
+        this.dir.setValue(i_Dir);
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -160,20 +166,20 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
     /**
      * 获取：压缩文件保存的文件名称。可以是数值、上下文变量、XID标识
      */
-    public String getZipName()
+    public String getName()
     {
-        return this.zipName.getValue();
+        return this.name.getValue();
     }
 
     
     /**
      * 设置：压缩文件保存的文件名称。可以是数值、上下文变量、XID标识
      * 
-     * @param i_ZipName 压缩文件保存的文件名称。可以是数值、上下文变量、XID标识
+     * @param i_Name 压缩文件保存的文件名称。可以是数值、上下文变量、XID标识
      */
-    public void setZipName(String i_ZipName)
+    public void setName(String i_Name)
     {
-        this.zipName.setValue(i_ZipName);
+        this.name.setValue(i_Name);
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -372,11 +378,11 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
      * @param i_Password  压缩密码
      * @return
      */
-    public String createZip(Object i_File ,String i_ZipDir ,String i_ZipName ,String i_Password)
+    public Map<String ,String> createZip(Object i_File ,String i_ZipDir ,String i_ZipName ,String i_Password)
     {
         if ( Help.isNull(i_ZipDir) )
         {
-            throw new RuntimeException("ZipDir is null");
+            throw new RuntimeException("Dir is null");
         }
         
         File v_ZipDir = new File(i_ZipDir.endsWith(Help.getSysPathSeparator()) ? i_ZipDir : i_ZipDir + Help.getSysPathSeparator());
@@ -416,14 +422,14 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
         {
             if ( i_File == null )
             {
-                throw new RuntimeException("Zip file is null.");
+                throw new RuntimeException("File is null.");
             }
             else if ( i_File instanceof String )
             {
                 String v_FileString = i_File.toString();
                 if ( Help.isNull(v_FileString) )
                 {
-                    throw new RuntimeException("Zip file is null.");
+                    throw new RuntimeException("File is null.");
                 }
                 
                 String [] v_Files = v_FileString.split(";");
@@ -476,15 +482,19 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
                 InputStream v_File = (InputStream) i_File;
                 v_Msg.append("InputStream Zip to ").append(v_ZipFile.getPath());
                 v_FHelp.createZip4j(v_ZipFile ,v_File ,i_Password);
+                v_File.close();
             }
             else
             {
-                throw new RuntimeException("Zip file[" + v_ZipFile.getPath() + "] .");
+                throw new RuntimeException("File[" + v_ZipFile.getPath() + "] parameter type is error.");
             }
             
             v_Msg.append(" is Succeed.");
             $Logger.info(v_Msg.toString());
-            return v_ZipFile.getPath();
+            Map<String ,String> v_Ret = new HashMap<String ,String>();
+            v_Ret.put($Key_DoneFile ,v_ZipFile.getPath());
+            v_Ret.put($Key_DonePwd  ,i_Password);
+            return v_Ret;
         }
         catch (RuntimeException exce)
         {
@@ -525,27 +535,31 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
         
         if ( !Help.isNull(this.file.getValue()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("file"       ,this.file.getValue()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("file"        ,this.file.getValue()));
         }
-        if ( !Help.isNull(this.zipDir.getValue()) )
+        if ( !Help.isNull(this.dir.getValue()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("zipDir"     ,this.zipDir.getValue()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("dir"         ,this.dir.getValue()));
         }
-        if ( !Help.isNull(this.zipName.getValue()) )
+        if ( !Help.isNull(this.name.getValue()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("zipName"    ,this.zipName.getValue()));
-        }
-        if ( !Help.isNull(this.password.getValue()) )
-        {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("password"   ,this.password.getValue()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("name"        ,this.name.getValue()));
         }
         if ( this.overwrite != null && !this.overwrite )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("overwrite"  ,this.overwrite));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("overwrite"   ,this.overwrite));
         }
         if ( this.doneDelete != null && this.doneDelete )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("doneDelete" ,this.doneDelete));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("doneDelete"  ,this.doneDelete));
+        }
+        if ( this.ignoreError != null && this.ignoreError )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("ignoreError" ,this.ignoreError));
+        }
+        if ( !Help.isNull(this.password.getValue()) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("password"    ,this.password.getValue()));
         }
     }
     
@@ -569,7 +583,6 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Zip : ");
         if ( !Help.isNull(this.file.getValue()) )
         {
             v_Builder.append(this.file.getValue());
@@ -580,14 +593,12 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
         }
         
         v_Builder.append(" to ");
-        if ( !Help.isNull(this.zipDir.getValue()) )
+        if ( !Help.isNull(this.dir.getValue()) )
         {
-            v_Builder.append(this.zipDir.getValue());
-            
-            if ( !Help.isNull(this.zipName.getValue()) )
+            v_Builder.append(this.dir.getValue()).append(Help.getSysPathSeparator());
+            if ( !Help.isNull(this.name.getValue()) )
             {
-                v_Builder.append(Help.getSysPathSeparator());
-                v_Builder.append(this.zipName.getValue());
+                v_Builder.append(this.name.getValue());
             }
         }
         else
@@ -616,7 +627,6 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Zip : ");
         if ( !Help.isNull(this.file.getValue()) )
         {
             v_Builder.append(this.file.getValue());
@@ -627,14 +637,12 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
         }
         
         v_Builder.append(" to ");
-        if ( !Help.isNull(this.zipDir.getValue()) )
+        if ( !Help.isNull(this.dir.getValue()) )
         {
-            v_Builder.append(this.zipDir.getValue());
-            
-            if ( !Help.isNull(this.zipName.getValue()) )
+            v_Builder.append(this.dir.getValue()).append(Help.getSysPathSeparator());
+            if ( !Help.isNull(this.name.getValue()) )
             {
-                v_Builder.append(Help.getSysPathSeparator());
-                v_Builder.append(this.zipName.getValue());
+                v_Builder.append(this.name.getValue());
             }
         }
         else
@@ -687,6 +695,7 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
         v_Clone.timeout     = this.timeout;
         v_Clone.overwrite   = this.overwrite;
         v_Clone.doneDelete  = this.doneDelete;
+        v_Clone.ignoreError = this.ignoreError;
         
         if ( !Help.isNull(this.callParams) )
         {
@@ -733,6 +742,7 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
         v_Clone.timeout     = this.timeout;
         v_Clone.overwrite   = this.overwrite;
         v_Clone.doneDelete  = this.doneDelete;
+        v_Clone.ignoreError = this.ignoreError;
         
         if ( !Help.isNull(this.callParams) )
         {

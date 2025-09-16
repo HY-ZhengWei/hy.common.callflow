@@ -88,7 +88,7 @@
         
         1.11. CS缓存写元素，创建、修改或删除Redis远程缓存或XJava本地缓存，支持库、表、行关系。
         
-    2. 13种衍生元素。
+    2. 15种衍生元素。
     
         2.1.  IOT读元素，衍生于执行元素，用于读取PLC数据。依赖于PLC微服务。
         
@@ -115,6 +115,10 @@
         2.12. ZIP压缩元素，衍生于执行元素，文件、文件流、多个文件或目录压缩成一个压缩包。
         
         2.13. DEC解压元素，衍生于执行元素，压缩包解压。
+        
+        2.14. ENF密文元素，衍生于执行元素，对文件或文件流的加密存储。密钥可由MD5自动生成。
+        
+        2.15. DEF解文元素，衍生于执行元素，对加密文件的解密。
         
     3. 4种编排路由。
         
@@ -3852,20 +3856,20 @@ __编排配置__
     
         <xunzip id="XUnzip_CF031">
             <comment>解压</comment>
-            <zipFile>:ZipFile</zipFile>                   <!-- 压缩包 -->
-            <unzipDir>D:\Unzip</unzipDir>                 <!-- 解压目录 -->
-            <password>:PWD</password>                     <!-- 压缩密码 -->
+            <file>:ZipFile.doneFile</file>                 <!-- 压缩包 -->
+            <dir>D:\Unzip</dir>                            <!-- 解压目录 -->
+            <password>:PWD</password>                      <!-- 压缩密码 -->
             <doneDelete>true</doneDelete>
         </xunzip>
         
         
         <xzip id="XZip_CF031">
             <comment>压缩</comment>
-            <file>C:\Users\ZLX\Desktop\火车票.xlsx</file>  <!-- 被压缩文件。多个文件间用英文分号;分隔 -->
-            <zipDir>D:</zipDir>                           <!-- 压缩包的保存目录 -->
-            <zipName>New.zip</zipName>                    <!-- 压缩包的名称 -->
-            <password>:PWD</password>                     <!-- 压缩密码 -->
-            <returnID>ZipFile</returnID>                  <!-- 定义返回结果的变量名称 -->
+            <file>C:\Users\ZLX\Desktop\火车票.xlsx</file>   <!-- 被压缩文件。多个文件间用英文分号;分隔 -->
+            <dir>D:</dir>                                  <!-- 压缩包的保存目录 -->
+            <name>New.zip</name>                           <!-- 压缩包的名称 -->
+            <password>:PWD</password>                      <!-- 压缩密码 -->
+            <returnID>ZipFile</returnID>                   <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed> 
                     <next ref="XUnzip_CF031" />
@@ -3885,19 +3889,12 @@ __执行编排__
 XJava.putObject("XProgram" ,new Program());
         
 // 获取编排中的首个元素
-CacheSetConfig      v_CS      = (CacheSetConfig) XJava.getObject("XCS_Create_ByJson");
+ZipConfig           v_Zip     = (ZipConfig) XJava.getObject("XZip_CF031");
 
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context = new HashMap<String ,Object>();
-AppConfig           v_RowData = new AppConfig();
 
-v_RowData.setId(StringHelp.getUUID9n());
-v_RowData.setUpdateTime(new Date());
-v_RowData.setUpdateUserID("HY");
-v_RowData.setIsDel(1);
-
-v_Context.put("RowDataObject" ,v_RowData);
-v_Context.put("PKID"          ,v_RowData.getId());
+v_Context.put("PWD" ,"123456");  // 加密密码
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_CS ,v_Context);

@@ -34,6 +34,8 @@ import org.hy.common.callflow.node.ZipConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
+import org.hy.common.callflow.safe.DecryptFileConfig;
+import org.hy.common.callflow.safe.EncryptFileConfig;
 import org.hy.common.db.DBSQL;
 
 
@@ -622,18 +624,46 @@ public class ExecuteElementCheckHelp
                 io_Result.set(false).setParamStr("CFlowCheck：ZipConfig[" + Help.NVL(v_Zip.getXid()) + "].file is null.");
                 return false;
             }
-            if ( Help.isNull(v_Zip.getZipDir()) )
+            if ( Help.isNull(v_Zip.getDir()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：ZipConfig[" + Help.NVL(v_Zip.getXid()) + "].zipDir is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：ZipConfig[" + Help.NVL(v_Zip.getXid()) + "].dir is null.");
                 return false;
             }
         }
         else if ( i_ExecObject instanceof UnzipConfig )
         {
             UnzipConfig v_Unzip = (UnzipConfig) i_ExecObject;
-            if ( Help.isNull(v_Unzip.getZipFile()) )
+            if ( Help.isNull(v_Unzip.getFile()) )
             {
                 io_Result.set(false).setParamStr("CFlowCheck：UnzipConfig[" + Help.NVL(v_Unzip.getXid()) + "].file is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof EncryptFileConfig )
+        {
+            EncryptFileConfig v_EncryptFile = (EncryptFileConfig) i_ExecObject;
+            if ( Help.isNull(v_EncryptFile.getFile()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：EncryptFileConfig[" + Help.NVL(v_EncryptFile.getXid()) + "].file is null.");
+                return false;
+            }
+            if ( Help.isNull(v_EncryptFile.getDir()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：EncryptFileConfig[" + Help.NVL(v_EncryptFile.getXid()) + "].dir is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof DecryptFileConfig )
+        {
+            DecryptFileConfig v_EncryptFile = (DecryptFileConfig) i_ExecObject;
+            if ( Help.isNull(v_EncryptFile.getFile()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：DecryptFileConfig[" + Help.NVL(v_EncryptFile.getXid()) + "].file is null.");
+                return false;
+            }
+            if ( Help.isNull(v_EncryptFile.getPassword()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：DecryptFileConfig[" + Help.NVL(v_EncryptFile.getXid()) + "].password is null.");
                 return false;
             }
         }

@@ -28,15 +28,29 @@
     
     
     
-    <!-- CFlow编排引擎配置 -->
+    <!-- CFlow编排引擎配置：密文 -->
     <xconfig>
     
-        <xjob id="XJOB_CF021_1">
-            <comment>定时元素</comment>
-            <callFlowXID>:XAPI_CF019_1</callFlowXID>           <!-- 另一个编排XID -->
-            <intervalType>S</intervalType>                     <!-- 间隔类型。S表示秒 -->
-            <intervalLen>5</intervalLen>                       <!-- 间隔时长 -->
-        </xjob>
+        <xdef id="XDEF_CF032">
+            <comment>解密密文</comment>
+            <file>:EncryptFile.doneFile</file>             <!-- 压缩包 -->
+            <dir>D:\Decrypt</dir>                          <!-- 解压目录 -->
+            <password>:EncryptFile.donePassword</password> <!-- 密文密码 -->
+        </xdef>
+        
+        
+        <xenf id="XENF_CF032">
+            <comment>加密密文</comment>
+            <file>:FileName</file>                         <!-- 被加密文件。支持字符路径和数据流 -->
+            <dir>D:</dir>                                  <!-- 密文的保存目录 -->
+            <name>火车票.xlsx</name>                        <!-- 密文的名称 -->
+            <returnID>EncryptFile</returnID>               <!-- 定义返回结果的变量名称 -->
+            <route>
+                <succeed> 
+                    <next ref="XDEF_CF032" />
+                </succeed>
+            </route>
+        </xenf>
         
     </xconfig>
     

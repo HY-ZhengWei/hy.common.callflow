@@ -38,6 +38,8 @@ import org.hy.common.callflow.node.ZipConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
+import org.hy.common.callflow.safe.DecryptFileConfig;
+import org.hy.common.callflow.safe.EncryptFileConfig;
 import org.hy.common.file.FileHelp;
 import org.hy.common.license.Hash;
 import org.hy.common.license.IHash;
@@ -71,28 +73,30 @@ public class ExportXml
     static 
     {
         // 预定义的引用类
-        getInstance().addImportHead("xconfig"                          ,ArrayList.class);
-        getInstance().addImportHead(ElementType.MT       .getXmlName() ,MTConfig.class);
-        getInstance().addImportHead(ElementType.Nesting  .getXmlName() ,NestingConfig.class);
-        getInstance().addImportHead(ElementType.For      .getXmlName() ,ForConfig.class);
-        getInstance().addImportHead(ElementType.Node     .getXmlName() ,NodeConfig.class);
-        getInstance().addImportHead(ElementType.Wait     .getXmlName() ,WaitConfig.class);
-        getInstance().addImportHead(ElementType.Calculate.getXmlName() ,CalculateConfig.class);
-        getInstance().addImportHead(ElementType.Condition.getXmlName() ,ConditionConfig.class);
-        getInstance().addImportHead(ElementType.Return   .getXmlName() ,ReturnConfig.class);
-        getInstance().addImportHead(ElementType.CacheGet .getXmlName() ,CacheGetConfig.class);
-        getInstance().addImportHead(ElementType.CacheSet .getXmlName() ,CacheSetConfig.class);
-        getInstance().addImportHead(ElementType.Api      .getXmlName() ,APIConfig.class);
-        getInstance().addImportHead(ElementType.Publish  .getXmlName() ,PublishConfig.class);
-        getInstance().addImportHead(ElementType.Subscribe.getXmlName() ,SubscribeConfig.class);
-        getInstance().addImportHead(ElementType.WSPush   .getXmlName() ,WSPushConfig.class);
-        getInstance().addImportHead(ElementType.WSPull   .getXmlName() ,WSPullConfig.class);
-        getInstance().addImportHead(ElementType.Command  .getXmlName() ,CommandConfig.class);
-        getInstance().addImportHead(ElementType.Zip      .getXmlName() ,ZipConfig.class);
-        getInstance().addImportHead(ElementType.Unzip    .getXmlName() ,UnzipConfig.class);
-        getInstance().addImportHead(ElementType.XSQL     .getXmlName() ,XSQLConfig.class);
-        getInstance().addImportHead(ElementType.Job      .getXmlName() ,JOBConfig.class);
-        getInstance().addImportHead(ElementType.RouteItem.getXmlName() ,RouteItem.class);
+        getInstance().addImportHead("xconfig"                            ,ArrayList.class);
+        getInstance().addImportHead(ElementType.MT         .getXmlName() ,MTConfig.class);
+        getInstance().addImportHead(ElementType.Nesting    .getXmlName() ,NestingConfig.class);
+        getInstance().addImportHead(ElementType.For        .getXmlName() ,ForConfig.class);
+        getInstance().addImportHead(ElementType.Node       .getXmlName() ,NodeConfig.class);
+        getInstance().addImportHead(ElementType.Wait       .getXmlName() ,WaitConfig.class);
+        getInstance().addImportHead(ElementType.Calculate  .getXmlName() ,CalculateConfig.class);
+        getInstance().addImportHead(ElementType.Condition  .getXmlName() ,ConditionConfig.class);
+        getInstance().addImportHead(ElementType.Return     .getXmlName() ,ReturnConfig.class);
+        getInstance().addImportHead(ElementType.CacheGet   .getXmlName() ,CacheGetConfig.class);
+        getInstance().addImportHead(ElementType.CacheSet   .getXmlName() ,CacheSetConfig.class);
+        getInstance().addImportHead(ElementType.Api        .getXmlName() ,APIConfig.class);
+        getInstance().addImportHead(ElementType.Publish    .getXmlName() ,PublishConfig.class);
+        getInstance().addImportHead(ElementType.Subscribe  .getXmlName() ,SubscribeConfig.class);
+        getInstance().addImportHead(ElementType.WSPush     .getXmlName() ,WSPushConfig.class);
+        getInstance().addImportHead(ElementType.WSPull     .getXmlName() ,WSPullConfig.class);
+        getInstance().addImportHead(ElementType.Command    .getXmlName() ,CommandConfig.class);
+        getInstance().addImportHead(ElementType.Zip        .getXmlName() ,ZipConfig.class);
+        getInstance().addImportHead(ElementType.Unzip      .getXmlName() ,UnzipConfig.class);
+        getInstance().addImportHead(ElementType.EncryptFile.getXmlName() ,EncryptFileConfig.class);
+        getInstance().addImportHead(ElementType.DecryptFile.getXmlName() ,DecryptFileConfig.class);
+        getInstance().addImportHead(ElementType.XSQL       .getXmlName() ,XSQLConfig.class);
+        getInstance().addImportHead(ElementType.Job        .getXmlName() ,JOBConfig.class);
+        getInstance().addImportHead(ElementType.RouteItem  .getXmlName() ,RouteItem.class);
     }
     
     
@@ -450,6 +454,18 @@ public class ExportXml
             else if ( i_ExecObject instanceof UnzipConfig )
             {
                 i_ExecObject.setXJavaID("XUnzip_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof EncryptFileConfig )
+            {
+                i_ExecObject.setXJavaID("XENF_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof DecryptFileConfig )
+            {
+                i_ExecObject.setXJavaID("XDEF_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof ZipConfig )
+            {
+                i_ExecObject.setXJavaID("XZip_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof CommandConfig )
             {

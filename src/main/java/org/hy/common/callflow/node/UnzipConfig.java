@@ -33,10 +33,10 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
     
     
     /** 压缩包文件的全路径。可以是数值、上下文变量、XID标识 */
-    private NodeParam zipFile;
+    private NodeParam file;
     
     /** 解压目录 */
-    private NodeParam unzipDir;
+    private NodeParam dir;
     
     /** 压缩密码。可以是数值、上下文变量、XID标识 */
     private NodeParam password;
@@ -77,13 +77,13 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
         
         this.setCallMethod("unzip");
         
-        this.zipFile = new NodeParam();
-        this.zipFile.setValueClass(String.class.getName());
-        this.setCallParam(this.zipFile);
+        this.file = new NodeParam();
+        this.file.setValueClass(String.class.getName());
+        this.setCallParam(this.file);
         
-        this.unzipDir = new NodeParam();
-        this.unzipDir.setValueClass(String.class.getName());
-        this.setCallParam(this.unzipDir);
+        this.dir = new NodeParam();
+        this.dir.setValueClass(String.class.getName());
+        this.setCallParam(this.dir);
         
         this.password = new NodeParam();
         this.password.setValueClass(String.class.getName());
@@ -97,20 +97,20 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
     /**
      * 获取：压缩包文件的全路径。可以是数值、上下文变量、XID标识
      */
-    public String getZipFile()
+    public String getFile()
     {
-        return this.zipFile.getValue();
+        return this.file.getValue();
     }
 
     
     /**
      * 设置：压缩包文件的全路径。可以是数值、上下文变量、XID标识
      * 
-     * @param i_ZipFile 压缩包文件的全路径。可以是数值、上下文变量、XID标识
+     * @param i_File 压缩包文件的全路径。可以是数值、上下文变量、XID标识
      */
-    public void setZipFile(String i_ZipFile)
+    public void setFile(String i_File)
     {
-        this.zipFile.setValue(i_ZipFile);
+        this.file.setValue(i_File);
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -141,20 +141,20 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
     /**
      * 获取：解压目录
      */
-    public String getUnzipDir()
+    public String getDir()
     {
-        return this.unzipDir.getValue();
+        return this.dir.getValue();
     }
 
     
     /**
      * 设置：解压目录
      * 
-     * @param i_UnzipDir 解压目录
+     * @param i_Dir 解压目录
      */
-    public void setUnzipDir(String i_UnzipDir)
+    public void setDir(String i_Dir)
     {
-        this.unzipDir.setValue(i_UnzipDir);
+        this.dir.setValue(i_Dir);
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -347,21 +347,21 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
     {
         String v_NewSpace = "\n" + i_LevelN + i_Level1;
         
-        if ( !Help.isNull(this.zipFile.getValue()) )
+        if ( !Help.isNull(this.file.getValue()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("zipFile"    ,this.zipFile.getValue()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("file"       ,this.file.getValue()));
         }
-        if ( !Help.isNull(this.unzipDir.getValue()) )
+        if ( !Help.isNull(this.dir.getValue()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("unzipDir"   ,this.unzipDir.getValue()));
-        }
-        if ( !Help.isNull(this.password.getValue()) )
-        {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("password"   ,this.password.getValue()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("dir"        ,this.dir.getValue()));
         }
         if ( this.doneDelete != null && this.doneDelete )
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("doneDelete" ,this.doneDelete));
+        }
+        if ( !Help.isNull(this.password.getValue()) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("password"   ,this.password.getValue()));
         }
     }
     
@@ -385,10 +385,9 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Unzip : ");
-        if ( !Help.isNull(this.zipFile.getValue()) )
+        if ( !Help.isNull(this.file.getValue()) )
         {
-            v_Builder.append(this.zipFile.getValue());
+            v_Builder.append(this.file.getValue());
         }
         else
         {
@@ -396,9 +395,9 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
         }
         
         v_Builder.append(" to ");
-        if ( !Help.isNull(this.unzipDir.getValue()) )
+        if ( !Help.isNull(this.dir.getValue()) )
         {
-            v_Builder.append(this.unzipDir.getValue());
+            v_Builder.append(this.dir.getValue());
         }
         else
         {
@@ -426,10 +425,9 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
     {
         StringBuilder v_Builder = new StringBuilder();
         
-        v_Builder.append("Unzip : ");
-        if ( !Help.isNull(this.zipFile.getValue()) )
+        if ( !Help.isNull(this.file.getValue()) )
         {
-            v_Builder.append(this.zipFile.getValue());
+            v_Builder.append(this.file.getValue());
         }
         else
         {
@@ -437,9 +435,9 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
         }
         
         v_Builder.append(" to ");
-        if ( !Help.isNull(this.unzipDir.getValue()) )
+        if ( !Help.isNull(this.dir.getValue()) )
         {
-            v_Builder.append(this.unzipDir.getValue());
+            v_Builder.append(this.dir.getValue());
         }
         else
         {
