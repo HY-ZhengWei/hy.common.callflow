@@ -1219,29 +1219,29 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         {
             if ( !Help.isNull(this.comment) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
             }
             if ( !Help.isNull(this.id) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("id" ,this.id));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("id" ,this.id));
             }
             if ( !Help.isNull(this.treeIDs) )
             {
                 for (String v_TreeID : this.treeIDs.keySet())
                 {
-                    v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("treeID" ,v_TreeID));
+                    v_Xml.append(v_NewSpace).append(IToXml.toValue("treeID" ,v_TreeID));
                 }
             }
             if ( !Help.isNull(this.context) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
             }
         }
         else
         {
             if ( !Help.isNull(this.comment) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toComment(this.comment));
+                v_Xml.append(v_NewSpace).append(IToXml.toComment(this.comment));
             }
         }
         
@@ -1249,87 +1249,87 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         {
             if ( !Help.isNull(this.styleName) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("styleName" ,this.styleName));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("styleName" ,this.styleName));
             }
             if ( this.x != null )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("x" ,this.x));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("x" ,this.x));
             }
             if ( this.y != null )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("y" ,this.y));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("y" ,this.y));
             }
             if ( this.z != null )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("z" ,this.z));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("z" ,this.z));
             }
             if ( this.height != null )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("height" ,this.height));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("height" ,this.height));
             }
             if ( this.width != null )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("width" ,this.width));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("width" ,this.width));
             }
             if ( !Help.isNull(this.iconURL) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("iconURL" ,this.iconURL));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("iconURL" ,this.iconURL));
             }
             if ( this.opacity != null )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("opacity" ,this.opacity));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("opacity" ,this.opacity));
             }
             if ( !Help.isNull(this.backgroudColor) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("backgroudColor" ,this.backgroudColor));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("backgroudColor" ,this.backgroudColor));
             }
             if ( !Help.isNull(this.lineStyle) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineStyle" ,this.lineStyle));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("lineStyle" ,this.lineStyle));
             }
             if ( !Help.isNull(this.lineColor) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineColor" ,this.lineColor));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("lineColor" ,this.lineColor));
             }
             if ( !Help.isNull(this.lineSize) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("lineSize" ,this.lineSize));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("lineSize" ,this.lineSize));
             }
             if ( !Help.isNull(this.fontColor) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontColor" ,this.fontColor));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontColor" ,this.fontColor));
             }
             if ( !Help.isNull(this.fontFamily) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontFamily" ,this.fontFamily));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontFamily" ,this.fontFamily));
             }
             if ( !Help.isNull(this.fontWeight) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontWeight" ,this.fontWeight));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontWeight" ,this.fontWeight));
             }
             if ( !Help.isNull(this.fontSize) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontSize" ,this.fontSize));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontSize" ,this.fontSize));
             }
             if ( !Help.isNull(this.fontAlign) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("fontAlign" ,this.fontAlign));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("fontAlign" ,this.fontAlign));
             }
             if ( !Help.isNull(this.createUserID) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createUserID" ,this.createUserID));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("createUserID" ,this.createUserID));
             }
             if ( !Help.isNull(this.updateUserID) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateUserID" ,this.updateUserID));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("updateUserID" ,this.updateUserID));
             }
             if ( this.createTime != null )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("createTime" ,this.createTime.getFull()));
             }
             if ( this.updateTime != null )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("updateTime" ,this.updateTime.getFull()));
             }
         }
         

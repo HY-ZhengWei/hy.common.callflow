@@ -15,9 +15,10 @@
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />

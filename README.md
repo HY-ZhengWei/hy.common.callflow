@@ -65,7 +65,7 @@
 概要说明
 ------
 
-    1. 11种编排元素（基本元素）。
+    1. 12种编排元素（基本元素）。
     
         1.1.  执行元素，配置及执行Java方法。可轻松扩展它，衍生成特定的业务元素。
     
@@ -88,6 +88,8 @@
         1.10. CG缓存读元素，读取Redis远程缓存或XJava本地缓存，反序列化转对象，支持库、表、行关系。
         
         1.11. CS缓存写元素，创建、修改或删除Redis远程缓存或XJava本地缓存，支持库、表、行关系。
+        
+        1.12. PY蟒蛇元素，在Java中嵌入Python代码。
         
     2. 15种衍生元素。
     
@@ -380,9 +382,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -515,9 +518,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -718,9 +722,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -840,9 +845,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -963,9 +969,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1143,9 +1150,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1284,9 +1292,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1444,9 +1453,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1523,9 +1533,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1615,9 +1626,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1757,9 +1769,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1869,9 +1882,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1998,9 +2012,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2119,9 +2134,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2246,9 +2262,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2403,9 +2420,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2572,9 +2590,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2663,9 +2682,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2842,9 +2862,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2973,9 +2994,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3105,9 +3127,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3188,9 +3211,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3296,9 +3320,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3416,9 +3441,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3540,9 +3566,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3691,9 +3718,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3922,9 +3950,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4016,9 +4045,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4110,9 +4140,10 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />

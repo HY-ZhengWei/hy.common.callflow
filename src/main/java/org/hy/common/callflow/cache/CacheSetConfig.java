@@ -763,14 +763,14 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
             if ( !Help.isNull(this.route.getSucceeds()) 
               || !Help.isNull(this.route.getExceptions()) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toBegin("route"));
+                v_Xml.append(v_NewSpace).append(IToXml.toBegin("route"));
                 
                 // 成功路由
                 this.toXmlRouteItems(v_Xml ,this.route.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
                 // 异常路由
                 this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error.getXmlName()   ,i_Level ,v_TreeID ,i_ExportType);
                 
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toEnd("route"));
+                v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
             }
         }
         

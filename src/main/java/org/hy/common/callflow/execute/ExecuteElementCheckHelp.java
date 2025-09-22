@@ -31,6 +31,7 @@ import org.hy.common.callflow.node.UnzipConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.node.ZipConfig;
+import org.hy.common.callflow.python.PythonConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
@@ -612,6 +613,16 @@ public class ExecuteElementCheckHelp
             if ( Help.isNull(v_Command.getCommand()) )
             {
                 io_Result.set(false).setParamStr("CFlowCheck：CommandConfig[" + Help.NVL(v_Command.getXid()) + "].command is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof PythonConfig )
+        {
+            PythonConfig v_Python = (PythonConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_Python.getPython()) && Help.isNull(v_Python.getScript()) )
+            {
+                io_Result.set(false).setParamStr("PythonConfig：PythonConfig[" + Help.NVL(v_Python.getXid()) + "].script and python is null.");
                 return false;
             }
         }

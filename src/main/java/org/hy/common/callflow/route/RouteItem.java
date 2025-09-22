@@ -23,6 +23,7 @@ import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.python.PythonConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 
 
@@ -556,7 +557,7 @@ public class RouteItem implements IToXml ,CloneableCallFlow ,XJavaID
         {
             if ( !Help.isNull(this.comment) )
             {
-                v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toComment(this.comment));
+                v_Xml.append(v_NewSpace).append(IToXml.toComment(this.comment));
             }
         }
         
@@ -764,6 +765,12 @@ public class RouteItem implements IToXml ,CloneableCallFlow ,XJavaID
             {
                 JOBConfig v_CloneReturn = new JOBConfig();
                 ((JOBConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneReturn;
+            }
+            else if ( this.next instanceof PythonConfig )
+            {
+                PythonConfig v_CloneReturn = new PythonConfig();
+                ((PythonConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
                 v_Clone.next = v_CloneReturn;
             }
             else if ( this.next instanceof SelfLoop )

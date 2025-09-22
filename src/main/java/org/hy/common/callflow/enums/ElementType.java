@@ -57,6 +57,8 @@ public enum ElementType
     CacheGet(   "CACHEGET"    ,"xcg"        ,"缓存读元素"),
                               
     CacheSet(   "CACHESET"    ,"xcs"        ,"缓存写元素"),
+    
+    Python(     "PYTHON"      ,"xpython"    ,"蟒蛇元素"),
                               
     SelfLoop(   "SELFLOOP"    ,""           ,"自循环"),
                               

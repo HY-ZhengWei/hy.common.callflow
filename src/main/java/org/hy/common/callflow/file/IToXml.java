@@ -76,7 +76,14 @@ public interface IToXml
         }
         else
         {
-            return toBegin(i_TagName) + i_Value + toEnd(i_TagName);
+            if ( i_Value.toString().indexOf("\n") >= 0 )
+            {
+                return toBegin(i_TagName ,"textarea") + i_Value + toEnd(i_TagName);
+            }
+            else
+            {
+                return toBegin(i_TagName) + i_Value + toEnd(i_TagName);
+            }
         }
     }
     
@@ -140,7 +147,15 @@ public interface IToXml
                 return toBegin(i_TagName) + i_NewSpace + "<![CDATA[" + i_NewSpace + XJSON.format(i_Value.toString() ,"    " ," " ,i_NewSpace) + i_NewSpace + "]]>" + i_NewSpace + toEnd(i_TagName);
             }
         }
-        return toBegin(i_TagName) + "<![CDATA[" + i_Value + "]]>" + toEnd(i_TagName);
+        
+        if ( i_Value.toString().indexOf("\n") >= 0 )
+        {
+            return toBegin(i_TagName ,"textarea") + "<![CDATA[" + i_Value + "]]>" + toEnd(i_TagName);
+        }
+        else
+        {
+            return toBegin(i_TagName) + "<![CDATA[" + i_Value + "]]>" + toEnd(i_TagName);
+        }
     }
     
     
@@ -208,6 +223,26 @@ public interface IToXml
     static String toBegin(String i_TagName)
     {
         return "<" + i_TagName + ">";
+    }
+    
+    
+    
+    /**
+     * 按标记名称生成 xml 格式的标记开始
+     * 
+     * 生成形式如：<标记名称>
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-22
+     * @version     v1.0
+     *
+     * @param i_TagName  标记名称
+     * @param i_TagType  标记类型
+     * @return
+     */
+    static String toBegin(String i_TagName ,String i_TagType)
+    {
+        return "<" + i_TagName + " type=\"" + i_TagType + "\">";
     }
     
     

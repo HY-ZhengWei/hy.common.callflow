@@ -436,10 +436,11 @@ public class ConditionItem implements IfElse ,XJavaID
     @Override
     public String toXml(int i_Level ,String i_SuperTreeID ,ExportType i_ExportType)
     {
-        StringBuilder v_Xml    = new StringBuilder();
-        String        v_Level1 = "    ";
-        String        v_LevelN = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName  = "conditionItem";
+        StringBuilder v_Xml      = new StringBuilder();
+        String        v_Level1   = "    ";
+        String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+        String        v_XName    = "conditionItem";
+        String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( !Help.isNull(this.getXJavaID()) )
         {
@@ -452,23 +453,23 @@ public class ConditionItem implements IfElse ,XJavaID
         
         if ( !Help.isNull(this.comment) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comment" ,this.comment));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
         }
         if ( this.valueClass != null )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
         }
         if ( !Help.isNull(this.valueXIDA) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDA" ,this.valueXIDA));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueXIDA" ,this.valueXIDA));
         }
         if ( this.comparer != null && Comparer.Equal != this.comparer )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("comparer" ,this.comparer.getValue()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("comparer" ,this.comparer.getValue()));
         }
         if ( !Help.isNull(this.valueXIDB) )
         {
-            v_Xml.append("\n").append(v_LevelN).append(v_Level1).append(IToXml.toValue("valueXIDB" ,this.valueXIDB));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueXIDB" ,this.valueXIDB));
         }
         
         v_Xml.append("\n").append(v_LevelN).append(IToXml.toEnd(v_XName));

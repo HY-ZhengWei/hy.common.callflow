@@ -1,0 +1,1 @@
+print('Hello Python script file from Java 1 中国')

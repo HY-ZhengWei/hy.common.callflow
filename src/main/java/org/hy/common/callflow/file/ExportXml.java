@@ -35,6 +35,7 @@ import org.hy.common.callflow.node.UnzipConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.node.ZipConfig;
+import org.hy.common.callflow.python.PythonConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
@@ -89,9 +90,10 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Subscribe  .getXmlName() ,SubscribeConfig.class);
         getInstance().addImportHead(ElementType.WSPush     .getXmlName() ,WSPushConfig.class);
         getInstance().addImportHead(ElementType.WSPull     .getXmlName() ,WSPullConfig.class);
-        getInstance().addImportHead(ElementType.Command    .getXmlName() ,CommandConfig.class);
         getInstance().addImportHead(ElementType.Zip        .getXmlName() ,ZipConfig.class);
         getInstance().addImportHead(ElementType.Unzip      .getXmlName() ,UnzipConfig.class);
+        getInstance().addImportHead(ElementType.Command    .getXmlName() ,CommandConfig.class);
+        getInstance().addImportHead(ElementType.Python     .getXmlName() ,PythonConfig.class);
         getInstance().addImportHead(ElementType.EncryptFile.getXmlName() ,EncryptFileConfig.class);
         getInstance().addImportHead(ElementType.DecryptFile.getXmlName() ,DecryptFileConfig.class);
         getInstance().addImportHead(ElementType.XSQL       .getXmlName() ,XSQLConfig.class);
@@ -470,6 +472,10 @@ public class ExportXml
             else if ( i_ExecObject instanceof CommandConfig )
             {
                 i_ExecObject.setXJavaID("XCMD_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof PythonConfig )
+            {
+                i_ExecObject.setXJavaID("XPython_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof WSPushConfig )
             {
