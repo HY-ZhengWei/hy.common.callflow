@@ -32,6 +32,8 @@ import jep.SubInterpreter;
  * 
  * Jep适配Python版本的说明：https://pypi.org/project/jep/
  * 
+ * 
+ * 
  * Windows系统
  *   运行条件1：安装Microsoft C++ 生成工具 https://visualstudio.microsoft.com/zh-hans/visual-cpp-build-tools/ ,约1.7G
  *             注：勾选安装：MSVC v143 - VS 2022 C++ x64/x86 生成工具（必须包含 x64，对应 64 位编译）
@@ -41,12 +43,59 @@ import jep.SubInterpreter;
  *   
  *   运行条件3：配置Python系统环境变量，默认是自动配置的，如PATH=D:\Software\Python313\;D:\Software\Python313\Scripts\
  *   
- *   运行条件4：安装 pip install jep  ,约3MB
+ *   运行条件4：安装Jep库 pip install jep  ,约3MB
  *             注：当Python是64位版本时，不要使用普通的 cmd 或 PowerShell，而搜索 "x64 Native Tools Command Prompt for VS 2022"，
  *                 在64位Visual Studio 2022 Developer Command中安装。
  *             注：成功时，Jep会被安装到D:\Software\Python313\Lib\site-packages\jep目录
  *                 
  *   运行条件5：运行Java程序时，在VM arguments中配置Jep环境：-Djava.library.path="D:\Software\Python313\Lib\site-packages\jep"
+ *   
+ *   
+ *   
+ * Ubuntu系统
+ *   运行条件1：安装依赖 apt install gcc g++
+ *   
+ *   运行条件2：安装Python解释器 sudo apt install python3 python3-dev
+ *   
+ *   运行条件3：安装Python第三方库管理 sudo apt install python3-pip
+ *             更新到最新版本 python3 -m pip install --upgrade pip setuptools --break-system-packages
+ *             
+ *   运行条件4：安装Python应用程序管理 sudo apt install pipx
+ *             配置环境变量 pipx ensurepath ，执行后会在sudo vi ~/.profile 中添加如下配置
+ *             export PATH="$PATH:/home/iot202498/.local/bin"
+ *             
+ *   运行条件5：安装Jep库 pipx install jep
+ *             或安装国内镜像  pipx install jep --pip-args "--index-url https://mirrors.aliyun.com/pypi/simple/"
+ *             成功安装后的Jep库目录  ~/.local/share/pipx/venvs/jep/lib/python3.12/site-packages/jep
+ *             成功安装后的Python环境 ~/.local/share/pipx/venvs/jep/bin
+ *             
+ *   运行条件6：配置带有Jep库的Python解释器 sudo vi ~/.profile 中添加如下配置（注：将$PATH放在最后）
+ *             export PATH="/home/iot202498/.local/bin:/home/iot202498/.local/share/pipx/venvs/jep/bin:$PATH"
+ *             
+ *   运行条件7：运行Java程序时，在VM arguments中配置Jep环境：-Djava.library.path="/home/iot202498/.local/share/pipx/venvs/jep/lib/python3.12/site-packages/jep"
+ *             举例：java -Djava.library.path="/home/iot202498/.local/share/pipx/venvs/jep/lib/python3.12/site-packages/jep" -cp "classes:test-classes:lib/*" org.hy.common.callflow.junit.cflow033Python.JU_CFlow033
+ *
+ *
+ *
+ * OpenSUSE系统
+ *   运行条件1：安装依赖 zypper install gcc gcc-c++
+ *   
+ *   运行条件2：安装Python解释器 zypper install python312 python312-devel
+ *   
+ *   运行条件3：安装Python第三方库管理 zypper install python312-pip
+ *             更新到最新版本 python3.12 -m pip install --upgrade pip setuptools -i https://mirrors.aliyun.com/pypi/simple/
+ *             
+ *   运行条件4：切换操作系统默认的python指向
+ *             rm /usr/bin/python3
+ *             ln -s /usr/bin/python3.12 /usr/bin/python3
+ *           
+ *   运行条件5：安装Jep库 pip install jep
+ *             或安装国内镜像 pip install jep -i https://mirrors.aliyun.com/pypi/simple/
+ *             成功安装后的Jep库目录  /usr/local/lib64/python3.12/site-packages/jep
+ *             
+ *   运行条件6：运行Java程序时，在VM arguments中配置Jep环境：-Djava.library.path="/usr/local/lib64/python3.12/site-packages/jep"
+ *             举例：java -Djava.library.path="/usr/local/lib64/python3.12/site-packages/jep" -cp "classes:test-classes:lib/*" org.hy.common.callflow.junit.cflow033Python.JU_CFlow033
+ *
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-09-16

@@ -41,6 +41,13 @@ public class JU_CFlow033 extends AppInitConfig
     
     
     
+    public static void main(String [] args) throws Exception
+    {
+        new JU_CFlow033().test_CFlow033();
+    }
+    
+    
+    
     public JU_CFlow033() throws Exception
     {
         if ( !$isInit )
