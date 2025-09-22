@@ -43,6 +43,7 @@
     * [缓存写元素的举例](#缓存写元素的举例)
     * [压缩元素与解压元素的举例](#压缩元素与解压元素的举例)
     * [密文元素与解文元素的举例](#密文元素与解文元素的举例)
+    * [蟒蛇元素的举例](#蟒蛇元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -4108,6 +4109,201 @@ v_Context.put("FileName" ,v_InputStream);   // 测试：数据流
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_EncryptFile ,v_Context);
+```
+
+
+
+
+
+
+蟒蛇元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow033Python) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow033Python/JU_CFlow033.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：蟒蛇元素 -->
+    <xconfig>
+    
+        <xpython id="XPython_CF033_多个脚本">
+            <comment>执行多个Python脚本</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <in>                                            <!-- Java向Python的传参 -->
+            {
+                "v_Value": ":PythonRet.RetJavaDouble",
+            }
+            </in>
+            <script type="textarea">                        <!-- 设置Python脚本文件 -->
+                classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_1.py
+                classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_2.py
+            </script>
+        </xpython>
+        
+        
+        <xpython id="XPython_CF033_一个脚本">
+            <comment>执行一个Python脚本</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <in>                                            <!-- Java向Python的传参 -->
+            {
+                "v_Value": ":PythonRet.RetJavaDouble",
+            }
+            </in>
+            <script>classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_1.py</script>
+            <route>
+                <succeed> 
+                    <next ref="XPython_CF033_多个脚本" />
+                </succeed>
+            </route>
+        </xpython>
+    
+        
+        <xnode id="XNodeee_CF033_显示结果">
+            <comment>显示结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:PythonRet</value>                   <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed> 
+                    <next ref="XPython_CF033_一个脚本" />
+                </succeed>
+            </route>
+        </xnode>
+    
+        
+        <xpython id="XPython_CF033_获取结果">
+            <comment>获取Python运行结果</comment>
+            <python type="textarea">                        <!-- Python代码。注意要符合正确语法的缩进 -->
+                v_PythonInt = 1
+                v_PythonDouble = 3.14
+            </python>
+            <out>                                           <!-- Python向Java的传结果 -->
+            {
+                "v_PythonInt": "RetJavaInt",
+                "v_PythonDouble": "RetJavaDouble"
+            }
+            </out>
+            <returnID>PythonRet</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNodeee_CF033_显示结果" />
+                </succeed>
+            </route>
+        </xpython>
+    
+    
+        <xpython id="XPython_CF033_传递参数">
+            <comment>向Python传参</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <in>                                            <!-- Java向Python的传参 -->
+            {
+                "v_JavaInt": 3,
+                "v_JavaVarString": ":JavaVarString",
+                "v_JavaVarDouble": ":JavaVarDouble",
+                "v_JavaVarList": ":JavaVarList"
+            }
+            </in>
+            <python type="textarea">                        <!-- Python代码。注意要符合正确语法的缩进 -->
+                print('Hello' ,v_JavaVarString)
+                
+                v_Double = v_JavaVarDouble + 0.0015926
+                print('Hello' ,v_Double)
+                
+                v_Int = v_JavaInt + 6
+                print('Hello' ,v_Int)
+                
+                for i, item in enumerate(v_JavaVarList): 
+                    print(f'索引 {i}: {item} (类型: {type(item).__name__})')
+            </python>
+            <route>
+                <succeed> 
+                    <next ref="XPython_CF033_获取结果" />
+                </succeed>
+            </route>
+        </xpython>
+        
+    
+        <xpython id="XPython_CF033_蟒蛇元素">
+            <comment>打声招呼</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <python type="textarea">                        <!-- Python代码。注意要符合正确语法的缩进 -->
+                print('Hello world')
+                print('Hello 蟒蛇元素')
+                print('Hello 2025')
+                print('Hello from Java')
+            </python>
+            <route>
+                <succeed> 
+                    <next ref="XPython_CF033_传递参数" />
+                </succeed>
+            </route>
+        </xpython>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+PythonConfig        v_Python      = (PythonConfig) XJava.getObject("XPython_CF033_蟒蛇元素");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context     = new HashMap<String ,Object>();
+List<String>        v_JavaVarList = new ArrayList<String>();
+v_JavaVarList.add("L 1");
+v_JavaVarList.add("L 2");
+v_JavaVarList.add("L 3");
+
+v_Context.put("JavaVarString" ,"Python from Java");
+v_Context.put("JavaVarDouble" ,3.14D);
+v_Context.put("JavaVarList"   ,v_JavaVarList);
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Python ,v_Context);
 ```
 
 
