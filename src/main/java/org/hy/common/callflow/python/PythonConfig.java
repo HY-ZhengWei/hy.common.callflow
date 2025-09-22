@@ -8,14 +8,15 @@ import org.hy.common.Help;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJSON;
-import org.hy.common.xml.XJava;
 
 import jep.SubInterpreter;
 
@@ -237,9 +238,9 @@ public class PythonConfig extends ExecuteElement implements Cloneable
      */
     private boolean isXID(String i_Value)
     {
-        if ( i_Value.startsWith(":") )
+        if ( i_Value.startsWith(DBSQL.$Placeholder) )
         {
-            return !StringHelp.isContains(i_Value ," " ,"." ,"+" ,"=" ,"(" ,")" ,"{" ,"}" ,"[" ,"]" ,"%" ,"#" ,"!" ,"&" ,"`" ,"~" ,"@" ,"^" ,"*" ,";" ,"?" ,"," ,"/" ,"\\" ,"|");
+            return !StringHelp.isContains(i_Value ," " ,"+" ,"=" ,"(" ,")" ,"{" ,"}" ,"[" ,"]" ,"%" ,"#" ,"!" ,"&" ,"`" ,"~" ,"@" ,"^" ,"*" ,";" ,"?" ,"," ,"/" ,"\\" ,"|");
         }
         else
         {
@@ -259,9 +260,10 @@ public class PythonConfig extends ExecuteElement implements Cloneable
      * @param i_Context  上下文类型的变量信息
      * @return           返回Map.key  为Python中的变量名称，
      *                   返回Map.value为Java中的参数数据
+     * @throws Exception 
      */
     @SuppressWarnings("unchecked")
-    private Map<String ,Object> parserIn(Map<String ,Object> i_Context)
+    private Map<String ,Object> parserIn(Map<String ,Object> i_Context) throws Exception
     {
         Map<String ,Object> v_In = new HashMap<String ,Object>();
         
@@ -279,17 +281,8 @@ public class PythonConfig extends ExecuteElement implements Cloneable
                         String v_Value = v_Item.getValue().toString().trim();
                         if ( this.isXID(v_Value) )
                         {
-                            String v_XID = v_Value.substring(1);
-                            Object v_Obj = i_Context.get(v_XID);  // 优先从上下文中获取
-                            
-                            if ( v_Obj == null )
-                            {
-                                v_In.put(v_Item.getKey() ,XJava.getObject(v_XID));
-                            }
-                            else
-                            {
-                                v_In.put(v_Item.getKey() ,v_Obj);
-                            }
+                            Object v_Obj = ValueHelp.getValue(v_Value ,null ,null ,i_Context);
+                            v_In.put(v_Item.getKey() ,v_Obj);
                             continue;
                         }
                     }
@@ -653,7 +646,16 @@ public class PythonConfig extends ExecuteElement implements Cloneable
     public String toString(Map<String ,Object> i_Context)
     {
         StringBuilder       v_Builder = new StringBuilder();
-        Map<String ,Object> v_In      = this.parserIn(i_Context);
+        Map<String ,Object> v_In      = null;
+        
+        try
+        {
+            v_In = this.parserIn(i_Context);
+        }
+        catch (Exception exce)
+        {
+            v_Builder.append("Error input parameters");
+        }
         
         // Java向Python传递参数
         if ( !Help.isNull(v_In) )

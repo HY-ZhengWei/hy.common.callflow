@@ -35,6 +35,11 @@
         <xpython id="XPython_CF033_多个脚本">
             <comment>执行多个Python脚本</comment>
             <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <in>                                            <!-- Java向Python的传参 -->
+            {
+                "v_Value": ":PythonRet.RetJavaDouble",
+            }
+            </in>
             <script type="textarea">                        <!-- 设置Python脚本文件 -->
                 classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_1.py
                 classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_2.py
@@ -45,6 +50,11 @@
         <xpython id="XPython_CF033_一个脚本">
             <comment>执行一个Python脚本</comment>
             <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <in>                                            <!-- Java向Python的传参 -->
+            {
+                "v_Value": ":PythonRet.RetJavaDouble",
+            }
+            </in>
             <script>classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_1.py</script>
             <route>
                 <succeed> 

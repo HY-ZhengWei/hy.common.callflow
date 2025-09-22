@@ -1,1 +1,1 @@
-print('Hello Python script file from Java 1 中国')
+print('Hello Python script file from Java 1 中国' ,v_Value)
