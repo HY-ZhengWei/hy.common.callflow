@@ -68,7 +68,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
     /** Python代码 */
     private String python;
     
-    /** Java获取Python变量 */
+    /** Java获取Python结果 */
     private String out;
     
     /** Python代码print的字符集 */
@@ -163,7 +163,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 获取：Java获取Python变量
+     * 获取：Java获取Python结果
      */
     public String getOut()
     {
@@ -173,9 +173,9 @@ public class PythonConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：Java获取Python变量
+     * 设置：Java获取Python结果
      * 
-     * @param i_Out Java获取Python变量
+     * @param i_Out Java获取Python结果
      */
     public void setOut(String i_Out)
     {
@@ -367,7 +367,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 解释Java获取Python变量
+     * 解释Java获取Python结果
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-09-18
@@ -471,7 +471,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
                 v_Jep.exec(this.parserPython());
             }
             
-            // Java获取Python变量
+            // Java获取Python结果
             if ( !Help.isNull(v_Out) )
             {
                 for (Map.Entry<String ,String> v_Item : v_Out.entrySet())
