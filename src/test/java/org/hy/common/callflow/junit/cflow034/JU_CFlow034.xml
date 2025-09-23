@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+
+
+
+    <!-- CFlow编排引擎配置：起模机：数据确认 -->
+    <xconfig>
+
+        <xreturn id="XCFlow_Stripping_DataConfirm_Succeed">
+            <comment>数据确认成功</comment>
+            <retValue>
+                {
+                "retInt": 200,
+                "retText": "数据确认成功"
+                }
+            </retValue>
+        </xreturn>
+
+
+        <xreturn id="XCFlow_Stripping_DataConfirm_Timeout">
+            <comment>启动超时</comment>
+            <retValue>
+                {
+                "retInt": -502,
+                "retText": "数据确认写入超时，请检查是否写入成功"
+                }
+            </retValue>
+        </xreturn>
+
+
+        <xnode id="XCFlow_Stripping_DataConfirm_Timeout_Reset">
+            <comment>写数据确认超时复位</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_Stripping_DataConfirm_Timeout" />
+                </succeed>
+            </route>
+        </xnode>
+
+
+        <xwait id="XCFlow_Stripping_DataConfirm_Wait">
+            <comment>等待1秒</comment>
+            <waitTime>1000</waitTime>
+            <counter>ToDataConfirmWaitCounter</counter>
+            <counterMax>10</counterMax>
+            <route>
+                <if>
+                    <next>:XCFlow_Stripping_DataConfirm_Write</next>
+                </if>
+                <else>
+                    <next ref="XCFlow_Stripping_DataConfirm_Timeout_Reset" />
+                </else>
+            </route>
+        </xwait>
+
+
+        <xcondition id="XCFlow_Stripping_DataConfirm_isOK">
+            <comment>数据确认是否完成</comment>
+            <logical>OR</logical>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:newStates.Task</valueXIDA>
+                <valueXIDB>4</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:newStates.Task</valueXIDA>
+                <valueXIDB>5</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>
+                    <next ref="XCFlow_Stripping_DataConfirm_Succeed" />
+                </if>
+                <else>
+                    <next ref="XCFlow_Stripping_DataConfirm_Wait" />
+                </else>
+            </route>
+        </xcondition>
+
+
+        <xnode id="XCFlow_Stripping_DataConfirm_GetStates">
+            <comment>重新获取起模机状态</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>newStates</returnID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_Stripping_DataConfirm_isOK" />
+                </succeed>
+            </route>
+        </xnode>
+
+
+        <xnode id="XCFlow_Stripping_DataConfirm_Write">
+            <comment>写数据确认</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_Stripping_DataConfirm_GetStates" />
+                </succeed>
+            </route>
+        </xnode>
+
+
+        <xreturn id="XCFlow_Stripping_SetTask_Timeout">
+            <comment>写入任务流水号超时</comment>
+            <retValue>
+                {
+                "retInt": -501,
+                "retText": "写任务流水号超时"
+                }
+            </retValue>
+        </xreturn>
+
+
+        <xwait id="XXCFlow_Stripping_SetTask_Wait">
+            <comment>等待3秒</comment>
+            <waitTime>3000</waitTime>
+            <counter>ToSetTaskWaitCounter</counter>
+            <counterMax>20</counterMax>
+            <route>
+                <if>
+                    <next>:XCFlow_Stripping_SetTask_Write</next>
+                </if>
+                <else>
+                    <next ref="XCFlow_Stripping_SetTask_Timeout" />
+                </else>
+            </route>
+        </xwait>
+
+
+        <xcondition id="XCFlow_Stripping_DataConfirm_IsOKState">
+            <comment>写数据确认状态判断</comment>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:newStates1.StationStatus</valueXIDA>
+                <valueXIDB>4</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:newStates1.Task</valueXIDA>
+                <valueXIDB>3</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>
+                    <next ref="XCFlow_Stripping_DataConfirm_Write" />
+                </if>
+                <else>
+                    <next ref="XXCFlow_Stripping_SetTask_Wait" />
+                </else>
+            </route>
+        </xcondition>
+
+
+        <xnode id="XCFlow_Stripping_SetTask_GetStates">
+            <comment>重新获取起模机状态</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>newStates1</returnID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_Stripping_DataConfirm_IsOKState" />
+                </succeed>
+            </route>
+        </xnode>
+
+
+        <xnode id="XCFlow_Stripping_SetTask_Write">
+            <comment>写任务流水号与任务状态</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <context>
+                {
+                    "TaskType": 1
+                }
+            </context>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_Stripping_SetTask_GetStates" />
+                </succeed>
+            </route>
+        </xnode>
+
+
+        <xreturn id="XCFlow_Stripping_SetTask_ErrorState00">
+            <comment>写任务流水号状态不满足</comment>
+            <retValue>
+                {
+                "retInt": -503,
+                "retText": "写任务流水号状态不满足"
+                }
+            </retValue>
+        </xreturn>
+
+
+        <xcondition id="XCFlow_Stripping_SetTask_IsOKState01">
+            <comment>启动状态2，前置条件为已完成请求底板动作,且历史中写过任务</comment>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:States.StationStatus</valueXIDA>
+                <valueXIDB>4</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:States.Task</valueXIDA>
+                <valueXIDB>2</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:States.TaskNo</valueXIDA>
+                <comparer>!=</comparer>
+                <valueXIDB>0</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>
+                    <next ref="XCFlow_Stripping_SetTask_Write" />
+                </if>
+                <else>
+                    <next ref="XCFlow_Stripping_SetTask_ErrorState00" />
+                </else>
+            </route>
+        </xcondition>
+
+
+        <xcondition id="XCFlow_Stripping_SetTask_IsOKState00">
+            <comment>启动状态，前置条件为已完成请求底板动作</comment>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:States.StationStatus</valueXIDA>
+                <valueXIDB>4</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:States.Task</valueXIDA>
+                <valueXIDB>0</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>
+                    <next ref="XCFlow_Stripping_SetTask_Write" />
+                </if>
+                <else>
+                    <next ref="XCFlow_Stripping_SetTask_IsOKState01" />
+                </else>
+            </route>
+        </xcondition>
+
+
+        <xnode id="XCFlow_Stripping_Start数据确认">
+            <comment>获取起模机状态</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>States</returnID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_Stripping_SetTask_IsOKState00" />
+                </succeed>
+            </route>
+        </xnode>
+    </xconfig>
+
+</config>

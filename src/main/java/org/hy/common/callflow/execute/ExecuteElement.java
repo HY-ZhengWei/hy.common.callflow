@@ -522,7 +522,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     
     
     /**
-     * 获取最大的树ID
+     * 获取最大的树ID。层次越高，值越大
+     * 
+     * 举例：当同时有1.3、1.0 时，返回 1.0
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-27
@@ -551,7 +553,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     
     
     /**
-     * 获取最小的树ID
+     * 获取最小的树ID。层次越低，值越小
+     * 
+     * 举例：当同时有1.3、1.0 时，返回 1.3
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-02-27
