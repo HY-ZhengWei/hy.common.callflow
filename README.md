@@ -4344,7 +4344,7 @@ ExecuteResult       v_Result  = CallFlow.execute(v_Python ,v_Context);
 
 
 
-蟒蛇元素的举例
+酷语元素的举例
 ------
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow035Groovy) [返回目录](#目录)
