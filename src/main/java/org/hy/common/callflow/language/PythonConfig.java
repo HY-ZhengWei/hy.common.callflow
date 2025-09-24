@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.fraction.Fraction;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.Return;
@@ -102,6 +104,8 @@ import jep.SubInterpreter;
  * @author      ZhengWei(HY)
  * @createDate  2025-09-16
  * @version     v1.0
+ *              v1.1  2025-09-24  添加：Python中复数结果的支持
+ *                                添加：Python中分数结果的支持
  */
 public class PythonConfig extends ExecuteElement implements Cloneable
 {
@@ -444,7 +448,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
             }
         }
         
-        return new HashMap<String ,String>();
+        return this.outMap;
     }
     
     
@@ -527,11 +531,28 @@ public class PythonConfig extends ExecuteElement implements Cloneable
             {
                 for (Map.Entry<String ,String> v_Item : v_Out.entrySet())
                 {
-                    Object v_Value = v_Jep.getValue(v_Item.getKey());
-                    v_Ret.put(v_Item.getValue() ,v_Value);
+                    String v_Type = v_Jep.getValue("type(" + v_Item.getKey() + ").__name__").toString();
+                    
+                    // 分数
+                    if ( "Fraction".equals(v_Type) )
+                    {
+                        Long v_Numerator   = (Long) v_Jep.getValue(v_Item.getKey() + ".numerator");   // 分子
+                        Long v_Denominator = (Long) v_Jep.getValue(v_Item.getKey() + ".denominator"); // 分母
+                        v_Ret.put(v_Item.getValue() ,new Fraction(v_Numerator.intValue() ,v_Denominator.intValue()));
+                    }
+                    // 复数
+                    else if ( "complex".equals(v_Type) )
+                    {
+                        double v_Real      = (Double) v_Jep.getValue(v_Item.getKey() + ".real");  // 实部
+                        double v_Imaginary = (Double) v_Jep.getValue(v_Item.getKey() + ".imag");  // 虚部  
+                        v_Ret.put(v_Item.getValue() ,new Complex(v_Real ,v_Imaginary));
+                    }
+                    else
+                    {
+                        Object v_Value = v_Jep.getValue(v_Item.getKey());
+                        v_Ret.put(v_Item.getValue() ,v_Value);
+                    }
                 }
-                
-                v_Out.clear();
             }
             
             v_Result.setResult(v_Ret);

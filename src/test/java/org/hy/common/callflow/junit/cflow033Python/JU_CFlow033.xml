@@ -82,14 +82,27 @@
         
         <xpython id="XPython_CF033_获取结果">
             <comment>获取Python运行结果</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
             <python type="textarea">                        <!-- Python代码。注意要符合正确语法的缩进 -->
+                from fractions import Fraction
+            
                 v_PythonInt = 1
                 v_PythonDouble = 3.14
+                
+                v_Z1 = 1 + 2j
+                v_Z2 = 3 + 4j
+                v_PythonComlex = v_Z1 + v_Z2
+                print('复数' ,v_PythonComlex)
+                
+                v_PythonFraction = Fraction(3, 4)
+                print('分数' ,v_PythonFraction)
             </python>
             <out>                                           <!-- Python向Java的传结果 -->
             {
                 "v_PythonInt": "RetJavaInt",
-                "v_PythonDouble": "RetJavaDouble"
+                "v_PythonDouble": "RetJavaDouble",
+                "v_PythonComlex": "RetJavaComlex",
+                "v_PythonFraction": "RetJavaFraction"
             }
             </out>
             <returnID>PythonRet</returnID>

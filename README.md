@@ -4388,79 +4388,94 @@ __编排配置__
     
     
     
-    <!-- CFlow编排引擎配置：酷语元素 -->
+    <!-- CFlow编排引擎配置：蟒蛇元素 -->
     <xconfig>
     
-        <xgroovy id="XGroovy_CF035_多个脚本">
-            <comment>执行多个Groovy脚本</comment>
-            <in>                                            <!-- Java向Groovy的传参 -->
+        <xpython id="XPython_CF033_多个脚本">
+            <comment>执行多个Python脚本</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <in>                                            <!-- Java向Python的传参 -->
             {
-                "v_Value": ":GroovyRet.RetJavaDouble"
+                "v_Value": ":PythonRet.RetJavaDouble"
             }
             </in>
-            <script type="textarea">                        <!-- 设置Groovy脚本文件 -->
-                classhome:org/hy/common/callflow/junit/cflow035Groovy/JU_CFlow035_1.groovy
-                classhome:org/hy/common/callflow/junit/cflow035Groovy/JU_CFlow035_2.groovy
+            <script type="textarea">                        <!-- 设置Python脚本文件 -->
+                classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_1.py
+                classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_2.py
             </script>
-        </xgroovy>
+        </xpython>
         
         
-        <xgroovy id="XGroovy_CF035_一个脚本">
-            <comment>执行一个Groovy脚本</comment>
-            <in>                                            <!-- Java向Groovy的传参 -->
+        <xpython id="XPython_CF033_一个脚本">
+            <comment>执行一个Python脚本</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <in>                                            <!-- Java向Python的传参 -->
             {
-                "v_Value": ":GroovyRet.RetJavaDouble"
+                "v_Value": ":PythonRet.RetJavaDouble"
             }
             </in>
-            <script>classhome:org/hy/common/callflow/junit/cflow035Groovy/JU_CFlow035_1.groovy</script>
+            <script>classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_1.py</script>
             <route>
                 <succeed> 
-                    <next ref="XGroovy_CF035_多个脚本" />
+                    <next ref="XPython_CF033_多个脚本" />
                 </succeed>
             </route>
-        </xgroovy>
+        </xpython>
     
         
-        <xnode id="XNodeee_CF035_显示结果">
+        <xnode id="XNodeee_CF033_显示结果">
             <comment>显示结果</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_Show</callMethod>
             <callParam>
-                <value>:GroovyRet</value>                   <!-- 定义入参变量名称 -->
+                <value>:PythonRet</value>                   <!-- 定义入参变量名称 -->
             </callParam>
             <route>
                 <succeed> 
-                    <next ref="XGroovy_CF035_一个脚本" />
+                    <next ref="XPython_CF033_一个脚本" />
                 </succeed>
             </route>
         </xnode>
     
         
-        <xgroovy id="XGroovy_CF035_获取结果">
-            <comment>获取Groovy运行结果</comment>
-            <groovy type="textarea">                        <!-- Groovy代码 -->
-                // 不使用 def 关键字，否则它会是一个局部变量
-                v_GroovyInt = 1
-                v_GroovyDouble = 3.14
-            </groovy>
-            <out>                                           <!-- Groovy向Java的传结果 -->
+        <xpython id="XPython_CF033_获取结果">
+            <comment>获取Python运行结果</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <python type="textarea">                        <!-- Python代码。注意要符合正确语法的缩进 -->
+                from fractions import Fraction
+            
+                v_PythonInt = 1
+                v_PythonDouble = 3.14
+                
+                v_Z1 = 1 + 2j
+                v_Z2 = 3 + 4j
+                v_PythonComlex = v_Z1 + v_Z2
+                print('复数' ,v_PythonComlex)
+                
+                v_PythonFraction = Fraction(3, 4)
+                print('分数' ,v_PythonFraction)
+            </python>
+            <out>                                           <!-- Python向Java的传结果 -->
             {
-                "v_GroovyInt": "RetJavaInt",
-                "v_GroovyDouble": "RetJavaDouble"
+                "v_PythonInt": "RetJavaInt",
+                "v_PythonDouble": "RetJavaDouble",
+                "v_PythonComlex": "RetJavaComlex",
+                "v_PythonFraction": "RetJavaFraction"
             }
             </out>
-            <returnID>GroovyRet</returnID>
+            <returnID>PythonRet</returnID>
             <route>
                 <succeed> 
-                    <next ref="XNodeee_CF035_显示结果" />
+                    <next ref="XNodeee_CF033_显示结果" />
                 </succeed>
             </route>
-        </xgroovy>
+        </xpython>
     
     
-        <xgroovy id="XGroovy_CF035_传递参数">
-            <comment>向Groovy传参</comment>
-            <in>                                            <!-- Java向Groovy的传参 -->
+        <xpython id="XPython_CF033_传递参数">
+            <comment>向Python传参</comment>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <in>                                            <!-- Java向Python的传参 -->
             {
                 "v_JavaInt": 3,
                 "v_JavaVarString": ":JavaVarString",
@@ -4468,43 +4483,41 @@ __编排配置__
                 "v_JavaVarList": ":JavaVarList"
             }
             </in>
-            <groovy type="textarea">                        <!-- Groovy代码 -->
-            <![CDATA[
-                println "Hello ${v_JavaVarString}"
+            <python type="textarea">                        <!-- Python代码。注意要符合正确语法的缩进 -->
+                print('Hello' ,v_JavaVarString)
                 
                 v_Double = v_JavaVarDouble + 0.0015926
-                println "Hello ${v_Double}"
+                print('Hello' ,v_Double)
                 
                 v_Int = v_JavaInt + 6
-                println "Hello ${v_Int}"
+                print('Hello' ,v_Int)
                 
-                v_JavaVarList.eachWithIndex { v_Item ,v_Index ->
-                    println "索引$v_Index: $v_Item"
-                }
-            ]]>
-            </groovy>
+                for i, item in enumerate(v_JavaVarList): 
+                    print(f'索引 {i}: {item} (类型: {type(item).__name__})')
+            </python>
             <route>
                 <succeed> 
-                    <next ref="XGroovy_CF035_获取结果" />
+                    <next ref="XPython_CF033_获取结果" />
                 </succeed>
             </route>
-        </xgroovy>
+        </xpython>
         
     
-        <xgroovy id="XGroovy_CF035_酷语元素">
+        <xpython id="XPython_CF033_蟒蛇元素">
             <comment>打声招呼</comment>
-            <groovy type="textarea">                        <!-- Groovy代码 -->
-                println "Hello world"
-                println "Hello 酷语元素"
-                println "Hello 2025"
-                println "Hello from Java"
-            </groovy>
+            <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
+            <python type="textarea">                        <!-- Python代码。注意要符合正确语法的缩进 -->
+                print('Hello world')
+                print('Hello 蟒蛇元素')
+                print('Hello 2025')
+                print('Hello from Java')
+            </python>
             <route>
                 <succeed> 
-                    <next ref="XGroovy_CF035_传递参数" />
+                    <next ref="XPython_CF033_传递参数" />
                 </succeed>
             </route>
-        </xgroovy>
+        </xpython>
         
     </xconfig>
     

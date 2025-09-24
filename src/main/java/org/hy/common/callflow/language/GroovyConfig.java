@@ -407,8 +407,6 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
                     Object v_Value = v_Binding.getVariable(v_Item.getKey());
                     v_Ret.put(v_Item.getValue() ,v_Value);
                 }
-                
-                v_Out.clear();
             }
             
             v_Result.setResult(v_Ret);
