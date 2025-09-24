@@ -44,6 +44,7 @@
     * [压缩元素与解压元素的举例](#压缩元素与解压元素的举例)
     * [密文元素与解文元素的举例](#密文元素与解文元素的举例)
     * [蟒蛇元素的举例](#蟒蛇元素的举例)
+    * [酷语元素的举例](#酷语元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -66,7 +67,7 @@
 概要说明
 ------
 
-    1. 12种编排元素（基本元素）。
+    1. 13种编排元素（基本元素）。
     
         1.1.  执行元素，配置及执行Java方法。可轻松扩展它，衍生成特定的业务元素。
     
@@ -91,6 +92,8 @@
         1.11. CS缓存写元素，创建、修改或删除Redis远程缓存或XJava本地缓存，支持库、表、行关系。
         
         1.12. PY蟒蛇元素，在Java中嵌入Python代码。
+        
+        1.13. GV酷语元素，在Java中嵌入Groovy代码。
         
     2. 15种衍生元素。
     
@@ -296,9 +299,11 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -386,7 +391,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -522,7 +528,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -726,7 +733,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -849,7 +857,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -973,7 +982,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1154,7 +1164,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1296,7 +1307,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1457,7 +1469,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1537,7 +1550,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1630,7 +1644,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1773,7 +1788,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1886,7 +1902,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2016,7 +2033,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2138,7 +2156,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2266,7 +2285,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2424,7 +2444,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2594,7 +2615,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2686,7 +2708,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2866,7 +2889,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2998,7 +3022,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3131,7 +3156,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3215,7 +3241,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3324,7 +3351,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3445,7 +3473,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3570,7 +3599,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3722,7 +3752,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3954,7 +3985,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4049,7 +4081,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4148,7 +4181,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4167,7 +4201,7 @@ __编排配置__
             <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
             <in>                                            <!-- Java向Python的传参 -->
             {
-                "v_Value": ":PythonRet.RetJavaDouble",
+                "v_Value": ":PythonRet.RetJavaDouble"
             }
             </in>
             <script type="textarea">                        <!-- 设置Python脚本文件 -->
@@ -4182,7 +4216,7 @@ __编排配置__
             <charEncoding>UTF-8</charEncoding>              <!-- 设置编码格式（有中文显示时） -->
             <in>                                            <!-- Java向Python的传参 -->
             {
-                "v_Value": ":PythonRet.RetJavaDouble",
+                "v_Value": ":PythonRet.RetJavaDouble"
             }
             </in>
             <script>classhome:org/hy/common/callflow/junit/cflow033Python/JU_CFlow033_1.py</script>
@@ -4310,6 +4344,201 @@ ExecuteResult       v_Result  = CallFlow.execute(v_Python ,v_Context);
 
 
 
+蟒蛇元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow035Groovy) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow035Groovy/JU_CFlow035.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：酷语元素 -->
+    <xconfig>
+    
+        <xgroovy id="XGroovy_CF035_多个脚本">
+            <comment>执行多个Groovy脚本</comment>
+            <in>                                            <!-- Java向Groovy的传参 -->
+            {
+                "v_Value": ":GroovyRet.RetJavaDouble"
+            }
+            </in>
+            <script type="textarea">                        <!-- 设置Groovy脚本文件 -->
+                classhome:org/hy/common/callflow/junit/cflow035Groovy/JU_CFlow035_1.groovy
+                classhome:org/hy/common/callflow/junit/cflow035Groovy/JU_CFlow035_2.groovy
+            </script>
+        </xgroovy>
+        
+        
+        <xgroovy id="XGroovy_CF035_一个脚本">
+            <comment>执行一个Groovy脚本</comment>
+            <in>                                            <!-- Java向Groovy的传参 -->
+            {
+                "v_Value": ":GroovyRet.RetJavaDouble"
+            }
+            </in>
+            <script>classhome:org/hy/common/callflow/junit/cflow035Groovy/JU_CFlow035_1.groovy</script>
+            <route>
+                <succeed> 
+                    <next ref="XGroovy_CF035_多个脚本" />
+                </succeed>
+            </route>
+        </xgroovy>
+    
+        
+        <xnode id="XNodeee_CF035_显示结果">
+            <comment>显示结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:GroovyRet</value>                   <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed> 
+                    <next ref="XGroovy_CF035_一个脚本" />
+                </succeed>
+            </route>
+        </xnode>
+    
+        
+        <xgroovy id="XGroovy_CF035_获取结果">
+            <comment>获取Groovy运行结果</comment>
+            <groovy type="textarea">                        <!-- Groovy代码 -->
+                // 不使用 def 关键字，否则它会是一个局部变量
+                v_GroovyInt = 1
+                v_GroovyDouble = 3.14
+            </groovy>
+            <out>                                           <!-- Groovy向Java的传结果 -->
+            {
+                "v_GroovyInt": "RetJavaInt",
+                "v_GroovyDouble": "RetJavaDouble"
+            }
+            </out>
+            <returnID>GroovyRet</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNodeee_CF035_显示结果" />
+                </succeed>
+            </route>
+        </xgroovy>
+    
+    
+        <xgroovy id="XGroovy_CF035_传递参数">
+            <comment>向Groovy传参</comment>
+            <in>                                            <!-- Java向Groovy的传参 -->
+            {
+                "v_JavaInt": 3,
+                "v_JavaVarString": ":JavaVarString",
+                "v_JavaVarDouble": ":JavaVarDouble",
+                "v_JavaVarList": ":JavaVarList"
+            }
+            </in>
+            <groovy type="textarea">                        <!-- Groovy代码 -->
+            <![CDATA[
+                println "Hello ${v_JavaVarString}"
+                
+                v_Double = v_JavaVarDouble + 0.0015926
+                println "Hello ${v_Double}"
+                
+                v_Int = v_JavaInt + 6
+                println "Hello ${v_Int}"
+                
+                v_JavaVarList.eachWithIndex { v_Item ,v_Index ->
+                    println "索引$v_Index: $v_Item"
+                }
+            ]]>
+            </groovy>
+            <route>
+                <succeed> 
+                    <next ref="XGroovy_CF035_获取结果" />
+                </succeed>
+            </route>
+        </xgroovy>
+        
+    
+        <xgroovy id="XGroovy_CF035_酷语元素">
+            <comment>打声招呼</comment>
+            <groovy type="textarea">                        <!-- Groovy代码 -->
+                println "Hello world"
+                println "Hello 酷语元素"
+                println "Hello 2025"
+                println "Hello from Java"
+            </groovy>
+            <route>
+                <succeed> 
+                    <next ref="XGroovy_CF035_传递参数" />
+                </succeed>
+            </route>
+        </xgroovy>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+GroovyConfig        v_Groovy  = (GroovyConfig) XJava.getObject("XGroovy_CF035_酷语元素");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context     = new HashMap<String ,Object>();
+List<String>        v_JavaVarList = new ArrayList<String>();
+v_JavaVarList.add("L 1");
+v_JavaVarList.add("L 2");
+v_JavaVarList.add("L 3");
+
+v_Context.put("JavaVarString" ,"Groovy from Java");
+v_Context.put("JavaVarDouble" ,3.14D);
+v_Context.put("JavaVarList"   ,v_JavaVarList);
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Groovy ,v_Context);
+```
+
+
+
+
+
 占位符的举例
 ------
 
@@ -4339,7 +4568,8 @@ __编排配置__
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.python.PythonConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />

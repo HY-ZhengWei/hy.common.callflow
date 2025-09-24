@@ -19,11 +19,12 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
+import org.hy.common.callflow.language.GroovyConfig;
+import org.hy.common.callflow.language.PythonConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.WaitConfig;
-import org.hy.common.callflow.python.PythonConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 
 
@@ -771,6 +772,12 @@ public class RouteItem implements IToXml ,CloneableCallFlow ,XJavaID
             {
                 PythonConfig v_CloneReturn = new PythonConfig();
                 ((PythonConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneReturn;
+            }
+            else if ( this.next instanceof GroovyConfig )
+            {
+                GroovyConfig v_CloneReturn = new GroovyConfig();
+                ((GroovyConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
                 v_Clone.next = v_CloneReturn;
             }
             else if ( this.next instanceof SelfLoop )

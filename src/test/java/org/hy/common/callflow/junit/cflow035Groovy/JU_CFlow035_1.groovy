@@ -1,0 +1,1 @@
+println "Hello Groovy script file from Java 1 中国 ${v_Value}"

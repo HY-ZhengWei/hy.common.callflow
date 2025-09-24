@@ -1,0 +1,1 @@
+println "Hello Groovy script file from Java 2 陕西"

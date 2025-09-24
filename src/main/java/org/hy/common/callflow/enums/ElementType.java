@@ -59,6 +59,8 @@ public enum ElementType
     CacheSet(   "CACHESET"    ,"xcs"        ,"缓存写元素"),
     
     Python(     "PYTHON"      ,"xpython"    ,"蟒蛇元素"),
+    
+    Groovy(     "GROOVY"      ,"xgroovy"    ,"酷语元素"),
                               
     SelfLoop(   "SELFLOOP"    ,""           ,"自循环"),
                               

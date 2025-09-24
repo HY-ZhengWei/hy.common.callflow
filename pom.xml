@@ -6,7 +6,7 @@
 
     <groupId>cn.openapis</groupId>
     <artifactId>hy.common.callflow</artifactId>
-    <version>1.4.8</version>
+    <version>1.4.9</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.callflow</name>
@@ -139,6 +139,13 @@
             <groupId>black.ninia</groupId>
             <artifactId>jep</artifactId>
             <version>4.2.2</version>
+        </dependency>
+        
+        <!-- Groovy -->
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>5.0.1</version>
         </dependency>
         
         <dependency>

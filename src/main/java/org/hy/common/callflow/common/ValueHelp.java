@@ -36,6 +36,30 @@ public class ValueHelp
     
     
     /**
+     * 判定是否符合XID
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-18
+     * @version     v1.0
+     *
+     * @param i_Value
+     * @return
+     */
+    public static boolean isXID(String i_Value)
+    {
+        if ( i_Value.startsWith(DBSQL.$Placeholder) )
+        {
+            return !StringHelp.isContains(i_Value ," " ,"+" ,"=" ,"(" ,")" ,"{" ,"}" ,"[" ,"]" ,"%" ,"#" ,"!" ,"&" ,"`" ,"~" ,"@" ,"^" ,"*" ,";" ,"?" ,"," ,"/" ,"\\" ,"|");
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    
+    
+    /**
      * 是否为引用ID的格式
      * 
      * @author      ZhengWei(HY)

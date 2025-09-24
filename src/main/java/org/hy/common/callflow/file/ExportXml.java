@@ -25,6 +25,8 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
+import org.hy.common.callflow.language.GroovyConfig;
+import org.hy.common.callflow.language.PythonConfig;
 import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.APIConfig;
@@ -35,7 +37,6 @@ import org.hy.common.callflow.node.UnzipConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.node.ZipConfig;
-import org.hy.common.callflow.python.PythonConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
@@ -94,6 +95,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Unzip      .getXmlName() ,UnzipConfig.class);
         getInstance().addImportHead(ElementType.Command    .getXmlName() ,CommandConfig.class);
         getInstance().addImportHead(ElementType.Python     .getXmlName() ,PythonConfig.class);
+        getInstance().addImportHead(ElementType.Groovy     .getXmlName() ,GroovyConfig.class);
         getInstance().addImportHead(ElementType.EncryptFile.getXmlName() ,EncryptFileConfig.class);
         getInstance().addImportHead(ElementType.DecryptFile.getXmlName() ,DecryptFileConfig.class);
         getInstance().addImportHead(ElementType.XSQL       .getXmlName() ,XSQLConfig.class);
@@ -476,6 +478,10 @@ public class ExportXml
             else if ( i_ExecObject instanceof PythonConfig )
             {
                 i_ExecObject.setXJavaID("XPython_" + StringHelp.getUUID9n());
+            }
+            else if ( i_ExecObject instanceof GroovyConfig )
+            {
+                i_ExecObject.setXJavaID("XGroovy_" + StringHelp.getUUID9n());
             }
             else if ( i_ExecObject instanceof WSPushConfig )
             {

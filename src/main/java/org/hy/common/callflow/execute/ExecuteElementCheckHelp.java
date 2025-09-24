@@ -19,6 +19,8 @@ import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.ifelse.ConditionItem;
 import org.hy.common.callflow.ifelse.IfElse;
+import org.hy.common.callflow.language.GroovyConfig;
+import org.hy.common.callflow.language.PythonConfig;
 import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.MTItem;
 import org.hy.common.callflow.nesting.NestingConfig;
@@ -31,7 +33,6 @@ import org.hy.common.callflow.node.UnzipConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.node.ZipConfig;
-import org.hy.common.callflow.python.PythonConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.callflow.route.SelfLoop;
@@ -676,6 +677,16 @@ public class ExecuteElementCheckHelp
             if ( Help.isNull(v_Python.getPython()) && Help.isNull(v_Python.getScript()) )
             {
                 io_Result.set(false).setParamStr("PythonConfig：PythonConfig[" + Help.NVL(v_Python.getXid()) + "].script and python is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof GroovyConfig )
+        {
+            GroovyConfig v_Groovy = (GroovyConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_Groovy.getGroovy()) && Help.isNull(v_Groovy.getScript()) )
+            {
+                io_Result.set(false).setParamStr("PythonConfig：PythonConfig[" + Help.NVL(v_Groovy.getXid()) + "].script and groovy is null.");
                 return false;
             }
         }

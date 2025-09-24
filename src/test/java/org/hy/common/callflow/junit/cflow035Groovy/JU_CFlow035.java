@@ -1,4 +1,4 @@
-package org.hy.common.callflow.junit.cflow033Python;
+package org.hy.common.callflow.junit.cflow035Groovy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import org.hy.common.Date;
 import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
-import org.hy.common.callflow.junit.cflow033Python.program.Program;
-import org.hy.common.callflow.language.PythonConfig;
+import org.hy.common.callflow.junit.cflow035Groovy.program.Program;
+import org.hy.common.callflow.language.GroovyConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -26,15 +26,15 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎033：蟒蛇元素
+ * 测试单元：编排引擎035：酷语元素
  * 
  * @author      ZhengWei(HY)
- * @createDate  2025-09-19
+ * @createDate  2025-09-24
  * @version     v1.0
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow033 extends AppInitConfig
+public class JU_CFlow035 extends AppInitConfig
 {
     
     private static boolean $isInit = false;
@@ -43,12 +43,12 @@ public class JU_CFlow033 extends AppInitConfig
     
     public static void main(String [] args) throws Exception
     {
-        new JU_CFlow033().test_CFlow033();
+        new JU_CFlow035().test_CFlow035();
     }
     
     
     
-    public JU_CFlow033() throws Exception
+    public JU_CFlow035() throws Exception
     {
         if ( !$isInit )
         {
@@ -60,20 +60,22 @@ public class JU_CFlow033 extends AppInitConfig
     
     
     @Test
-    public void test_CFlow033() throws ClassNotFoundException, IOException
+    public void test_CFlow035() throws ClassNotFoundException, IOException
     {
-        test_CFlow033_Inner();
+        test_CFlow035_Inner();
+        System.out.println("\n");
+        test_CFlow035_Inner();  // 第二次运行时间，明显变快
     }
     
     
     
-    private void test_CFlow033_Inner() throws ClassNotFoundException, IOException
+    private void test_CFlow035_Inner() throws ClassNotFoundException, IOException
     {
         // 初始化被编排的执行对象方法
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        PythonConfig        v_Python  = (PythonConfig) XJava.getObject("XPython_CF033_蟒蛇元素");
+        GroovyConfig        v_Groovy  = (GroovyConfig) XJava.getObject("XGroovy_CF035_酷语元素");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
         List<String> v_JavaVarList = new ArrayList<String>();
@@ -81,19 +83,19 @@ public class JU_CFlow033 extends AppInitConfig
         v_JavaVarList.add("L 2");
         v_JavaVarList.add("L 3");
         
-        v_Context.put("JavaVarString" ,"Python from Java");
+        v_Context.put("JavaVarString" ,"Groovy from Java");
         v_Context.put("JavaVarDouble" ,3.14D);
         v_Context.put("JavaVarList"   ,v_JavaVarList);
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
-        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_Python);
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_Groovy);
         if ( !v_CheckRet.get() )
         {
             System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
             return;
         }
         
-        ExecuteResult v_Result = CallFlow.execute(v_Python ,v_Context);
+        ExecuteResult v_Result = CallFlow.execute(v_Groovy ,v_Context);
         if ( v_Result.isSuccess() )
         {
             System.out.println("Success");
@@ -117,7 +119,7 @@ public class JU_CFlow033 extends AppInitConfig
         System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
         
         // 导出
-        System.out.println(CallFlow.getHelpExport().export(v_Python));
+        System.out.println(CallFlow.getHelpExport().export(v_Groovy));
     }
     
 }
