@@ -29,7 +29,20 @@ public interface NodeConfigBase
      * @return
      */
     public String getElementType();
-   
+    
+    
+    
+    /**
+     * 转XML时是否显示retFalseIsError属性
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-25
+     * @version     v1.0
+     *
+     * @return
+     */
+    public boolean xmlShowRetFalseIsError();
+    
     
     
     /**

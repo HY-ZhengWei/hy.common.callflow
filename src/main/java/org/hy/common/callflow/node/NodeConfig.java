@@ -47,6 +47,7 @@ import org.hy.common.xml.plugins.XSQLGroup;
  *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  *              v3.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v4.0  2025-09-02  添加：执行元素的首次初始化成功后触发
+ *              v5.0  2025-09-25  添加：执行方法返回False或null时表示出现异常
  */
 public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
@@ -73,6 +74,9 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
     protected String                        timeout;
     
+    /** 执行方法返回False或null时表示出现异常。默认为：false */
+    protected boolean                       retFalseIsError;
+    
     
     
     public NodeConfig()
@@ -94,8 +98,9 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     public NodeConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.isInit  = false;
-        this.timeout = "0";
+        this.isInit          = false;
+        this.timeout         = "0";
+        this.retFalseIsError = false;
     }
     
     
@@ -220,7 +225,35 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             
             if ( v_ExceRet.get() )
             {
-                v_Result.setResult(v_ExceRet.getParamObj());
+                if ( this.retFalseIsError )
+                {
+                    if ( v_ExceRet.getParamObj() == null )
+                    {
+                        // Add 2025-09-25 执行方法返回null时表示出现异常
+                        throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s execute logic[NULL] error.");
+                    }
+                    else if ( v_ExceRet.getParamObj() instanceof Boolean )
+                    {
+                        boolean v_ExecIsSucceed = (Boolean) v_ExceRet.getParamObj();
+                        if ( v_ExecIsSucceed )
+                        {
+                            v_Result.setResult(v_ExceRet.getParamObj());
+                        }
+                        else
+                        {
+                            // Add 2025-09-25 执行方法返回False时表示出现异常
+                            throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s execute logic[False] error.");
+                        }
+                    }
+                    else
+                    {
+                        v_Result.setResult(v_ExceRet.getParamObj());
+                    }
+                }
+                else
+                {
+                    v_Result.setResult(v_ExceRet.getParamObj());
+                }
             }
             else
             {
@@ -815,6 +848,45 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     
     
     /**
+     * 转XML时是否显示retFalseIsError属性
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-25
+     * @version     v1.0
+     *
+     * @return
+     */
+    public boolean xmlShowRetFalseIsError()
+    {
+        return true;
+    }
+    
+    
+    /**
+     * 获取：执行方法False或null时表示出现异常。默认为：false
+     */
+    public boolean isRetFalseIsError()
+    {
+        return retFalseIsError;
+    }
+
+    
+    /**
+     * 设置：执行方法False或null时表示出现异常。默认为：false
+     * 
+     * @param i_RetFalseIsError 执行方法False或null时表示出现异常。默认为：false
+     */
+    public void setRetFalseIsError(boolean i_RetFalseIsError)
+    {
+        this.retFalseIsError = i_RetFalseIsError;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+    /**
      * 获取XML内容中的名称，如<名称>内容</名称>
      * 
      * 建议：子类重写此方法
@@ -866,6 +938,10 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             {
                 io_Xml.append(v_Param.toXml(i_Level + 1 ,i_TreeID));
             }
+        }
+        if ( this.retFalseIsError && xmlShowRetFalseIsError() )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("retFalseIsError" ,this.retFalseIsError));
         }
     }
 
@@ -1143,9 +1219,10 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         NodeConfig v_Clone = new NodeConfig();
         
         this.cloneMyOnly(v_Clone);
-        v_Clone.callXID    = this.callXID;
-        v_Clone.callMethod = this.callMethod; 
-        v_Clone.timeout    = this.timeout;
+        v_Clone.callXID         = this.callXID;
+        v_Clone.callMethod      = this.callMethod; 
+        v_Clone.timeout         = this.timeout;
+        v_Clone.retFalseIsError = this.retFalseIsError;
         
         if ( !Help.isNull(this.callParams) )
         {
@@ -1187,9 +1264,10 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         NodeConfig v_Clone = (NodeConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.callXID    = this.callXID;
-        v_Clone.callMethod = this.callMethod; 
-        v_Clone.timeout    = this.timeout;
+        v_Clone.callXID         = this.callXID;
+        v_Clone.callMethod      = this.callMethod; 
+        v_Clone.timeout         = this.timeout;
+        v_Clone.retFalseIsError = this.retFalseIsError;
         
         if ( !Help.isNull(this.callParams) )
         {
