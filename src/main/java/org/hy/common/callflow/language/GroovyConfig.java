@@ -39,7 +39,7 @@ import groovy.lang.Script;
  * 
  * 注1：如果没有out时，仅返回new HashMap()
  * 注2：如果有out时，返回从Groovy获取的变量，数据类型也为Map
- * 注3：向Groovy传参后，先执行Groovy脚本，后执行Groovy代码
+ * 注3：向Groovy传参后，先执行Groovy脚本文件，后执行Groovy代码
  * 
  * 安全策略如下：
  *     禁止：执行系统命令
@@ -58,7 +58,7 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
     /** Java向Groovy传递参数 */
     private String              in;
     
-    /** Groovy脚本。多个脚本间有换行分隔 */
+    /** Groovy脚本文件。多个脚本文件间有换行分隔 */
     private String              script;
     
     /** 解释一次，多次执行，加速性能（仅内部使用） */
@@ -117,7 +117,7 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：Groovy脚本。多个脚本间有换行分隔
+     * 获取：Groovy脚本文件。多个脚本文件间有换行分隔
      */
     public String getScript()
     {
@@ -127,9 +127,9 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：Groovy脚本。多个脚本间有换行分隔
+     * 设置：Groovy脚本文件。多个脚本文件间有换行分隔
      * 
-     * @param i_Script Groovy脚本。多个脚本间有换行分隔
+     * @param i_Script Groovy脚本。多个脚本文件间有换行分隔
      */
     public void setScript(String i_Script)
     {
@@ -385,6 +385,13 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
         long          v_BeginTime = this.request();
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
+        
+        if ( Help.isNull(this.groovy) && Help.isNull(this.script) )
+        {
+            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s groovy and script is null."));
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
+        }
         
         try
         {

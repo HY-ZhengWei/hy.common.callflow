@@ -61,6 +61,8 @@ public enum ElementType
     Python(     "PYTHON"      ,"xpython"    ,"蟒蛇元素"),
     
     Groovy(     "GROOVY"      ,"xgroovy"    ,"酷语元素"),
+    
+    Shell(      "SHELL"       ,"xshell"     ,"脚本元素"),
                               
     SelfLoop(   "SELFLOOP"    ,""           ,"自循环"),
                               

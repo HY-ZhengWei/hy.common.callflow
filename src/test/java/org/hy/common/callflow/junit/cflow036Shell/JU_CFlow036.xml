@@ -31,75 +31,72 @@
     
     
     
-    <!-- CFlow编排引擎配置 -->
+    <!-- CFlow编排引擎配置：脚本元素 -->
     <xconfig>
     
-        <xnode id="XNode_CF005_1_2">
-            <comment>1.2节点。异常时有后续的处理，我也会被执行</comment>
-            <callXID>:XProgram</callXID>
-            <callMethod>method_1_2</callMethod>
-        </xnode>
-        
-        
-        <xnode id="XNode_CF005_1_1_2_1">
-            <comment>异常时的后续处理</comment>
-            <callXID>:XProgram</callXID>
-            <callMethod>method_Error</callMethod>
-        </xnode>
-        
-        
-        <xnode id="XNode_CF005_1_1_2">
-            <comment>1.1.2节点</comment>
-            <callXID>:XProgram</callXID>
-            <callMethod>method_1_1_2</callMethod>
-            <route>
-                <error>                                     <!-- 异常时，关联后置节点 -->
-                    <next ref="XNode_CF005_1_1_2_1" />
-                    <comment>异常时</comment>
-                </error>
-            </route>
-        </xnode>
-        
-        
-        <xnode id="XNode_CF005_1_1_1">
-            <comment>1.1.1节点</comment>
-            <callXID>:XProgram</callXID>
-            <callMethod>method_1_1_1</callMethod>
-        </xnode>
+        <xshell id="XShell_CF036_下载文件">
+            <comment>下载文件</comment>
+            <host>10.8.3.11</host>
+            <user>iot202401</user>
+            <password>iot249540@LAB.cn</password>
+            <downFile type="textarea">
+                /opt/apache-tomcat-9.0.87.tar.gz , D:/
+                /opt/redis-stable.tar.gz         , D:/
+            </downFile>
+        </xshell>
     
     
-        <xnode id="XNode_CF005_1_1">
-            <comment>1.1节点</comment>
-            <callXID>:XProgram</callXID>
-            <callMethod>method_1_1</callMethod>
+        <xshell id="XShell_CF036_上传文件">
+            <comment>上传文件</comment>
+            <host     ref="XShell_CF036_下载文件.getHost" />
+            <user     ref="XShell_CF036_下载文件.getUser" />
+            <password ref="XShell_CF036_下载文件.getPassword" />
+            <upFile type="textarea">
+                classhome:org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.xml   , /opt/cflow036Shell
+                classhome:org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.class , /opt/cflow036Shell
+            </upFile>
             <route>
-                <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF005_1_1_1" />
-                    <comment>成功时，第一路</comment>
-                </succeed>
-                <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF005_1_1_2" />
-                    <comment>成功时，第二路</comment>
+                <succeed> 
+                    <next ref="XShell_CF036_下载文件" />
                 </succeed>
             </route>
-        </xnode>
+        </xshell>
         
-        
-        <xnode id="XNode_CF005_1">
-            <comment>1节点</comment>
-            <callXID>:XProgram</callXID>
-            <callMethod>method_1</callMethod>
+    
+        <xshell id="XShell_CF036_传递参数">
+            <comment>传递参数</comment>
+            <host     ref="XShell_CF036_下载文件.getHost" />
+            <user     ref="XShell_CF036_下载文件.getUser" />
+            <password ref="XShell_CF036_下载文件.getPassword" />
+            <shell type="textarea">                        <!-- Shell代码 -->
+                echo 'Hello :JavaVarString'
+            </shell>
             <route>
-                <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF005_1_1" />
-                    <comment>成功时，第一路</comment>
-                </succeed>
-                <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XNode_CF005_1_2" />
-                    <comment>成功时，第二路</comment>
+                <succeed> 
+                    <next ref="XShell_CF036_上传文件" />
                 </succeed>
             </route>
-        </xnode>
+        </xshell>
+        
+    
+        <xshell id="XShell_CF036_脚本元素">
+            <comment>打声招呼</comment>
+            <host     ref="XShell_CF036_下载文件.getHost" />
+            <user     ref="XShell_CF036_下载文件.getUser" />
+            <password ref="XShell_CF036_下载文件.getPassword" />
+            <shell type="textarea">                        <!-- Shell代码 -->
+                echo 'Hello world'
+                echo 'Hello 脚本元素'
+                echo 'Hello 2025'
+                echo 'Hello from Java'
+                echo 'Hello '`date`
+            </shell>
+            <route>
+                <succeed> 
+                    <next ref="XShell_CF036_传递参数" />
+                </succeed>
+            </route>
+        </xshell>
         
     </xconfig>
     

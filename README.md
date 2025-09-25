@@ -304,6 +304,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -393,6 +394,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -530,6 +532,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -735,6 +738,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -859,6 +863,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -984,6 +989,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1166,6 +1172,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1309,6 +1316,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1471,6 +1479,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1552,6 +1561,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1646,6 +1656,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1790,6 +1801,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -1904,6 +1916,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2035,6 +2048,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2158,6 +2172,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2287,6 +2302,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2446,6 +2462,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2617,6 +2634,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2710,6 +2728,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -2891,6 +2910,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3024,6 +3044,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3158,6 +3179,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3243,6 +3265,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3353,6 +3376,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3475,6 +3499,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3601,6 +3626,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3754,6 +3780,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -3987,6 +4014,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4083,6 +4111,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4183,6 +4212,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4378,6 +4408,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
@@ -4583,6 +4614,7 @@ __编排配置__
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
     <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
     <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />

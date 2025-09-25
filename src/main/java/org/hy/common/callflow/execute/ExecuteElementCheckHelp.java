@@ -21,6 +21,7 @@ import org.hy.common.callflow.ifelse.ConditionItem;
 import org.hy.common.callflow.ifelse.IfElse;
 import org.hy.common.callflow.language.GroovyConfig;
 import org.hy.common.callflow.language.PythonConfig;
+import org.hy.common.callflow.language.ShellConfig;
 import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.MTItem;
 import org.hy.common.callflow.nesting.NestingConfig;
@@ -676,7 +677,7 @@ public class ExecuteElementCheckHelp
             
             if ( Help.isNull(v_Python.getPython()) && Help.isNull(v_Python.getScript()) )
             {
-                io_Result.set(false).setParamStr("PythonConfig：PythonConfig[" + Help.NVL(v_Python.getXid()) + "].script and python is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：PythonConfig[" + Help.NVL(v_Python.getXid()) + "].script and python is null.");
                 return false;
             }
         }
@@ -686,7 +687,17 @@ public class ExecuteElementCheckHelp
             
             if ( Help.isNull(v_Groovy.getGroovy()) && Help.isNull(v_Groovy.getScript()) )
             {
-                io_Result.set(false).setParamStr("PythonConfig：PythonConfig[" + Help.NVL(v_Groovy.getXid()) + "].script and groovy is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：GroovyConfig[" + Help.NVL(v_Groovy.getXid()) + "].script and groovy is null.");
+                return false;
+            }
+        }
+        else if ( i_ExecObject instanceof ShellConfig )
+        {
+            ShellConfig v_Shell = (ShellConfig) i_ExecObject;
+            
+            if ( Help.isNull(v_Shell.getShell()) && Help.isNull(v_Shell.getUpFile()) && Help.isNull(v_Shell.getDownFile()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(v_Shell.getXid()) + "].shell、upFile and downFile is null.");
                 return false;
             }
         }

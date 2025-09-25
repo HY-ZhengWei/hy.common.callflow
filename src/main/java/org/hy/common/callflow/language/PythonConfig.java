@@ -32,7 +32,7 @@ import jep.SubInterpreter;
  * 
  * 注1：如果没有out时，仅返回new HashMap()
  * 注2：如果有out时，返回从Python获取的变量，数据类型也为Map
- * 注3：向Python传参后，先执行Python脚本，后执行Python代码
+ * 注3：向Python传参后，先执行Python脚本文件，后执行Python代码
  * 
  * Jep适配Python版本的说明：https://pypi.org/project/jep/
  * 
@@ -113,7 +113,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
     /** Java向Python传递参数 */
     private String              in;
     
-    /** Python脚本。多个脚本间有换行分隔 */
+    /** Python脚本文件。多个脚本文件间有换行分隔 */
     private String              script;
     
     /** 解释一次，多次执行，加速性能（仅内部使用） */
@@ -175,7 +175,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 获取：Python脚本。多个脚本间有换行分隔
+     * 获取：Python脚本文件。多个脚本文件间有换行分隔
      */
     public String getScript()
     {
@@ -185,9 +185,9 @@ public class PythonConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：Python脚本。多个脚本间有换行分隔
+     * 设置：Python脚本文件。多个脚本文件间有换行分隔
      * 
-     * @param i_Script Python脚本。多个脚本间有换行分隔
+     * @param i_Script Python脚本。多个脚本文件间有换行分隔
      */
     public void setScript(String i_Script)
     {
@@ -471,15 +471,15 @@ public class PythonConfig extends ExecuteElement implements Cloneable
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
+        if ( Help.isNull(this.python) && Help.isNull(this.script) )
+        {
+            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s python and script is null."));
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
+        }
+        
         try (SubInterpreter v_Jep = new SubInterpreter())
         {
-            if ( Help.isNull(this.python) && Help.isNull(this.script) )
-            {
-                v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s python and script is null."));
-                this.refreshStatus(io_Context ,v_Result.getStatus());
-                return v_Result;
-            }
-            
             if ( !this.handleContext(io_Context ,v_Result) )
             {
                 return v_Result;
