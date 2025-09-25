@@ -50,6 +50,7 @@ import groovy.lang.Script;
  * @author      ZhengWei(HY)
  * @createDate  2025-09-24
  * @version     v1.0
+ *              v1.1  2025-09-25  修正：解析后的脚本，不能在不同的GroovyShell中使用，Script对象是与特定的GroovyShell实例（及其关联的 Binding）绑定的
  */
 public class GroovyConfig extends ExecuteElement implements Cloneable
 {
