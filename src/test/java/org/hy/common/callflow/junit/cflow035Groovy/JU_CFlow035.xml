@@ -140,6 +140,7 @@
                 println "Hello 酷语元素"
                 println "Hello 2025"
                 println "Hello from Java"
+                println "Hello " + Date.nowTime.full
             </groovy>
             <route>
                 <succeed> 

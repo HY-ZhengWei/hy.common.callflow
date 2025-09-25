@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.hy.common.ByteHelp;
 import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
+import org.hy.common.app.Param;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -21,6 +24,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.xml.XJSON;
+import org.hy.common.xml.XJava;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -57,13 +61,13 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
     private String              script;
     
     /** 解释一次，多次执行，加速性能（仅内部使用） */
-    private List<Script>        groovyScripts;
+    private List<File>          groovyScripts;
     
     /** Groovy代码 */
     private String              groovy;
     
     /** 解释一次，多次执行，加速性能（仅内部使用） */
-    private Script              groovyScript;
+    private String              groovyScript;
     
     /** Java获取Groovy结果 */
     private String              out;
@@ -269,7 +273,7 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
             {
                 String    v_Temp    = StringHelp.replaceAll(this.script ,"\r\n" ,"\n");
                 String [] v_Scripts = StringHelp.split(v_Temp ,"\n");
-                this.groovyScripts  = new ArrayList<Script>();
+                this.groovyScripts  = new ArrayList<File>();
                 
                 for (String v_Script : v_Scripts)
                 {
@@ -278,12 +282,17 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
                         continue;
                     }
                     
-                    this.groovyScripts.add(i_Shell.parse(new File(v_Script.trim())));
+                    this.groovyScripts.add(new File(v_Script.trim()));
                 }
+            }
+            
+            for (File v_Script : this.groovyScripts)
+            {
+                i_Shell.parse(v_Script);
             }
         }
         
-        return this.groovyScripts;
+        return null;
     }
     
     
@@ -304,11 +313,29 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
         {
             if ( this.groovyScript == null )
             {
-                this.groovyScript = i_Shell.parse(this.groovy);
+                // 预设常用类包
+                StringBuilder v_Import = new StringBuilder();
+                v_Import.append("import ").append(Help      .class.getName()).append(";\n");
+                v_Import.append("import ").append(StringHelp.class.getName()).append(";\n");
+                v_Import.append("import ").append(ByteHelp  .class.getName()).append(";\n");
+                v_Import.append("import ").append(Date      .class.getName()).append(";\n");
+                v_Import.append("import ").append(Return    .class.getName()).append(";\n");
+                v_Import.append("import ").append(Param     .class.getName()).append(";\n");
+                v_Import.append("import ").append(XJava     .class.getName()).append(";\n");
+                v_Import.append("import ").append(XJSON     .class.getName()).append(";\n");
+                v_Import.append("import ").append(List      .class.getName()).append(";\n");
+                v_Import.append("import ").append(ArrayList .class.getName()).append(";\n");
+                v_Import.append("import ").append(Map       .class.getName()).append(";\n");
+                v_Import.append("import ").append(HashMap   .class.getName()).append(";\n");
+                v_Import.append("import ").append(Hashtable .class.getName()).append(";\n");
+                v_Import.append(this.groovy);
+                
+                this.groovyScript = v_Import.toString();
             }
+            return i_Shell.parse(this.groovyScript);
         }
         
-        return this.groovyScript;
+        return null;
     }
     
     
