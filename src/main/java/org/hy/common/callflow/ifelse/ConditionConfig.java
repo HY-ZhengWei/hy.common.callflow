@@ -10,12 +10,14 @@ import org.hy.common.Help;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
 
 
@@ -35,6 +37,7 @@ import org.hy.common.callflow.file.IToXml;
  * @createDate  2025-02-12
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v3.0  2025-09-26  迁移：静态检查
  */
 public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
 {
@@ -69,6 +72,126 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         this.logical = Logical.And;
         this.items   = new ArrayList<>();
     }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        // 条件元素的逻辑不能为空
+        if ( this.getLogical() == null )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(this.getXid()) + "].logical is null.");
+            return false;
+        }
+        // 条件元素必须要用至少一个条件项
+        if ( Help.isNull(this.getItems()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(this.getXid()) + "] has no condition items.");
+            return false;
+        }
+        
+        return this.check_Condition(this ,io_Result ,this);
+    }
+    
+    
+    
+    /**
+     * （公共方法的递归）条件逻辑元素的检测
+     * 
+     * 仅做离线环境下的检测。
+     * 不做在线环境下的检测。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-03-18
+     * @version     v1.0
+     *
+     * @param i_Condition   条件逻辑
+     * @param io_Result     表示检测结果
+     * @param i_ExecObject  （顶级）条件逻辑
+     * @return              是否检测合格
+     */
+    private boolean check_Condition(ConditionConfig i_Condition ,Return<Object> io_Result ,IExecute i_ExecObject)
+    {
+        // 条件元素的逻辑不能为空
+        if ( i_Condition.getLogical() == null )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(i_ExecObject.getXJavaID()) + "].logical is null.");
+            return false;
+        }
+        // 条件元素必须要用至少一个条件项
+        if ( Help.isNull(i_Condition.getItems()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(i_ExecObject.getXJavaID()) + "] has no condition items.");
+            return false;
+        }
+        
+        for (IfElse v_Item : i_Condition.getItems())
+        {
+            if ( v_Item instanceof ConditionConfig )
+            {
+                if ( !this.check_Condition((ConditionConfig) v_Item ,io_Result ,i_ExecObject) )
+                {
+                    return false;
+                }
+            }
+            else if ( v_Item instanceof ConditionItem )
+            {
+                ConditionItem v_CItem = (ConditionItem) v_Item;
+                if ( v_CItem.getComparer() == null )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(i_ExecObject.getXJavaID()) + "].comparer is null.");
+                    return false;
+                }
+                
+                if ( Help.isNull(v_CItem.getValueXIDA()) )
+                {
+                    io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(i_ExecObject.getXJavaID()) + "].valueXIDA is null.");
+                    return false;
+                }
+                
+                if ( !ValueHelp.isRefID(v_CItem.getValueXIDA()) )
+                {
+                    if ( Help.isNull(v_CItem.getValueClass()) )
+                    {
+                        // 条件项的比值为数值类型时，其类型应不会空
+                        io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(i_ExecObject.getXJavaID()) + "] valueXIDA is Normal type ,but valueClass is null.");
+                        return false;
+                    }
+                }
+                
+                if ( !Help.isNull(v_CItem.getValueXIDB()) )
+                {
+                    if ( !ValueHelp.isRefID(v_CItem.getValueXIDB()) )
+                    {
+                        if ( Help.isNull(v_CItem.getValueClass()) )
+                        {
+                            // 条件项的比值为数值类型时，其类型应不会空
+                            io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(i_ExecObject.getXJavaID()) + "] valueXIDB is Normal type ,but valueClass is null.");
+                            return false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ConditionConfig[" + Help.NVL(i_ExecObject.getXJavaID()) + "].item is unknown type.");
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     
     
     /**

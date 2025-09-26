@@ -42,6 +42,7 @@ import org.hy.common.xml.log.Logger;
  *              v2.0  2025-06-10  添加：向上下文中赋值及占位符支持面向对象
  *              v3.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v3.1  2025-08-27  修正：三层以上的多组嵌套组成的复合编排，在执行顺序上混乱。发现人：王雨墨
+ *              v4.0  2025-09-26  迁移：静态检查
  */
 public class NestingConfig extends ExecuteElement implements Cloneable
 {
@@ -69,6 +70,37 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     {
         super(i_RequestTotal ,i_SuccessTotal);
         this.timeout = "0";
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        // 嵌套元素必须有子编排的XID
+        if ( Help.isNull(this.getCallFlowXID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：NestingConfig[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
+            return false;
+        }
+        
+        // 嵌套元素的不应自己嵌套自己，递归应采用自引用方式实现
+        if ( this.getCallFlowXID().equals(this.getXJavaID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：NestingConfig.callFlowXID[" + this.getCallFlowXID() + "] cannot nest itself.");
+            return false;
+        }
+        
+        return true;
     }
 
     

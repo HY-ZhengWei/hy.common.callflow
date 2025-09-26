@@ -44,6 +44,7 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  *              v3.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v4.0  2025-09-26  迁移：静态检查
  */
 public class ReturnConfig extends ExecuteElement implements Cloneable
 {
@@ -85,6 +86,53 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
     {
         super(i_RequestTotal ,i_SuccessTotal);
         this.retClass = ReturnData.class.getName();
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        // 返回元素的返回结果数据不能为空
+        if ( Help.isNull(this.getRetValue()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：ReturnConfig[" + Help.NVL(this.getXid()) + "].retValue is null.");
+            return false;
+        }
+        
+        if ( !ValueHelp.isRefID(this.getRetValue()) )
+        {
+            if ( Help.isNull(this.getRetClass()) )
+            {
+                // 返回结果为数值类型时，及类型应不会空
+                io_Result.set(false).setParamStr("CFlowCheck：ReturnConfig[" + Help.NVL(this.getXid()) + "] retValue is Normal type ,but retClass is null.");
+                return false;
+            }
+        }
+        
+        if ( !Help.isNull(this.getRetDefault()) )
+        {
+            if ( !ValueHelp.isRefID(this.getRetDefault()) )
+            {
+                if ( Help.isNull(this.getRetClass()) )
+                {
+                    // 返回结果的默认值为数值类型时，及类型应不会空
+                    io_Result.set(false).setParamStr("CFlowCheck：ReturnConfig[" + Help.NVL(this.getXid()) + "] retDefault is Normal type ,but retClass is null.");
+                    return false;
+                }
+            }
+        }
+        
+        return true;
     }
     
     

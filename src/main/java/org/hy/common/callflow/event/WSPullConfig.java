@@ -33,6 +33,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-08-30
  * @version     v1.0
+ *              v2.0  2025-09-26  迁移：静态检查
  */
 public class WSPullConfig extends NodeConfig implements NodeConfigBase
 {
@@ -99,6 +100,34 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
         this.setCallParam(v_CallParam);
         
         this.setContentType(WSContentType.Json.getValue());
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        if ( Help.isNull(this.getWsURL()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：WSPullConfig[" + Help.NVL(this.getXid()) + "].wsURL is null.");
+            return false;
+        }
+        if ( Help.isNull(this.getCallFlowXID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：WSPullConfig[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
+            return false;
+        }
+        
+        return true;
     }
     
     

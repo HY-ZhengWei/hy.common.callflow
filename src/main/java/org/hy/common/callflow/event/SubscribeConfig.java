@@ -33,6 +33,7 @@ import org.hy.common.xml.XJava;
  * @author      ZhengWei(HY)
  * @createDate  2025-05-06
  * @version     v1.0
+ *              v2.0  2025-09-26  迁移：静态检查
  */
 public class SubscribeConfig extends APIConfig
 {
@@ -110,6 +111,39 @@ public class SubscribeConfig extends APIConfig
         this.setSucceedFlag("200");
         this.setConnectTimeout(10 * 1000);
         this.setReadTimeout(   15 * 1000);
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        if ( Help.isNull(this.getSubscribeXID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(this.getXid()) + "].subscribeXID is null.");
+            return false;
+        }
+        if ( Help.isNull(this.getUserID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(this.getXid()) + "].userID is null.");
+            return false;
+        }
+        if ( Help.isNull(this.getCallFlowXID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
+            return false;
+        }
+        
+        return true;
     }
     
     

@@ -51,6 +51,7 @@ import groovy.lang.Script;
  * @createDate  2025-09-24
  * @version     v1.0
  *              v1.1  2025-09-25  修正：解析后的脚本，不能在不同的GroovyShell中使用，Script对象是与特定的GroovyShell实例（及其关联的 Binding）绑定的
+ *              v1.2  2025-09-26  迁移：静态检查
  */
 public class GroovyConfig extends ExecuteElement implements Cloneable
 {
@@ -88,6 +89,29 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
     public GroovyConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        if ( Help.isNull(this.getGroovy()) && Help.isNull(this.getScript()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：GroovyConfig[" + Help.NVL(this.getXid()) + "].script and groovy is null.");
+            return false;
+        }
+        
+        return true;
     }
     
     

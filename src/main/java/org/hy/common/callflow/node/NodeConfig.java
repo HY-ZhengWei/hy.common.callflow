@@ -48,6 +48,7 @@ import org.hy.common.xml.plugins.XSQLGroup;
  *              v3.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v4.0  2025-09-02  添加：执行元素的首次初始化成功后触发
  *              v5.0  2025-09-25  添加：执行方法返回False或null时表示出现异常
+ *              v5.1  2025-09-26  迁移：静态检查
  */
 public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
@@ -102,6 +103,79 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         this.timeout         = "0";
         this.retFalseIsError = false;
     }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        // 执行元素的执行对象不能为空
+        if ( Help.isNull(this.getCallXID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callXID is null.");
+            return false;
+        }
+        // 执行元素的执行方法不能为空
+        if ( Help.isNull(this.getCallMethod()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callMethod is null.");
+            return false;
+        }
+        
+        if ( !Help.isNull(this.getCallParams()) )
+        {
+            int x = 0;
+            for (NodeParam v_NodeParam : this.getCallParams())
+            {
+                x++;
+                
+                if ( v_NodeParam.getValue() == null && v_NodeParam.getValueDefault() == null )
+                {
+                    // 方法参数及默认值均会空时异常
+                    io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value and valueDefault is null.");
+                    return false;
+                }
+                
+                if ( !Help.isNull(v_NodeParam.getValue()) )
+                {
+                    if ( !ValueHelp.isRefID(v_NodeParam.getValue()) )
+                    {
+                        if ( Help.isNull(v_NodeParam.getValueClass()) )
+                        {
+                            // 方法参数为数值类型时，参数类型应不会空
+                            io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value is Normal type ,but valueClass is null.");
+                            return false;
+                        }
+                    }
+                }
+                
+                if ( !Help.isNull(v_NodeParam.getValueDefault()) )
+                {
+                    if ( !ValueHelp.isRefID(v_NodeParam.getValueDefault()) )
+                    {
+                        if ( Help.isNull(v_NodeParam.getValueClass()) )
+                        {
+                            // 方法参数的默认值为数值类型时，参数类型应不会空
+                            io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] valueDefault is Normal type ,but valueClass is null.");
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return true;
+    }
+    
     
     
     /**

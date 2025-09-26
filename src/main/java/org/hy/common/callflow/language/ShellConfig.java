@@ -112,6 +112,39 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        if ( Help.isNull(this.getHost()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].host is null.");
+            return false;
+        }
+        if ( Help.isNull(this.getUser()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].user is null.");
+            return false;
+        }
+        if ( Help.isNull(this.getShell()) && Help.isNull(this.getUpFile()) && Help.isNull(this.getDownFile()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].shell、upFile and downFile is null.");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    
+    
+    /**
      * 按运行时的上下文获取主机IP地址
      * 
      * @author      ZhengWei(HY)

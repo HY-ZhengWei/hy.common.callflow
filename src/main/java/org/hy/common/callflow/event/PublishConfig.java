@@ -23,6 +23,7 @@ import org.hy.common.mqtt.client.enums.MessageFormat;
  * @author      ZhengWei(HY)
  * @createDate  2025-04-28
  * @version     v1.0
+ *              v2.0  2025-09-26  迁移：静态检查
  */
 public class PublishConfig extends APIConfig
 {
@@ -92,6 +93,47 @@ public class PublishConfig extends APIConfig
         this.setSucceedFlag("200");
         this.setConnectTimeout(10 * 1000);
         this.setReadTimeout(   15 * 1000);
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        if ( Help.isNull(this.getPublishXID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(this.getXid()) + "].publishXID is null.");
+            return false;
+        }
+        if ( Help.isNull(this.getMessage()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(this.getXid()) + "].message is null.");
+            return false;
+        }
+        if ( Help.isNull(this.getUserID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(this.getXid()) + "].userID is null.");
+            return false;
+        }
+        if ( !Help.isNull(this.getQoS()) )
+        {
+            if ( this.getQoS() < 0 || this.getQoS() > 2 )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(this.getXid()) + "].qoS is invalid.");
+                return false;
+            }
+        }
+        
+        return true;
     }
 
 

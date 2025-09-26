@@ -50,6 +50,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-08-11
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v3.0  2025-09-26  迁移：静态检查
  */
 public class CacheSetConfig extends ExecuteElement implements Cloneable
 {
@@ -107,6 +108,42 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
         this.nullDel       = false;
         this.expireTime    = "0";
         this.allowDelTable = false;
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        // 表不空，库不能为空
+        if ( !Help.isNull(this.getTable()) )
+        {
+            if ( Help.isNull(this.getDataBase()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(this.getDataBase()) + "].database is null ,but table is not null.");
+                return false;
+            }
+        }
+        // 主键不空，库不空，表不能为空
+        if ( !Help.isNull(this.getPkID()) )
+        {
+            if ( !Help.isNull(this.getDataBase()) && Help.isNull(this.getTable()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：CacheSetConfig[" + Help.NVL(this.getTable()) + "].table is null ,but database and pkID are not null.");
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     

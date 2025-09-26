@@ -20,6 +20,7 @@ import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.db.DBSQL;
 import org.hy.common.thread.Job;
 import org.hy.common.thread.Jobs;
 import org.hy.common.xml.XJava;
@@ -43,6 +44,7 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  *              v3.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v4.0  2025-09-26  迁移：静态检查
  */
 public class JOBConfig extends ExecuteElement implements Cloneable
 {
@@ -118,6 +120,70 @@ public class JOBConfig extends ExecuteElement implements Cloneable
     {
         super(i_RequestTotal ,i_SuccessTotal);
     }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        // 子编排的XID不能为空
+        if ( Help.isNull(this.getCallFlowXID()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
+            return false;
+        }
+        
+        // 间隔类型
+        if ( Help.isNull(this.getIntervalType()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalType is null.");
+            return false;
+        }
+        
+        if ( !this.getIntervalType().startsWith(DBSQL.$Placeholder) )
+        {
+            if ( JobIntervalType.get(this.getIntervalType()) == null )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalType is invalid.");
+                return false;
+            }
+        }
+        
+        // 间隔时长
+        if ( Help.isNull(this.getIntervalLen()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalLen is null.");
+            return false;
+        }
+        
+        if ( !this.getIntervalLen().startsWith(DBSQL.$Placeholder) )
+        {
+            if ( !Help.isNumber(this.getIntervalLen()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalLen is invalid.");
+                return false;
+            }
+            
+            int v_IntervalLen = Integer.parseInt(this.getIntervalLen());
+            if ( v_IntervalLen <= 0 )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalLen <= 0.");
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
 
     
     /**

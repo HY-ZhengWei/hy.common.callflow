@@ -106,6 +106,7 @@ import jep.SubInterpreter;
  * @version     v1.0
  *              v1.1  2025-09-24  添加：Python中复数结果的支持
  *                                添加：Python中分数结果的支持
+ *              v1.2  2025-09-26  迁移：静态检查
  */
 public class PythonConfig extends ExecuteElement implements Cloneable
 {
@@ -146,6 +147,29 @@ public class PythonConfig extends ExecuteElement implements Cloneable
     public PythonConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        if ( Help.isNull(this.getPython()) && Help.isNull(this.getScript()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：PythonConfig[" + Help.NVL(this.getXid()) + "].script and python is null.");
+            return false;
+        }
+        
+        return true;
     }
     
     

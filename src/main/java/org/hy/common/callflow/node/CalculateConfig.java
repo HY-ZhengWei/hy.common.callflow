@@ -45,6 +45,7 @@ import com.greenpineyu.fel.context.MapContext;
  * @createDate  2025-03-04
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v3.0  2025-09-26  迁移：静态检查
  */
 public class CalculateConfig extends ExecuteElement implements Cloneable
 {
@@ -106,6 +107,31 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
     {
         super(i_RequestTotal ,i_SuccessTotal);
     }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        // 计算元素的表达式不能为空
+        if ( Help.isNull(this.getCalc()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：CalculateConfig[" + Help.NVL(this.getXid()) + "].calc is null.");
+            return false;
+        }
+        
+        return true;
+    }
+    
     
     
     /**

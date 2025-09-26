@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -30,6 +31,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-03-03
  * @version     v1.0
  *              v2.0  2025-08-27  添加：归属者
+ *              v3.0  2025-09-26  迁移：静态检查
  */
 public class SelfLoop extends ExecuteElement
 {
@@ -63,6 +65,22 @@ public class SelfLoop extends ExecuteElement
         this.refXID = ValueHelp.standardValueID(i_RefXID);
     }
     
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        return true;
+    }
     
     
     

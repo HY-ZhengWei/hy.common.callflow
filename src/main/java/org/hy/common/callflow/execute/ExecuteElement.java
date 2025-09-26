@@ -11,6 +11,7 @@ import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.KVKLinkMap;
 import org.hy.common.PartitionMap;
+import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.TablePartitionLink;
 import org.hy.common.TotalNano;
@@ -37,6 +38,7 @@ import org.hy.common.db.DBSQL;
  * @createDate  2025-02-24
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v3.0  2025-09-26  添加：静态检查
  */
 public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
@@ -146,6 +148,20 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     
     /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
     protected PartitionMap<String ,Integer> contextPlaceholders;
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public abstract boolean check(Return<Object> io_Result);
     
     
     

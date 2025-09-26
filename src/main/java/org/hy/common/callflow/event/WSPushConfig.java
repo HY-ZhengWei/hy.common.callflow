@@ -35,6 +35,7 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  *              v2.0  2025-09-02  添加：通过点推元素的执行者接口WSPushExecuter来发消息
  *                                删除：之前用指定静态类名称反射后获取消息执行者的方式
+ *              v3.0  2025-09-26  迁移：静态检查
  */
 public class WSPushConfig extends NodeConfig implements NodeConfigBase
 {
@@ -120,6 +121,34 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
         this.setName(null);
         this.setCallMethod("pushMessages");
         this.setContentType(WSContentType.Json.getValue());
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        if ( Help.isNull(this.getName()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(this.getXid()) + "].name is null.");
+            return false;
+        }
+        if ( Help.isNull(this.getNewMessage()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(this.getXid()) + "].newMessage is null.");
+            return false;
+        }
+        
+        return true;
     }
     
     

@@ -34,6 +34,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-03-03
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v3.0  2025-09-26  迁移：静态检查
  */
 public class WaitConfig extends ExecuteElement implements Cloneable
 {
@@ -65,6 +66,30 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         super(i_RequestTotal ,i_SuccessTotal);
         this.waitTime = "0";
         this.counter  = CallFlow.$WaitCounter;
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        // 返回元素的返回结果数据不能为空
+        if ( "0".equals(this.getWaitTime()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：WaitConfig[" + Help.NVL(this.getXid()) + "].waitTime is 0.");
+            return false;
+        }
+        
+        return true;
     }
     
     

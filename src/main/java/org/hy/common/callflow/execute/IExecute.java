@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.common.IDirectedGraphID;
@@ -20,9 +21,24 @@ import org.hy.common.callflow.route.RouteConfig;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-15
  * @version     v1.0
+ *              v2.0  2025-09-26  添加：静态检查
  */
 public interface IExecute extends IDirectedGraphID ,IToXml ,CloneableCallFlow ,XJavaID
 {
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result);
+    
+    
     
     /**
      * 元素的类型

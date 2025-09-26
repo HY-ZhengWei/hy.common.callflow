@@ -29,6 +29,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-04-02
  * @version     v1.0
  *              v2.0  2025-06-09  添加：param、body和head三种已解释完成的占位符，使它们支持面向对象的占位符。
+ *              v3.0  2025-09-26  迁移：静态检查
  */
 public class APIConfig extends NodeConfig implements NodeConfigBase
 {
@@ -138,6 +139,29 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         this.setCallParam(v_CallParam);
         
         this.showLog = true;
+    }
+    
+    
+    
+    /**
+     * 静态检查
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param io_Result     表示检测结果
+     * @return
+     */
+    public boolean check(Return<Object> io_Result)
+    {
+        if ( Help.isNull(this.getUrl()) )
+        {
+            io_Result.set(false).setParamStr("CFlowCheck：APIConfig[" + Help.NVL(this.getXid()) + "].url is null.");
+            return false;
+        }
+        
+        return true;
     }
     
     
