@@ -695,6 +695,16 @@ public class ExecuteElementCheckHelp
         {
             ShellConfig v_Shell = (ShellConfig) i_ExecObject;
             
+            if ( Help.isNull(v_Shell.getHost()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(v_Shell.getXid()) + "].host is null.");
+                return false;
+            }
+            if ( Help.isNull(v_Shell.getUser()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(v_Shell.getXid()) + "].user is null.");
+                return false;
+            }
             if ( Help.isNull(v_Shell.getShell()) && Help.isNull(v_Shell.getUpFile()) && Help.isNull(v_Shell.getDownFile()) )
             {
                 io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(v_Shell.getXid()) + "].shell、upFile and downFile is null.");

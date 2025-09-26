@@ -844,6 +844,8 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         {
             this.timeout = ValueHelp.standardRefID(i_Timeout);
         }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
     }
     
     

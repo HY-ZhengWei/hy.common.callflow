@@ -24,6 +24,7 @@ import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.language.shell.ShellFile;
 import org.hy.common.callflow.language.shell.ShellResult;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xml.log.Logger;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
@@ -51,13 +52,25 @@ import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 public class ShellConfig extends ExecuteElement implements Cloneable
 {
     
-    /** 主机IP地址 */
+    private static final Logger $Logger = new Logger(ShellConfig.class);
+    
+    
+    /** 主机IP地址。可以是数值、上下文变量、XID标识 */
     private String                        host;
     
-    /** 用户名称 */
+    /** 主机端口。可以是数值、上下文变量、XID标识 */
+    private String                        port;
+    
+    /** 连接超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    private String                        connectTimeout;
+    
+    /** 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    private String                        timeout;
+    
+    /** 用户名称。可以是数值、上下文变量、XID标识 */
     private String                        user;
     
-    /** 用户密码 */
+    /** 用户密码。可以是数值、上下文变量、XID标识 */
     private String                        password;
     
     /** 脚本代码 */
@@ -78,9 +91,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     /** 下载文件，已解释完成的占位符（性能有优化，仅内部使用） */
     private PartitionMap<String ,Integer> downFilePlaceholders;
     
-    /** 命令结果返回时字符集。默认为：UTF-8 */
-    private String                        charEncoding;
-    
     
     
     public ShellConfig()
@@ -93,12 +103,34 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     public ShellConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
+        
+        this.port           = "22";
+        this.connectTimeout = "0";
+        this.timeout        = "0";
     }
     
     
     
     /**
-     * 获取：主机IP地址
+     * 按运行时的上下文获取主机IP地址
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private String gatHost(Map<String ,Object> i_Context) throws Exception
+    {
+        return (String) ValueHelp.getValue(this.host ,String.class ,"" ,i_Context);
+    }
+    
+    
+    
+    /**
+     * 获取：主机IP地址。可以是数值、上下文变量、XID标识
      */
     public String getHost()
     {
@@ -108,9 +140,9 @@ public class ShellConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：主机IP地址
+     * 设置：主机IP地址。可以是数值、上下文变量、XID标识
      * 
-     * @param i_Host 主机IP地址
+     * @param i_Host 主机IP地址。可以是数值、上下文变量、XID标识
      */
     public void setHost(String i_Host)
     {
@@ -118,11 +150,253 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
+    
+    
+    
+    /**
+     * 按运行时的上下文获取主机端口
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Integer gatPort(Map<String ,Object> i_Context) throws Exception
+    {
+        Integer v_WaitTime = null;
+        if ( Help.isNumber(this.port) )
+        {
+            v_WaitTime = Integer.valueOf(this.port);
+        }
+        else
+        {
+            v_WaitTime = (Integer) ValueHelp.getValue(this.port ,Integer.class ,0 ,i_Context);
+        }
+        return v_WaitTime;
+    }
+
+    
+    
+    /**
+     * 获取：主机端口。可以是数值、上下文变量、XID标识
+     */
+    public String getPort()
+    {
+        return port;
+    }
 
 
     
     /**
-     * 获取：用户名称
+     * 设置：主机端口。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_Port 主机端口。可以是数值、上下文变量、XID标识
+     */
+    public void setPort(String i_Port)
+    {
+        if ( Help.isNull(i_Port) )
+        {
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s port is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_Port) )
+        {
+            Integer v_Timeout = Integer.valueOf(i_Port);
+            if ( v_Timeout < 0 )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s port Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            else if ( v_Timeout > 65535 )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s port Greater than 65535.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.port = i_Port.trim();
+        }
+        else
+        {
+            this.port = ValueHelp.standardRefID(i_Port);
+        }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 从上下文中获取连接时的超时时长
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-25
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Integer gatConnectTimeout(Map<String ,Object> i_Context) throws Exception
+    {
+        Integer v_Timeout = null;
+        if ( Help.isNumber(this.connectTimeout) )
+        {
+            v_Timeout = Integer.valueOf(this.connectTimeout);
+        }
+        else
+        {
+            v_Timeout = (Integer) ValueHelp.getValue(this.connectTimeout ,Integer.class ,0 ,i_Context);
+        }
+        
+        return v_Timeout;
+    }
+
+    
+    
+    /**
+     * 获取：连接超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public String getConnectTimeout()
+    {
+        return connectTimeout;
+    }
+
+    
+    
+    /**
+     * 设置：连接超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_ConnectTimeout 连接超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public void setConnectTimeout(String i_ConnectTimeout)
+    {
+        if ( Help.isNull(i_ConnectTimeout) )
+        {
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s connectTimeout is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_ConnectTimeout) )
+        {
+            Integer v_Timeout = Integer.valueOf(i_ConnectTimeout);
+            if ( v_Timeout < 0 )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s connectTimeout Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.connectTimeout = i_ConnectTimeout.trim();
+        }
+        else
+        {
+            this.connectTimeout = ValueHelp.standardRefID(i_ConnectTimeout);
+        }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 从上下文中获取运行时的超时时长
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-25
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Integer gatTimeout(Map<String ,Object> i_Context) throws Exception
+    {
+        Integer v_Timeout = null;
+        if ( Help.isNumber(this.timeout) )
+        {
+            v_Timeout = Integer.valueOf(this.timeout);
+        }
+        else
+        {
+            v_Timeout = (Integer) ValueHelp.getValue(this.timeout ,Integer.class ,0 ,i_Context);
+        }
+        
+        return v_Timeout;
+    }
+
+    
+    
+    /**
+     * 获取：执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public String getTimeout()
+    {
+        return timeout;
+    }
+
+    
+    
+    /**
+     * 设置：执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_Timeout 执行超时时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public void setTimeout(String i_Timeout)
+    {
+        if ( Help.isNull(i_Timeout) )
+        {
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_Timeout) )
+        {
+            Integer v_Timeout = Integer.valueOf(i_Timeout);
+            if ( v_Timeout < 0 )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s timeout Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.timeout = i_Timeout.trim();
+        }
+        else
+        {
+            this.timeout = ValueHelp.standardRefID(i_Timeout);
+        }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 按运行时的上下文获取用户名称
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private String gatUser(Map<String ,Object> i_Context) throws Exception
+    {
+        return (String) ValueHelp.getValue(this.user ,String.class ,"" ,i_Context);
+    }
+    
+    
+    
+    /**
+     * 获取：用户名称。可以是数值、上下文变量、XID标识
      */
     public String getUser()
     {
@@ -132,9 +406,9 @@ public class ShellConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：用户名称
+     * 设置：用户名称。可以是数值、上下文变量、XID标识
      * 
-     * @param i_User 用户名称
+     * @param i_User 用户名称。可以是数值、上下文变量、XID标识
      */
     public void setUser(String i_User)
     {
@@ -142,11 +416,29 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
+    
+    
+    
+    /**
+     * 按运行时的上下文获取用户密码
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-26
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private String gatPassword(Map<String ,Object> i_Context) throws Exception
+    {
+        return (String) ValueHelp.getValue(this.password ,String.class ,"" ,i_Context);
+    }
 
 
     
     /**
-     * 获取：用户密码
+     * 获取：用户密码。可以是数值、上下文变量、XID标识
      */
     public String getPassword()
     {
@@ -156,9 +448,9 @@ public class ShellConfig extends ExecuteElement implements Cloneable
 
     
     /**
-     * 设置：用户密码
+     * 设置：用户密码。可以是数值、上下文变量、XID标识
      * 
-     * @param i_Password 用户密码
+     * @param i_Password 用户密码。可以是数值、上下文变量、XID标识
      */
     public void setPassword(String i_Password)
     {
@@ -203,30 +495,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             this.shellPlaceholders = new TablePartitionLink<String ,Integer>();
         }
         this.shell = i_Shell;
-        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
-        this.keyChange();
-    }
-    
-    
-    
-    /**
-     * 获取：命令结果返回时字符集。默认为：UTF-8
-     */
-    public String getCharEncoding()
-    {
-        return charEncoding;
-    }
-
-
-    
-    /**
-     * 设置：命令结果返回时字符集。默认为：UTF-8
-     * 
-     * @param i_CharEncoding 命令结果返回时字符集。默认为：UTF-8
-     */
-    public void setCharEncoding(String i_CharEncoding)
-    {
-        this.charEncoding = i_CharEncoding;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -473,22 +741,57 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 return v_Result;
             }
             
-            ShellResult     v_ShellRet = new ShellResult();
-            List<ShellFile> v_UpFiles  = this.parserUpFile(io_Context);
-            SCPFileTransfer v_SCP      = null;
+            ShellResult     v_ShellRet    = new ShellResult();
+            List<ShellFile> v_UpFiles     = this.parserUpFile(io_Context);
+            SCPFileTransfer v_SCP         = null;
+            String          v_Host        = this.gatHost(io_Context);
+            Integer         v_Port        = this.gatPort(io_Context);
+            String          v_User        = this.gatUser(io_Context);
+            String          v_Password    = this.gatPassword(io_Context);
+            Integer         v_ConnectTime = this.gatConnectTimeout(io_Context);
+            Integer         v_Time        = this.gatTimeout(io_Context);
+            
+            if ( Help.isNull(v_Host) )
+            {
+                v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s host[" + this.host + "] is not find."));
+                this.refreshStatus(io_Context ,v_Result.getStatus());
+                return v_Result;
+            }
+            if ( Help.isNull(v_User) )
+            {
+                v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s user[" + this.user + "] is not find."));
+                this.refreshStatus(io_Context ,v_Result.getStatus());
+                return v_Result;
+            }
+            
+            if ( v_ConnectTime > 0 )
+            {
+                v_SSH.setConnectTimeout(v_ConnectTime);
+            }
+            if ( v_Time > 0 )
+            {
+                v_SSH.setTimeout(v_Time);
+            }
             
             v_SSH.addHostKeyVerifier(new PromiscuousVerifier());
-            v_SSH.connect(this.host);
-            
-            if ( !Help.isNull(this.password) )
+            if ( v_Port > 0 && v_Port != 22 )
             {
-                v_SSH.authPassword(this.user ,this.password);
+                v_SSH.connect(v_Host ,v_Port);
+            }
+            else
+            {
+                v_SSH.connect(v_Host);
+            }
+            
+            if ( !Help.isNull(v_Password) )
+            {
+                v_SSH.authPassword(v_User ,v_Password);
             }
             else
             {
                 String      v_PrivateKeyPath = System.getProperty("user.home") + "/.ssh/id_rsa";
                 KeyProvider v_KeyProvider    = v_SSH.loadKeys(v_PrivateKeyPath);  // 加载私钥（支持无密码或有密码的私钥）
-                v_SSH.authPublickey(this.user, v_KeyProvider);                    // 用私钥认证
+                v_SSH.authPublickey(v_User, v_KeyProvider);                       // 用私钥认证
             }
             
             // 先上传文件
@@ -618,6 +921,18 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("host" ,this.host));
             }
+            if ( !Help.isNull(this.port) && !"0".equals(this.port) && !"22".equals(this.port) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("port" ,this.port));
+            }
+            if ( !Help.isNull(this.connectTimeout) && !"0".equals(this.connectTimeout) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("connectTimeout" ,this.connectTimeout));
+            }
+            if ( !Help.isNull(this.timeout) && !"0".equals(this.timeout) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("timeout" ,this.timeout));
+            }
             if ( !Help.isNull(this.user) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("user" ,this.user));
@@ -663,10 +978,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                     v_DownFile = StringHelp.replaceAll(v_DownFile ,v_Webhome ,"webhome:");
                 }
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("downFile" ,v_DownFile));
-            }
-            if ( !Help.isNull(this.charEncoding) )
-            {
-                v_Xml.append(v_NewSpace).append(IToXml.toValue("charEncoding" ,this.charEncoding));
             }
             if ( !Help.isNull(this.returnID) )
             {
@@ -726,11 +1037,23 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     public String toString(Map<String ,Object> i_Context)
     {
         StringBuilder v_Builder = new StringBuilder();
+        String        v_User    = this.user;
+        String        v_Host    = this.host;
+        
+        try
+        {
+            v_User = this.gatUser(i_Context);
+            v_Host = this.gatHost(i_Context);
+        }
+        catch (Exception exce)
+        {
+            $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "].toString is error" ,exce);
+        }
         
         v_Builder.append("ssh ");
-        if ( !Help.isNull(this.user) )
+        if ( !Help.isNull(v_User) )
         {
-            v_Builder.append(this.user);
+            v_Builder.append(v_User);
         }
         else
         {
@@ -738,9 +1061,9 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         }
         
         v_Builder.append("@");
-        if ( !Help.isNull(this.host) )
+        if ( !Help.isNull(v_Host) )
         {
-            v_Builder.append(this.host);
+            v_Builder.append(v_Host);
         }
         else
         {
@@ -843,11 +1166,15 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         ShellConfig v_Clone = new ShellConfig();
         
         this.cloneMyOnly(v_Clone);
-        v_Clone.host         = this.host;
-        v_Clone.user         = this.user;
-        v_Clone.password     = this.password;
-        v_Clone.shell        = this.shell;
-        v_Clone.charEncoding = this.charEncoding;
+        v_Clone.host           = this.host;
+        v_Clone.port           = this.port;
+        v_Clone.connectTimeout = this.connectTimeout;
+        v_Clone.timeout        = this.timeout;
+        v_Clone.user           = this.user;
+        v_Clone.password       = this.password;
+        v_Clone.shell          = this.shell;
+        v_Clone.upFile         = this.upFile;
+        v_Clone.downFile       = this.downFile;
         
         return v_Clone;
     }
@@ -878,11 +1205,15 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         ShellConfig v_Clone = (ShellConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.host         = this.host;
-        v_Clone.user         = this.user;
-        v_Clone.password     = this.password;
-        v_Clone.shell        = this.shell;
-        v_Clone.charEncoding = this.charEncoding;
+        v_Clone.host           = this.host;
+        v_Clone.port           = this.port;
+        v_Clone.connectTimeout = this.connectTimeout;
+        v_Clone.timeout        = this.timeout;
+        v_Clone.user           = this.user;
+        v_Clone.password       = this.password;
+        v_Clone.shell          = this.shell;
+        v_Clone.upFile         = this.upFile;
+        v_Clone.downFile       = this.downFile;
     }
     
     
