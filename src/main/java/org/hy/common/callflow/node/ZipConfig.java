@@ -353,6 +353,24 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 转XML时是否显示retFalseIsError属性
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-25
+     * @version     v1.0
+     *
+     * @return
+     */
+    public boolean xmlShowRetFalseIsError()
+    {
+        return false;
+    }
+    
+    
+    
+    /**
      * 执行方法前，对执行对象的处理
      * 
      * 建议：子类重写此方法

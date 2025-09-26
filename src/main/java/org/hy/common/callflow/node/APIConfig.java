@@ -670,6 +670,24 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 转XML时是否显示retFalseIsError属性
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-25
+     * @version     v1.0
+     *
+     * @return
+     */
+    public boolean xmlShowRetFalseIsError()
+    {
+        return false;
+    }
+    
+    
+    
+    /**
      * 执行方法前，对方法入参的处理、加工、合成
      * 
      * 建议：子类重写此方法
