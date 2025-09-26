@@ -34,25 +34,44 @@
     <!-- CFlow编排引擎配置：脚本元素 -->
     <xconfig>
     
+        <xnode id="XNodee_CF036_显示结果">
+            <comment>显示结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+        </xnode>
+        
+    
         <xshell id="XShell_CF036_下载文件">
             <comment>下载文件</comment>
-            <host>10.8.3.11</host>
-            <user>iot202401</user>
-            <password>iot249540@LAB.cn</password>
+            <host>10.8.3.11</host>                         <!-- 主机IP地址 -->
+            <user>root</user>                              <!-- 用户名称 -->
+            <password>1234567890</password>                <!-- 用户密码 -->
             <downFile type="textarea">
                 /opt/apache-tomcat-9.0.87.tar.gz , D:/
                 /opt/redis-stable.tar.gz         , D:/
-            </downFile>
+            </downFile>                                    <!-- 多个文件间用换行分隔，每行用英文逗号分隔远程下载文件和本地目录 -->
+                                                           <!-- 本地目录不存时，自动创建 -->
+            <returnID>R004</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNodee_CF036_显示结果" />
+                </succeed>
+            </route>
         </xshell>
     
     
         <xshell id="XShell_CF036_上传文件">
             <comment>上传文件</comment>
-            <initXID>:XShell_CF036_下载文件</initXID>
+            <initXID>:XShell_CF036_下载文件</initXID>       <!-- 用参考对象配置连接信息 -->
             <upFile type="textarea">
                 classhome:org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.xml   , /opt/cflow036Shell
                 classhome:org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.class , /opt/cflow036Shell
-            </upFile>
+            </upFile>                                      <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
+                                                           <!-- 远程目录不存时，自动创建 -->
+            <returnID>R003</returnID>
             <route>
                 <succeed> 
                     <next ref="XShell_CF036_下载文件" />
@@ -63,10 +82,11 @@
     
         <xshell id="XShell_CF036_传递参数">
             <comment>传递参数</comment>
-            <initXID>:XShell_CF036_下载文件</initXID>
+            <initXID>:XShell_CF036_下载文件</initXID>       <!-- 用参考对象配置连接信息 -->
             <shell type="textarea">                        <!-- Shell代码 -->
                 echo 'Hello :JavaVarString'
             </shell>
+            <returnID>R002</returnID>
             <route>
                 <succeed> 
                     <next ref="XShell_CF036_上传文件" />
@@ -77,7 +97,7 @@
     
         <xshell id="XShell_CF036_脚本元素">
             <comment>打声招呼</comment>
-            <initXID>:XShell_CF036_下载文件</initXID>
+            <initXID>:XShell_CF036_下载文件</initXID>       <!-- 用参考对象配置连接信息 -->
             <shell type="textarea">                        <!-- Shell代码 -->
                 echo 'Hello world'
                 echo 'Hello 脚本元素'
@@ -85,6 +105,7 @@
                 echo 'Hello from Java'
                 echo 'Hello '`date`
             </shell>
+            <returnID>R001</returnID>
             <route>
                 <succeed> 
                     <next ref="XShell_CF036_传递参数" />

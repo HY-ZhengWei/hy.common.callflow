@@ -45,6 +45,7 @@
     * [密文元素与解文元素的举例](#密文元素与解文元素的举例)
     * [蟒蛇元素的举例](#蟒蛇元素的举例)
     * [酷语元素的举例](#酷语元素的举例)
+    * [脚本元素的举例](#脚本元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -4579,6 +4580,160 @@ v_Context.put("JavaVarList"   ,v_JavaVarList);
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_Groovy ,v_Context);
+```
+
+
+
+
+
+脚本元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow036Shell) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：脚本元素 -->
+    <xconfig>
+    
+        <xnode id="XNodee_CF036_显示结果">
+            <comment>显示结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Show</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+        </xnode>
+        
+    
+        <xshell id="XShell_CF036_下载文件">
+            <comment>下载文件</comment>
+            <host>10.8.3.11</host>                         <!-- 主机IP地址 -->
+            <user>root</user>                              <!-- 用户名称 -->
+            <password>1234567890</password>                <!-- 用户密码 -->
+            <downFile type="textarea">
+                /opt/apache-tomcat-9.0.87.tar.gz , D:/
+                /opt/redis-stable.tar.gz         , D:/
+            </downFile>                                    <!-- 多个文件间用换行分隔，每行用英文逗号分隔远程下载文件和本地目录 -->
+                                                           <!-- 本地目录不存时，自动创建 -->
+            <returnID>R004</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNodee_CF036_显示结果" />
+                </succeed>
+            </route>
+        </xshell>
+    
+    
+        <xshell id="XShell_CF036_上传文件">
+            <comment>上传文件</comment>
+            <initXID>:XShell_CF036_下载文件</initXID>       <!-- 用参考对象配置连接信息 -->
+            <upFile type="textarea">
+                classhome:org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.xml   , /opt/cflow036Shell
+                classhome:org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.class , /opt/cflow036Shell
+            </upFile>                                      <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
+                                                           <!-- 远程目录不存时，自动创建 -->
+            <returnID>R003</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XShell_CF036_下载文件" />
+                </succeed>
+            </route>
+        </xshell>
+        
+    
+        <xshell id="XShell_CF036_传递参数">
+            <comment>传递参数</comment>
+            <initXID>:XShell_CF036_下载文件</initXID>       <!-- 用参考对象配置连接信息 -->
+            <shell type="textarea">                        <!-- Shell代码 -->
+                echo 'Hello :JavaVarString'
+            </shell>
+            <returnID>R002</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XShell_CF036_上传文件" />
+                </succeed>
+            </route>
+        </xshell>
+        
+    
+        <xshell id="XShell_CF036_脚本元素">
+            <comment>打声招呼</comment>
+            <initXID>:XShell_CF036_下载文件</initXID>       <!-- 用参考对象配置连接信息 -->
+            <shell type="textarea">                        <!-- Shell代码 -->
+                echo 'Hello world'
+                echo 'Hello 脚本元素'
+                echo 'Hello 2025'
+                echo 'Hello from Java'
+                echo 'Hello '`date`
+            </shell>
+            <returnID>R001</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XShell_CF036_传递参数" />
+                </succeed>
+            </route>
+        </xshell>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+ShellConfig         v_Shell   = (ShellConfig) XJava.getObject("XShell_CF036_脚本元素");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("JavaVarString" ,"Shell from Java");
+v_Context.put("JavaVarDouble" ,3.14D);
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Shell ,v_Context);
 ```
 
 
