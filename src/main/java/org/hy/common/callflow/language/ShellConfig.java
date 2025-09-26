@@ -43,7 +43,9 @@ import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
  *   支持远程连接1：用户&密码
  *   支持远程连接2：用户&免密私钥
  *   
- * 注：先上传文件，现执行Shell代码，最后下载文件
+ * 注1：先上传文件，现执行Shell代码，最后下载文件
+ * 注2：主机IP、端口、用户、密码、超时时长等属性未设置数据时，当参考对象initXID有值时，从参考对象XID中取值
+ * 注3：若参考对象initXID有值时，主机IP、端口、用户、密码、超时时长等属性也有值时，它们优先级高于参考对象initXID
  * 
  * @author      ZhengWei(HY)
  * @createDate  2025-09-25
@@ -54,6 +56,9 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     
     private static final Logger $Logger = new Logger(ShellConfig.class);
     
+    
+    /** 基本连接参数可参考的对象XID */
+    private String                        initXID;
     
     /** 主机IP地址。可以是数值、上下文变量、XID标识 */
     private String                        host;
@@ -123,20 +128,23 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      */
     public boolean check(Return<Object> io_Result)
     {
-        if ( Help.isNull(this.getHost()) )
+        if ( Help.isNull(this.initXID) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].host is null.");
-            return false;
-        }
-        if ( Help.isNull(this.getUser()) )
-        {
-            io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].user is null.");
-            return false;
-        }
-        if ( Help.isNull(this.getShell()) && Help.isNull(this.getUpFile()) && Help.isNull(this.getDownFile()) )
-        {
-            io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].shell、upFile and downFile is null.");
-            return false;
+            if ( Help.isNull(this.getHost()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].host is null.");
+                return false;
+            }
+            if ( Help.isNull(this.getUser()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].user is null.");
+                return false;
+            }
+            if ( Help.isNull(this.getShell()) && Help.isNull(this.getUpFile()) && Help.isNull(this.getDownFile()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].shell、upFile and downFile is null.");
+                return false;
+            }
         }
         
         return true;
@@ -144,6 +152,31 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     
     
     
+    /**
+     * 获取：基本连接参数可参考的对象XID
+     */
+    public String getInitXID()
+    {
+        return ValueHelp.standardRefID(this.initXID);
+    }
+
+    
+    
+    /**
+     * 设置：基本连接参数可参考的对象XID
+     * 
+     * @param i_InitXID 初始化时，基本连接参数与XID保持一致
+     */
+    public void setInitXID(String i_InitXID)
+    {
+        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.initXID = ValueHelp.standardValueID(i_InitXID);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+    
+
     /**
      * 按运行时的上下文获取主机IP地址
      * 
@@ -157,7 +190,22 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      */
     private String gatHost(Map<String ,Object> i_Context) throws Exception
     {
-        return (String) ValueHelp.getValue(this.host ,String.class ,"" ,i_Context);
+        String v_Host = this.host;
+        
+        if ( Help.isNull(v_Host) && !Help.isNull(this.initXID) )
+        {
+            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
+            if ( v_Shell == null )
+            {
+                v_Host = null;
+            }
+            else
+            {
+                v_Host = v_Shell.getHost();
+            }
+        }
+        
+        return (String) ValueHelp.getValue(v_Host ,String.class ,"" ,i_Context);
     }
     
     
@@ -199,16 +247,31 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      */
     private Integer gatPort(Map<String ,Object> i_Context) throws Exception
     {
-        Integer v_WaitTime = null;
-        if ( Help.isNumber(this.port) )
+        String v_Port = this.port;
+        
+        if ( (Help.isNull(v_Port) || "0".equals(v_Port) || "22".equals(v_Port)) && !Help.isNull(this.initXID) )
         {
-            v_WaitTime = Integer.valueOf(this.port);
+            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
+            if ( v_Shell == null )
+            {
+                v_Port = null;
+            }
+            else
+            {
+                v_Port = v_Shell.getPort();
+            }
+        }
+        
+        Integer v_PortInt = null;
+        if ( Help.isNumber(v_Port) )
+        {
+            v_PortInt = Integer.valueOf(v_Port);
         }
         else
         {
-            v_WaitTime = (Integer) ValueHelp.getValue(this.port ,Integer.class ,0 ,i_Context);
+            v_PortInt = (Integer) ValueHelp.getValue(v_Port ,Integer.class ,0 ,i_Context);
         }
-        return v_WaitTime;
+        return v_PortInt;
     }
 
     
@@ -277,17 +340,32 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      */
     private Integer gatConnectTimeout(Map<String ,Object> i_Context) throws Exception
     {
-        Integer v_Timeout = null;
-        if ( Help.isNumber(this.connectTimeout) )
+        String v_ConnectTimeout = this.connectTimeout;
+        
+        if ( (Help.isNull(v_ConnectTimeout) || "0".equals(v_ConnectTimeout)) && !Help.isNull(this.initXID) )
         {
-            v_Timeout = Integer.valueOf(this.connectTimeout);
+            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
+            if ( v_Shell == null )
+            {
+                v_ConnectTimeout = null;
+            }
+            else
+            {
+                v_ConnectTimeout = v_Shell.getConnectTimeout();
+            }
+        }
+        
+        Integer v_ConnectTimeoutInt = null;
+        if ( Help.isNumber(v_ConnectTimeout) )
+        {
+            v_ConnectTimeoutInt = Integer.valueOf(v_ConnectTimeout);
         }
         else
         {
-            v_Timeout = (Integer) ValueHelp.getValue(this.connectTimeout ,Integer.class ,0 ,i_Context);
+            v_ConnectTimeoutInt = (Integer) ValueHelp.getValue(v_ConnectTimeout ,Integer.class ,0 ,i_Context);
         }
         
-        return v_Timeout;
+        return v_ConnectTimeoutInt;
     }
 
     
@@ -350,17 +428,32 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      */
     private Integer gatTimeout(Map<String ,Object> i_Context) throws Exception
     {
-        Integer v_Timeout = null;
-        if ( Help.isNumber(this.timeout) )
+        String v_Timeout = this.timeout;
+        
+        if ( (Help.isNull(v_Timeout) || "0".equals(v_Timeout)) && !Help.isNull(this.initXID) )
         {
-            v_Timeout = Integer.valueOf(this.timeout);
+            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
+            if ( v_Shell == null )
+            {
+                v_Timeout = null;
+            }
+            else
+            {
+                v_Timeout = v_Shell.getTimeout();
+            }
+        }
+        
+        Integer v_TimeoutInt = null;
+        if ( Help.isNumber(v_Timeout) )
+        {
+            v_TimeoutInt = Integer.valueOf(v_Timeout);
         }
         else
         {
-            v_Timeout = (Integer) ValueHelp.getValue(this.timeout ,Integer.class ,0 ,i_Context);
+            v_TimeoutInt = (Integer) ValueHelp.getValue(v_Timeout ,Integer.class ,0 ,i_Context);
         }
         
-        return v_Timeout;
+        return v_TimeoutInt;
     }
 
     
@@ -423,7 +516,22 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      */
     private String gatUser(Map<String ,Object> i_Context) throws Exception
     {
-        return (String) ValueHelp.getValue(this.user ,String.class ,"" ,i_Context);
+        String v_User = this.user;
+        
+        if ( Help.isNull(v_User) && !Help.isNull(this.initXID) )
+        {
+            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
+            if ( v_Shell == null )
+            {
+                v_User = null;
+            }
+            else
+            {
+                v_User = v_Shell.getUser();
+            }
+        }
+        
+        return (String) ValueHelp.getValue(v_User ,String.class ,"" ,i_Context);
     }
     
     
@@ -465,7 +573,22 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      */
     private String gatPassword(Map<String ,Object> i_Context) throws Exception
     {
-        return (String) ValueHelp.getValue(this.password ,String.class ,"" ,i_Context);
+        String v_Password = this.password;
+        
+        if ( Help.isNull(v_Password) && !Help.isNull(this.initXID) )
+        {
+            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
+            if ( v_Shell == null )
+            {
+                v_Password = null;
+            }
+            else
+            {
+                v_Password = v_Shell.getPassword();
+            }
+        }
+        
+        return (String) ValueHelp.getValue(v_Password ,String.class ,"" ,i_Context);
     }
 
 
@@ -746,20 +869,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
-        if ( Help.isNull(this.host) )
-        {
-            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s host is null."));
-            this.refreshStatus(io_Context ,v_Result.getStatus());
-            return v_Result;
-        }
-        
-        if ( Help.isNull(this.user) )
-        {
-            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s user is null."));
-            this.refreshStatus(io_Context ,v_Result.getStatus());
-            return v_Result;
-        }
-        
         if ( Help.isNull(this.shell) && Help.isNull(this.upFile) && Help.isNull(this.downFile) )
         {
             v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s shell、upFile and downFile is null."));
@@ -950,6 +1059,10 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         
         if ( !ExportType.UI.equals(i_ExportType) )
         {
+            if ( !Help.isNull(this.initXID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("initXID" ,this.getInitXID()));
+            }
             if ( !Help.isNull(this.host) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("host" ,this.host));
@@ -1199,6 +1312,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         ShellConfig v_Clone = new ShellConfig();
         
         this.cloneMyOnly(v_Clone);
+        v_Clone.initXID        = this.initXID;
         v_Clone.host           = this.host;
         v_Clone.port           = this.port;
         v_Clone.connectTimeout = this.connectTimeout;
@@ -1238,6 +1352,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         ShellConfig v_Clone = (ShellConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
+        v_Clone.initXID        = this.initXID;
         v_Clone.host           = this.host;
         v_Clone.port           = this.port;
         v_Clone.connectTimeout = this.connectTimeout;

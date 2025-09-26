@@ -48,9 +48,7 @@
     
         <xshell id="XShell_CF036_上传文件">
             <comment>上传文件</comment>
-            <host     ref="XShell_CF036_下载文件.getHost" />
-            <user     ref="XShell_CF036_下载文件.getUser" />
-            <password ref="XShell_CF036_下载文件.getPassword" />
+            <initXID>:XShell_CF036_下载文件</initXID>
             <upFile type="textarea">
                 classhome:org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.xml   , /opt/cflow036Shell
                 classhome:org/hy/common/callflow/junit/cflow036Shell/JU_CFlow036.class , /opt/cflow036Shell
@@ -65,9 +63,7 @@
     
         <xshell id="XShell_CF036_传递参数">
             <comment>传递参数</comment>
-            <host     ref="XShell_CF036_下载文件.getHost" />
-            <user     ref="XShell_CF036_下载文件.getUser" />
-            <password ref="XShell_CF036_下载文件.getPassword" />
+            <initXID>:XShell_CF036_下载文件</initXID>
             <shell type="textarea">                        <!-- Shell代码 -->
                 echo 'Hello :JavaVarString'
             </shell>
@@ -81,9 +77,7 @@
     
         <xshell id="XShell_CF036_脚本元素">
             <comment>打声招呼</comment>
-            <host     ref="XShell_CF036_下载文件.getHost" />
-            <user     ref="XShell_CF036_下载文件.getUser" />
-            <password ref="XShell_CF036_下载文件.getPassword" />
+            <initXID>:XShell_CF036_下载文件</initXID>
             <shell type="textarea">                        <!-- Shell代码 -->
                 echo 'Hello world'
                 echo 'Hello 脚本元素'
