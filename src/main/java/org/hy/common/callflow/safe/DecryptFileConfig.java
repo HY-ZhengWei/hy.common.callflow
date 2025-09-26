@@ -83,12 +83,12 @@ public class DecryptFileConfig extends UnzipConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.getFile()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：DecryptFileConfig[" + Help.NVL(this.getXid()) + "].file is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].file is null.");
             return false;
         }
         if ( Help.isNull(this.getPassword()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：DecryptFileConfig[" + Help.NVL(this.getXid()) + "].password is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].password is null.");
             return false;
         }
         

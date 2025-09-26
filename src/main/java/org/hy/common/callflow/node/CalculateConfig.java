@@ -125,7 +125,7 @@ public class CalculateConfig extends ExecuteElement implements Cloneable
         // 计算元素的表达式不能为空
         if ( Help.isNull(this.getCalc()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：CalculateConfig[" + Help.NVL(this.getXid()) + "].calc is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].calc is null.");
             return false;
         }
         

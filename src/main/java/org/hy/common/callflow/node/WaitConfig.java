@@ -85,7 +85,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         // 返回元素的返回结果数据不能为空
         if ( "0".equals(this.getWaitTime()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：WaitConfig[" + Help.NVL(this.getXid()) + "].waitTime is 0.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].waitTime is 0.");
             return false;
         }
         

@@ -129,17 +129,17 @@ public class SubscribeConfig extends APIConfig
     {
         if ( Help.isNull(this.getSubscribeXID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(this.getXid()) + "].subscribeXID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].subscribeXID is null.");
             return false;
         }
         if ( Help.isNull(this.getUserID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(this.getXid()) + "].userID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].userID is null.");
             return false;
         }
         if ( Help.isNull(this.getCallFlowXID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：SubscribeConfig[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
             return false;
         }
         

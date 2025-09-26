@@ -134,12 +134,12 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.getFile()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：ZipConfig[" + Help.NVL(this.getXid()) + "].file is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].file is null.");
             return false;
         }
         if ( Help.isNull(this.getDir()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：ZipConfig[" + Help.NVL(this.getXid()) + "].dir is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].dir is null.");
             return false;
         }
         

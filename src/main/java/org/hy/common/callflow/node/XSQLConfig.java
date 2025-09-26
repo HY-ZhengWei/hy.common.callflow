@@ -114,7 +114,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         // 执行对象不能为空
         if ( Help.isNull(this.getCallXID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：XSQLConfig[" + Help.NVL(this.getXid()) + "].callXID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callXID is null.");
             return false;
         }
         
@@ -128,7 +128,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
                 if ( v_NodeParam.getValue() == null && v_NodeParam.getValueDefault() == null )
                 {
                     // 方法参数及默认值均会空时异常
-                    io_Result.set(false).setParamStr("CFlowCheck：XSQLConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value and valueDefault is null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value and valueDefault is null.");
                     return false;
                 }
                 
@@ -139,7 +139,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
                         if ( Help.isNull(v_NodeParam.getValueClass()) )
                         {
                             // 方法参数为数值类型时，参数类型应不会空
-                            io_Result.set(false).setParamStr("CFlowCheck：XSQLConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value is Normal type ,but valueClass is null.");
+                            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value is Normal type ,but valueClass is null.");
                             return false;
                         }
                     }
@@ -152,7 +152,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
                         if ( Help.isNull(v_NodeParam.getValueClass()) )
                         {
                             // 方法参数的默认值为数值类型时，参数类型应不会空
-                            io_Result.set(false).setParamStr("CFlowCheck：XSQLConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] valueDefault is Normal type ,but valueClass is null.");
+                            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] valueDefault is Normal type ,but valueClass is null.");
                             return false;
                         }
                     }

@@ -101,21 +101,21 @@ public class ForConfig extends ExecuteElement implements Cloneable
         // For循环元素必须有XID
         if ( Help.isNull(this.getXid()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：ForConfig.xid is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + ".xid is null.");
             return false;
         }
         
         // For循环元素的结束值不能为空
         if ( Help.isNull(this.getEnd()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：ForConfig[" + Help.NVL(this.getXid()) + "].end is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].end is null.");
             return false;
         }
         
         // For循环元素的必须有下一个成功路由
         if ( Help.isNull(this.getRoute().getSucceeds()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：ForConfig[" + Help.NVL(this.getXid()) + "].Succeed route is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].Succeed route is null.");
             return false;
         }
         

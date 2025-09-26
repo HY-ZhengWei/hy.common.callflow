@@ -121,13 +121,13 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         // 执行元素的执行对象不能为空
         if ( Help.isNull(this.getCallXID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callXID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callXID is null.");
             return false;
         }
         // 执行元素的执行方法不能为空
         if ( Help.isNull(this.getCallMethod()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callMethod is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callMethod is null.");
             return false;
         }
         
@@ -141,7 +141,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                 if ( v_NodeParam.getValue() == null && v_NodeParam.getValueDefault() == null )
                 {
                     // 方法参数及默认值均会空时异常
-                    io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value and valueDefault is null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value and valueDefault is null.");
                     return false;
                 }
                 
@@ -152,7 +152,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                         if ( Help.isNull(v_NodeParam.getValueClass()) )
                         {
                             // 方法参数为数值类型时，参数类型应不会空
-                            io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value is Normal type ,but valueClass is null.");
+                            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] value is Normal type ,but valueClass is null.");
                             return false;
                         }
                     }
@@ -165,7 +165,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                         if ( Help.isNull(v_NodeParam.getValueClass()) )
                         {
                             // 方法参数的默认值为数值类型时，参数类型应不会空
-                            io_Result.set(false).setParamStr("CFlowCheck：NodeConfig[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] valueDefault is Normal type ,but valueClass is null.");
+                            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callParams[" + x + "] valueDefault is Normal type ,but valueClass is null.");
                             return false;
                         }
                     }

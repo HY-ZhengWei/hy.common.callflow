@@ -138,14 +138,14 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         // 子编排的XID不能为空
         if ( Help.isNull(this.getCallFlowXID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
             return false;
         }
         
         // 间隔类型
         if ( Help.isNull(this.getIntervalType()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalType is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].intervalType is null.");
             return false;
         }
         
@@ -153,7 +153,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         {
             if ( JobIntervalType.get(this.getIntervalType()) == null )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalType is invalid.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].intervalType is invalid.");
                 return false;
             }
         }
@@ -161,7 +161,7 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         // 间隔时长
         if ( Help.isNull(this.getIntervalLen()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalLen is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].intervalLen is null.");
             return false;
         }
         
@@ -169,14 +169,14 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         {
             if ( !Help.isNumber(this.getIntervalLen()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalLen is invalid.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].intervalLen is invalid.");
                 return false;
             }
             
             int v_IntervalLen = Integer.parseInt(this.getIntervalLen());
             if ( v_IntervalLen <= 0 )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：JOBConfig[" + Help.NVL(this.getXid()) + "].intervalLen <= 0.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].intervalLen <= 0.");
                 return false;
             }
         }

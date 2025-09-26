@@ -165,7 +165,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
     {
         if ( Help.isNull(this.getPython()) && Help.isNull(this.getScript()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：PythonConfig[" + Help.NVL(this.getXid()) + "].script and python is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].script and python is null.");
             return false;
         }
         

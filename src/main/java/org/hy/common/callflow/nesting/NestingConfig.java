@@ -89,14 +89,14 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         // 嵌套元素必须有子编排的XID
         if ( Help.isNull(this.getCallFlowXID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：NestingConfig[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
             return false;
         }
         
         // 嵌套元素的不应自己嵌套自己，递归应采用自引用方式实现
         if ( this.getCallFlowXID().equals(this.getXJavaID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：NestingConfig.callFlowXID[" + this.getCallFlowXID() + "] cannot nest itself.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + ".callFlowXID[" + this.getCallFlowXID() + "] cannot nest itself.");
             return false;
         }
         

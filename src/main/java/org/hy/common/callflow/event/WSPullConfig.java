@@ -118,12 +118,12 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.getWsURL()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：WSPullConfig[" + Help.NVL(this.getXid()) + "].wsURL is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].wsURL is null.");
             return false;
         }
         if ( Help.isNull(this.getCallFlowXID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：WSPullConfig[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].callFlowXID is null.");
             return false;
         }
         

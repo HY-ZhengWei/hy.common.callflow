@@ -139,12 +139,12 @@ public class WSPushConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.getName()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(this.getXid()) + "].name is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].name is null.");
             return false;
         }
         if ( Help.isNull(this.getNewMessage()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：WSPushConfig[" + Help.NVL(this.getXid()) + "].newMessage is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].newMessage is null.");
             return false;
         }
         

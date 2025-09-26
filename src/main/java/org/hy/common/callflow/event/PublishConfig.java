@@ -111,24 +111,24 @@ public class PublishConfig extends APIConfig
     {
         if ( Help.isNull(this.getPublishXID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(this.getXid()) + "].publishXID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].publishXID is null.");
             return false;
         }
         if ( Help.isNull(this.getMessage()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(this.getXid()) + "].message is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].message is null.");
             return false;
         }
         if ( Help.isNull(this.getUserID()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(this.getXid()) + "].userID is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].userID is null.");
             return false;
         }
         if ( !Help.isNull(this.getQoS()) )
         {
             if ( this.getQoS() < 0 || this.getQoS() > 2 )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：PublishConfig[" + Help.NVL(this.getXid()) + "].qoS is invalid.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].qoS is invalid.");
                 return false;
             }
         }

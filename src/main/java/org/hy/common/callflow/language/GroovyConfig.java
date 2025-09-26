@@ -107,7 +107,7 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
     {
         if ( Help.isNull(this.getGroovy()) && Help.isNull(this.getScript()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：GroovyConfig[" + Help.NVL(this.getXid()) + "].script and groovy is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].script and groovy is null.");
             return false;
         }
         

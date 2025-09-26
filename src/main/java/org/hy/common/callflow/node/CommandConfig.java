@@ -106,7 +106,7 @@ public class CommandConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.getCommand()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：CommandConfig[" + Help.NVL(this.getXid()) + "].command is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].command is null.");
             return false;
         }
         

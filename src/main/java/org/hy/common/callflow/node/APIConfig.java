@@ -157,7 +157,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.getUrl()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：APIConfig[" + Help.NVL(this.getXid()) + "].url is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].url is null.");
             return false;
         }
         

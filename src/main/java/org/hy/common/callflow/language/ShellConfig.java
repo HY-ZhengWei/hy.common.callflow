@@ -132,17 +132,17 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         {
             if ( Help.isNull(this.getHost()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].host is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].host is null.");
                 return false;
             }
             if ( Help.isNull(this.getUser()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].user is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].user is null.");
                 return false;
             }
             if ( Help.isNull(this.getShell()) && Help.isNull(this.getUpFile()) && Help.isNull(this.getDownFile()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：ShellConfig[" + Help.NVL(this.getXid()) + "].shell、upFile and downFile is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].shell、upFile and downFile is null.");
                 return false;
             }
         }

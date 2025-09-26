@@ -105,7 +105,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         // 返回元素的返回结果数据不能为空
         if ( Help.isNull(this.getRetValue()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：ReturnConfig[" + Help.NVL(this.getXid()) + "].retValue is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].retValue is null.");
             return false;
         }
         
@@ -114,7 +114,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
             if ( Help.isNull(this.getRetClass()) )
             {
                 // 返回结果为数值类型时，及类型应不会空
-                io_Result.set(false).setParamStr("CFlowCheck：ReturnConfig[" + Help.NVL(this.getXid()) + "] retValue is Normal type ,but retClass is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "] retValue is Normal type ,but retClass is null.");
                 return false;
             }
         }
@@ -126,7 +126,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
                 if ( Help.isNull(this.getRetClass()) )
                 {
                     // 返回结果的默认值为数值类型时，及类型应不会空
-                    io_Result.set(false).setParamStr("CFlowCheck：ReturnConfig[" + Help.NVL(this.getXid()) + "] retDefault is Normal type ,but retClass is null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "] retDefault is Normal type ,but retClass is null.");
                     return false;
                 }
             }

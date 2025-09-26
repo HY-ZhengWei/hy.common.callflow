@@ -120,7 +120,7 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
         {
             if ( Help.isNull(this.getDataBase()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：CacheGetConfig[" + Help.NVL(this.getDataBase()) + "].database is null ,but table is not null.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getDataBase()) + "].database is null ,but table is not null.");
                 return false;
             }
         }
@@ -129,7 +129,7 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
         {
             if ( !Help.isNull(this.getDataBase()) && Help.isNull(this.getTable()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：CacheGetConfig[" + Help.NVL(this.getTable()) + "].table is null ,but database and pkID are not null.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getTable()) + "].table is null ,but database and pkID are not null.");
                 return false;
             }
         }

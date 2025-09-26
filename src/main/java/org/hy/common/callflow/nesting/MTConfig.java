@@ -85,7 +85,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
     {
         if ( Help.isNull(this.getMtitems()) )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(this.getXid()) + "].Mtitems is null.");
+            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].Mtitems is null.");
             return false;
         }
         
@@ -95,14 +95,14 @@ public class MTConfig extends ExecuteElement implements Cloneable
             // 并发元素必须有子编排的XID
             if ( Help.isNull(v_MTItem.getCallFlowXID()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(this.getXid()) + "].[" + x + "].callFlowXID is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].[" + x + "].callFlowXID is null.");
                 return false;
             }
             
             // 并发元素的不应自己并发自己，递归应采用自引用方式实现
             if ( v_MTItem.getCallFlowXID().equals(this.getXJavaID()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(this.getXid()) + "].[" + x + "].callFlowXID[" + v_MTItem.getCallFlowXID() + "] cannot nest itself.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].[" + x + "].callFlowXID[" + v_MTItem.getCallFlowXID() + "] cannot nest itself.");
                 return false;
             }
             
@@ -111,7 +111,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 // 当有比较值A时，比较器不应为空
                 if ( v_MTItem.getComparer() == null )
                 {
-                    io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(this.getXid()) + "].[" + x + "].comparer is null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].[" + x + "].comparer is null.");
                     return false;
                 }
                 
@@ -120,7 +120,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
                     if ( Help.isNull(v_MTItem.getValueClass()) )
                     {
                         // 条件项的比值为数值类型时，其类型应不会空
-                        io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(this.getXid()) + "].[" + x + "].valueXIDA is Normal type ,but valueClass is null.");
+                        io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].[" + x + "].valueXIDA is Normal type ,but valueClass is null.");
                         return false;
                     }
                 }
@@ -131,14 +131,14 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 // 当有比较值B时，比较值A不应为空
                 if ( Help.isNull(v_MTItem.getValueXIDA()) )
                 {
-                    io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(this.getXid()) + "].[" + x + "].valueXIDA is null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].[" + x + "].valueXIDA is null.");
                     return false;
                 }
                 
                 // 当有比较值B时，比较器不应为空
                 if ( v_MTItem.getComparer() == null )
                 {
-                    io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(this.getXid()) + "].[" + x + "].comparer is null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].[" + x + "].comparer is null.");
                     return false;
                 }
                 
@@ -147,7 +147,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
                     if ( Help.isNull(v_MTItem.getValueClass()) )
                     {
                         // 条件项的比值为数值类型时，其类型应不会空
-                        io_Result.set(false).setParamStr("CFlowCheck：MTConfig[" + Help.NVL(this.getXid()) + "].[" + x + "].valueXIDB is Normal type ,but valueClass is null.");
+                        io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].[" + x + "].valueXIDB is Normal type ,but valueClass is null.");
                         return false;
                     }
                 }
