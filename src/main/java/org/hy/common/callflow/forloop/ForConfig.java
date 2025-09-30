@@ -47,6 +47,7 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v3.0  2025-09-26  迁移：静态检查
+ *              v4.0  2025-09-29  添加：For循环的每级元素"序号"的变量名称。下标从1开始
  */
 public class ForConfig extends ExecuteElement implements Cloneable
 {
@@ -66,6 +67,9 @@ public class ForConfig extends ExecuteElement implements Cloneable
     
     /** For循环的每级元素"序号"的变量名称。下标从0开始 */
     private String indexID;
+    
+    /** For循环的每级元素"序号"的变量名称。下标从1开始 */
+    private String indexNo;
     
     /** For循环的每级元素"对象"的变量名称 */
     private String elementID;
@@ -278,6 +282,34 @@ public class ForConfig extends ExecuteElement implements Cloneable
         this.keyChange();
     }
 
+    
+    
+    /**
+     * 获取：For循环的每级元素"序号"的变量名称。下标从1开始
+     */
+    public String getIndexNo()
+    {
+        return indexNo;
+    }
+
+
+    
+    /**
+     * 设置：For循环的每级元素"序号"的变量名称。下标从1开始
+     * 
+     * @param i_IndexNo For循环的每级元素"序号"的变量名称。下标从1开始
+     */
+    public void setIndexNo(String i_IndexNo)
+    {
+        if ( CallFlow.isSystemXID(i_IndexNo) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s indexNo[" +i_IndexNo + "] is SystemXID.");
+        }
+        this.indexNo = ValueHelp.standardValueID(i_IndexNo);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
     
     
     /**
@@ -785,6 +817,10 @@ public class ForConfig extends ExecuteElement implements Cloneable
         {
             io_Context.put(this.indexID ,i_Index);
         }
+        if ( !Help.isNull(this.indexNo) && io_Context != null )
+        {
+            io_Context.put(this.indexNo ,i_Index + 1);
+        }
     }
     
     
@@ -880,6 +916,10 @@ public class ForConfig extends ExecuteElement implements Cloneable
             if ( !Help.isNull(this.indexID) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("indexID" ,this.indexID));
+            }
+            if ( !Help.isNull(this.indexNo) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("indexNo" ,this.indexNo));
             }
             if ( !Help.isNull(this.elementID) )
             {
@@ -1152,6 +1192,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
         v_Clone.end       = this.end;
         v_Clone.step      = this.step;
         v_Clone.indexID   = this.indexID;
+        v_Clone.indexNo   = this.indexNo;
         v_Clone.elementID = this.elementID;
         
         return v_Clone;
@@ -1186,6 +1227,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
         v_Clone.end       = this.end;
         v_Clone.step      = this.step;
         v_Clone.indexID   = this.indexID;
+        v_Clone.indexNo   = this.indexNo;
         v_Clone.elementID = this.elementID;
     }
     
