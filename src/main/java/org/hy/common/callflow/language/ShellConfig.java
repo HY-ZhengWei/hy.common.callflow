@@ -1,7 +1,10 @@
 package org.hy.common.callflow.language;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,11 +53,12 @@ import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
  * @author      ZhengWei(HY)
  * @createDate  2025-09-25
  * @version     v1.0
+ *              v1.1  2025-09-30  添加：实时回显脚本执行日志
  */
 public class ShellConfig extends ExecuteElement implements Cloneable
 {
     
-    private static final Logger $Logger = new Logger(ShellConfig.class);
+    private static final Logger $Logger = new Logger(ShellConfig.class ,true);
     
     
     /** 基本连接参数可参考的对象XID */
@@ -96,6 +100,9 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     /** 下载文件，已解释完成的占位符（性能有优化，仅内部使用） */
     private PartitionMap<String ,Integer> downFilePlaceholders;
     
+    /** 是否实时回显脚本执行日志。默认值：null 不实时回显示 */
+    private Boolean                       showLog;
+    
     
     
     public ShellConfig()
@@ -112,6 +119,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         this.port           = "22";
         this.connectTimeout = "0";
         this.timeout        = "0";
+        this.showLog        = null;
     }
     
     
@@ -738,6 +746,61 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 按运行时的上下文获取是否实时回显脚本执行日志
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-30
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Boolean gatShowLog(Map<String ,Object> i_Context) throws Exception
+    {
+        Boolean v_ShowLog = this.showLog;
+        
+        if ( Help.isNull(v_ShowLog) && !Help.isNull(this.initXID) )
+        {
+            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
+            if ( v_Shell == null )
+            {
+                v_ShowLog = null;
+            }
+            else
+            {
+                v_ShowLog = v_Shell.getShowLog();
+            }
+        }
+        
+        return v_ShowLog;
+    }
+    
+    
+    
+    /**
+     * 获取：是否实时回显脚本执行日志。默认值：null 不实时回显示
+     */
+    public Boolean getShowLog()
+    {
+        return showLog;
+    }
+
+
+    
+    /**
+     * 设置：是否实时回显脚本执行日志。默认值：null 不实时回显示
+     * 
+     * @param i_ShowLog 是否实时回显脚本执行日志。默认值：null 不实时回显示
+     */
+    public void setShowLog(Boolean i_ShowLog)
+    {
+        this.showLog = i_ShowLog;
+    }
+
+
+
+    /**
      * 元素的类型
      * 
      * @author      ZhengWei(HY)
@@ -892,6 +955,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             String          v_Password    = this.gatPassword(io_Context);
             Integer         v_ConnectTime = this.gatConnectTimeout(io_Context);
             Integer         v_Time        = this.gatTimeout(io_Context);
+            Boolean         v_ShowLog     = this.gatShowLog(io_Context);
             
             if ( Help.isNull(v_Host) )
             {
@@ -944,8 +1008,11 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 {
                     try (Session v_Session = v_SSH.startSession()) 
                     {
-                        Session.Command v_Command = v_Session.exec("mkdir -p " + v_UpFile.getDir());
-                        v_Command.join();
+                        try (Session.Command v_Command = v_Session.exec("mkdir -p " + v_UpFile.getDir()))
+                        {
+                            this.showLog(v_ShowLog ,v_Command);
+                            v_Command.join();
+                        }
                     }
                 }
                 
@@ -963,13 +1030,30 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 String v_Shell = ValueHelp.replaceByContext(this.shell ,this.shellPlaceholders ,io_Context);
                 try (Session v_Session = v_SSH.startSession()) 
                 {
-                    Session.Command       v_Command = v_Session.exec(v_Shell);
-                    ByteArrayOutputStream v_Output  = new ByteArrayOutputStream();
-                    v_Command.getInputStream().transferTo(v_Output);
-                    v_Command.join();
-                    
-                    v_ShellRet.setResult(v_Output.toString().trim());
-                    v_ShellRet.setExitStatus(v_Command.getExitStatus());
+                    try ( Session.Command v_Command = v_Session.exec(v_Shell) )
+                    {
+                        ByteArrayOutputStream v_Output = null;
+                        StringBuilder         v_Log    = this.showLog(v_ShowLog ,v_Command);
+                        if ( v_Log == null )
+                        {
+                            v_Output = new ByteArrayOutputStream();
+                            v_Command.getInputStream().transferTo(v_Output);
+                            
+                        }
+                        
+                        v_Command.join();
+                        v_ShellRet.setExitStatus(v_Command.getExitStatus());
+                        
+                        if ( v_Log == null )
+                        {
+                            v_ShellRet.setResult(v_Output.toString().trim());
+                            v_Output.close();
+                        }
+                        else
+                        {
+                            v_ShellRet.setResult(v_Log.toString());
+                        }
+                    }
                 }
             }
             
@@ -1000,6 +1084,66 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
         }
+    }
+    
+    
+    
+    /**
+     * 显示脚本执行的实时日志
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-09-30
+     * @version     v1.0
+     *
+     * @param i_ShowLog  是否实时回显脚本执行日志
+     * @param i_Command  脚本执行对象
+     * @return           返回日志缓存
+     */
+    private StringBuilder showLog(Boolean i_ShowLog ,Session.Command i_Command)
+    {
+        if ( i_ShowLog == null || !i_ShowLog )
+        {
+            return null;
+        }
+        
+        StringBuilder v_Log = new StringBuilder();
+        // 读取标准输出
+        new Thread(() -> 
+        {
+            try ( InputStream v_Input = i_Command.getInputStream(); BufferedReader v_Reader = new BufferedReader(new InputStreamReader(v_Input)) )
+            {
+                String v_Line = null;
+                while ( (v_Line = v_Reader.readLine()) != null )
+                {
+                    v_Log.append(v_Line).append("\r\n");
+                    $Logger.info(this.getXid() + "[INFO] " + v_Line);
+                }
+            }
+            catch (Exception error)
+            {
+                $Logger.error(error);
+            }
+        }).start();
+        
+        // 读取错误输出
+        new Thread(() -> 
+        {
+            try ( InputStream v_ErrorInput = i_Command.getErrorStream(); BufferedReader v_Reader = new BufferedReader(new InputStreamReader(v_ErrorInput)) )
+            {
+                String v_Line = null;
+                while ( (v_Line = v_Reader.readLine()) != null )
+                {
+                    v_Log.append(v_Line).append("\r\n");
+                    $Logger.info(this.getXid() + "[WARN] " + v_Line);
+                }
+            }
+            catch (Exception error)
+            {
+                $Logger.error(error);
+            }
+        }).start();
+        
+        return v_Log;
     }
     
     
@@ -1124,6 +1268,10 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                     v_DownFile = StringHelp.replaceAll(v_DownFile ,v_Webhome ,"webhome:");
                 }
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("downFile" ,v_DownFile));
+            }
+            if ( !Help.isNull(this.showLog) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("showLog" ,this.showLog));
             }
             if ( !Help.isNull(this.returnID) )
             {
@@ -1322,6 +1470,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         v_Clone.shell          = this.shell;
         v_Clone.upFile         = this.upFile;
         v_Clone.downFile       = this.downFile;
+        v_Clone.showLog        = this.showLog;
         
         return v_Clone;
     }
@@ -1362,6 +1511,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         v_Clone.shell          = this.shell;
         v_Clone.upFile         = this.upFile;
         v_Clone.downFile       = this.downFile;
+        v_Clone.showLog        = this.showLog;
     }
     
     
