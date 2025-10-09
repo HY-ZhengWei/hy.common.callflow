@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：集群批量升级Tomcat版本 -->
+    <xconfig>
+    
+        <xreturn id="XRetur_CF037_UpgradeTomcat_全部完成">
+            <comment>全部完成</comment>
+            <retValue>
+            {
+                "retInt": 200,
+                "retText": "全部完成"
+            }
+            </retValue>
+        </xreturn>
+        
+        
+        <xshell id="XShell_CF037_UpgradeTomcat_上传文件">
+            <comment>上传Tomcat文件</comment>
+            <host>:ForElement.ip</host>                    <!-- 主机IP地址 -->
+            <user>:ForElement.user</user>                  <!-- 用户名称 -->
+            <password>:ForElement.pwd</password>           <!-- 用户密码 -->
+            <showLog>true</showLog>                        <!-- 显示实时日志 -->
+            <upFile type="textarea">
+                classhome:upload/apache-tomcat-9.0.110.tar.gz , /opt
+            </upFile>                                      <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
+                                                           <!-- 远程目录不存时，自动创建 -->
+            <shell type="textarea">
+            <![CDATA[
+                tar -xvf /opt/apache-tomcat-9.0.110.tar.gz -C /opt
+                rm /opt/apache-tomcat-9.0.110.tar.gz
+                mv /opt/apache-tomcat-9.0.110 /opt/tomcatUpgrade
+                rm -r /opt/tomcatUpgrade/webapps/ROOT
+                rm -r /opt/tomcatUpgrade/webapps/docs
+                rm -r /opt/tomcatUpgrade/webapps/examples
+                rm -r /opt/tomcatUpgrade/webapps/host-manager
+                rm -r /opt/tomcatUpgrade/webapps/manager
+                sed -i '/\[ -z "\$CATALINA_BASE" \] && CATALINA_BASE="\$CATALINA_HOME"/a\CATALINA_PID="$CATALINA_BASE/tomcat.pid"' /opt/tomcatUpgrade/bin/catalina.sh
+                sed -i 's/autoDeploy="true"/autoDeploy="false"/g' /opt/tomcatUpgrade/conf/server.xml
+                cp -r /opt/tomcat/webapps /opt/tomcatUpgrade/
+                echo ":ForElement.pwd" | sudo -S systemctl stop tomcat.service
+                mv /opt/tomcat /opt/tomcat_$(date +%Y%m%d%H%M%S)
+                mv /opt/tomcatUpgrade /opt/tomcat
+                echo ":ForElement.pwd" | sudo -S systemctl start tomcat.service
+            ]]>
+            </shell>                                       <!-- Shell代码 -->
+            <route>
+                <succeed>                                  <!-- For循环结束点（再次循环点） -->
+                    <next>:XFox_CF037_UpgradeTomcat_服务列表</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>                                  
+                    <next ref="XRetur_CF037_UpgradeTomcat_全部完成" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xshell>
+        
+        
+        <xnode id="XNodee_CF037_UpgradeTomcat_准备开始">
+            <comment>显示准备开始</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_Begin</callMethod>
+            <callParam>
+                <value>:ForIndex</value>
+            </callParam>
+            <callParam>
+                <value>:ForElement.ip</value>
+            </callParam>
+            <route>
+                <succeed>                                  
+                    <next ref="XShell_CF037_UpgradeTomcat_上传文件" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xcondition id="XCondition_CF037_UpgradeTomcat_是否升级">
+            <comment>是否为IoT服务</comment>
+            <logical>AND</logical>
+            <conditionItem>
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:ForElement.type</valueXIDA>
+                <valueXIDB>IoT1</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的路由 -->
+                    <next ref="XNodee_CF037_UpgradeTomcat_准备开始" />
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next>:XFox_CF037_UpgradeTomcat_服务列表</next>
+                    <comment>循环的下一步</comment>
+                </else>
+                <else>                                  
+                    <next ref="XRetur_CF037_UpgradeTomcat_全部完成" />
+                    <comment>退出循环后的节点</comment>
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xfor id="XFox_CF037_UpgradeTomcat_服务列表">
+            <comment>循环：List集合</comment>
+            <end>:ServerList</end>                         <!-- 集合对象的变量名称 -->
+            <indexNo>ForIndex</indexNo>                    <!-- 序号变量名称（可选的），下标从1开始 -->
+            <elementID>ForElement</elementID>              <!-- 每次循环元素的变量名称（可选的） -->
+            <route>
+                <succeed>                                  <!-- 成功时，关联后置节点 -->
+                    <next ref="XCondition_CF037_UpgradeTomcat_是否升级" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+            <initExecute>true</initExecute>
+        </xfor>
+        
+    </xconfig>
+    
+</config>
