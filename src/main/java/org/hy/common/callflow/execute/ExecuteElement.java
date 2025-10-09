@@ -3,9 +3,11 @@ package org.hy.common.callflow.execute;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
@@ -24,6 +26,8 @@ import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xml.XJava;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -39,11 +43,14 @@ import org.hy.common.db.DBSQL;
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v3.0  2025-09-26  添加：静态检查
+ *              v4.0  2025-10-09  添加：是否在初始时立即执行
  */
 public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
     
-    public static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);
+    private static final Logger     $Logger = new Logger(ExecuteElement.class);
+    
+    public  static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);
     
     
     
@@ -149,6 +156,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
     protected PartitionMap<String ,Integer> contextPlaceholders;
     
+    /** 是否在初始时立即执行 */
+    protected String                        initExecute;
+    
     
     
     /**
@@ -179,11 +189,12 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     {
         super(i_RequestTotal ,i_SuccessTotal);
         
-        this.treeIDs    = new KVKLinkMap   <String ,String>();
-        this.treeLevels = new LinkedHashMap<String ,Integer>();
-        this.treeNos    = new LinkedHashMap<String ,Integer>();
-        this.route      = new RouteConfig(this);
-        this.keyChange  = false;
+        this.treeIDs     = new KVKLinkMap   <String ,String>();
+        this.treeLevels  = new LinkedHashMap<String ,Integer>();
+        this.treeNos     = new LinkedHashMap<String ,Integer>();
+        this.route       = new RouteConfig(this);
+        this.keyChange   = false;
+        this.initExecute = "false";
     }
     
     
@@ -377,6 +388,76 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     
     
     
+    
+    /**
+     * 获取：是否在初始时立即执行
+     */
+    public String getInitExecute()
+    {
+        return initExecute;
+    }
+
+
+    
+    /**
+     * 设置：是否在初始时立即执行
+     * 
+     * @param i_InitExecute 是否在初始时立即执行
+     * @throws Exception 
+     */
+    public void setInitExecute(String i_InitExecute)
+    {
+        this.initExecute = i_InitExecute.trim();
+        if ( !Help.isNull(this.initExecute) )
+        {
+            Boolean v_InitExecute = null;
+            try
+            {
+                v_InitExecute = (Boolean) ValueHelp.getValue(this.initExecute ,Boolean.class ,Boolean.FALSE ,null);
+                
+                if ( v_InitExecute != null && v_InitExecute )
+                {
+                    Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(this);
+                    if ( !v_CheckRet.get() )
+                    {
+                        $Logger.error(v_CheckRet.getParamStr());  // 打印静态检查不合格的原因
+                        return;
+                    }
+                    
+                    // 没有此步下面的执行编排无法成功，因为XJava在初始本对象的过程还没有完成呢
+                    XJava.putObject(this.getXid() ,this);
+                    
+                    Map<String ,Object> v_Context = new HashMap<String ,Object>();
+                    ExecuteResult       v_Result  = CallFlow.execute(this ,v_Context);
+                    if ( !v_Result.isSuccess() )
+                    {
+                        StringBuilder v_ErrorLog = new StringBuilder();
+                        v_ErrorLog.append("Error XID = " + v_Result.getExecuteXID()).append("\n");
+                        v_ErrorLog.append("Error Msg = " + v_Result.getException().getMessage());
+                        if ( v_Result.getException() instanceof TimeoutException )
+                        {
+                            v_ErrorLog.append("is TimeoutException");
+                        }
+                        $Logger.error(v_ErrorLog.toString() ,v_Result.getException());
+                    }
+                    
+                    // 打印执行路径
+                    ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
+                    $Logger.info("\n" + CallFlow.getHelpLog().logs(v_FirstResult));
+                    
+                    v_Context.clear();
+                    v_Context = null;
+                }
+            }
+            catch (Exception exce)
+            {
+                $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "].initExecute error" ,exce);
+            }
+        }
+    }
+
+
+
     /**
      * 注释。可用于日志的输出等帮助性的信息
      * 
@@ -1404,6 +1485,28 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
                 io_Xml.append(v_RouteItem.toXml(i_Level + 1 ,i_SuperTreeID ,i_ExportType));
                 io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(i_XmlName));
             }
+        }
+    }
+    
+    
+    
+    /**
+     * 转为Xml格式的内容
+     * 
+     * 注：它应在元素所有属性（非界面UI属性）最后面的位置
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-09
+     * @version     v1.0
+     *
+     * @param io_Xml      输出的字符串缓存
+     * @param i_NewSpace  每行的前缀空格信息
+     */
+    protected void toXmlInitExecute(StringBuilder io_Xml ,String i_NewSpace)
+    {
+        if ( !Help.isNull(this.initExecute) && !"false".equalsIgnoreCase(this.initExecute) )
+        {
+            io_Xml.append(i_NewSpace).append(IToXml.toValue("initExecute" ,this.initExecute));
         }
     }
     
