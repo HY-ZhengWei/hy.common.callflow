@@ -103,6 +103,9 @@ public class JU_CFlow037 extends AppInitConfig
         ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
         System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
         System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
+        
+        // 导出
+        System.out.println(CallFlow.getHelpExport().export(v_For));
     }
     
     
@@ -155,6 +158,9 @@ public class JU_CFlow037 extends AppInitConfig
         ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
         System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
         System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
+        
+        // 导出
+        System.out.println(CallFlow.getHelpExport().export(v_For));
     }
     
 }
