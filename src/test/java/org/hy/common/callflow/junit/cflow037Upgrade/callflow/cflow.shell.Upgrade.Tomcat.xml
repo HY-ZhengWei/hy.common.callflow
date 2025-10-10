@@ -111,7 +111,7 @@
             <conditionItem>
                 <valueClass>java.lang.String</valueClass>
                 <valueXIDA>:ForElement.type</valueXIDA>
-                <valueXIDB>IoT1</valueXIDB>
+                <valueXIDB>IoT</valueXIDB>
             </conditionItem>
             <route>
                 <if>                                        <!-- 真时的路由 -->
