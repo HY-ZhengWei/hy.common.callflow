@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
@@ -44,6 +46,7 @@ import org.hy.common.xml.log.Logger;
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v3.0  2025-09-26  添加：静态检查
  *              v4.0  2025-10-09  添加：是否在初始时立即执行
+ *              v4.1  2025-10-10  添加：是否在初始时延时执行
  */
 public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
@@ -156,8 +159,8 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     /** 向上下文中赋值，已解释完成的占位符（性能有优化，仅内部使用） */
     protected PartitionMap<String ,Integer> contextPlaceholders;
     
-    /** 是否在初始时立即执行 */
-    protected String                        initExecute;
+    /** 是否在初始时立即执行。注: 无论它delayedTime的值是多少，对象克隆时不会触发执行 */
+    protected String                        delayedTime;
     
     
     
@@ -194,7 +197,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         this.treeNos     = new LinkedHashMap<String ,Integer>();
         this.route       = new RouteConfig(this);
         this.keyChange   = false;
-        this.initExecute = "false";
+        this.delayedTime = "-1";
     }
     
     
@@ -392,9 +395,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     /**
      * 获取：是否在初始时立即执行
      */
-    public String getInitExecute()
+    public String getExecute()
     {
-        return initExecute;
+        return delayedTime;
     }
 
 
@@ -402,51 +405,37 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     /**
      * 设置：是否在初始时立即执行
      * 
-     * @param i_InitExecute 是否在初始时立即执行
+     * @param i_DelayedTime   延时执行时长(单位：毫秒)，0为立即执行，负数不执行，正数延时执行
      * @throws Exception 
      */
-    public void setInitExecute(String i_InitExecute)
+    public void setExecute(String i_DelayedTime)
     {
-        this.initExecute = i_InitExecute.trim();
-        if ( !Help.isNull(this.initExecute) )
+        this.delayedTime = i_DelayedTime.trim();
+        if ( !Help.isNull(this.delayedTime) )
         {
-            Boolean v_InitExecute = null;
+            Long v_DelayedTime = null;
             try
             {
-                v_InitExecute = (Boolean) ValueHelp.getValue(this.initExecute ,Boolean.class ,Boolean.FALSE ,null);
+                v_DelayedTime = (Long) ValueHelp.getValue(this.delayedTime ,Long.class ,0L ,null);
                 
-                if ( v_InitExecute != null && v_InitExecute )
+                if ( v_DelayedTime != null )
                 {
-                    Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(this);
-                    if ( !v_CheckRet.get() )
+                    if ( v_DelayedTime == 0L )
                     {
-                        $Logger.error(v_CheckRet.getParamStr());  // 打印静态检查不合格的原因
-                        return;
+                        this.execute();
                     }
-                    
-                    // 没有此步下面的执行编排无法成功，因为XJava在初始本对象的过程还没有完成呢
-                    XJava.putObject(this.getXid() ,this);
-                    
-                    Map<String ,Object> v_Context = new HashMap<String ,Object>();
-                    ExecuteResult       v_Result  = CallFlow.execute(this ,v_Context);
-                    if ( !v_Result.isSuccess() )
+                    else if ( v_DelayedTime > 0L )
                     {
-                        StringBuilder v_ErrorLog = new StringBuilder();
-                        v_ErrorLog.append("Error XID = " + v_Result.getExecuteXID()).append("\n");
-                        v_ErrorLog.append("Error Msg = " + v_Result.getException().getMessage());
-                        if ( v_Result.getException() instanceof TimeoutException )
+                        Timer v_Timer = new Timer();
+                        v_Timer.schedule(new TimerTask() 
                         {
-                            v_ErrorLog.append("is TimeoutException");
-                        }
-                        $Logger.error(v_ErrorLog.toString() ,v_Result.getException());
+                            @Override
+                            public void run()
+                            {
+                                execute();
+                            }
+                        } ,v_DelayedTime); // 延时执行
                     }
-                    
-                    // 打印执行路径
-                    ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
-                    $Logger.info("\n" + CallFlow.getHelpLog().logs(v_FirstResult));
-                    
-                    v_Context.clear();
-                    v_Context = null;
                 }
             }
             catch (Exception exce)
@@ -454,6 +443,50 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
                 $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "].initExecute error" ,exce);
             }
         }
+    }
+    
+    
+    
+    /**
+     * 立即执行元素
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-10
+     * @version     v1.0
+     *
+     */
+    private void execute()
+    {
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(this);
+        if ( !v_CheckRet.get() )
+        {
+            $Logger.error(v_CheckRet.getParamStr());  // 打印静态检查不合格的原因
+            return;
+        }
+        
+        // 没有此步下面的执行编排无法成功，因为XJava在初始本对象的过程还没有完成呢
+        XJava.putObject(this.getXid() ,this);
+        
+        Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        ExecuteResult       v_Result  = CallFlow.execute(this ,v_Context);
+        if ( !v_Result.isSuccess() )
+        {
+            StringBuilder v_ErrorLog = new StringBuilder();
+            v_ErrorLog.append("Error XID = " + v_Result.getExecuteXID()).append("\n");
+            v_ErrorLog.append("Error Msg = " + v_Result.getException().getMessage());
+            if ( v_Result.getException() instanceof TimeoutException )
+            {
+                v_ErrorLog.append("is TimeoutException");
+            }
+            $Logger.error(v_ErrorLog.toString() ,v_Result.getException());
+        }
+        
+        // 打印执行路径
+        ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
+        $Logger.info("\n" + CallFlow.getHelpLog().logs(v_FirstResult));
+        
+        v_Context.clear();
+        v_Context = null;
     }
 
 
@@ -1502,11 +1535,11 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      * @param io_Xml      输出的字符串缓存
      * @param i_NewSpace  每行的前缀空格信息
      */
-    protected void toXmlInitExecute(StringBuilder io_Xml ,String i_NewSpace)
+    protected void toXmlExecute(StringBuilder io_Xml ,String i_NewSpace)
     {
-        if ( !Help.isNull(this.initExecute) && !"false".equalsIgnoreCase(this.initExecute) )
+        if ( !Help.isNull(this.delayedTime) && !"false".equalsIgnoreCase(this.delayedTime) )
         {
-            io_Xml.append(i_NewSpace).append(IToXml.toValue("initExecute" ,this.initExecute));
+            io_Xml.append(i_NewSpace).append(IToXml.toValue("execute" ,this.delayedTime));
         }
     }
     
@@ -1554,6 +1587,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         v_Clone.returnID        = this.returnID;
         v_Clone.statusID        = this.statusID;
         v_Clone.context         = this.context;
+        v_Clone.delayedTime     = this.delayedTime;
     }
     
     
