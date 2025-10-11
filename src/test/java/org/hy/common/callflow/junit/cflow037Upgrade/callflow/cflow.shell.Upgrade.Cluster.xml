@@ -127,7 +127,6 @@
             <clusterXID>:ServerList</clusterXID>                   <!-- 集合对象的变量名称 -->
             <clusterElementID>ClusterElement</clusterElementID>    <!-- 每次并发项的变量名称（可选的） -->
             <clusterIndexNo>ClusterIndex</clusterIndexNo>          <!-- 序号变量名称（可选的），下标从1开始 -->
-            <waitTime>0</waitTime>                               <!-- 每并发项的间隔多少时长（单位：毫秒） -->
             <item>
                 <callFlowXID>:XNodee_CF037_UpgradeCluster_准备开始</callFlowXID>
             </item>
