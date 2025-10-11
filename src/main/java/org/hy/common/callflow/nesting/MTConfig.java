@@ -1,9 +1,11 @@
 package org.hy.common.callflow.nesting;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
@@ -35,6 +37,8 @@ import org.hy.common.xml.log.Logger;
  *              v2.0  2025-06-09  添加：上下文已解释完成的占位符，使其支持面向对象的占位符。
  *              v3.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v4.0  2025-09-26  迁移：静态检查
+ *              v5.0  2025-10-10  添加：集群级别的并发
+ *              v5.1  2025-10-11  修正：高并发同一编排时，并发计算树ID及寻址相关的信息时的并发异常
  */
 public class MTConfig extends ExecuteElement implements Cloneable
 {
@@ -43,6 +47,18 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
     
 
+    /** 集群的XID */
+    private String                        clusterXID;
+    
+    /** 集群中每个元素"对象"的变量名称 */
+    private String                        clusterElementID;
+    
+    /** 集群的每级元素"序号"的变量名称。下标从0开始 */
+    private String                        clusterIndexID;
+    
+    /** 集群的每级元素"序号"的变量名称。下标从1开始 */
+    private String                        clusterIndexNo;
+    
     /** 并发项的集合 */
     private List<MTItem>                  mtitems;
     
@@ -177,6 +193,188 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
     
     
+    /**
+     * 获取集群数据
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-10
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return           返回空，表示异常
+     * @throws Exception
+     */
+    private List<Object> gatClusters(Map<String ,Object> i_Context) throws Exception
+    {
+        List<Object> v_Ret = new ArrayList<Object>();
+        
+        if ( Help.isNull(this.gatClusterXID()) )
+        {
+            v_Ret.add(new Date());
+        }
+        else
+        {
+            Object v_Cluster = ValueHelp.getValue(this.getClusterXID() ,null ,null ,i_Context);
+            if ( v_Cluster == null )
+            {
+                return null;
+            }
+            
+            Class<?> v_ClusterClass = v_Cluster.getClass();
+            // 集群数据是：List集合
+            if ( MethodReflect.isExtendImplement(v_ClusterClass ,List.class) )
+            {
+                v_Ret.addAll((List<?>) v_Cluster);
+            }
+            // 集群数据是：Map集合
+            else if ( MethodReflect.isExtendImplement(v_ClusterClass ,Map.class) )
+            {
+                Map<? ,?> v_Map = (Map<? ,?>) v_Cluster;
+                v_Ret.addAll(v_Map.values());
+            }
+            // 集群数据是：Set集合
+            else if ( MethodReflect.isExtendImplement(v_ClusterClass ,Set.class) )
+            {
+                Set<?> v_Set = (Set<?>) v_Cluster;
+                v_Ret.addAll(v_Set);
+            }
+            // 集群数据是：数组类型
+            else if ( v_ClusterClass.isArray() )
+            {
+                int v_ArrLen = Array.getLength(v_Cluster);
+                for (int i = 0; i < v_ArrLen; i++) 
+                {
+                    v_Ret.add(Array.get(v_Cluster ,i));
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+        
+        return v_Ret;
+    }
+    
+    
+    
+    /**
+     * 获取：集群的XID
+     */
+    private String gatClusterXID()
+    {
+        return this.clusterXID;
+    }
+    
+    
+    
+    /**
+     * 获取：集群的XID
+     */
+    public String getClusterXID()
+    {
+        return ValueHelp.standardRefID(this.clusterXID);
+    }
+    
+    
+    
+    /**
+     * 设置：集群的XID
+     * 
+     * @param i_ClusterXID 集群的XID
+     */
+    public void setClusterXID(String i_ClusterXID)
+    {
+        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.clusterXID = ValueHelp.standardValueID(i_ClusterXID);
+    }
+    
+    
+    
+    /**
+     * 获取：集群中每个元素"对象"的变量名称
+     */
+    public String getClusterElementID()
+    {
+        return clusterElementID;
+    }
+
+
+    
+    /**
+     * 设置：集群中每个元素"对象"的变量名称
+     * 
+     * @param i_ClusterElementID  集群中每个元素"对象"的变量名称
+     */
+    public void setClusterElementID(String i_ClusterElementID)
+    {
+        if ( CallFlow.isSystemXID(i_ClusterElementID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s clusterElementID[" + i_ClusterElementID + "] is SystemXID.");
+        }
+        this.clusterElementID = ValueHelp.standardValueID(i_ClusterElementID);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 获取：集群的每级元素"序号"的变量名称。下标从0开始
+     */
+    public String getClusterIndexID()
+    {
+        return clusterIndexID;
+    }
+
+
+    
+    /**
+     * 设置：集群的每级元素"序号"的变量名称。下标从0开始
+     * 
+     * @param i_ClusterIndexID 集群的每级元素"序号"的变量名称。下标从0开始
+     */
+    public void setClusterIndexID(String i_ClusterIndexID)
+    {
+        if ( CallFlow.isSystemXID(i_ClusterIndexID) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s clusterIndexID[" + i_ClusterIndexID + "] is SystemXID.");
+        }
+        this.clusterIndexID = i_ClusterIndexID;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+    
+    /**
+     * 获取：集群的每级元素"序号"的变量名称。下标从1开始
+     */
+    public String getClusterIndexNo()
+    {
+        return clusterIndexNo;
+    }
+
+
+    
+    /**
+     * 设置：集群的每级元素"序号"的变量名称。下标从1开始
+     * 
+     * @param i_ClusterIndexNo 集群的每级元素"序号"的变量名称。下标从1开始
+     */
+    public void setClusterIndexNo(String i_ClusterIndexNo)
+    {
+        if ( CallFlow.isSystemXID(i_ClusterIndexNo) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s clusterIndexNo[" + i_ClusterIndexNo + "] is SystemXID.");
+        }
+        this.clusterIndexNo = i_ClusterIndexNo;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
     /**
      * 获取一个新的并发项
      * 
@@ -348,45 +546,86 @@ public class MTConfig extends ExecuteElement implements Cloneable
             // 先判定允许执行的并发项
             if ( !Help.isNull(this.mtitems) )
             {
-                for (int x=0; x<this.mtitems.size(); x++)
+                List<Object> v_Clusters = this.gatClusters(io_Context);
+                if ( Help.isNull(v_Clusters) )
                 {
-                    MTItem v_Item = this.mtitems.get(x);
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s Cluster is null or empty or not Collection."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
+                }
+                
+                String v_ClusterElementID = Help.NVL(this.clusterElementID ,Help.NVL(this.xid) + "_ClusterElementID");
+                int    v_ClusterSize      = v_Clusters.size();
+                for (int v_Index=0; v_Index<v_ClusterSize; v_Index++)
+                {
+                    Object v_Cluster = v_Clusters.get(v_Index);
+                    io_Context.put(v_ClusterElementID ,v_Cluster);
                     
-                    if ( Help.isNull(v_Item.getValueXIDA()) 
-                      || v_Item.getComparer() == null
-                      || v_Item.allow(io_Context) )
+                    if ( !Help.isNull(this.clusterIndexID) )
                     {
-                        if ( Help.isNull(v_Item.gatCallFlowXID()) )
-                        {
-                            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID is null."));
-                            this.refreshStatus(io_Context ,v_Result.getStatus());
-                            return v_Result;
-                        }
+                        io_Context.put(this.clusterIndexID ,v_Index);
+                    }
+                    if ( !Help.isNull(this.clusterIndexNo) )
+                    {
+                        io_Context.put(this.clusterIndexNo ,v_Index + 1);
+                    }
+                    
+                    for (int x=0; x<this.mtitems.size(); x++)
+                    {
+                        MTItem v_Item = this.mtitems.get(x);
                         
-                        // 获取执行对象
-                        Object v_CallObject = XJava.getObject(v_Item.gatCallFlowXID());
-                        if ( v_CallObject == null )
+                        if ( Help.isNull(v_Item.getValueXIDA()) 
+                          || v_Item.getComparer() == null
+                          || v_Item.allow(io_Context) )
                         {
-                            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + v_Item.gatCallFlowXID() + "] is not find."));
-                            this.refreshStatus(io_Context ,v_Result.getStatus());
-                            return v_Result;
-                        }
-                        // 执行对象不是编排元素
-                        if ( !MethodReflect.isExtendImplement(v_CallObject ,ExecuteElement.class) )
-                        {
-                            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + v_Item.gatCallFlowXID() + "] is not ExecuteElement."));
-                            this.refreshStatus(io_Context ,v_Result.getStatus());
-                            return v_Result;
-                        }
-                        // 超时时长
-                        MTExecuteResult v_MTExecuteResult = new MTExecuteResult(x ,v_Item ,(ExecuteElement) v_CallObject ,v_Item.gatTimeout(io_Context));
-                        v_MTItemResults.add(v_MTExecuteResult);
-                        if ( !this.oneByOne && v_MTExecuteResult.getTimeout() < Long.MAX_VALUE )
-                        {
-                            v_IsOrderBy = true;
+                            if ( Help.isNull(v_Item.gatCallFlowXID()) )
+                            {
+                                v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID is null."));
+                                this.refreshStatus(io_Context ,v_Result.getStatus());
+                                return v_Result;
+                            }
+                            
+                            // 获取执行对象
+                            Object v_CallObject = XJava.getObject(v_Item.gatCallFlowXID());
+                            if ( v_CallObject == null )
+                            {
+                                v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + v_Item.gatCallFlowXID() + "] is not find."));
+                                this.refreshStatus(io_Context ,v_Result.getStatus());
+                                return v_Result;
+                            }
+                            // 执行对象不是编排元素
+                            if ( !MethodReflect.isExtendImplement(v_CallObject ,ExecuteElement.class) )
+                            {
+                                v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + v_Item.gatCallFlowXID() + "] is not ExecuteElement."));
+                                this.refreshStatus(io_Context ,v_Result.getStatus());
+                                return v_Result;
+                            }
+                            // 超时时长
+                            MTExecuteResult v_MTExecuteResult = new MTExecuteResult(x ,v_Item ,(ExecuteElement) v_CallObject ,v_Item.gatTimeout(io_Context));
+                            v_MTItemResults.add(v_MTExecuteResult);
+                            if ( !this.oneByOne && v_MTExecuteResult.getTimeout() < Long.MAX_VALUE )
+                            {
+                                v_IsOrderBy = true;
+                            }
+                            
+                            // 生成并发项的独立上下文
+                            Map<String ,Object> v_MTItemContext = new HashMap<String ,Object>();
+                            v_MTItemContext.putAll(io_Context);
+                            if ( !Help.isNull(v_MTExecuteResult.getMtItem().getContext()) )
+                            {
+                                String v_Context = ValueHelp.replaceByContext(v_MTExecuteResult.getMtItem().getContext() ,v_MTExecuteResult.getMtItem().getContextPlaceholders() ,v_MTItemContext);
+                                Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,null);
+                                v_MTItemContext.putAll(v_ContextMap);
+                                v_ContextMap.clear();
+                                v_ContextMap = null;
+                            }
+                            v_MTExecuteResult.setContext(v_MTItemContext);
                         }
                     }
                 }
+                
+                v_Clusters.clear();
+                v_Clusters = null;
             }
             
             if ( !Help.isNull(v_MTItemResults) )
@@ -395,24 +634,6 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 if ( v_IsOrderBy )
                 {
                     Help.toSort(v_MTItemResults ,"timeout NumAsc");
-                }
-                
-                // 生成并发项的独立上下文
-                for (MTExecuteResult v_MTItemResult : v_MTItemResults)
-                {
-                    Map<String ,Object> v_MTItemContext = new HashMap<String ,Object>();
-                    v_MTItemContext.putAll(io_Context);
-                    
-                    if ( !Help.isNull(v_MTItemResult.getMtItem().getContext()) )
-                    {
-                        String v_Context = ValueHelp.replaceByContext(v_MTItemResult.getMtItem().getContext() ,v_MTItemResult.getMtItem().getContextPlaceholders() ,v_MTItemContext);
-                        Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,null);
-                        v_MTItemContext.putAll(v_ContextMap);
-                        v_ContextMap.clear();
-                        v_ContextMap = null;
-                    }
-                    
-                    v_MTItemResult.setContext(v_MTItemContext);
                 }
                 
                 // 计算并发项间的间隔等待时长
@@ -450,7 +671,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
                     }
                     
                     TimeoutConfig<ExecuteResult> v_Future = this.executeAsync(v_Timeout ,v_MTItemResult.getContext() ,v_MTItemResult.getCallObject());
-                    v_Future.executeAsync();
+                    v_MTItemResult.setAlready(      v_Future.executeAsync());
                     v_MTItemResult.setTimeoutConfig(v_Future);
                     
                     if ( this.oneByOne )
@@ -487,17 +708,34 @@ public class MTConfig extends ExecuteElement implements Cloneable
                     for (MTExecuteResult v_MTItemResult : v_MTItemResults)
                     {
                         ExecuteResult v_ExecResult = v_MTItemResult.getTimeoutConfig().get();
-                        v_MTItemResult.setResult(v_ExecResult);
-                        if ( !v_ExecResult.isSuccess() )
+                        if ( v_ExecResult != null )
                         {
-                            if ( v_Exception == null )
+                            v_MTItemResult.setResult(v_ExecResult);
+                            if ( !v_ExecResult.isSuccess() )
                             {
-                                v_Exception = v_ExecResult.getException();
+                                if ( v_Exception == null )
+                                {
+                                    v_Exception = v_ExecResult.getException();
+                                }
                             }
+                            else
+                            {
+                                this.refreshReturn(io_Context ,v_MTItemResult.getContext() ,v_MTItemResult.getMtItem().getReturnID());
+                            }
+                        }
+                        else if ( v_MTItemResult.isAlready() )
+                        {
+                            // 内部异常
+                            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + v_MTItemResult.getMtItem().gatCallFlowXID() + "] 并发结果为空，可尝试增加并发间隔waitTime解决" ,v_MTItemResult.getTimeoutConfig().getException()));
+                            this.refreshStatus(io_Context ,v_Result.getStatus());
+                            return v_Result;
                         }
                         else
                         {
-                            this.refreshReturn(io_Context ,v_MTItemResult.getContext() ,v_MTItemResult.getMtItem().getReturnID());
+                            // 未知异常
+                            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID[" + v_MTItemResult.getMtItem().gatCallFlowXID() + "] 并发结果为空，未准备成功" ,v_MTItemResult.getTimeoutConfig().getException()));
+                            this.refreshStatus(io_Context ,v_Result.getStatus());
+                            return v_Result;
                         }
                     }
                 }
@@ -545,7 +783,8 @@ public class MTConfig extends ExecuteElement implements Cloneable
         {
             try 
             {
-                return CallFlow.execute(i_CallObject ,io_Context);
+                ExecuteResult v_ExecuteResult = CallFlow.execute(i_CallObject ,io_Context);
+                return v_ExecuteResult;
             } 
             catch (Exception exce) 
             {
@@ -638,6 +877,22 @@ public class MTConfig extends ExecuteElement implements Cloneable
             if ( !Help.isNull(this.waitTime) && !"0".equals(this.waitTime) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("waitTime" ,this.waitTime));
+            }
+            if ( !Help.isNull(this.gatClusterXID()) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("clusterXID" ,this.getClusterXID()));
+            }
+            if ( !Help.isNull(this.clusterElementID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("clusterElementID" ,this.clusterElementID));
+            }
+            if ( !Help.isNull(this.clusterIndexID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("clusterIndexID" ,this.clusterIndexID));
+            }
+            if ( !Help.isNull(this.clusterIndexNo) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("clusterIndexNo" ,this.clusterIndexNo));
             }
             
             if ( !Help.isNull(this.mtitems) )
@@ -810,8 +1065,12 @@ public class MTConfig extends ExecuteElement implements Cloneable
             }
         }
         
-        v_Clone.oneByOne = this.oneByOne;
-        v_Clone.waitTime = this.waitTime;
+        v_Clone.clusterXID       = this.clusterXID;
+        v_Clone.clusterElementID = this.clusterElementID;
+        v_Clone.clusterIndexID   = this.clusterIndexID;
+        v_Clone.clusterIndexNo   = this.clusterIndexNo;
+        v_Clone.oneByOne         = this.oneByOne;
+        v_Clone.waitTime         = this.waitTime;
         
         return v_Clone;
     }
@@ -851,8 +1110,12 @@ public class MTConfig extends ExecuteElement implements Cloneable
             }
         }
         
-        v_Clone.oneByOne = this.oneByOne;
-        v_Clone.waitTime = this.waitTime;
+        v_Clone.clusterXID       = this.clusterXID;
+        v_Clone.clusterElementID = this.clusterElementID;
+        v_Clone.clusterIndexID   = this.clusterIndexID;
+        v_Clone.clusterIndexNo   = this.clusterIndexNo;
+        v_Clone.oneByOne         = this.oneByOne;
+        v_Clone.waitTime         = this.waitTime;
     }
     
     

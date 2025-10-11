@@ -51,7 +51,7 @@ import org.hy.common.xml.log.Logger;
 public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
     
-    private static final Logger     $Logger = new Logger(ExecuteElement.class);
+    private static final Logger     $Logger = new Logger(ExecuteElement.class ,true);
     
     public  static final TreeIDHelp $TreeID = new TreeIDHelp("-" ,1 ,1);
     
@@ -1537,7 +1537,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      */
     protected void toXmlExecute(StringBuilder io_Xml ,String i_NewSpace)
     {
-        if ( !Help.isNull(this.delayedTime) && !"false".equalsIgnoreCase(this.delayedTime) )
+        if ( !Help.isNull(this.delayedTime) && !"-1".equalsIgnoreCase(this.delayedTime) )
         {
             io_Xml.append(i_NewSpace).append(IToXml.toValue("execute" ,this.delayedTime));
         }

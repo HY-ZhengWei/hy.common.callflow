@@ -16,6 +16,7 @@ import org.hy.common.callflow.timeout.TimeoutConfig;
  * @author      ZhengWei(HY)
  * @createDate  2025-03-21
  * @version     v1.0
+ *              v2.0  2025-10-11  添加：是否已准备执行中already属性
  */
 public class MTExecuteResult
 {
@@ -38,6 +39,9 @@ public class MTExecuteResult
     /** 超时元素 */
     private TimeoutConfig<ExecuteResult> timeoutConfig;
     
+    /** 是否已准备执行中 */
+    private boolean                      already;
+    
     /** 并发项的执行结果 */
     private ExecuteResult                result;
     
@@ -49,6 +53,7 @@ public class MTExecuteResult
         this.mtItem     = i_MTItem;
         this.callObject = i_CallObject;
         this.timeout    = i_Timeout == null ? Long.MAX_VALUE : (i_Timeout <= 0L ? Long.MAX_VALUE : i_Timeout);
+        this.already    = false;
     }
     
     
@@ -146,8 +151,28 @@ public class MTExecuteResult
     {
         this.context = i_Context;
     }
+    
+    
+    /**
+     * 获取：是否已准备执行中
+     */
+    public boolean isAlready()
+    {
+        return already;
+    }
 
     
+    /**
+     * 设置：是否已准备执行中
+     * 
+     * @param i_Already 是否已准备执行中
+     */
+    public void setAlready(boolean i_Already)
+    {
+        this.already = i_Already;
+    }
+
+
     /**
      * 获取：并发项的执行结果
      */

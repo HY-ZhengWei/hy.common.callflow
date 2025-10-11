@@ -38,11 +38,12 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-15
  * @version     v1.0
  *              v1.1  2025-08-20  修正：静态检查出异常时，未能在上下文记录异常。发现人：李浩
+ *              v2.0  2025-10-11  修正：高并发同一编排时，并发计算树ID及寻址相关的信息时的并发异常
  */
 public class CallFlow
 {
     
-    private static final Logger $Logger                  = new Logger(CallFlow.class);
+    private static final Logger $Logger                  = new Logger(CallFlow.class ,true);
     
     /** 编排XML配置文件的保存路径 */
     public static        String $SavePath                = Help.getSysTempPath();
@@ -611,6 +612,7 @@ public class CallFlow
      * @createDate  2025-02-15
      * @version     v1.0
      *              v1.1  2025-08-20  修正：静态检查出异常时，未能在上下文记录异常。发现人：李浩
+     *              v2.0  2025-10-11  修正：高并发同一编排时，并发计算树ID及寻址相关的信息时的并发异常
      *
      * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param io_Context    上下文类型的变量信息
@@ -627,36 +629,40 @@ public class CallFlow
         {
             return v_LastResult.setException(new NullPointerException("ExecObject is null."));
         }
-        if ( ((ExecuteElement) i_ExecObject).isKeyChange() )
-        {
-            Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(i_ExecObject);
-            if ( !v_CheckRet.get() )
-            {
-                v_LastResult.setException(new RuntimeException(v_CheckRet.getParamStr()));
-                $Logger.error("静态检测未通过：" + v_CheckRet.getParamStr());
-                return CallFlow.putError(io_Context ,v_LastResult);
-            }
-        }
         
         Map<String ,Object> v_Context = io_Context == null ? new HashMap<String ,Object>() : io_Context;
-        CallFlow.clearError(v_Context);
-        
-        // 外界未定义编排执行实例ID时，自动生成
-        if ( v_Context.get($WorkID) == null )
+        synchronized ( v_LastResult )
         {
-            v_Context.put($WorkID ,"CFW" + StringHelp.getUUID9n());
-        }
-        
-        // 嵌套层次一般不用外界定义
-        // 在主编排中初始化为0，在每进一级嵌套，此值累加
-        if ( v_Context.get($NestingLevel) == null )
-        {
-            v_Context.put($NestingLevel ,0);
-        }
-        
-        if ( Help.isNull(i_ExecObject.getTreeIDs()) )
-        {
-            CallFlow.getHelpExecute().calcTree(i_ExecObject);
+            if ( ((ExecuteElement) i_ExecObject).isKeyChange() )
+            {
+                Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(i_ExecObject);
+                if ( !v_CheckRet.get() )
+                {
+                    v_LastResult.setException(new RuntimeException(v_CheckRet.getParamStr()));
+                    $Logger.error("静态检测未通过：" + v_CheckRet.getParamStr());
+                    return CallFlow.putError(io_Context ,v_LastResult);
+                }
+            }
+            
+            CallFlow.clearError(v_Context);
+            
+            // 外界未定义编排执行实例ID时，自动生成
+            if ( v_Context.get($WorkID) == null )
+            {
+                v_Context.put($WorkID ,"CFW" + StringHelp.getUUID9n());
+            }
+            
+            // 嵌套层次一般不用外界定义
+            // 在主编排中初始化为0，在每进一级嵌套，此值累加
+            if ( v_Context.get($NestingLevel) == null )
+            {
+                v_Context.put($NestingLevel ,0);
+            }
+            
+            if ( Help.isNull(i_ExecObject.getTreeIDs()) )
+            {
+                CallFlow.getHelpExecute().calcTree(i_ExecObject);
+            }
         }
         
         // 上下文中压入事件监听器

@@ -21,14 +21,14 @@ public class TimeoutConfig<R>
     
     /** 等待时长（单位：毫秒） */
     private long               timeout;
-    
-    /** 执行线程 */
+                                        
+    /** 执行线程 */                     
     private Thread             executeThread;
-    
+                                        
     /** 是否为执行方法内部的异常 */
     private Exception          executeException;
-    
-    /** 执行结果 */
+                                        
+    /** 执行结果 */                     
     private R                  executeResult;
     
     /** 未来要执行的方法 */
