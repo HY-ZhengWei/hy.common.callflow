@@ -12,6 +12,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.junit.cflow037Upgrade.program.Program;
+import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
@@ -106,6 +107,58 @@ public class JU_CFlow037 extends AppInitConfig
         
         // 导出
         System.out.println(CallFlow.getHelpExport().export(v_For));
+    }
+    
+    
+    
+    /**
+     * 集群批量更新操作系统（集群并发）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-10
+     * @version     v1.0
+     *
+     */
+    @Test
+    public void test_CFlow037UpgradeCluster()
+    {
+        // 获取编排中的首个元素
+        MTConfig            v_MT      = (MTConfig) XJava.getObject("XMT_CF037_UpgradeCluster_服务列表");
+        Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_MT);
+        if ( !v_CheckRet.get() )
+        {
+            System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
+            return;
+        }
+        
+        ExecuteResult v_Result = CallFlow.execute(v_MT ,v_Context);
+        if ( v_Result.isSuccess() )
+        {
+            System.out.println("Success");
+        }
+        else
+        {
+            System.out.println("Error XID = " + v_Result.getExecuteXID());
+            System.out.println("Error Msg = " + v_Result.getException().getMessage());
+            if ( v_Result.getException() instanceof TimeoutException )
+            {
+                System.out.println("is TimeoutException");
+            }
+            v_Result.getException().printStackTrace();
+        }
+        
+        System.out.println("返回结果：" + v_Result.getResult());
+        
+        // 打印执行路径
+        ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
+        System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
+        System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
+        
+        // 导出
+        System.out.println(CallFlow.getHelpExport().export(v_MT));
     }
     
     

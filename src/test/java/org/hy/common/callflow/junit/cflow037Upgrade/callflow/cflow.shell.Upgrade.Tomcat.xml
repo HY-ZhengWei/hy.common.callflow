@@ -140,7 +140,6 @@
                     <comment>For循环</comment>
                 </succeed>
             </route>
-            <execute>0</execute>                           <!-- 立即执行 -->
         </xfor>
         
     </xconfig>
