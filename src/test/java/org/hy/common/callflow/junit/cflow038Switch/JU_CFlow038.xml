@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xreturn id="XReturn_CF038_Finish">
+            <comment>分支路由01</comment>
+            <retValue>
+            {
+                "retInt": 1,
+                "retText": "分支路由01"
+            }
+            </retValue>
+            <route>
+                <succeed>
+                    <next>:XFox_CF038_遍历数据</next>
+                </succeed>
+            </route>
+        </xreturn>
+        
+    
+        <xreturn id="XReturn_CF038_01">
+            <comment>分支路由01</comment>
+            <retValue>
+            {
+                "retInt": 1,
+                "retText": "分支路由01"
+            }
+            </retValue>
+            <route>
+                <succeed>
+                    <next>:XFox_CF038_遍历数据</next>
+                </succeed>
+            </route>
+        </xreturn>
+        
+        
+        <xreturn id="XReturn_CF038_02">
+            <comment>分支路由02</comment>
+            <retValue>
+            {
+                "retInt": 2,
+                "retText": "分支路由02"
+            }
+            </retValue>
+            <route>
+                <succeed>
+                    <next>:XFox_CF038_遍历数据</next>
+                </succeed>
+            </route>
+        </xreturn>
+        
+        
+        <xreturn id="XReturn_CF038_Default">
+            <comment>分支路由03</comment>
+            <retValue>
+            {
+                "retInt": 3,
+                "retText": "分支路由03（默认真时的路由）"
+            }
+            </retValue>
+            <route>
+                <succeed>
+                    <next>:XFox_CF038_遍历数据</next>
+                </succeed>
+            </route>
+        </xreturn>
+        
+        
+        <xreturn id="XReturn_CF038_Else">
+            <comment>假值路由</comment>
+            <retValue>
+            {
+                "retInt": -1,
+                "retText": "假值路由"
+            }
+            </retValue>
+            <route>
+                <succeed>
+                    <next>:XFox_CF038_遍历数据</next>
+                </succeed>
+            </route>
+        </xreturn>
+        
+        
+        <xcondition id="XCondition_CF038_Switch">
+            <comment>条件逻辑的分支逻辑</comment>
+            <logical>SWITCH</logical>                       <!-- 分支逻辑 -->
+            <conditionItem>                                 <!-- 分支逻辑01 -->
+                <valueClass>java.lang.String</valueClass>   <!-- 定义变量类型 -->
+                <valueXIDA>:ForElement.CValue</valueXIDA>   <!-- 变量 -->
+                <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                <valueXIDB>A</valueXIDB>                    <!-- 变量 -->
+            </conditionItem>
+            <conditionItem>                                 <!-- 分支逻辑02 -->
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:ForElement.CValue</valueXIDA>
+                <valueXIDB>B</valueXIDB>
+            </conditionItem>
+            <conditionItem>                                 <!-- 分支逻辑03 -->
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:ForElement.CValue</valueXIDA>
+                <valueXIDB>C</valueXIDB>
+            </conditionItem>
+            <conditionItem>                                 <!-- 分支逻辑04 -->
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:ForElement.CValue</valueXIDA>
+                <valueXIDB>D</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的分支路由01 -->
+                    <next ref="XReturn_CF038_01" />
+                    <comment>分支路由01</comment>
+                </if>
+                <if>                                        <!-- 真时的分支路由02 -->
+                    <next ref="XReturn_CF038_02" />
+                    <comment>分支路由02</comment>
+                </if>
+                <if>                                        <!-- 真时的分支路由03（默认真时的路由） -->
+                    <next ref="XReturn_CF038_Default" />
+                    <comment>分支路由03</comment>
+                </if>
+                <else>                                      <!-- 假时的路由 -->
+                    <next ref="XReturn_CF038_Else" />
+                    <comment>假时</comment>
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xfor id="XFox_CF038_遍历数据">
+            <comment>循环：List集合</comment>
+            <end>:DatasList</end>                           <!-- 集合对象的变量名称 -->
+            <indexNo>ForIndex</indexNo>                     <!-- 序号变量名称（可选的），下标从1开始 -->
+            <elementID>ForElement</elementID>               <!-- 每次循环元素的变量名称（可选的） -->
+            <context>
+                {
+                    "DatasList": [
+                        { "CValue": "A" },
+                        { "CValue": "B" },
+                        { "CValue": "C" },
+                        { "CValue": "D" },
+                        { "CValue": "E" }
+                    ]
+                }
+            </context>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCondition_CF038_Switch" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+        </xfor>
+        
+    </xconfig>
+    
+</config>
