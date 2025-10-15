@@ -86,7 +86,8 @@ public class ExecuteElementCheckHelp
                 {
                     if ( v_Item.getValue() <= 0 )
                     {
-                        v_Ret.set(false).setParamStr("CFlowCheck：For.xid[" + v_Item.getKey() + "] refXID count is 0.");
+                        // 没有被其它元素引用
+                        v_Ret.set(false).setParamStr("CFlowCheck：For.xid[" + v_Item.getKey() + "] refXID count is 0 , Not referenced by other Elements.");
                         break;
                     }
                 }

@@ -31,6 +31,18 @@ import org.hy.common.xml.log.Logger;
 /**
  * 并发元素：并发配置信息
  * 
+ * 并发元素支持两种类型：1多路并发、2集群并发。
+ * 
+ *   1.多路并发，通过配置多个并发项mtitems来实现。
+ *             它是将一路数据流按预先定义的裂变路径裂变为多路数据流，
+ *             它并发数量的上限是固定的（即mtitems定义数），
+ *             每个并发项上得到的数据流是一样的（特征数据除外）。
+ *           
+ *   2.集群并发，通过配置集群clusterXID和mtitems来实现。
+ *             它是将一路数据流按动态的集群配置和预先定义的裂变路径乘积合的裂变为多路数据流，
+ *             它并发数量的上限是动态的（即集群数与mtitems定义数的乘积），
+ *             每个集群项均按预先定义的裂变路径裂变，每个并项上得到的数据流是不完全一样的，差异在集群数据上。
+ * 
  * @author      ZhengWei(HY)
  * @createDate  2025-03-20
  * @version     v1.0
@@ -576,7 +588,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
                         
                         if ( Help.isNull(v_Item.getValueXIDA()) 
                           || v_Item.getComparer() == null
-                          || v_Item.allow(io_Context) )
+                          || v_Item.allow(io_Context) >= 1 )
                         {
                             if ( Help.isNull(v_Item.gatCallFlowXID()) )
                             {

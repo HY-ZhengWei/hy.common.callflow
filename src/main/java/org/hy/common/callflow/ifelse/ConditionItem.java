@@ -132,10 +132,19 @@ public class ConditionItem implements IfElse ,XJavaID
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
-     * @return           返回判定结果或抛出异常
+     * @return           出错异常时抛出异常
+     *                   返回判定结果 <= -1 时，表示假。同时在Switch逻辑下，
+     *                     -1值表示走【假】值分支的第一个分支
+     *                     -2值表示走【假】值分支的第二个分支
+     *                     -n值表示走【假】值分支的第N个分支
+     *                   返回判定结果 >=  1 时，表示真。同时在Switch逻辑下，
+     *                      1值表示走【真】值分支的第一个分支
+     *                      2值表示走【真】值分支的第二个分支
+     *                      n值表示走【真】值分支的第N个分支
+     *                   在Switch逻辑下，返回结果n值大于分支数量时，均走最后一个分支。
      * @throws Exception 
      */
-    public boolean allow(Map<String ,Object> i_Context) throws Exception
+    public int allow(Map<String ,Object> i_Context) throws Exception
     {
         if ( this.comparer == null )
         {
@@ -156,15 +165,15 @@ public class ConditionItem implements IfElse ,XJavaID
                 if ( v_ValueA == null )
                 {
                     // 等于NULL
-                    return true;
+                    return 1;
                 }
                 else if ( Boolean.class.equals(v_ValueA.getClass()) )
                 {
-                    return (Boolean) v_ValueA;
+                    return ((Boolean) v_ValueA) ? 1 : -1;
                 }
                 else
                 {
-                    return false;
+                    return -1;
                 }
             }
             else if ( Comparer.EqualNot.equals(this.comparer) )
@@ -172,20 +181,20 @@ public class ConditionItem implements IfElse ,XJavaID
                 if ( v_ValueA == null )
                 {
                     // 不等于NULL
-                    return false;
+                    return -1;
                 }
                 else if ( Boolean.class.equals(v_ValueA.getClass()) )
                 {
-                    return !(Boolean) v_ValueA;
+                    return (!(Boolean) v_ValueA) ? 1 : -1;
                 }
                 else
                 {
-                    return true;
+                    return 1;
                 }
             }
             else
             {
-                return v_ValueA != null;
+                return v_ValueA != null ? 1 : -1;
             }
         }
         else
@@ -193,7 +202,7 @@ public class ConditionItem implements IfElse ,XJavaID
             Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
             Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.gatValueClass() ,null ,i_Context);
             
-            return this.comparer.compare(v_ValueA ,v_ValueB);
+            return this.comparer.compare(v_ValueA ,v_ValueB) ? 1 : -1;
         }
     }
     
@@ -209,9 +218,9 @@ public class ConditionItem implements IfElse ,XJavaID
      * @param i_Context  上下文类型的变量信息
      * @return           返回判定结果或抛出异常
      */
-    public boolean reject(Map<String ,Object> i_Context) throws Exception
+    public int reject(Map<String ,Object> i_Context) throws Exception
     {
-        return !allow(i_Context);
+        return allow(i_Context) * -1;
     }
     
     

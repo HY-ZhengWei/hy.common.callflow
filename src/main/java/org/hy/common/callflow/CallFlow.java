@@ -1,5 +1,6 @@
 package org.hy.common.callflow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.clone.CloneableHelp;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteElementCheckHelp;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -39,6 +41,7 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  *              v1.1  2025-08-20  修正：静态检查出异常时，未能在上下文记录异常。发现人：李浩
  *              v2.0  2025-10-11  修正：高并发同一编排时，并发计算树ID及寻址相关的信息时的并发异常
+ *              v3.0  2025-10-15  添加：Switch分支
  */
 public class CallFlow
 {
@@ -796,9 +799,34 @@ public class CallFlow
             // 条件逻辑元素
             if ( i_ExecObject instanceof ConditionConfig )
             {
-                if ( (Boolean) v_Result.getResult() )
+                int v_ConditionRet = (int) v_Result.getResult();
+                if ( v_ConditionRet >= 1 )
                 {
-                    v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                    ConditionConfig v_Condition = (ConditionConfig) i_ExecObject;
+                    // 2025-10-15 Add Switch分支
+                    if ( Logical.Switch.equals(v_Condition.getLogical()) )
+                    {
+                        List<RouteItem> v_SwitchAll   = i_ExecObject.getRoute().getSucceeds();
+                        List<RouteItem> v_SwitchRoute = new ArrayList<RouteItem>();
+                        
+                        if ( Help.isNull(v_SwitchAll) )
+                        {
+                            // Nothing.
+                        }
+                        else if ( v_ConditionRet > v_SwitchAll.size() )
+                        {
+                            v_SwitchRoute.add(v_SwitchAll.get(v_SwitchAll.size() - 1));
+                        }
+                        else
+                        {
+                            v_SwitchRoute.add(v_SwitchAll.get(v_ConditionRet - 1));
+                        }
+                        v_Nexts = v_SwitchRoute;
+                    }
+                    else
+                    {
+                        v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                    }
                 }
                 else
                 {

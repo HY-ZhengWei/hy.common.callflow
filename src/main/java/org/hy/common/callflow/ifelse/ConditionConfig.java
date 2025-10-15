@@ -32,12 +32,24 @@ import org.hy.common.callflow.file.IToXml;
  *    原因2是在共享条件逻辑时，统计方面也无法独立区分出来。
  *    
  *    如果要共享，建议采用子编排的方式共享。
+ *    
+ *    
+ * 条件逻辑有两种类型：1与或逻辑、2分支逻辑
+ * 
+ *    1. 与或逻辑。与逻辑时，所有条件项均为真时，才走真值路由。当有多个真值路由时，依次遍历挨个执行。
+ *              或逻辑时，任意条件项为真时，就走真值路由。当有多个假值路由时，依次遍历挨个执行。
+ *              
+ *    2. 分支逻辑。条件逻辑支持多层次的逻辑判定，分支逻辑仅对顶层条件项生效。
+ *              依次判定顶层的每个条件项，当第N个项层条件项为真时，走真值路由的第N个分支，其它条件项不再判定。
+ *              即，多个真值路由时仅有一个路由被执行。
+ *              当所有条件项均为假时，走假值路由，当有多个假值路由时，依次遍历挨个执行。
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-12
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v3.0  2025-09-26  迁移：静态检查
+ *              v4.0  2025-10-15  添加：Switch分支
  */
 public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
 {
@@ -98,6 +110,15 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         {
             io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "] has no condition items.");
             return false;
+        }
+        // Switch分支条件时，必须有真值路由
+        if ( Logical.Switch.equals(this.getLogical()) )
+        {
+            if ( Help.isNull(this.getRoute().getSucceeds()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "] True route must be present during SWITCH.");
+                return false;
+            }
         }
         
         return this.check_Condition(this ,io_Result ,this);
@@ -233,7 +254,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                 return v_Result;
             }
             
-            boolean v_ExceRet = this.allow(io_Context);
+            int v_ExceRet = this.allow(io_Context);
             
             if ( !Help.isNull(this.returnID) )
             {
@@ -260,11 +281,21 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
      * @author      ZhengWei(HY)
      * @createDate  2025-02-12
      * @version     v1.0
+     *              v2.0  2025-10-15  添加：Switch分支
      *
      * @param i_Context  上下文类型的变量信息
-     * @return           返回判定结果或抛出异常
+     * @return           出错异常时抛出异常
+     *                   返回判定结果 <= -1 时，表示假。同时在Switch逻辑下，
+     *                     -1值表示走【假】值分支的第一个分支
+     *                     -2值表示走【假】值分支的第二个分支
+     *                     -n值表示走【假】值分支的第N个分支
+     *                   返回判定结果 >=  1 时，表示真。同时在Switch逻辑下，
+     *                      1值表示走【真】值分支的第一个分支
+     *                      2值表示走【真】值分支的第二个分支
+     *                      n值表示走【真】值分支的第N个分支
+     *                   在Switch逻辑下，返回结果n值大于分支数量时，均走最后一个分支。
      */
-    public boolean allow(Map<String ,Object> i_Context) throws Exception
+    public int allow(Map<String ,Object> i_Context) throws Exception
     {
         if ( this.logical == null )
         {
@@ -286,15 +317,15 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                 }
                 else
                 {
-                    boolean v_ChildRet = v_Item.allow(i_Context);
-                    if ( !v_ChildRet )
+                    int v_ChildRet = v_Item.allow(i_Context);
+                    if ( v_ChildRet <= -1 )
                     {
-                        return false;
+                        return -1;
                     }
                 }
             }
             
-            return true;
+            return 1;
         }
         // 或
         else if ( Logical.Or.equals(this.logical) )
@@ -307,18 +338,41 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                 }
                 else
                 {
-                    boolean v_ChildRet = v_Item.allow(i_Context);
-                    if ( v_ChildRet )
+                    int v_ChildRet = v_Item.allow(i_Context);
+                    if ( v_ChildRet >= 1 )
                     {
-                        return true;
+                        return 1;
                     }
                 }
             }
             
-            return false;
+            return -1;
+        }
+        // Switch分支
+        else if ( Logical.Switch.equals(this.logical) )
+        {
+            int v_IndexNo = 0;
+            for (IfElse v_Item : this.items)
+            {
+                v_IndexNo++;
+                if ( v_Item == null )
+                {
+                    throw new NullPointerException("Condition list element [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
+                }
+                else
+                {
+                    int v_ChildRet = v_Item.allow(i_Context);
+                    if ( v_ChildRet >= 1 )
+                    {
+                        return v_IndexNo;
+                    }
+                }
+            }
+            
+            return -1;
         }
         
-        return false;
+        return -1;
     }
     
     
@@ -328,13 +382,23 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
      * @author      ZhengWei(HY)
      * @createDate  2025-02-12
      * @version     v1.0
+     *              v2.0  2025-10-15  添加：Switch分支
      *
      * @param i_Context  上下文类型的变量信息
-     * @return           返回判定结果或抛出异常
+     * @return           出错异常时抛出异常
+     *                   返回判定结果 <= -1 时，表示假。同时在Switch逻辑下，
+     *                     -1值表示走【假】值分支的第一个分支
+     *                     -2值表示走【假】值分支的第二个分支
+     *                     -n值表示走【假】值分支的第N个分支
+     *                   返回判定结果 >=  1 时，表示真。同时在Switch逻辑下，
+     *                      1值表示走【真】值分支的第一个分支
+     *                      2值表示走【真】值分支的第二个分支
+     *                      n值表示走【真】值分支的第N个分支
+     *                   在Switch逻辑下，返回结果n值大于分支数量时，均走最后一个分支。
      */
-    public boolean reject(Map<String ,Object> i_Context) throws Exception
+    public int reject(Map<String ,Object> i_Context) throws Exception
     {
-        return !allow(i_Context);
+        return allow(i_Context) * -1;
     }
     
     

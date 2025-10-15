@@ -10,13 +10,16 @@ package org.hy.common.callflow.enums;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-12
  * @version     v1.0
+ *              v2.0  2025-10-15  添加：Switch分支
  */
 public enum Logical
 {
     
-    And("AND" ,"与"),
+    And   ("AND"    ,"与"),
     
-    Or ("OR"  ,"或"),
+    Or    ("OR"     ,"或"),
+    
+    Switch("SWITCH" ,"分支"),         // 在多层级的条件逻辑下，仅支持顶层
     
     ;
     

@@ -15,6 +15,7 @@ import org.hy.common.callflow.file.IToXml;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-12
  * @version     v1.0
+ *              v2.0  2025-10-15  添加：Switch分支
  */
 public interface IfElse extends IToXml ,CloneableCallFlow
 {
@@ -27,9 +28,18 @@ public interface IfElse extends IToXml ,CloneableCallFlow
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
-     * @return           返回判定结果或抛出异常
+     * @return           出错异常时抛出异常
+     *                   返回判定结果 <= -1 时，表示假。同时在Switch逻辑下，
+     *                     -1值表示走【假】值分支的第一个分支
+     *                     -2值表示走【假】值分支的第二个分支
+     *                     -n值表示走【假】值分支的第N个分支
+     *                   返回判定结果 >=  1 时，表示真。同时在Switch逻辑下，
+     *                      1值表示走【真】值分支的第一个分支
+     *                      2值表示走【真】值分支的第二个分支
+     *                      n值表示走【真】值分支的第N个分支
+     *                   在Switch逻辑下，返回结果n值大于分支数量时，均走最后一个分支。
      */
-    public boolean allow(Map<String ,Object> i_Context) throws Exception;
+    public int allow(Map<String ,Object> i_Context) throws Exception;
     
     
     
@@ -41,9 +51,18 @@ public interface IfElse extends IToXml ,CloneableCallFlow
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
-     * @return           返回判定结果或抛出异常
+     * @return           出错异常时抛出异常
+     *                   返回判定结果 <= -1 时，表示假。同时在Switch逻辑下，
+     *                     -1值表示走【假】值分支的第一个分支
+     *                     -2值表示走【假】值分支的第二个分支
+     *                     -n值表示走【假】值分支的第N个分支
+     *                   返回判定结果 >=  1 时，表示真。同时在Switch逻辑下，
+     *                      1值表示走【真】值分支的第一个分支
+     *                      2值表示走【真】值分支的第二个分支
+     *                      n值表示走【真】值分支的第N个分支
+     *                   在Switch逻辑下，返回结果n值大于分支数量时，均走最后一个分支。
      */
-    public boolean reject(Map<String ,Object> i_Context) throws Exception;
+    public int reject(Map<String ,Object> i_Context) throws Exception;
     
     
     
