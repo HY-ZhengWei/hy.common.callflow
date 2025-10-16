@@ -31,7 +31,7 @@
     
     
     
-    <!-- CFlow编排引擎配置：分支逻辑 -->
+    <!-- CFlow编排引擎配置：多逻辑组合 -->
     <xconfig>
     
         <xreturn id="XReturn_CF038_01">
@@ -98,47 +98,14 @@
         </xreturn>
         
         
-        <xcondition id="XCondition_CF038_Switch">
-            <comment>条件逻辑的分支逻辑</comment>
-            <logical>SWITCH</logical>                       <!-- 分支逻辑 -->
-            <conditionItem>                                 <!-- 分支逻辑01 -->
-                <valueClass>java.lang.String</valueClass>   <!-- 定义变量类型 -->
-                <valueXIDA>:ForElement.CValue</valueXIDA>   <!-- 变量 -->
-                <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
-                <valueXIDB>A</valueXIDB>                    <!-- 变量 -->
-            </conditionItem>
-            <conditionItem>                                 <!-- 分支逻辑02 -->
-                <valueClass>java.lang.String</valueClass>
-                <valueXIDA>:ForElement.CValue</valueXIDA>
-                <valueXIDB>B</valueXIDB>
-            </conditionItem>
-            <condition>                                     <!-- 分支逻辑03，多个子条件项的判定 -->
-                <logical>AND</logical>
-                <conditionItem>                                 
-                    <valueClass>java.lang.String</valueClass>
-                    <valueXIDA>:ForElement.CValue</valueXIDA>
-                    <valueXIDB>C</valueXIDB>
-                </conditionItem>
-                <conditionItem>                                 
-                    <valueClass>java.lang.String</valueClass>
-                    <valueXIDA>:ForElement.State</valueXIDA>
-                    <valueXIDB>通电</valueXIDB>
-                </conditionItem>
-            </condition>
+        <xcondition id="XCondition_CF038_04">
+            <comment>条件逻辑的04</comment>
             <conditionItem>                                 <!-- 分支逻辑04 -->
                 <valueClass>java.lang.String</valueClass>
                 <valueXIDA>:ForElement.CValue</valueXIDA>
                 <valueXIDB>D</valueXIDB>
             </conditionItem>
             <route>
-                <if>                                        <!-- 真时的分支路由01 -->
-                    <next ref="XReturn_CF038_01" />
-                    <comment>分支路由01</comment>
-                </if>
-                <if>                                        <!-- 真时的分支路由02 -->
-                    <next ref="XReturn_CF038_02" />
-                    <comment>分支路由02</comment>
-                </if>
                 <if>                                        <!-- 真时的分支路由03（默认真时的路由） -->
                     <next ref="XReturn_CF038_Default" />
                     <comment>分支路由03</comment>
@@ -146,6 +113,70 @@
                 <else>                                      <!-- 假时的路由 -->
                     <next ref="XReturn_CF038_Else" />
                     <comment>假时</comment>
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xcondition id="XCondition_CF038_03">
+            <comment>条件逻辑的03</comment>
+            <conditionItem>                                 <!-- 分支逻辑03 -->
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:ForElement.CValue</valueXIDA>
+                <valueXIDB>C</valueXIDB>
+            </conditionItem>
+            <conditionItem>                                 
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:ForElement.State</valueXIDA>
+                <valueXIDB>通电</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的分支路由03 -->
+                    <next ref="XReturn_CF038_Default" />
+                    <comment>分支路由03</comment>
+                </if>
+                <else>                                      <!-- 假时的路由，向后击鼓传花 -->
+                    <next ref="XCondition_CF038_04" />
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xcondition id="XCondition_CF038_02">
+            <comment>条件逻辑的02</comment>
+            <conditionItem>                                 <!-- 分支逻辑02 -->
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:ForElement.CValue</valueXIDA>
+                <valueXIDB>B</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的分支路由02 -->
+                    <next ref="XReturn_CF038_02" />
+                    <comment>分支路由02</comment>
+                </if>
+                <else>                                      <!-- 假时的路由，向后击鼓传花 -->
+                    <next ref="XCondition_CF038_03" />
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xcondition id="XCondition_CF038_01">
+            <comment>条件逻辑的01</comment>
+            <logical>AND</logical>                          <!-- 分支逻辑 -->
+            <conditionItem>                                 <!-- 分支逻辑01 -->
+                <valueClass>java.lang.String</valueClass>   <!-- 定义变量类型 -->
+                <valueXIDA>:ForElement.CValue</valueXIDA>   <!-- 变量 -->
+                <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                <valueXIDB>A</valueXIDB>                    <!-- 变量 -->
+            </conditionItem>
+            <route>
+                <if>                                        <!-- 真时的分支路由01 -->
+                    <next ref="XReturn_CF038_01" />
+                    <comment>分支路由01</comment>
+                </if>
+                <else>                                      <!-- 假时的路由，向后击鼓传花 -->
+                    <next ref="XCondition_CF038_02" />
                 </else>
             </route>
         </xcondition>
@@ -169,7 +200,7 @@
             </context>
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XCondition_CF038_Switch" />
+                    <next ref="XCondition_CF038_01" />
                     <comment>For循环</comment>
                 </succeed>
             </route>
