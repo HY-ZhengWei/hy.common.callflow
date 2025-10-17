@@ -25,6 +25,8 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-13
  * @version     v1.0
+ *              v2.0  2025-06-05  添加：上下文中支持多层组的占位符。如内层占位符当作外层占位符的参数。如：Factory.users.$get({:School.users.$get(A).ref}).name
+ *              v3.0  2025-10-17  添加：占位符的嵌套获取对象，双冒号格式，如：::typeName.value，:typeName是一个占位符，它的值是另一个占位符。
  */
 public class ValueHelp
 {
@@ -159,6 +161,7 @@ public class ValueHelp
      * @author      ZhengWei(HY)
      * @createDate  2025-02-12
      * @version     v1.0
+     *              v2.0  2025-10-17  添加：占位符的嵌套获取对象，双冒号格式，如：::typeName.value，:typeName是一个占位符，它的值是另一个占位符。
      *
      * @param i_ValueXID    数值、上下文变量、XID标识（支持xxx.yyy.www）
      * @param i_ValueClass  数值时的元类型
@@ -206,10 +209,36 @@ public class ValueHelp
                 v_ValueID = v_ValueID.substring(0 ,v_Index);
             }
             
+            // 双冒号：取到首个占位符的值，它还是一个嵌套的占位符
+            Object v_BothValue = null;
+            if ( v_ValueID.startsWith(DBSQL.$Placeholder) )
+            {
+                v_BothValue = getValue(v_ValueID ,null ,null ,i_Context);
+                if ( v_BothValue != null && v_BothValue instanceof String )
+                {
+                    v_BothValue = getValue(DBSQL.$Placeholder + (String) v_BothValue ,null ,null ,i_Context);
+                    if ( v_BothValue == null )
+                    {
+                        return i_Default;
+                    }
+                }
+                else
+                {
+                    return i_Default;
+                }
+            }
+            
             // 尝试从上下文区取值
             if ( !Help.isNull(i_Context) )
             {
-                v_Value = i_Context.get(v_ValueID);
+                if ( v_BothValue == null )
+                {
+                    v_Value = i_Context.get(v_ValueID);
+                }
+                else
+                {
+                    v_Value = v_BothValue;
+                }
                 if ( v_Value != null )
                 {
                     if ( v_YYYZZZ != null )
@@ -224,7 +253,14 @@ public class ValueHelp
             }
             
             // 尝试从全局区取值
-            v_Value = XJava.getObject(v_ValueID);
+            if ( v_BothValue == null )
+            {
+                v_Value = XJava.getObject(v_ValueID);
+            }
+            else
+            {
+                v_Value = v_BothValue;
+            }
             if ( v_Value != null )
             {
                 if ( v_YYYZZZ != null )

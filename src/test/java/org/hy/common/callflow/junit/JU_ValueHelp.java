@@ -45,7 +45,8 @@ public class JU_ValueHelp
                           "factory": ":Factory.name",
                           "factoryFriend1": ":Factory.users.$get(A).name",
                           "factoryFriend2": ":Factory.users.A.name",
-                          "factorySchool": ":Factory.users.$get({:School.users.$get(A).ref}).name",
+                          "factorySchool1": ":Factory.users.$get({:School.users.$get(A).ref}).name",
+                          "factorySchool2": ":Factory.users.{:School.users.$get(A).ref}.name",
                           "typeX": ":Types.X"
                         }
                         """;

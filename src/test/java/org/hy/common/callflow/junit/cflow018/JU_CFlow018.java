@@ -6,6 +6,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.hy.common.Date;
 import org.hy.common.Return;
+import org.hy.common.app.Param;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
@@ -68,8 +69,8 @@ public class JU_CFlow018 extends JUBase
         MTConfig            v_MT      = (MTConfig) XJava.getObject("XMT_CF018_1");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
-        v_Context.put("typeNameA" ,"A");
-        v_Context.put("typeNameB" ,"B");
+        v_Context.put("typeNameA" ,new Param("typeNameA" ,"A" ,"A对象"));
+        v_Context.put("typeNameB" ,new Param("typeNameB" ,"B" ,"B对象"));
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_MT);

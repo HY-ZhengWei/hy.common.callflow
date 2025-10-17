@@ -3194,8 +3194,8 @@ __编排配置__
             </callParam>
             <callParam>
                 <valueClass>java.lang.String</valueClass>
-                <value>:typeName</value>                    <!-- 相同变量名称，不同值 -->
-            </callParam>
+                <value>::typeName.value</value>             <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
+            </callParam>                                    <!-- 当typeName是一个普通类型（如String），仅用:typeName即可 -->
         </xnode>
         
     
@@ -3221,8 +3221,8 @@ __编排配置__
             </callParam>
             <callParam>
                 <valueClass>java.lang.String</valueClass>
-                <value>:typeName</value>                    <!-- 相同变量名称，不同值 -->
-            </callParam>
+                <value>::typeName.value</value>             <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
+            </callParam>                                    <!-- 当typeName是一个普通类型（如String），仅用:typeName即可 -->
         </xnode>
         
         
@@ -3270,7 +3270,7 @@ __编排配置__
                 <callFlowXID>:XWait_CF018_A_1</callFlowXID>
                 <context>
                 {
-                    "typeName": ":typeNameA"
+                    "typeName": "typeNameA"
                 }
                 </context>
                 <returnID>AReturn</returnID>
@@ -3280,7 +3280,7 @@ __编排配置__
                 <callFlowXID>:XWait_CF018_B_1</callFlowXID>
                 <context>
                 {
-                    "typeName": ":typeNameB"
+                    "typeName": "typeNameB"
                 }
                 </context>
                 <returnID>BReturn</returnID>
