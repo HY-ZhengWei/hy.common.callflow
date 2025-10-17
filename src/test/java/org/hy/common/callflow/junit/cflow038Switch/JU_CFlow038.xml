@@ -102,30 +102,36 @@
             <comment>条件逻辑的分支逻辑</comment>
             <logical>SWITCH</logical>                       <!-- 分支逻辑 -->
             <conditionItem>                                 <!-- 分支逻辑01 -->
+                <comment>项级的分支逻辑01</comment>
                 <valueClass>java.lang.String</valueClass>   <!-- 定义变量类型 -->
                 <valueXIDA>:ForElement.CValue</valueXIDA>   <!-- 变量 -->
                 <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
                 <valueXIDB>A</valueXIDB>                    <!-- 变量 -->
             </conditionItem>
             <conditionItem>                                 <!-- 分支逻辑02 -->
+                <comment>项级的分支逻辑02</comment>
                 <valueClass>java.lang.String</valueClass>
                 <valueXIDA>:ForElement.CValue</valueXIDA>
                 <valueXIDB>B</valueXIDB>
             </conditionItem>
             <condition>                                     <!-- 分支逻辑03，多个子条件项的判定 -->
+                <comment>项级的分支逻辑03</comment>
                 <logical>AND</logical>
-                <conditionItem>                                 
+                <conditionItem>
+                    <comment>二级的逻辑3.1</comment>                       
                     <valueClass>java.lang.String</valueClass>
                     <valueXIDA>:ForElement.CValue</valueXIDA>
                     <valueXIDB>C</valueXIDB>
                 </conditionItem>
-                <conditionItem>                                 
+                <conditionItem>
+                    <comment>二级的逻辑3.2</comment> 
                     <valueClass>java.lang.String</valueClass>
                     <valueXIDA>:ForElement.State</valueXIDA>
                     <valueXIDB>通电</valueXIDB>
                 </conditionItem>
             </condition>
             <conditionItem>                                 <!-- 分支逻辑04 -->
+                <comment>项级的分支逻辑04</comment>
                 <valueClass>java.lang.String</valueClass>
                 <valueXIDA>:ForElement.CValue</valueXIDA>
                 <valueXIDB>D</valueXIDB>

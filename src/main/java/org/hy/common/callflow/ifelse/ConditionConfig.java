@@ -143,17 +143,27 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
      */
     private boolean check_Condition(ConditionConfig i_Condition ,Return<Object> io_Result ,IExecute i_ExecObject)
     {
-        // 条件元素的逻辑不能为空
-        if ( i_Condition.getLogical() == null )
+        if ( i_Condition != this )
         {
-            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "].logical is null.");
-            return false;
-        }
-        // 条件元素必须要用至少一个条件项
-        if ( Help.isNull(i_Condition.getItems()) )
-        {
-            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] has no condition items.");
-            return false;
+            // 条件元素的逻辑不能为空
+            if ( i_Condition.getLogical() == null )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] sub[" + Help.NVL(i_Condition.getComment()) + "].logical is null.");
+                return false;
+            }
+            
+            if ( Logical.Switch.equals(i_Condition.getLogical()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] sub[" + Help.NVL(i_Condition.getComment()) + "].logical can not SWITCH.");
+                return false;
+            }
+            
+            // 条件元素必须要用至少一个条件项
+            if ( Help.isNull(i_Condition.getItems()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] sub[" + Help.NVL(i_Condition.getComment()) + "] has no condition items.");
+                return false;
+            }
         }
         
         for (IfElse v_Item : i_Condition.getItems())
@@ -170,13 +180,13 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                 ConditionItem v_CItem = (ConditionItem) v_Item;
                 if ( v_CItem.getComparer() == null )
                 {
-                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "].comparer is null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] sub[" + Help.NVL(v_CItem.getComment()) + "].comparer is null.");
                     return false;
                 }
                 
                 if ( Help.isNull(v_CItem.getValueXIDA()) )
                 {
-                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "].valueXIDA is null.");
+                    io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] sub[" + Help.NVL(v_CItem.getComment()) + "].valueXIDA is null.");
                     return false;
                 }
                 
@@ -185,7 +195,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                     if ( Help.isNull(v_CItem.getValueClass()) )
                     {
                         // 条件项的比值为数值类型时，其类型应不会空
-                        io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] valueXIDA is Normal type ,but valueClass is null.");
+                        io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] sub[" + Help.NVL(v_CItem.getComment()) + "].valueXIDA is Normal type ,but valueClass is null.");
                         return false;
                     }
                 }
@@ -197,7 +207,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                         if ( Help.isNull(v_CItem.getValueClass()) )
                         {
                             // 条件项的比值为数值类型时，其类型应不会空
-                            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] valueXIDB is Normal type ,but valueClass is null.");
+                            io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] sub[" + Help.NVL(v_CItem.getComment()) + "].valueXIDB is Normal type ,but valueClass is null.");
                             return false;
                         }
                     }
@@ -205,7 +215,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
             }
             else
             {
-                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "].item is unknown type.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(i_ExecObject.getXJavaID()) + "] sub[" + v_Item.getClass() + "].item is unknown type.");
                 return false;
             }
         }
