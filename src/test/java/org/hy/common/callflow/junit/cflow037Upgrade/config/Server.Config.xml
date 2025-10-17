@@ -18,6 +18,8 @@
                 <user>iot202401</user>
                 <pwd>1234567890</pwd>
                 <type>IoT</type>
+                <msType>Modbus</msType>
+                <ipDevice2>192.168.0.10</ipDevice2>
             </server>
             
             <server>
@@ -25,6 +27,8 @@
                 <user>iot202402</user>
                 <pwd>1234567890</pwd>
                 <type>IoT</type>
+                <msType>PLC</msType>
+                <ipDevice2>192.168.0.10</ipDevice2>
             </server>
 
         </servers>
