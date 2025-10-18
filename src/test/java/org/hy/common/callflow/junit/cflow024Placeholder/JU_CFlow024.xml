@@ -34,19 +34,56 @@
     <!-- CFlow编排引擎配置 -->
     <xconfig>
         
-        <xreturn id="XReturn_CF024_1_1_1_1">
+        <xreturn id="XReturn_CF024_返回结果">
             <comment>内层占位符做外层占位符的参数</comment>
             <retValue>
             {
                 "retInt": 200,
                 "retText": "任务数值：:TaskCode，任务描述：:TaskTypes.{:TaskCode}",
-                "retInfo": "API接口标记：:AIPRets.data.data.Automatic"
+                "retInfo": "API接口标记：:StationStatus.{:{:占位符的名称X}.data.data.Automatic}",
+                "retData": "占位符的三级嵌套的值=:{:{:占位符的名称Y}}.data.data.Automatic"
             }
             </retValue>
         </xreturn>
         
         
-        <xnode id="XNode_CF024_1_1_1">
+        <xcondition id="XCondition_CF024_WhatStatus">
+            <comment>什么状态</comment>
+            <logical>AND</logical>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:AIPRets.data.data.Automatic</valueXIDA>
+                <valueXIDB>2</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:{:占位符的名称X}.data.data.Automatic</valueXIDA>
+                <valueXIDB>2</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:{:{:占位符的名称Y}}.data.data.Automatic</valueXIDA>
+                <valueXIDB>2</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:StationStatus.{:AIPRets.data.data.Automatic}</valueXIDA>
+                <valueXIDB>空闲</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:StationStatus.{:{:占位符的名称X}.data.data.Automatic}</valueXIDA>
+                <valueXIDB>空闲</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>
+                    <next ref="XReturn_CF024_返回结果" />
+                </if>
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF024_添加上下文内容">
             <comment>添加上下文内容</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Info</callMethod>            <!-- 定义执行方法 -->
@@ -63,34 +100,41 @@
                         "4": "完成",
                         "6": "等待"
                     },
+                    "StationStatus": {
+                        "1": "故障",
+                        "2": "空闲", 
+                        "4": "任务执行中"
+                    },
+                    "占位符的名称X": "AIPRets",
+                    "占位符的名称Y": "占位符的名称X",
                     "VString": ":Rets.valueString"
                 }
             </context>
             <route>
                 <succeed>
-                    <next ref="XReturn_CF024_1_1_1_1" />
+                    <next ref="XCondition_CF024_WhatStatus" />
                 </succeed>
             </route>
         </xnode>
         
         
-        <xapi id="XAPI_CF024_1_1">
+        <xapi id="XAPI_CF024_接口请求">
             <comment>接口请求，转换响应结果</comment>
             <url>http://10.8.3.25/msPLC/cflow/control</url> <!-- 定义接口请求URL地址 -->
             <body>                                          <!-- 定义接口请求体 -->
                 {
                     "deviceXID": ":Rets.myself.valueString",
                     "cflowXID": ":Rets.valueString",
-                    "userID": "ZhengWei",
-                    "qq": :qq
+                    "userID": "ZhengWei"
                 }
             </body>
+            <showLog>true</showLog>
             <succeedFlag>200</succeedFlag>
             <returnClass>java.util.Map</returnClass>        <!-- 定义接口返回结果转换为的类型 -->
             <returnID>AIPRets</returnID>
             <route>
                 <succeed>                                   
-                    <next ref="XNode_CF024_1_1_1" />
+                    <next ref="XNode_CF024_添加上下文内容" />
                 </succeed>
             </route>
         </xapi>
@@ -106,7 +150,7 @@
             <returnID>Rets</returnID>
             <route>
                 <succeed>
-                    <next ref="XAPI_CF024_1_1" />
+                    <next ref="XAPI_CF024_接口请求" />
                 </succeed>
             </route>
         </xnode>

@@ -372,7 +372,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         {
             try
             {
-                String v_Context = ValueHelp.replaceByContext(this.context ,this.contextPlaceholders ,io_Context);
+                String v_Context = (String) ValueHelp.getValueReplace(this.context ,this.contextPlaceholders ,String.class ,"" ,io_Context);
                 Map<String ,Object> v_ContextMap = (Map<String ,Object>) ValueHelp.getValue(v_Context ,Map.class ,null ,io_Context);
                 io_Context.putAll(v_ContextMap);
                 v_ContextMap.clear();

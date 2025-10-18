@@ -7,6 +7,7 @@
 * [主导思想](#主导思想)
 * [概要说明](#概要说明)
 * [主要方法](#主要方法)
+* [占位符格式](#占位符格式)
 * [元素路由总览](#元素路由总览)
 * 编码示范
     * [执行前生成树信息](#执行前生成树信息)
@@ -187,6 +188,28 @@
 |元素实例.getRoute().getErrors()  .get(索引).getSelfLoopType()|异常路由的循环类型|
 |元素实例.getRoute().getIfs()     .get(索引).getSelfLoopType()|真值路由的循环类型|
 |元素实例.getRoute().getElses()   .get(索引).getSelfLoopType()|假值路由的循环类型|
+
+
+
+占位符格式
+------
+|分类|格式|说明|
+|:--------|:--------|:--------|
+|单个占位符|:xxx|单个占位符|
+|单个占位符|:xxx.yyy.zzz|占位符支持面向对象|
+|多层占位符|:uuu.{:xxx}|内层占位符当作外层占位符的参数。内层占位符可以是对象，但内层占位符的最终值只能是简单类型的|
+|多层占位符|:uuu.{:xxx.yyy.zzz}.www|同上，并且面向对象|
+|集合取一|:LIST.1|从集合中取某个元素（1为集合中的第二个元素）|
+|集合取一|:LIST.1.xxx |同上|
+|集合取一|:LIST.{:xxx.yyy}.uuu|同上，并且组合多层占位符|
+|数组取一|:Array.1|从数组中取某个元素（1为数组中的第二个元素）|
+|数组取一|:Array.1.xxx|同上|
+|数组取一|:Array.{xxx.yyy}.uuu|同上，并且组合多层占位符|
+|Map取一|:Map.key|从Map取某个元素的Value（关键字为字符串key，key是固定值）|
+|Map取一|:Map.key.xxx|同上|
+|Map取一|:Map.{xxx.yyy}.uuu|同上，并且组合多层占位符，使Map的关键字也变成动态取值的|
+|嵌套占位符|:{:xxx}.uuu|xxx是一个占位符，它的值是另一个占位符|
+|嵌套占位符|:{:{:xxx}}.uuu |同上，嵌套了三层|
 
 
 
@@ -3194,8 +3217,8 @@ __编排配置__
             </callParam>
             <callParam>
                 <valueClass>java.lang.String</valueClass>
-                <value>::typeName.value</value>             <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
-            </callParam>                                    <!-- 当typeName是一个普通类型（如String），仅用:typeName即可 -->
+                <value>:{:typeName}.value</value>           <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
+            </callParam>
         </xnode>
         
     
@@ -3221,7 +3244,7 @@ __编排配置__
             </callParam>
             <callParam>
                 <valueClass>java.lang.String</valueClass>
-                <value>::typeName.value</value>             <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
+                <value>:{:typeName}.value</value>           <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
             </callParam>                                    <!-- 当typeName是一个普通类型（如String），仅用:typeName即可 -->
         </xnode>
         
@@ -5182,7 +5205,7 @@ ExecuteResult       v_Result  = CallFlow.execute(v_Shell ,v_Context);
 占位符的举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow024) [返回目录](#目录)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow024Placeholder) [返回目录](#目录)
 
 
 __编排配置__
@@ -5224,19 +5247,56 @@ __编排配置__
     <!-- CFlow编排引擎配置 -->
     <xconfig>
         
-        <xreturn id="XReturn_CF024_1_1_1_1">
+        <xreturn id="XReturn_CF024_返回结果">
             <comment>内层占位符做外层占位符的参数</comment>
             <retValue>
             {
                 "retInt": 200,
                 "retText": "任务数值：:TaskCode，任务描述：:TaskTypes.{:TaskCode}",
-                "retInfo": "API接口标记：:AIPRets.data.data.Automatic"
+                "retInfo": "API接口标记：:StationStatus.{:{:占位符的名称X}.data.data.Automatic}",
+                "retData": "占位符的三级嵌套的值=:{:{:占位符的名称Y}}.data.data.Automatic"
             }
             </retValue>
         </xreturn>
         
         
-        <xnode id="XNode_CF024_1_1_1">
+        <xcondition id="XCondition_CF024_WhatStatus">
+            <comment>什么状态</comment>
+            <logical>AND</logical>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:AIPRets.data.data.Automatic</valueXIDA>
+                <valueXIDB>2</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:{:占位符的名称X}.data.data.Automatic</valueXIDA>
+                <valueXIDB>2</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>
+                <valueXIDA>:{:{:占位符的名称Y}}.data.data.Automatic</valueXIDA>
+                <valueXIDB>2</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:StationStatus.{:AIPRets.data.data.Automatic}</valueXIDA>
+                <valueXIDB>空闲</valueXIDB>
+            </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:StationStatus.{:{:占位符的名称X}.data.data.Automatic}</valueXIDA>
+                <valueXIDB>空闲</valueXIDB>
+            </conditionItem>
+            <route>
+                <if>
+                    <next ref="XReturn_CF024_返回结果" />
+                </if>
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF024_添加上下文内容">
             <comment>添加上下文内容</comment>
             <callXID>:XProgram</callXID>                    <!-- 定义执行对象 -->
             <callMethod>method_Info</callMethod>            <!-- 定义执行方法 -->
@@ -5253,18 +5313,25 @@ __编排配置__
                         "4": "完成",
                         "6": "等待"
                     },
+                    "StationStatus": {
+                        "1": "故障",
+                        "2": "空闲", 
+                        "4": "任务执行中"
+                    },
+                    "占位符的名称X": "AIPRets",
+                    "占位符的名称Y": "占位符的名称X",
                     "VString": ":Rets.valueString"
                 }
             </context>
             <route>
                 <succeed>
-                    <next ref="XReturn_CF024_1_1_1_1" />
+                    <next ref="XCondition_CF024_WhatStatus" />
                 </succeed>
             </route>
         </xnode>
         
         
-        <xapi id="XAPI_CF024_1_1">
+        <xapi id="XAPI_CF024_接口请求">
             <comment>接口请求，转换响应结果</comment>
             <url>http://10.8.3.25/msPLC/cflow/control</url> <!-- 定义接口请求URL地址 -->
             <body>                                          <!-- 定义接口请求体 -->
@@ -5274,12 +5341,13 @@ __编排配置__
                     "userID": "ZhengWei"
                 }
             </body>
+            <showLog>true</showLog>
             <succeedFlag>200</succeedFlag>
             <returnClass>java.util.Map</returnClass>        <!-- 定义接口返回结果转换为的类型 -->
             <returnID>AIPRets</returnID>
             <route>
                 <succeed>                                   
-                    <next ref="XNode_CF024_1_1_1" />
+                    <next ref="XNode_CF024_添加上下文内容" />
                 </succeed>
             </route>
         </xapi>
@@ -5295,7 +5363,7 @@ __编排配置__
             <returnID>Rets</returnID>
             <route>
                 <succeed>
-                    <next ref="XAPI_CF024_1_1" />
+                    <next ref="XAPI_CF024_接口请求" />
                 </succeed>
             </route>
         </xnode>

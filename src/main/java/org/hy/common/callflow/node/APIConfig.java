@@ -34,7 +34,7 @@ import org.hy.common.xml.log.Logger;
 public class APIConfig extends NodeConfig implements NodeConfigBase
 {
     
-    private static final Logger $Logger = new Logger(APIConfig.class);
+    private static final Logger $Logger = new Logger(APIConfig.class ,true);
     
     
 

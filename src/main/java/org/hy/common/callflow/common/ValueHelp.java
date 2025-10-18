@@ -21,12 +21,29 @@ import org.hy.common.xml.log.Logger;
  * 从上下文区、全局区、默认值区三个区中取值
  * 
  * 优先级为：上下文区 > 全局区 > 默认值区
+ * 
+ *   :xxx                     支持单个占位符。
+ *   :xxx.yyy.zzz             支持单个占位符的面向对象。
+ *   :uuu.{:xxx}              支持多层的占位符。如内层占位符当作外层占位符的参数。内层占位符可以是对象，但内层占位符的最终值只能是简单类型的。
+ *   :uuu.{:xxx.yyy.zzz}.www  支持多层的占位符。
+ *   :LIST.1                  支持单个占位符的集合取一，即从集合中取某个元素（1为集合中的第二个元素）。
+ *   :LIST.1.xxx              支持单个占位符的集合取一。
+ *   :LIST.{:xxx.yyy}.uuu     支持单个占位符的集合取一组合多层的占位符。
+ *   :Array.1                 支持单个占位符的数组取一。即从数组中取某个元素（1为数组中的第二个元素）。
+ *   :Array.1.xxx             支持单个占位符的数组取一。
+ *   :Array.{xxx.yyy}.uuu     支持单个占位符的数组取一组合多层的占位符。
+ *   :Map.key                 支持单个占位符的Map取一。即从Map取某个元素的Value（关键字为字符串key，key是固定值）。
+ *   :Map.key.xxx             支持单个占位符的Map取一。
+ *   :Map.{xxx.yyy}.uuu       支持单个占位符的Map取一组合多层的占位符。使Map的关键字也变成动态取值的。
+ *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+ *   :{:{:xxx}}.uuu           支持占位符的嵌套获取对象。嵌套三层。
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-13
  * @version     v1.0
  *              v2.0  2025-06-05  添加：上下文中支持多层组的占位符。如内层占位符当作外层占位符的参数。如：Factory.users.$get({:School.users.$get(A).ref}).name
- *              v3.0  2025-10-17  添加：占位符的嵌套获取对象，双冒号格式，如：::typeName.value，:typeName是一个占位符，它的值是另一个占位符。
+ *              v3.0  2025-10-17  添加：占位符的嵌套获取对象，如：:{:xxx}.uuu，:xxx是一个占位符，它的值是另一个占位符。
+ *              v3.1  2025-10-18  添加：整合replaceByContext与getValue两方法。即支持单个占位符的解析，也支持多个占位符组合的解析
  */
 public class ValueHelp
 {
@@ -161,7 +178,7 @@ public class ValueHelp
      * @author      ZhengWei(HY)
      * @createDate  2025-02-12
      * @version     v1.0
-     *              v2.0  2025-10-17  添加：占位符的嵌套获取对象，双冒号格式，如：::typeName.value，:typeName是一个占位符，它的值是另一个占位符。
+     *              v2.0  2025-10-17  添加：占位符的嵌套获取对象，如：:{:xxx}.uuu，:xxx是一个占位符，它的值是另一个占位符。
      *
      * @param i_ValueXID    数值、上下文变量、XID标识（支持xxx.yyy.www）
      * @param i_ValueClass  数值时的元类型
@@ -210,6 +227,7 @@ public class ValueHelp
             }
             
             // 双冒号：取到首个占位符的值，它还是一个嵌套的占位符
+            /*
             Object v_BothValue = null;
             if ( v_ValueID.startsWith(DBSQL.$Placeholder) )
             {
@@ -227,10 +245,12 @@ public class ValueHelp
                     return i_Default;
                 }
             }
+            */
             
             // 尝试从上下文区取值
             if ( !Help.isNull(i_Context) )
             {
+                /*
                 if ( v_BothValue == null )
                 {
                     v_Value = i_Context.get(v_ValueID);
@@ -239,6 +259,8 @@ public class ValueHelp
                 {
                     v_Value = v_BothValue;
                 }
+                */
+                v_Value = i_Context.get(v_ValueID);
                 if ( v_Value != null )
                 {
                     if ( v_YYYZZZ != null )
@@ -253,6 +275,7 @@ public class ValueHelp
             }
             
             // 尝试从全局区取值
+            /*
             if ( v_BothValue == null )
             {
                 v_Value = XJava.getObject(v_ValueID);
@@ -261,6 +284,8 @@ public class ValueHelp
             {
                 v_Value = v_BothValue;
             }
+            */
+            v_Value = XJava.getObject(v_ValueID);
             if ( v_Value != null )
             {
                 if ( v_YYYZZZ != null )
@@ -277,6 +302,210 @@ public class ValueHelp
             if ( v_Value == null )
             {
                 v_Value = toObject(i_Default ,i_ValueClass);
+            }
+        }
+        else if ( Object.class.equals(i_ValueClass) )
+        {
+            // Nothing.
+        }
+        else if ( Help.isBasicDataType(i_ValueClass) )
+        {
+            v_Value = Help.toObject(i_ValueClass ,i_ValueXID);
+        }
+        else if ( i_ValueClass != null )
+        {
+            XJSON v_XJson = new XJSON();
+            v_Value = v_XJson.toJava(i_ValueXID ,i_ValueClass);
+        }
+        
+        return v_Value;
+    }
+    
+    
+    
+    /**
+     * 从上下文区、全局区、默认值区三个区中取值
+     * 
+     * 整合replaceByContext与getValue两方法。即支持单个占位符的解析，也支持多个占位符组合的解析
+     *   :xxx                     支持单个占位符。
+     *   :xxx.yyy.zzz             支持单个占位符的面向对象。
+     *   :uuu.{:xxx}              支持多层的占位符。如内层占位符当作外层占位符的参数。内层占位符可以是对象，但内层占位符的最终值只能是简单类型的。
+     *   :uuu.{:xxx.yyy.zzz}.www  支持多层的占位符。
+     *   :LIST.1                  支持单个占位符的集合取一，即从集合中取某个元素（1为集合中的第二个元素）。
+     *   :LIST.1.xxx              支持单个占位符的集合取一。
+     *   :LIST.{:xxx.yyy}.uuu     支持单个占位符的集合取一组合多层的占位符。
+     *   :Array.1                 支持单个占位符的数组取一。即从数组中取某个元素（1为数组中的第二个元素）。
+     *   :Array.1.xxx             支持单个占位符的数组取一。
+     *   :Array.{xxx.yyy}.uuu     支持单个占位符的数组取一组合多层的占位符。
+     *   :Map.key                 支持单个占位符的Map取一。即从Map取某个元素的Value（关键字为字符串key，key是固定值）。
+     *   :Map.key.xxx             支持单个占位符的Map取一。
+     *   :Map.{xxx.yyy}.uuu       支持单个占位符的Map取一组合多层的占位符。使Map的关键字也变成动态取值的。
+     *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+     *   :{:{:xxx}}.uuu           支持占位符的嵌套获取对象。嵌套三层。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-18
+     * @version     v1.0
+     *
+     * @param i_ValueXID      数值、上下文变量、XID标识（支持xxx.yyy.www）
+     * @param i_Placeholders  预解析过的占位符信息
+     * @param i_ValueClass    数值时的元类型
+     * @param i_Default       默认值
+     * @param i_Context       上下文类型的变量信息
+     * @return
+     */
+    public static Object getValueReplace(String i_ValueXID ,PartitionMap<String ,Integer> i_Placeholders ,Class<?> i_ValueClass ,Object i_Default ,Map<String ,Object> i_Context) throws Exception
+    {
+        return getValueReplace(i_ValueXID ,i_Placeholders ,1 ,i_ValueClass ,i_Default ,i_Context);
+    }
+    
+    
+    
+    /**
+     * 从上下文区、全局区、默认值区三个区中取值
+     * 
+     * 整合replaceByContext与getValue两方法。即支持单个占位符的解析，也支持多个占位符组合的解析
+     *   :xxx                     支持单个占位符。
+     *   :xxx.yyy.zzz             支持单个占位符的面向对象。
+     *   :uuu.{:xxx}              支持多层的占位符。如内层占位符当作外层占位符的参数。内层占位符可以是对象，但内层占位符的最终值只能是简单类型的。
+     *   :uuu.{:xxx.yyy.zzz}.www  支持多层的占位符。
+     *   :LIST.1                  支持单个占位符的集合取一，即从集合中取某个元素（1为集合中的第二个元素）。
+     *   :LIST.1.xxx              支持单个占位符的集合取一。
+     *   :LIST.{:xxx.yyy}.uuu     支持单个占位符的集合取一组合多层的占位符。
+     *   :Array.1                 支持单个占位符的数组取一。即从数组中取某个元素（1为数组中的第二个元素）。
+     *   :Array.1.xxx             支持单个占位符的数组取一。
+     *   :Array.{xxx.yyy}.uuu     支持单个占位符的数组取一组合多层的占位符。
+     *   :Map.key                 支持单个占位符的Map取一。即从Map取某个元素的Value（关键字为字符串key，key是固定值）。
+     *   :Map.key.xxx             支持单个占位符的Map取一。
+     *   :Map.{xxx.yyy}.uuu       支持单个占位符的Map取一组合多层的占位符。使Map的关键字也变成动态取值的。
+     *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+     *   :{:{:xxx}}.uuu           支持占位符的嵌套获取对象。嵌套三层。
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-18
+     * @version     v1.0
+     *
+     * @param i_ValueXID      数值、上下文变量、XID标识（支持xxx.yyy.www）
+     * @param i_Placeholders  预解析过的占位符信息
+     * @param i_Level         递归层级。从1开始
+     * @param i_ValueClass    数值时的元类型
+     * @param i_Default       默认值
+     * @param i_Context       上下文类型的变量信息
+     * @return
+     */
+    private static Object getValueReplace(String i_ValueXID ,PartitionMap<String ,Integer> i_Placeholders ,int i_Level ,Class<?> i_ValueClass ,Object i_Default ,Map<String ,Object> i_Context) throws Exception
+    {
+        Object v_Value = i_ValueXID;
+        if ( i_ValueXID == null )
+        {
+            if ( i_Default != null )
+            {
+                return toObject(i_Default ,i_ValueClass);
+            }
+        }
+        else if ( i_ValueXID.startsWith(DBSQL.$Placeholder) )
+        {
+            String v_ValueID = i_ValueXID.trim().substring(DBSQL.$Placeholder.length());
+            if ( v_ValueID.indexOf(DBSQL.$Placeholder) < 0 )
+            {
+                return getValue(i_ValueXID ,i_ValueClass ,i_Default ,i_Context);
+            }
+            
+            PartitionMap<String ,Integer> v_Placeholders = i_Placeholders;
+            if ( Help.isNull(v_Placeholders) )
+            {
+                PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+                if ( !Help.isNull(i_ValueXID.trim()) )
+                {
+                    v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_ValueXID.trim() ,true);
+                }
+                
+                if ( Help.isNull(v_PlaceholdersOrg) )
+                {
+                    return i_ValueXID;
+                }
+                
+                v_Placeholders = Help.toReverse(v_PlaceholdersOrg);
+            }
+            
+            if ( !Help.isNull(v_Placeholders) )
+            {
+                Map<String ,Object> v_Context = new HashMap<String ,Object>();
+                for (String v_Placeholder : v_Placeholders.keySet())
+                {
+                    // 格式为  {:占位符}
+                    if ( v_Placeholder.startsWith("{" + DBSQL.$Placeholder) )
+                    {
+                        String v_PlaceholderTrue = v_Placeholder.substring(1 + DBSQL.$Placeholder.length() ,v_Placeholder.length() - 1);
+                        // 此处不能确定 “元类型” 和 “默认值”
+                        v_Context.put(v_Placeholder ,getValue(DBSQL.$Placeholder + v_PlaceholderTrue ,null ,null ,i_Context));
+                    }
+                    // 格式为  :占位符
+                    else
+                    {
+                        // 此处不能确定 “元类型” 和 “默认值”
+                        v_Context.put(DBSQL.$Placeholder + v_Placeholder ,getValue(DBSQL.$Placeholder + v_Placeholder ,null ,null ,i_Context));
+                    }
+                }
+                
+                // 格式01
+                //   解析第一层的占位符形式  :{:占位符的名称}.data.data.Automatic
+                //   解析第二层的占位符形式  :AIPRets.data.data.Automatic
+                // 格式02
+                //   解析第一层的占位符形式  :StationStatus.{:{:占位符的名称}.data.data.Automatic}
+                //   解析第二层的占位符形式  :StationStatus.{:AIPRets.data.data.Automatic}
+                //   解析第三层的占位符形式  :StationStatus.2
+                String v_NewValue = StringHelp.replaceAll(v_ValueID ,v_Context);  // 注：不要用 i_ValueXID 替换，原因是永不替换首个占位符
+                v_Context.clear();
+                v_Context = null;
+                if ( i_Placeholders == null )
+                {
+                    v_Placeholders.clear();
+                    v_Placeholders = null;
+                }
+                
+                String v_OldValue = null;
+                do 
+                {
+                    v_OldValue = v_NewValue;
+                    if ( v_NewValue.indexOf(":") >= 0 )
+                    {
+                        // 逐层级解析，并且应当 “元类型” 和 “默认值” 向下传
+                        Object v_GetValue = getValueReplace(DBSQL.$Placeholder + v_NewValue ,null ,i_Level + 1 ,i_ValueClass ,i_Default ,i_Context);
+                        if ( v_GetValue == null )
+                        {
+                            return i_Default;
+                        }
+                        if ( v_GetValue instanceof String )
+                        {
+                            if ( i_Level == 1 )
+                            {
+                                // 已在递归中解析所有层级
+                                return v_GetValue;
+                            }
+                            else
+                            {
+                                v_NewValue = (String) v_GetValue;
+                            }
+                        }
+                        else
+                        {
+                            return v_GetValue;
+                        }
+                    }
+                }
+                while ( !v_OldValue.equals(v_NewValue) );
+                
+                // 此步最后一步解析所有层级
+                // 格式01
+                //   解析第二层的占位符形式  :AIPRets.data.data.Automatic
+                // 格式02
+                //   解析第三层的占位符形式  :StationStatus.2
+                return getValue(DBSQL.$Placeholder + v_NewValue ,i_ValueClass ,i_Default ,i_Context);
+            }
+            else
+            {
+                return i_ValueXID;
             }
         }
         else if ( Object.class.equals(i_ValueClass) )
@@ -445,7 +674,7 @@ public class ValueHelp
      * @author      ZhengWei(HY)
      * @createDate  2025-03-25
      * @version     v1.0
-     *              v2.0  2025-06-17  添加：支持多层组的占位符。如内层占位符当作外层占位符的参数
+     *              v2.0  2025-06-17  添加：支持多层的占位符。如内层占位符当作外层占位符的参数
      *                                     举例：Factory.users.$get({:School.users.$get(A).ref}).name
      *                                     详见：JU_ValueHelp
      *
@@ -501,7 +730,7 @@ public class ValueHelp
                 v_NewValue = replaceByContext(v_NewValue ,i_Context);
             }
         }
-        while ( !v_OldValue.equals(v_OldValue) );
+        while ( !v_OldValue.equals(v_NewValue) );
         return v_NewValue;
     }
     
@@ -513,7 +742,7 @@ public class ValueHelp
      * @author      ZhengWei(HY)
      * @createDate  2025-06-05
      * @version     v1.0
-     *              v2.0  2025-06-17  添加：支持多层组的占位符。如内层占位符当作外层占位符的参数
+     *              v2.0  2025-06-17  添加：支持多层的占位符。如内层占位符当作外层占位符的参数
      *                                     举例：Factory.users.$get({:School.users.$get(A).ref}).name
      *                                     详见：JU_ValueHelp
      *
@@ -555,7 +784,7 @@ public class ValueHelp
                     v_NewValue = replaceByContext(v_NewValue ,i_Context);
                 }
             }
-            while ( !v_OldValue.equals(v_OldValue) );
+            while ( !v_OldValue.equals(v_NewValue) );
             
             return v_NewValue;
         }

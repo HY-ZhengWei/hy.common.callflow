@@ -53,7 +53,7 @@ import org.hy.common.xml.plugins.XSQLGroup;
 public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
     
-    private static final Logger $Logger = new Logger(NodeConfig.class);
+    private static final Logger $Logger = new Logger(NodeConfig.class ,true);
     
     
     
@@ -244,7 +244,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                 for (int x=0; x<v_ParamValues.length; x++)
                 {
                     NodeParam v_NodeParam  = this.callParams.get(x);
-                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.gatValueClass() ,v_NodeParam.gatValueDefaultObject() ,io_Context);
+                    v_ParamValues[x] = v_NodeParam.gatValue(io_Context);
                 }
             }
             catch (Exception exce)
@@ -618,7 +618,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                 for (int x=0; x<v_ParamValues.length; x++)
                 {
                     NodeParam v_NodeParam  = this.callParams.get(x);
-                    v_ParamValues[x] = ValueHelp.getValue(v_NodeParam.getValue() ,v_NodeParam.gatValueClass() ,v_NodeParam.gatValueDefaultObject() ,io_Context);
+                    v_ParamValues[x] = v_NodeParam.gatValue(io_Context);
                 }
             }
             catch (Exception exce)

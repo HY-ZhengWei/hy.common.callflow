@@ -3,7 +3,9 @@ package org.hy.common.callflow.node;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.PartitionMap;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.common.ValueHelp;
@@ -33,13 +35,13 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
     
     
     /** 主键标识 */
-    private String   id;
+    private String                        id;
     
     /** 全局惟一标识ID */
-    private String   xid;
+    private String                        xid;
     
     /** 注释。可用于日志的输出等帮助性的信息 */
-    private String   comment;
+    private String                        comment;
     
     /** 
      * 参数类型。参数为数值类型时生效；或参数有默认值时生效。
@@ -47,16 +49,19 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
      * 优点：提高可移植性。
      */
-    private String   valueClass;
+    private String                        valueClass;
     
     /** 参数数值。可以是数值、上下文变量、XID标识 */
-    private String   value;
+    private String                        value;
+    
+    /** 参数数值，已解释完成的占位符（性能有优化，仅内部使用） */
+    private PartitionMap<String ,Integer> valuePlaceholders;
     
     /** 参数默认值的字符形式（参数为数值、上下文变量、XID标识时生效） */
-    private String   valueDefault;
+    private String                        valueDefault;
     
     /** 参数默认值的实例对象(内部使用) */
-    private Object   valueDefaultObject;
+    private Object                        valueDefaultObject;
     
     
     
@@ -155,6 +160,22 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
     
     
     /**
+     * 运行时环境中获取方法的参数值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-18
+     * @version     v1.0
+     *
+     * @param i_Context   上下文类型的变量信息
+     * @throws Exception 
+     */
+    public Object gatValue(Map<String ,Object> i_Context) throws Exception
+    {
+        return ValueHelp.getValueReplace(this.value ,this.valuePlaceholders ,this.gatValueClass() ,this.gatValueDefaultObject() ,i_Context);
+    }
+    
+    
+    /**
      * 参数默认值的实例对象
      * 禁止转Json
      * 
@@ -165,7 +186,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      * @return
      * @throws Exception
      */
-    public synchronized Object gatValueDefaultObject() throws Exception
+    private synchronized Object gatValueDefaultObject() throws Exception
     {
         if ( this.valueDefault == null || this.valueClass == null )
         {
@@ -263,6 +284,22 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
      */
     public void setValue(String i_Value)
     {
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_Value) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Value ,true);
+        }
+        
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.valuePlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.valuePlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.value = i_Value;
     }
 
@@ -468,7 +505,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
         
         try
         {
-            v_Value = ValueHelp.getValue(this.value ,this.gatValueClass() ,this.gatValueDefaultObject() ,i_Context);
+            v_Value = gatValue(i_Context);
         }
         catch (Exception exce)
         {

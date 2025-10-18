@@ -1,4 +1,4 @@
-package org.hy.common.callflow.junit.cflow024;
+package org.hy.common.callflow.junit.cflow024Placeholder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
-import org.hy.common.callflow.junit.cflow024.program.Program;
+import org.hy.common.callflow.junit.cflow024Placeholder.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
@@ -53,7 +53,6 @@ public class JU_CFlow024 extends JUBase
     public void test_CFlow024() throws InterruptedException
     {
         test_CFlow024_Inner();
-        
     }
     
     

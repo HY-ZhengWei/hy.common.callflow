@@ -3,7 +3,9 @@ package org.hy.common.callflow.ifelse;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.PartitionMap;
 import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.XJavaID;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
@@ -11,6 +13,7 @@ import org.hy.common.callflow.enums.Comparer;
 import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.db.DBSQL;
 import org.hy.common.xml.log.Logger;
 
 
@@ -36,16 +39,16 @@ public class ConditionItem implements IfElse ,XJavaID
     
     
     /** 主键标识 */
-    protected String   id;
+    protected String                        id;
     
     /** 全局惟一标识ID */
-    protected String   xid;
+    protected String                        xid;
     
     /** 注释。可用于日志的输出等帮助性的信息 */
-    protected String   comment;
+    protected String                        comment;
     
     /** 比较器 */
-    protected Comparer comparer;
+    protected Comparer                      comparer;
     
     /** 
      * 参数类型。参数为数值类型时生效 
@@ -53,13 +56,19 @@ public class ConditionItem implements IfElse ,XJavaID
      * 未直接使用Class<?>原因是： 允许类不存在，仅在要执行时存在即可。
      * 优点：提高可移植性。
      */
-    protected String   valueClass;
+    protected String                        valueClass;
     
     /** 数值A、上下文变量A、XID标识A（支持xxx.yyy.www） */
-    protected String   valueXIDA;
+    protected String                        valueXIDA;
+    
+    /** 数值A，已解释完成的占位符（性能有优化，仅内部使用） */
+    protected PartitionMap<String ,Integer> valueXIDAPlaceholders;
     
     /** 数值B、上下文变量B、XID标识B（支持xxx.yyy.www） */
-    protected String   valueXIDB;
+    protected String                        valueXIDB;
+    
+    /** 数值B，已解释完成的占位符（性能有优化，仅内部使用） */
+    protected PartitionMap<String ,Integer> valueXIDBPlaceholders;
     
     
     
@@ -158,7 +167,7 @@ public class ConditionItem implements IfElse ,XJavaID
         // B可以为空，表示判定A是否为空，或判定A是否为Boolean类型的真假
         if ( this.valueXIDB == null )
         {
-            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
+            Object v_ValueA = ValueHelp.getValueReplace(this.valueXIDA ,this.valueXIDAPlaceholders ,this.gatValueClass() ,null ,i_Context);
             
             if ( Comparer.Equal.equals(this.comparer) )
             {
@@ -199,8 +208,8 @@ public class ConditionItem implements IfElse ,XJavaID
         }
         else
         {
-            Object v_ValueA = ValueHelp.getValue(this.valueXIDA ,this.gatValueClass() ,null ,i_Context);
-            Object v_ValueB = ValueHelp.getValue(this.valueXIDB ,this.gatValueClass() ,null ,i_Context);
+            Object v_ValueA = ValueHelp.getValueReplace(this.valueXIDA ,this.valueXIDAPlaceholders ,this.gatValueClass() ,null ,i_Context);
+            Object v_ValueB = ValueHelp.getValueReplace(this.valueXIDB ,this.valueXIDBPlaceholders ,this.gatValueClass() ,null ,i_Context);
             
             return this.comparer.compare(v_ValueA ,v_ValueB) ? 1 : -1;
         }
@@ -314,6 +323,23 @@ public class ConditionItem implements IfElse ,XJavaID
         {
             throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s ValueXIDA[" + i_ValueXIDA + "] is SystemXID.");
         }
+        
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_ValueXIDA) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_ValueXIDA ,true);
+        }
+        
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.valueXIDAPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.valueXIDAPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
         this.valueXIDA = i_ValueXIDA;
     }
 
@@ -337,6 +363,23 @@ public class ConditionItem implements IfElse ,XJavaID
         if ( CallFlow.isSystemXID(i_ValueXIDB) )
         {
             throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s ValueXIDB[" + i_ValueXIDB + "] is SystemXID.");
+        }
+        
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(i_ValueXIDB) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_ValueXIDB ,true);
+        }
+        
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            this.valueXIDBPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            this.valueXIDBPlaceholders = new TablePartitionLink<String ,Integer>();
         }
         this.valueXIDB = i_ValueXIDB;
     }
@@ -512,7 +555,7 @@ public class ConditionItem implements IfElse ,XJavaID
             try
             {
                 v_VClass = this.gatValueClass();
-                v_ValueA = ValueHelp.getValue(this.valueXIDA ,v_VClass ,null ,i_Context);
+                v_ValueA = ValueHelp.getValueReplace(this.valueXIDA ,this.valueXIDAPlaceholders ,v_VClass ,null ,i_Context);
             }
             catch (Exception exce)
             {
@@ -572,7 +615,7 @@ public class ConditionItem implements IfElse ,XJavaID
             {
                 try
                 {
-                    v_ValueB = ValueHelp.getValue(this.valueXIDB ,v_VClass ,null ,i_Context);
+                    v_ValueB = ValueHelp.getValueReplace(this.valueXIDB ,this.valueXIDBPlaceholders ,v_VClass ,null ,i_Context);
                 }
                 catch (Exception exce)
                 {

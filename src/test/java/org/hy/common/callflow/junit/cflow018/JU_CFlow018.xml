@@ -44,7 +44,7 @@
             </callParam>
             <callParam>
                 <valueClass>java.lang.String</valueClass>
-                <value>::typeName.value</value>             <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
+                <value>:{:typeName}.value</value>           <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
             </callParam>
         </xnode>
         
@@ -71,7 +71,7 @@
             </callParam>
             <callParam>
                 <valueClass>java.lang.String</valueClass>
-                <value>::typeName.value</value>             <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
+                <value>:{:typeName}.value</value>           <!-- 相同变量名称，不同值。占位符的嵌套获取对象 -->
             </callParam>                                    <!-- 当typeName是一个普通类型（如String），仅用:typeName即可 -->
         </xnode>
         
