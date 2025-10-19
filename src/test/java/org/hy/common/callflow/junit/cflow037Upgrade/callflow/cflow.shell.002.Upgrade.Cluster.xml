@@ -89,6 +89,9 @@
                 <succeed>                                  
                     <next ref="XNodee_CF037_UpgradeCluster_资源结果" />
                 </succeed>
+                <error>                                  
+                    <next ref="XNodee_CF037_UpgradeCluster_更新结果" />
+                </error>
             </route>
         </xshell>
         
@@ -102,6 +105,9 @@
             </callParam>
             <callParam>
                 <value>:ClusterElement.ip</value>
+            </callParam>
+            <callParam>
+                <value>:ForElement.msType</value>
             </callParam>
             <route>
                 <succeed>                                  

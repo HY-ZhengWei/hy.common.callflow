@@ -97,6 +97,9 @@
             <callParam>
                 <value>:ForElement.ip</value>
             </callParam>
+            <callParam>
+                <value>:ForElement.msType</value>
+            </callParam>
             <route>
                 <succeed>                                  
                     <next ref="XShell_CF037_UpgradeTomcat_上传文件" />

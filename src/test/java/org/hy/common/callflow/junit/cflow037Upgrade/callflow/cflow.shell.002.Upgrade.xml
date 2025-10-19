@@ -45,6 +45,26 @@
         </xreturn>
         
         
+        <xnode id="XNodee_CF037_异常处理">
+            <comment>异常处理</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_ShowError</callMethod>
+            <callParam>
+                <value>:UpgradeResult</value>
+            </callParam>
+            <route>
+                <succeed>                                  <!-- For循环结束点（再次循环点） -->
+                    <next>:XFox_CF037_服务列表</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>                                  
+                    <next ref="XRetur_CF037_全部完成" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
         <xnode id="XNodee_CF037_更新结果">
             <comment>显示结果</comment>
             <callXID>:XProgram</callXID>
@@ -79,6 +99,9 @@
                 <succeed>                                  
                     <next ref="XNodee_CF037_更新结果" />
                 </succeed>
+                <error>                                  
+                    <next ref="XNodee_CF037_异常处理" />
+                </error>
             </route>
         </xshell>
         
@@ -110,6 +133,9 @@
                 <succeed>                                  
                     <next ref="XNodee_CF037_资源结果" />
                 </succeed>
+                <error>                                  
+                    <next ref="XNodee_CF037_异常处理" />
+                </error>
             </route>
         </xshell>
         
@@ -123,6 +149,9 @@
             </callParam>
             <callParam>
                 <value>:ForElement.ip</value>
+            </callParam>
+            <callParam>
+                <value>:ForElement.msType</value>
             </callParam>
             <route>
                 <succeed>                                  

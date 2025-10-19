@@ -17,16 +17,37 @@ import org.hy.common.callflow.language.shell.ShellResult;
 public class Program
 {
     
-    public void method_Begin(int i_IndexNo ,String i_IP)
+    public void method_Begin(int i_IndexNo ,String i_IP ,String i_MSType)
     {
-        System.out.println("\n\n" + i_IndexNo + "\t" + i_IP + "准备开始 " + Date.getNowTime().getFull());
+        System.out.println("\n\n" + i_IndexNo + "\t" + i_IP + " " + i_MSType + " 准备开始 " + Date.getNowTime().getFull());
     }
     
     
     
     public void method_Show(ShellResult i_ShellResult)
     {
-        System.out.println(i_ShellResult.getResult());
+        if ( i_ShellResult != null )
+        {
+            System.out.println(i_ShellResult.getResult());
+        }
+        else
+        {
+            System.out.println("无返回任何信息");
+        }
+    }
+    
+    
+    
+    public void method_ShowError(ShellResult i_ShellResult)
+    {
+        if ( i_ShellResult != null )
+        {
+            System.out.println("发生异常：" + i_ShellResult.getResult());
+        }
+        else
+        {
+            System.out.println("发生异常：无返回任何信息");
+        }
     }
     
     

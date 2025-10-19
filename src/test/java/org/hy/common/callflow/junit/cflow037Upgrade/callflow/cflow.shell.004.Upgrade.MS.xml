@@ -31,10 +31,10 @@
     
     
     
-    <!-- CFlow编排引擎配置：集群批量配置设备直连IP地址 -->
+    <!-- CFlow编排引擎配置：集群批量升级MS微服务 -->
     <xconfig>
     
-        <xreturn id="XRetur_CF037_IP_全部完成">
+        <xreturn id="XRetur_CF037_MS_全部完成">
             <comment>全部完成</comment>
             <retValue>
             {
@@ -45,7 +45,27 @@
         </xreturn>
         
         
-        <xnode id="XNodee_CF037_IP_配置结果">
+        <xnode id="XNodee_CF037_MS_异常处理">
+            <comment>显示结果</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_ShowError</callMethod>
+            <callParam>
+                <value>:UpgradeResult</value>
+            </callParam>
+            <route>
+                <succeed>                                  <!-- For循环结束点（再次循环点） -->
+                    <next>:XFox_CF037_MS_服务列表</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>                                  
+                    <next ref="XRetur_CF037_MS_全部完成" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNodee_CF037_MS_配置结果">
             <comment>显示结果</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_Show</callMethod>
@@ -54,44 +74,100 @@
             </callParam>
             <route>
                 <succeed>                                  <!-- For循环结束点（再次循环点） -->
-                    <next>:XFox_CF037_IP_服务列表</next>
+                    <next>:XFox_CF037_MS_服务列表</next>
                     <comment>循环的下一步</comment>
                 </succeed>
                 <succeed>                                  
-                    <next ref="XRetur_CF037_IP_全部完成" />
+                    <next ref="XRetur_CF037_MS_全部完成" />
                     <comment>退出循环后的节点</comment>
                 </succeed>
             </route>
         </xnode>
         
         
-        <xshell id="XShell_CF037_IP_配置">
-            <comment>配置IP地址</comment>
+        <xshell id="XShell_CF037_MS_重启服务">
+            <comment>配置MS服务</comment>
             <host>:ForElement.ip</host>                    <!-- 主机IP地址 -->
             <user>:ForElement.user</user>                  <!-- 用户名称 -->
             <password>:ForElement.pwd</password>           <!-- 用户密码 -->
             <showLog>true</showLog>                        <!-- 显示实时日志 -->
-            <upFile type="textarea">
-                classhome:upload/50-cloud-init.yaml , /opt
-            </upFile>                                      <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
             <shell type="textarea">
-                echo ":ForElement.pwd" | sudo -S mv /opt/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml
-                echo ":ForElement.pwd" | sudo -S sed -i 's/192.168.99.101/:ForElement.ipDevice1Help/g' /etc/netplan/50-cloud-init.yaml
-                echo ":ForElement.pwd" | sudo -S sed -i 's/192.168.99.102/:ForElement.ipDevice2Help/g' /etc/netplan/50-cloud-init.yaml
-                echo ":ForElement.pwd" | sudo -S sed -i 's/192.168.99.103/:ForElement.ipDevice3Help/g' /etc/netplan/50-cloud-init.yaml
-                echo ":ForElement.pwd" | sudo -S chmod 600 /etc/netplan/50-cloud-init.yaml
-                echo ":ForElement.pwd" | sudo -S netplan apply
+                echo ":ForElement.pwd" | sudo -S systemctl restart tomcat.service
             </shell>                                       <!-- Shell代码 -->
             <returnID>UpdateResult</returnID>
             <route>
                 <succeed>                                  
-                    <next ref="XNodee_CF037_IP_配置结果" />
+                    <next ref="XNodee_CF037_MS_配置结果" />
                 </succeed>
+                <error>                                  
+                    <next ref="XNodee_CF037_MS_异常处理" />
+                </error>
             </route>
         </xshell>
         
         
-        <xnode id="XNodee_CF037_IP_准备开始">
+        <xshell id="XShell_CF037_MS_清理">
+            <comment>清理旧文件</comment>
+            <initXID>:XShell_CF037_MS_重启服务</initXID>     <!-- 用参考对象配置连接信息 -->
+            <showLog>true</showLog>                        <!-- 显示实时日志 -->
+            <shell type="textarea">                        
+                rm -r -f /opt/ms:ForElement.msType
+            </shell>                                       <!-- Shell代码 -->
+            <returnID>UpdateResult</returnID>
+            <route>
+                <succeed>                                  
+                    <next ref="XShell_CF037_MS_重启服务" />
+                </succeed>
+                <error>                                  
+                    <next ref="XNodee_CF037_MS_异常处理" />
+                </error>
+            </route>
+        </xshell>
+        
+        
+        <xshell id="XShell_CF037_MS_配置">
+            <comment>配置MS服务</comment>
+            <initXID>:XShell_CF037_MS_重启服务</initXID>
+            <showLog>true</showLog>
+            <shell type="textarea">
+                cp -r /opt/ms:ForElement.msType/META-INF/*        /opt/tomcat/webapps/ms:ForElement.msType/META-INF/
+                cp -r /opt/ms:ForElement.msType/WEB-INF/classes/* /opt/tomcat/webapps/ms:ForElement.msType/WEB-INF/classes/
+                cp -r /opt/ms:ForElement.msType/WEB-INF/lib/*     /opt/tomcat/webapps/ms:ForElement.msType/WEB-INF/lib/
+                find /opt/tomcat/webapps/ms:ForElement.msType/WEB-INF/lib/         -type f ! -mmin -1 -delete
+                find /opt/tomcat/webapps/ms:ForElement.msType/WEB-INF/classes/com/ -type f ! -mmin -1 -delete
+            </shell>
+            <returnID>UpdateResult</returnID>
+            <route>
+                <succeed>                                  
+                    <next ref="XShell_CF037_MS_清理" />
+                </succeed>
+                <error>                                  
+                    <next ref="XNodee_CF037_MS_异常处理" />
+                </error>
+            </route>
+        </xshell>
+        
+        
+        <xshell id="XShell_CF037_MS_上传">
+            <comment>配置MS服务</comment>
+            <initXID>:XShell_CF037_MS_重启服务</initXID>
+            <showLog>true</showLog>
+            <upFile type="textarea">
+                /opt/ms:ForElement.msType/ , /opt
+            </upFile>                                      <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
+            <returnID>UpdateResult</returnID>
+            <route>
+                <succeed>                                  
+                    <next ref="XShell_CF037_MS_配置" />
+                </succeed>
+                <error>                                  
+                    <next ref="XNodee_CF037_MS_异常处理" />
+                </error>
+            </route>
+        </xshell>
+        
+        
+        <xnode id="XNodee_CF037_MS_准备开始">
             <comment>显示准备开始</comment>
             <callXID>:XProgram</callXID>
             <callMethod>method_Begin</callMethod>
@@ -101,56 +177,54 @@
             <callParam>
                 <value>:ForElement.ip</value>
             </callParam>
+            <callParam>
+                <value>:ForElement.msType</value>
+            </callParam>
             <route>
-                <succeed>                                  
-                    <next ref="XShell_CF037_IP_配置" />
+                <succeed>
+                    <next ref="XShell_CF037_MS_上传" />
                 </succeed>
             </route>
         </xnode>
         
         
-        <xcondition id="XCondition_CF037_IP_是否配置">
-            <comment>是否配置IP地址</comment>
+        <xcondition id="XCondition_CF037_MS_是否升级">
+            <comment>是否升级</comment>
             <logical>OR</logical>
             <conditionItem>
                 <valueClass>java.lang.String</valueClass>
-                <valueXIDA>:ForElement.ipDevice1</valueXIDA>
-                <comparer>!=</comparer>
+                <valueXIDA>:ForElement.msType</valueXIDA>
+                <valueXIDB>PLC</valueXIDB>
             </conditionItem>
             <conditionItem>
                 <valueClass>java.lang.String</valueClass>
-                <valueXIDA>:ForElement.ipDevice2</valueXIDA>
-                <comparer>!=</comparer>
-            </conditionItem>
-            <conditionItem>
-                <valueClass>java.lang.String</valueClass>
-                <valueXIDA>:ForElement.ipDevice3</valueXIDA>
-                <comparer>!=</comparer>
+                <valueXIDA>:ForElement.msType</valueXIDA>
+                <valueXIDB>Modbus</valueXIDB>
             </conditionItem>
             <route>
                 <if>
-                    <next ref="XNodee_CF037_IP_准备开始" />
+                    <next ref="XNodee_CF037_MS_准备开始" />
                 </if>
                 <else>
-                    <next>:XFox_CF037_IP_服务列表</next>
+                    <next>:XFox_CF037_MS_服务列表</next>
                     <comment>循环的下一步</comment>
                 </else>
                 <else>                                  
-                    <next ref="XRetur_CF037_IP_全部完成" />
+                    <next ref="XRetur_CF037_MS_全部完成" />
                     <comment>退出循环后的节点</comment>
                 </else>
             </route>
         </xcondition>
         
         
-        <xfor id="XFox_CF037_IP_服务列表">
+        <xfor id="XFox_CF037_MS_服务列表">
             <comment>循环：List集合</comment>
             <end>:ServerList</end>                         <!-- 集合对象的变量名称 -->
             <indexNo>ForIndex</indexNo>                    <!-- 序号变量名称（可选的），下标从1开始 -->
             <elementID>ForElement</elementID>              <!-- 每次循环元素的变量名称（可选的） -->
             <route>
                 <succeed>                                  <!-- 成功时，关联后置节点 -->
-                    <next ref="XCondition_CF037_IP_是否配置" />
+                    <next ref="XCondition_CF037_MS_是否升级" />
                     <comment>For循环</comment>
                 </succeed>
             </route>
