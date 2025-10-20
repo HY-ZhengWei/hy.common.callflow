@@ -5254,10 +5254,34 @@ __编排配置__
                 "retInt": 200,
                 "retText": "任务数值：:TaskCode，任务描述：:TaskTypes.{:TaskCode}",
                 "retInfo": "API接口标记：:StationStatus.{:{:占位符的名称X}.data.data.Automatic}",
-                "retData": "占位符的三级嵌套的值=:{:{:占位符的名称Y}}.data.data.Automatic"
+                "retData": "占位符的三级嵌套的值=:{:{:占位符的名称Y}}.data.data.Automatic",
+                "retMap": {
+                    "uuid": ":GRet.uuid"
+                }
             }
             </retValue>
         </xreturn>
+        
+        
+        <xgroovy id="XGroovy_CF024_生成UUID">
+            <comment>生成UUID</comment>
+            <groovy type="textarea">
+            <![CDATA[
+                v_UUID = StringHelp.getUUID9n()
+            ]]>
+            </groovy>
+            <out>
+            {
+                "v_UUID": "uuid"
+            }
+            </out>
+            <returnID>GRet</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReturn_CF024_返回结果" />
+                </succeed>
+            </route>
+        </xgroovy>
         
         
         <xcondition id="XCondition_CF024_WhatStatus">
@@ -5288,9 +5312,19 @@ __编排配置__
                 <valueXIDA>:StationStatus.{:{:占位符的名称X}.data.data.Automatic}</valueXIDA>
                 <valueXIDB>空闲</valueXIDB>
             </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:AutomaticValue</valueXIDA>
+                <valueXIDB>空闲</valueXIDB>
+            </conditionItem>
+            <context>
+                {
+                    "AutomaticValue": ":StationStatus.{:AIPRets.data.data.Automatic}"
+                }
+            </context>
             <route>
                 <if>
-                    <next ref="XReturn_CF024_返回结果" />
+                    <next ref="XGroovy_CF024_生成UUID" />
                 </if>
             </route>
         </xcondition>
