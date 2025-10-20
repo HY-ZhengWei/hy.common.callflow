@@ -396,30 +396,51 @@ public class ValueHelp
     private static Object getValueReplace(String i_ValueXID ,PartitionMap<String ,Integer> i_Placeholders ,int i_Level ,Class<?> i_ValueClass ,Object i_Default ,Map<String ,Object> i_Context) throws Exception
     {
         Object v_Value = i_ValueXID;
-        if ( i_ValueXID == null )
+        if ( Help.isNull(i_ValueXID) )
         {
             if ( i_Default != null )
             {
                 return toObject(i_Default ,i_ValueClass);
             }
         }
-        else if ( i_ValueXID.startsWith(DBSQL.$Placeholder) )
+        else 
         {
-            String v_ValueID = i_ValueXID.trim().substring(DBSQL.$Placeholder.length());
-            if ( v_ValueID.indexOf(DBSQL.$Placeholder) < 0 )
+            String v_ValueID = i_ValueXID.trim();
+            if ( v_ValueID.startsWith(DBSQL.$Placeholder) )
             {
-                return getValue(i_ValueXID ,i_ValueClass ,i_Default ,i_Context);
+                if ( v_ValueID.indexOf(DBSQL.$Placeholder ,DBSQL.$Placeholder.length()) < 0 )
+                {
+                    // 仅单个占位符时
+                    return getValue(i_ValueXID ,i_ValueClass ,i_Default ,i_Context);
+                }
+            }
+            else
+            {
+                // 无占位符时
+                if ( v_ValueID.indexOf(DBSQL.$Placeholder) < 0 )
+                {
+                    if ( Object.class.equals(i_ValueClass) )
+                    {
+                        // Nothing.
+                    }
+                    else if ( Help.isBasicDataType(i_ValueClass) )
+                    {
+                        v_Value = Help.toObject(i_ValueClass ,i_ValueXID);
+                    }
+                    else if ( i_ValueClass != null )
+                    {
+                        XJSON v_XJson = new XJSON();
+                        v_Value = v_XJson.toJava(i_ValueXID ,i_ValueClass);
+                    }
+                    
+                    return v_Value;
+                }
             }
             
             PartitionMap<String ,Integer> v_Placeholders = i_Placeholders;
             if ( Help.isNull(v_Placeholders) )
             {
-                PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
-                if ( !Help.isNull(i_ValueXID.trim()) )
-                {
-                    v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_ValueXID.trim() ,true);
-                }
-                
+                PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,v_ValueID ,true);
                 if ( Help.isNull(v_PlaceholdersOrg) )
                 {
                     return i_ValueXID;
@@ -455,7 +476,7 @@ public class ValueHelp
                 //   解析第一层的占位符形式  :StationStatus.{:{:占位符的名称}.data.data.Automatic}
                 //   解析第二层的占位符形式  :StationStatus.{:AIPRets.data.data.Automatic}
                 //   解析第三层的占位符形式  :StationStatus.2
-                String v_NewValue = StringHelp.replaceAll(v_ValueID ,v_Context);  // 注：不要用 i_ValueXID 替换，原因是永不替换首个占位符
+                String v_NewValue = StringHelp.replaceAll(v_ValueID ,v_Context);
                 v_Context.clear();
                 v_Context = null;
                 if ( i_Placeholders == null )
@@ -468,10 +489,10 @@ public class ValueHelp
                 do 
                 {
                     v_OldValue = v_NewValue;
-                    if ( v_NewValue.indexOf(":") >= 0 )
+                    if ( v_NewValue.indexOf(":" ,DBSQL.$Placeholder.length()) >= 0 )
                     {
                         // 逐层级解析，并且应当 “元类型” 和 “默认值” 向下传
-                        Object v_GetValue = getValueReplace(DBSQL.$Placeholder + v_NewValue ,null ,i_Level + 1 ,i_ValueClass ,i_Default ,i_Context);
+                        Object v_GetValue = getValueReplace(v_NewValue ,null ,i_Level + 1 ,i_ValueClass ,i_Default ,i_Context);
                         if ( v_GetValue == null )
                         {
                             return i_Default;
@@ -501,25 +522,24 @@ public class ValueHelp
                 //   解析第二层的占位符形式  :AIPRets.data.data.Automatic
                 // 格式02
                 //   解析第三层的占位符形式  :StationStatus.2
-                return getValue(DBSQL.$Placeholder + v_NewValue ,i_ValueClass ,i_Default ,i_Context);
+                return getValue(v_NewValue ,i_ValueClass ,i_Default ,i_Context);
             }
             else
             {
-                return i_ValueXID;
+                if ( Object.class.equals(i_ValueClass) )
+                {
+                    // Nothing.
+                }
+                else if ( Help.isBasicDataType(i_ValueClass) )
+                {
+                    v_Value = Help.toObject(i_ValueClass ,i_ValueXID);
+                }
+                else if ( i_ValueClass != null )
+                {
+                    XJSON v_XJson = new XJSON();
+                    v_Value = v_XJson.toJava(i_ValueXID ,i_ValueClass);
+                }
             }
-        }
-        else if ( Object.class.equals(i_ValueClass) )
-        {
-            // Nothing.
-        }
-        else if ( Help.isBasicDataType(i_ValueClass) )
-        {
-            v_Value = Help.toObject(i_ValueClass ,i_ValueXID);
-        }
-        else if ( i_ValueClass != null )
-        {
-            XJSON v_XJson = new XJSON();
-            v_Value = v_XJson.toJava(i_ValueXID ,i_ValueClass);
         }
         
         return v_Value;

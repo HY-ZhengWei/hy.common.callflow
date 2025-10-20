@@ -54,6 +54,7 @@ import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
  * @createDate  2025-09-25
  * @version     v1.0
  *              v1.1  2025-09-30  添加：实时回显脚本执行日志
+ *              v2.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  */
 public class ShellConfig extends ExecuteElement implements Cloneable
 {
@@ -929,8 +930,16 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime = this.request();
+        Exception     v_ContextEr = this.handleContext(io_Context);  // 先解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
+        
+        if ( v_ContextEr != null )
+        {
+            v_Result.setException(v_ContextEr);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
+        }
         
         if ( Help.isNull(this.shell) && Help.isNull(this.upFile) && Help.isNull(this.downFile) )
         {
@@ -941,11 +950,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         
         try (SSHClient v_SSH = new SSHClient())
         {
-            if ( !this.handleContext(io_Context ,v_Result) )
-            {
-                return v_Result;
-            }
-            
             ShellResult     v_ShellRet    = new ShellResult();
             List<ShellFile> v_UpFiles     = this.parserUpFile(io_Context);
             SCPFileTransfer v_SCP         = null;
@@ -1060,7 +1064,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             // 最后下载文件
             if ( !Help.isNull(this.downFile) )
             {
-                List<ShellFile> v_DownFiles = this.parserDownFile(io_Context);
+                List<ShellFile> v_DownFiles = this.parserDownFile(io_Context);  // 应在此解析下载文件。适配Shell代码动态生成的文件
                 if ( v_SCP == null )
                 {
                     v_SCP = v_SSH.newSCPFileTransfer();
@@ -1335,11 +1339,13 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         StringBuilder v_Builder = new StringBuilder();
         String        v_User    = this.user;
         String        v_Host    = this.host;
+        String        v_Port    = this.port;
         
         try
         {
             v_User = this.gatUser(i_Context);
             v_Host = this.gatHost(i_Context);
+            v_Port = this.gatPort(i_Context) + "";
         }
         catch (Exception exce)
         {
@@ -1360,6 +1366,16 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         if ( !Help.isNull(v_Host) )
         {
             v_Builder.append(v_Host);
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        
+        v_Builder.append(":");
+        if ( !Help.isNull(v_Port) )
+        {
+            v_Builder.append(v_Port);
         }
         else
         {
@@ -1410,6 +1426,16 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         if ( !Help.isNull(this.host) )
         {
             v_Builder.append(this.host);
+        }
+        else
+        {
+            v_Builder.append("?");
+        }
+        
+        v_Builder.append(":");
+        if ( !Help.isNull(this.port) )
+        {
+            v_Builder.append(this.port);
         }
         else
         {

@@ -49,6 +49,7 @@ import org.hy.common.xml.plugins.XSQLGroup;
  *              v4.0  2025-09-02  添加：执行元素的首次初始化成功后触发
  *              v5.0  2025-09-25  添加：执行方法返回False或null时表示出现异常
  *              v5.1  2025-09-26  迁移：静态检查
+ *              v6.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  */
 public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
@@ -208,18 +209,21 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime = this.request();
+        Exception     v_ContextEr = this.handleContext(io_Context);  // 先解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
+        
+        if ( v_ContextEr != null )
+        {
+            v_Result.setException(v_ContextEr);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
+        }
         
         if ( Help.isNull(this.callXID) )
         {
             v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID is null."));
             this.refreshStatus(io_Context ,v_Result.getStatus());
-            return v_Result;
-        }
-        
-        if ( !handleContext(io_Context ,v_Result) )
-        {
             return v_Result;
         }
         

@@ -5,7 +5,7 @@ package org.hy.common.callflow.language.shell;
 
 
 /**
- * 用于脚本元素的上传或下载文件
+ * 用于SH脚本元素的上传或下载文件
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-09-25

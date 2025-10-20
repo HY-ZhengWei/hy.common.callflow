@@ -52,6 +52,7 @@ import groovy.lang.Script;
  * @version     v1.0
  *              v1.1  2025-09-25  修正：解析后的脚本，不能在不同的GroovyShell中使用，Script对象是与特定的GroovyShell实例（及其关联的 Binding）绑定的
  *              v1.2  2025-09-26  迁移：静态检查
+ *              v2.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  */
 public class GroovyConfig extends ExecuteElement implements Cloneable
 {
@@ -407,8 +408,16 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime = this.request();
+        Exception     v_ContextEr = this.handleContext(io_Context);  // 先解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
+        
+        if ( v_ContextEr != null )
+        {
+            v_Result.setException(v_ContextEr);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
+        }
         
         if ( Help.isNull(this.groovy) && Help.isNull(this.script) )
         {
@@ -419,11 +428,6 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
         
         try
         {
-            if ( !this.handleContext(io_Context ,v_Result) )
-            {
-                return v_Result;
-            }
-            
             Binding             v_Binding = new Binding();
             GroovyShell         v_Shell   = new GroovyShell(v_Binding);
             Map<String ,Object> v_In      = this.parserIn(io_Context);

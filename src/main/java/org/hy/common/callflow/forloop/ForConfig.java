@@ -48,6 +48,7 @@ import org.hy.common.xml.log.Logger;
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v3.0  2025-09-26  迁移：静态检查
  *              v4.0  2025-09-29  添加：For循环的每级元素"序号"的变量名称。下标从1开始
+ *              v5.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  */
 public class ForConfig extends ExecuteElement implements Cloneable
 {
@@ -355,16 +356,19 @@ public class ForConfig extends ExecuteElement implements Cloneable
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime = this.request();
+        Exception     v_ContextEr = this.handleContext(io_Context);  // 先解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
+        if ( v_ContextEr != null )
+        {
+            v_Result.setException(v_ContextEr);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
+        }
+        
         try
         {
-            if ( !this.handleContext(io_Context ,v_Result) )
-            {
-                return v_Result;
-            }
-            
             String  v_WorkID     = CallFlow.getWorkID(io_Context);
             String  v_Prefix     = v_WorkID + "@" + this.getXid() + "@For@";
             String  v_IndexID    = v_Prefix + "index";

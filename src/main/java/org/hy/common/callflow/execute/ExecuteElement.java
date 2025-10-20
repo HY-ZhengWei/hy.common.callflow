@@ -366,7 +366,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      * @return            是否处理与解释成功
      */
     @SuppressWarnings("unchecked")
-    protected boolean handleContext(Map<String ,Object> io_Context ,ExecuteResult io_Result)
+    protected Exception handleContext(Map<String ,Object> io_Context)
     {
         if ( !Help.isNull(this.context) )
         {
@@ -380,13 +380,11 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
             }
             catch (Exception exce)
             {
-                io_Result.setException(exce);
-                this.refreshStatus(io_Context ,io_Result.getStatus());
-                return false;
+                return exce;
             }
         }
         
-        return true;
+        return null;
     }
     
     

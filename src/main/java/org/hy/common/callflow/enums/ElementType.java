@@ -63,6 +63,8 @@ public enum ElementType
     Groovy(     "GROOVY"      ,"xgroovy"    ,"酷语元素"),
     
     Shell(      "SHELL"       ,"xshell"     ,"脚本元素"),
+    
+    Ftp(        "FTP"        ,"xftp"        ,"文传元素"),
                               
     SelfLoop(   "SELFLOOP"    ,""           ,"自循环"),
                               

@@ -10,7 +10,7 @@ import org.hy.common.StringHelp;
 
 
 /**
- * 脚本元素的执行结果
+ * SH脚本元素的执行结果
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-09-25

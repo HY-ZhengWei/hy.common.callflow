@@ -75,6 +75,16 @@
                 <valueXIDA>:StationStatus.{:{:占位符的名称X}.data.data.Automatic}</valueXIDA>
                 <valueXIDB>空闲</valueXIDB>
             </conditionItem>
+            <conditionItem>
+                <valueClass>java.lang.String</valueClass>
+                <valueXIDA>:AutomaticValue</valueXIDA>
+                <valueXIDB>空闲</valueXIDB>
+            </conditionItem>
+            <context>
+                {
+                    "AutomaticValue": ":StationStatus.{:AIPRets.data.data.Automatic}"
+                }
+            </context>
             <route>
                 <if>
                     <next ref="XReturn_CF024_返回结果" />

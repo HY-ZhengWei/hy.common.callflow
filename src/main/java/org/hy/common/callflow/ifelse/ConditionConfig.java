@@ -254,16 +254,19 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     public ExecuteResult execute(String i_SuperTreeID ,Map<String ,Object> io_Context)
     {
         long          v_BeginTime = this.request();
+        Exception     v_ContextEr = this.handleContext(io_Context);  // 先解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
         ExecuteResult v_Result    = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.xid ,this.toString(io_Context));
         this.refreshStatus(io_Context ,v_Result.getStatus());
         
+        if ( v_ContextEr != null )
+        {
+            v_Result.setException(v_ContextEr);
+            this.refreshStatus(io_Context ,v_Result.getStatus());
+            return v_Result;
+        }
+        
         try
         {
-            if ( !this.handleContext(io_Context ,v_Result) )
-            {
-                return v_Result;
-            }
-            
             int v_ExceRet = this.allow(io_Context);
             
             if ( !Help.isNull(this.returnID) )
