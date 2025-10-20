@@ -101,6 +101,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
      * @param io_Result     表示检测结果
      * @return
      */
+    @SuppressWarnings("unchecked")
     public boolean check(Return<Object> io_Result)
     {
         // 返回元素的返回结果数据不能为空
@@ -129,6 +130,24 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
                     // 返回结果的默认值为数值类型时，及类型应不会空
                     io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "] retDefault is Normal type ,but retClass is null.");
                     return false;
+                }
+            }
+        }
+        
+        // 当使用默认类型ReturnData时，提醒用户在Json中使用未知的key，可能造成数据无法返回的假像
+        if ( ReturnData.class.getName().equals(this.retClass) )
+        {
+            XJSON v_XJson = new XJSON();
+            Map<String ,Object> v_Datas = (Map<String ,Object>) v_XJson.toJava(this.getRetValue() ,HashMap.class);
+            if ( !Help.isNull(v_Datas) )
+            {
+                for (String v_Key : v_Datas.keySet())
+                {
+                    if ( !StringHelp.isContains(v_Key.toLowerCase() ,ReturnData.$Names) )
+                    {
+                        io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "] JSON.key[" + v_Key + "] is not ReturnData's setter Method.");
+                        return false;
+                    }
                 }
             }
         }

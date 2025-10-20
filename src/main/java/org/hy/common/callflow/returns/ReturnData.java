@@ -1,9 +1,11 @@
 package org.hy.common.callflow.returns;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Date;
+import org.hy.common.MethodReflect;
 import org.hy.common.xml.XJSON;
 
 
@@ -19,6 +21,11 @@ import org.hy.common.xml.XJSON;
  */
 public class ReturnData
 {
+    
+    /** 所有文件名称（全部小写、没有get前缀） */
+    public static final String [] $Names;
+    
+    
     
     /** 返回真假数值 */
     private Boolean             retBoolean;
@@ -49,6 +56,23 @@ public class ReturnData
     
     /** 返回List集合数据 */
     private List<Object>        retList;
+    
+    
+    
+    static 
+    {
+        Map<String ,Method> v_Methods  = MethodReflect.getGetMethodsMS(ReturnData.class);
+        int                 v_Index    = 0;
+        
+        $Names = new String[v_Methods.size()];
+        for (String v_Name : v_Methods.keySet())
+        {
+            $Names[v_Index++] = v_Name.toLowerCase().substring(3);
+        }
+        
+        v_Methods.clear();
+        v_Methods = null;
+    }
 
     
     
