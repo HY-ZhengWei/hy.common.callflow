@@ -1007,24 +1007,33 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             // 先上传文件
             if ( !Help.isNull(v_UpFiles) )
             {
-                // 先创建远程目录
+                // 先创建远程目录，并且已创建过的，不在重复创建
+                Map<String ,Integer> v_MakeDirectoryRets = new HashMap<String ,Integer>();
                 for (ShellFile v_UpFile : v_UpFiles)
                 {
-                    try (Session v_Session = v_SSH.startSession()) 
+                    Integer v_MDRet = v_MakeDirectoryRets.get(v_UpFile.getDir());
+                    if ( v_MDRet == null )
                     {
-                        try (Session.Command v_Command = v_Session.exec("mkdir -p " + v_UpFile.getDir()))
+                        try (Session v_Session = v_SSH.startSession()) 
                         {
-                            this.showLog(v_ShowLog ,v_Command);
-                            v_Command.join();
+                            try (Session.Command v_Command = v_Session.exec("mkdir -p " + v_UpFile.getDir()))
+                            {
+                                this.showLog(v_ShowLog ,v_Command);
+                                v_Command.join();
+                                v_MakeDirectoryRets.put(v_UpFile.getDir() ,v_Command.getExitStatus());
+                            }
                         }
                     }
                 }
+                v_MakeDirectoryRets.clear();
+                v_MakeDirectoryRets = null;
                 
                 v_SCP = v_SSH.newSCPFileTransfer();
                 for (ShellFile v_UpFile : v_UpFiles)
                 {
                     v_SCP.upload(new FileSystemFile(v_UpFile.getFile()) ,v_UpFile.getDir());
                 }
+                
                 v_ShellRet.setUpFiles(v_UpFiles);
             }
             
