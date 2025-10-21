@@ -1,6 +1,6 @@
-Manifest-Version: 1.6.1
+Manifest-Version: 1.6.2
 Created-By: HY.ZhengWei@qq.com  2025-02
-Specification-Version: 1.6.1  2025-10-20
+Specification-Version: 1.6.2  2025-10-21
 SourceCode: https://github.com/HY-ZhengWei/hy.common.callflow
 SourceCodeChina: https://gitee.com/HY-ZhengWei/hy.common.callflow
 Build-JDK: 17
