@@ -181,6 +181,20 @@
             <callParam>
                 <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
             </callParam>
+            <callParam>
+                <ValueClass>java.util.HashMap</ValueClass>
+                <value>
+                {
+                    "ToStop": 0,
+                    "ToReset": 1,
+                    "ToStart": 0
+                }
+                </value>
+            </callParam>
+            <callParam>
+                <ValueClass>java.lang.String</ValueClass>
+                <value>:V3</value>
+            </callParam>
             <returnID>Rets</returnID>
             <route>
                 <succeed>

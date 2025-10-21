@@ -2606,11 +2606,11 @@ ExecuteResult       v_Result    = CallFlow.execute(v_Calculate ,v_Context);
 循环元素的For循环数列举例
 ------
 
-[查看代码](src/test/java/org/hy/common/callflow/junit/cflow011) [返回目录](#目录)
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow011For) [返回目录](#目录)
 
 __编排图例演示__
 
-![image](src/test/java/org/hy/common/callflow/junit/cflow011/JU_CFlow011.png)
+![image](src/test/java/org/hy/common/callflow/junit/cflow011For/JU_CFlow011.png)
 
 __编排配置__
 
@@ -5393,6 +5393,16 @@ __编排配置__
             <callMethod>method_Info</callMethod>            <!-- 定义执行方法 -->
             <callParam>
                 <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+            <callParam>
+                <ValueClass>java.util.HashMap</ValueClass>
+                <value>
+                {
+                    "ToStop": 0,
+                    "ToReset": 1,
+                    "ToStart": 0
+                }
+                </value>
             </callParam>
             <returnID>Rets</returnID>
             <route>

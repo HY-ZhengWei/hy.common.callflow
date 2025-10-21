@@ -50,7 +50,7 @@ import org.hy.common.xml.log.Logger;
 public class ReturnConfig extends ExecuteElement implements Cloneable
 {
     
-    private static final Logger $Logger = new Logger(ReturnConfig.class);
+    private static final Logger $Logger = new Logger(ReturnConfig.class ,true);
     
     
     
@@ -101,7 +101,6 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
      * @param io_Result     表示检测结果
      * @return
      */
-    @SuppressWarnings("unchecked")
     public boolean check(Return<Object> io_Result)
     {
         // 返回元素的返回结果数据不能为空
@@ -135,6 +134,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         }
         
         // 当使用默认类型ReturnData时，提醒用户在Json中使用未知的key，可能造成数据无法返回的假像
+        /*
         if ( ReturnData.class.getName().equals(this.retClass) )
         {
             XJSON v_XJson = new XJSON();
@@ -151,6 +151,7 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
                 }
             }
         }
+        */
         
         return true;
     }
@@ -414,6 +415,25 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
             }
             
             Object v_Value = ValueHelp.getValue(v_RetValue ,this.gatRetClass() ,this.gatRetDefaultObject() ,io_Context);
+            
+            if ( v_Value != null && v_Value instanceof ReturnData )
+            {
+                ReturnData v_ReturnData = (ReturnData) v_Value;
+                if ( null == v_ReturnData.getRetBoolean() 
+                  && null == v_ReturnData.getRetInt()
+                  && null == v_ReturnData.getRetLong()
+                  && null == v_ReturnData.getRetDouble()
+                  && null == v_ReturnData.getRetText()
+                  && null == v_ReturnData.getRetInfo()
+                  && null == v_ReturnData.getRetData()
+                  && null == v_ReturnData.getRetDate()
+                  && null == v_ReturnData.getRetMap()
+                  && null == v_ReturnData.getRetList() )
+                {
+                    //  当使用默认类型ReturnData时，提醒用户在Json中使用未知的key，可能造成数据无法返回的假像
+                    $Logger.warn("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "] 请检查Json格式是否符合ReturnData类型，或改用自定义类.");
+                }
+            }
             
             if ( this.isReturn() )
             {

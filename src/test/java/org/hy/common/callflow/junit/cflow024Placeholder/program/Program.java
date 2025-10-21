@@ -30,10 +30,12 @@ public class Program
     
     
     
-    public Program method_Info(Map<String ,Object> i_Context)
+    public Program method_Info(Map<String ,Object> i_Context ,Map<String ,Object> i_Datas ,String i_V3)
     {
         System.out.println(Date.getNowTime().getFullMilli() + " call method_Info.");
         Help.print(i_Context);
+        Help.print(i_Datas);
+        System.out.println("V3=" + i_V3);
         
         Program v_Ret = new Program();
         v_Ret.setValueString("XCFlow_MouldingLine_1_GetState");
