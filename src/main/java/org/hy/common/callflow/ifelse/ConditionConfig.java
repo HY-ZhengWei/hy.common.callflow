@@ -127,6 +127,22 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     
     
     /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID()
+    {
+        return "XCondition_" + StringHelp.getUUID9n();
+    }
+    
+    
+    
+    /**
      * （公共方法的递归）条件逻辑元素的检测
      * 
      * 仅做离线环境下的检测。

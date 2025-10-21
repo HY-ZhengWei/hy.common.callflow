@@ -179,6 +179,19 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     
     
     /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public abstract String makeXID();
+    
+    
+    
+    /**
      * 构造器
      *
      * @author      ZhengWei(HY)

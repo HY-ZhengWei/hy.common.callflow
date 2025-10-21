@@ -118,6 +118,22 @@ public class GroovyConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID()
+    {
+        return "XGroovy_" + StringHelp.getUUID9n();
+    }
+    
+    
+    
+    /**
      * 获取：Java向Groovy传递参数
      */
     public String getIn()

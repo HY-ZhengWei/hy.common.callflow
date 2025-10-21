@@ -167,6 +167,22 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID()
+    {
+        return "XAPI_" + StringHelp.getUUID9n();
+    }
+    
+    
+    
+    /**
      * 获取：接口请求地址。格式为 http://IP:Port/服务名/xx/yy
      */
     public String getUrl()

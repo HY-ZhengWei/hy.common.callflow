@@ -116,6 +116,22 @@ public class CommandConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID()
+    {
+        return "XCMD_" + StringHelp.getUUID9n();
+    }
+    
+    
+    
+    /**
      * 获取：执行命令。可以是常量、上下文变量、XID标识，并且支持多个占位符
      */
     public String getCommand()

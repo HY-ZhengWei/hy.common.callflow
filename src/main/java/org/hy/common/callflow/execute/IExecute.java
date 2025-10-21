@@ -41,6 +41,19 @@ public interface IExecute extends IDirectedGraphID ,IToXml ,CloneableCallFlow ,X
     
     
     /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID();
+    
+    
+    
+    /**
      * 元素的类型
      * 
      * @author      ZhengWei(HY)

@@ -85,6 +85,23 @@ public class SelfLoop extends ExecuteElement
     
     
     /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID()
+    {
+        // Nothing  什么都不用做。它不用自己生成XID
+        throw new RuntimeException("Not allowed to call SelfLoop.makeXID().");
+    }
+    
+    
+    
+    /**
      * 获取：归属者（内部使用，为防止死循环）
      */
     public RouteItem gatOwner()

@@ -111,6 +111,22 @@ public class EncryptFileConfig extends ZipConfig implements NodeConfigBase
     
     
     /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID()
+    {
+        return "XENF_" + StringHelp.getUUID9n();
+    }
+    
+    
+    
+    /**
      * 获取：密钥生成类型。MD5 和 FAST 两种。默认为：MD5
      */
     public String getPasswordType()

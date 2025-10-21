@@ -21,9 +21,9 @@ import org.hy.common.callflow.event.PublishConfig;
 import org.hy.common.callflow.event.SubscribeConfig;
 import org.hy.common.callflow.event.WSPullConfig;
 import org.hy.common.callflow.event.WSPushConfig;
-import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.forloop.ForConfig;
+import org.hy.common.callflow.ftp.FtpConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.language.GroovyConfig;
 import org.hy.common.callflow.language.PythonConfig;
@@ -58,6 +58,7 @@ import org.hy.common.license.IHash;
  * @createDate  2025-02-24
  * @version     v1.0
  *              v2.0  2025-08-16  添加：注释说明和导出类型
+ *              v3.0  2025-10-21  优化：用makeXID()方法统一所有元素XID的生成
  */
 public class ExportXml
 {
@@ -80,18 +81,15 @@ public class ExportXml
         getInstance().addImportHead(ElementType.MT         .getXmlName() ,MTConfig.class);
         getInstance().addImportHead(ElementType.Nesting    .getXmlName() ,NestingConfig.class);
         getInstance().addImportHead(ElementType.For        .getXmlName() ,ForConfig.class);
-        getInstance().addImportHead(ElementType.Node       .getXmlName() ,NodeConfig.class);
-        getInstance().addImportHead(ElementType.Wait       .getXmlName() ,WaitConfig.class);
-        getInstance().addImportHead(ElementType.Calculate  .getXmlName() ,CalculateConfig.class);
         getInstance().addImportHead(ElementType.Condition  .getXmlName() ,ConditionConfig.class);
         getInstance().addImportHead(ElementType.Return     .getXmlName() ,ReturnConfig.class);
         getInstance().addImportHead(ElementType.CacheGet   .getXmlName() ,CacheGetConfig.class);
         getInstance().addImportHead(ElementType.CacheSet   .getXmlName() ,CacheSetConfig.class);
+        getInstance().addImportHead(ElementType.Calculate  .getXmlName() ,CalculateConfig.class);
+        getInstance().addImportHead(ElementType.Wait       .getXmlName() ,WaitConfig.class);
+        getInstance().addImportHead(ElementType.Node       .getXmlName() ,NodeConfig.class);
         getInstance().addImportHead(ElementType.Api        .getXmlName() ,APIConfig.class);
-        getInstance().addImportHead(ElementType.Publish    .getXmlName() ,PublishConfig.class);
-        getInstance().addImportHead(ElementType.Subscribe  .getXmlName() ,SubscribeConfig.class);
-        getInstance().addImportHead(ElementType.WSPush     .getXmlName() ,WSPushConfig.class);
-        getInstance().addImportHead(ElementType.WSPull     .getXmlName() ,WSPullConfig.class);
+        getInstance().addImportHead(ElementType.XSQL       .getXmlName() ,XSQLConfig.class);
         getInstance().addImportHead(ElementType.Zip        .getXmlName() ,ZipConfig.class);
         getInstance().addImportHead(ElementType.Unzip      .getXmlName() ,UnzipConfig.class);
         getInstance().addImportHead(ElementType.Command    .getXmlName() ,CommandConfig.class);
@@ -100,7 +98,11 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Shell      .getXmlName() ,ShellConfig.class);
         getInstance().addImportHead(ElementType.EncryptFile.getXmlName() ,EncryptFileConfig.class);
         getInstance().addImportHead(ElementType.DecryptFile.getXmlName() ,DecryptFileConfig.class);
-        getInstance().addImportHead(ElementType.XSQL       .getXmlName() ,XSQLConfig.class);
+        getInstance().addImportHead(ElementType.Ftp        .getXmlName() ,FtpConfig.class);
+        getInstance().addImportHead(ElementType.Publish    .getXmlName() ,PublishConfig.class);
+        getInstance().addImportHead(ElementType.Subscribe  .getXmlName() ,SubscribeConfig.class);
+        getInstance().addImportHead(ElementType.WSPush     .getXmlName() ,WSPushConfig.class);
+        getInstance().addImportHead(ElementType.WSPull     .getXmlName() ,WSPullConfig.class);
         getInstance().addImportHead(ElementType.Job        .getXmlName() ,JOBConfig.class);
         getInstance().addImportHead(ElementType.RouteItem  .getXmlName() ,RouteItem.class);
     }
@@ -453,118 +455,7 @@ public class ExportXml
         // 没有XID时，自动生成
         if ( Help.isNull(i_ExecObject.getXJavaID()) )
         {
-            if ( i_ExecObject instanceof ZipConfig )
-            {
-                i_ExecObject.setXJavaID("XZip_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof UnzipConfig )
-            {
-                i_ExecObject.setXJavaID("XUnzip_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof EncryptFileConfig )
-            {
-                i_ExecObject.setXJavaID("XENF_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof DecryptFileConfig )
-            {
-                i_ExecObject.setXJavaID("XDEF_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof ZipConfig )
-            {
-                i_ExecObject.setXJavaID("XZip_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof CommandConfig )
-            {
-                i_ExecObject.setXJavaID("XCMD_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof PythonConfig )
-            {
-                i_ExecObject.setXJavaID("XPython_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof GroovyConfig )
-            {
-                i_ExecObject.setXJavaID("XGroovy_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof ShellConfig )
-            {
-                i_ExecObject.setXJavaID("XShell_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof WSPushConfig )
-            {
-                i_ExecObject.setXJavaID("XWSPush_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof PublishConfig )
-            {
-                i_ExecObject.setXJavaID("XPulish_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof SubscribeConfig )
-            {
-                i_ExecObject.setXJavaID("XSubscribe_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof APIConfig )
-            {
-                i_ExecObject.setXJavaID("XAPI_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof JOBConfig )
-            {
-                i_ExecObject.setXJavaID("XJOB_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof NodeConfig )
-            {
-                if ( i_ExecObject.getClass().equals(NodeConfig.class) )
-                {
-                    i_ExecObject.setXJavaID("XNode_" + StringHelp.getUUID9n());
-                }
-                else
-                {
-                    i_ExecObject.setXJavaID("X" + ((ExecuteElement) i_ExecObject).getElementType() + "_" + StringHelp.getUUID9n());
-                }
-            }
-            else if ( i_ExecObject instanceof WaitConfig )
-            {
-                i_ExecObject.setXJavaID("XWait_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof ConditionConfig )
-            {
-                i_ExecObject.setXJavaID("XCondition_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof NestingConfig )
-            {
-                i_ExecObject.setXJavaID("XNesting_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof MTConfig )
-            {
-                i_ExecObject.setXJavaID("XMT_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof CalculateConfig )
-            {
-                i_ExecObject.setXJavaID("XCalculate_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof ForConfig )
-            {
-                i_ExecObject.setXJavaID("XFor_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof ReturnConfig )
-            {
-                i_ExecObject.setXJavaID("XReturn_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof CacheGetConfig )
-            {
-                i_ExecObject.setXJavaID("XCG_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof CacheSetConfig )
-            {
-                i_ExecObject.setXJavaID("XCS_" + StringHelp.getUUID9n());
-            }
-            else if ( i_ExecObject instanceof SelfLoop )
-            {
-                // Nothing  什么都不用做。它不用自己生成XML
-                throw new RuntimeException("Not allowed to call SelfLoop.toXml().");
-            }
-            else
-            {
-                throw new RuntimeException("Unknown type[" + i_ExecObject.getClass().getName() + "] of exception");
-            }
+            i_ExecObject.setXJavaID(i_ExecObject.makeXID());
         }
         
         String v_ExecXml = i_ExecObject.toXml(2 ,i_ExecObject.getTreeSuperID(i_TreeID) ,i_ExportType);

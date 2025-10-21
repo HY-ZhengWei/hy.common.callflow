@@ -185,6 +185,22 @@ public class JOBConfig extends ExecuteElement implements Cloneable
         return true;
     }
     
+    
+    
+    /**
+     * 当用户没有设置XID时，可使用此方法生成
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String makeXID()
+    {
+        return "XJOB_" + StringHelp.getUUID9n();
+    }
+    
 
     
     /**
