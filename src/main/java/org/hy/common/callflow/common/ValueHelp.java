@@ -66,13 +66,41 @@ public class ValueHelp
      */
     public static boolean isXID(String i_Value)
     {
-        if ( i_Value.startsWith(DBSQL.$Placeholder) )
+        if ( Help.isNull(i_Value) )
+        {
+            return false;
+        }
+        else if ( i_Value.startsWith(DBSQL.$Placeholder) )
         {
             return !StringHelp.isContains(i_Value ," " ,"+" ,"=" ,"(" ,")" ,"{" ,"}" ,"[" ,"]" ,"%" ,"#" ,"!" ,"&" ,"`" ,"~" ,"@" ,"^" ,"*" ,";" ,"?" ,"," ,"/" ,"\\" ,"|");
         }
         else
         {
             return false;
+        }
+    }
+    
+    
+    
+    /**
+     * 检查是否为合法的变量名称
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-21
+     * @version     v1.0
+     *
+     * @param i_VarName  定义的变量名称
+     * @return
+     */
+    public static boolean isVarName(String i_VarName)
+    {
+        if ( Help.isNull(i_VarName) )
+        {
+            return false;
+        }
+        else
+        {
+            return !StringHelp.isContains(i_VarName.trim() ,"." ,":" ," " ,"+" ,"=" ,"(" ,")" ,"{" ,"}" ,"[" ,"]" ,"%" ,"#" ,"!" ,"&" ,"`" ,"~" ,"@" ,"^" ,"*" ,";" ,"?" ,"," ,"/" ,"\\" ,"|");
         }
     }
     
@@ -417,7 +445,7 @@ public class ValueHelp
             else
             {
                 // 无占位符时
-                if ( v_ValueID.indexOf(DBSQL.$Placeholder) < 0 )
+                if ( (i_Placeholders != null && i_Placeholders.isEmpty()) || v_ValueID.indexOf(DBSQL.$Placeholder) < 0 )
                 {
                     if ( Object.class.equals(i_ValueClass) )
                     {
@@ -432,7 +460,6 @@ public class ValueHelp
                         XJSON v_XJson = new XJSON();
                         v_Value = v_XJson.toJava(i_ValueXID ,i_ValueClass);
                     }
-                    
                     return v_Value;
                 }
             }
@@ -443,7 +470,20 @@ public class ValueHelp
                 PartitionMap<String ,Integer> v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,v_ValueID ,true);
                 if ( Help.isNull(v_PlaceholdersOrg) )
                 {
-                    return i_ValueXID;
+                    if ( Object.class.equals(i_ValueClass) )
+                    {
+                        // Nothing.
+                    }
+                    else if ( Help.isBasicDataType(i_ValueClass) )
+                    {
+                        v_Value = Help.toObject(i_ValueClass ,i_ValueXID);
+                    }
+                    else if ( i_ValueClass != null )
+                    {
+                        XJSON v_XJson = new XJSON();
+                        v_Value = v_XJson.toJava(i_ValueXID ,i_ValueClass);
+                    }
+                    return v_Value;
                 }
                 
                 v_Placeholders = Help.toReverse(v_PlaceholdersOrg);

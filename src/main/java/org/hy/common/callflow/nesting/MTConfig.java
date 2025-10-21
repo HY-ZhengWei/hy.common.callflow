@@ -118,6 +118,36 @@ public class MTConfig extends ExecuteElement implements Cloneable
             return false;
         }
         
+        // 变量名称的是否合法
+        if ( !Help.isNull(this.clusterElementID) )
+        {
+            if ( !ValueHelp.isVarName(this.clusterElementID) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].clusterElementID[" + this.clusterElementID + "] is illegal name.");
+                return false;
+            }
+        }
+        
+        // 变量名称的是否合法
+        if ( !Help.isNull(this.clusterIndexID) )
+        {
+            if ( !ValueHelp.isVarName(this.clusterIndexID) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].clusterIndexID[" + this.clusterIndexID + "] is illegal name.");
+                return false;
+            }
+        }
+        
+        // 变量名称的是否合法
+        if ( !Help.isNull(this.clusterIndexNo) )
+        {
+            if ( !ValueHelp.isVarName(this.clusterIndexNo) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].clusterIndexNo[" + this.clusterIndexNo + "] is illegal name.");
+                return false;
+            }
+        }
+        
         int x = 0;
         for (MTItem v_MTItem : this.getMtitems())
         {

@@ -124,6 +124,36 @@ public class ForConfig extends ExecuteElement implements Cloneable
             return false;
         }
         
+        // 变量名称的是否合法
+        if ( !Help.isNull(this.indexID) )
+        {
+            if ( !ValueHelp.isVarName(this.indexID) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].indexID[" + this.indexID + "] is illegal name.");
+                return false;
+            }
+        }
+        
+        // 变量名称的是否合法
+        if ( !Help.isNull(this.indexNo) )
+        {
+            if ( !ValueHelp.isVarName(this.indexNo) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].indexNo[" + this.indexNo + "] is illegal name.");
+                return false;
+            }
+        }
+        
+        // 变量名称的是否合法
+        if ( !Help.isNull(this.elementID) )
+        {
+            if ( !ValueHelp.isVarName(this.elementID) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].elementID[" + this.elementID + "] is illegal name.");
+                return false;
+            }
+        }
+        
         return true;
     }
     
