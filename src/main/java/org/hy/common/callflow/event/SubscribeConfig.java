@@ -128,6 +128,11 @@ public class SubscribeConfig extends APIConfig
      */
     public boolean check(Return<Object> io_Result)
     {
+        if ( !super.check(io_Result) )
+        {
+            return false;
+        }
+        
         if ( Help.isNull(this.getSubscribeXID()) )
         {
             io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].subscribeXID is null.");

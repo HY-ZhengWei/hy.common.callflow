@@ -861,7 +861,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 }
                 
                 String [] v_FileAndDir = v_Item.trim().split(",");
-                ShellFile v_ShellFile  = new ShellFile(v_FileAndDir[0].trim() ,v_FileAndDir[1].trim());
+                ShellFile v_ShellFile  = new ShellFile(v_FileAndDir[0] ,v_FileAndDir[1]);
                 File      v_LocalFile  = new File(v_ShellFile.getFile());
                 
                 if ( !v_LocalFile.exists() )
@@ -912,7 +912,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 }
                 
                 String [] v_FileAndDir = v_Item.trim().split(",");
-                ShellFile v_ShellFile  = new ShellFile(v_FileAndDir[0].trim() ,v_FileAndDir[1].trim());
+                ShellFile v_ShellFile  = new ShellFile(v_FileAndDir[0] ,v_FileAndDir[1]);
                 File      v_LocalDir   = new File(v_ShellFile.getDir());
                 
                 if ( !v_LocalDir.exists() )

@@ -49,6 +49,7 @@ import org.hy.common.xml.log.Logger;
  *              v3.0  2025-09-26  迁移：静态检查
  *              v4.0  2025-09-29  添加：For循环的每级元素"序号"的变量名称。下标从1开始
  *              v5.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
+ *              v5.1  2025-10-23  修正：循环元素自身也有可能结束循环。如，集合循环下，集合对象为空
  */
 public class ForConfig extends ExecuteElement implements Cloneable
 {
@@ -452,6 +453,13 @@ public class ForConfig extends ExecuteElement implements Cloneable
                 {
                     List<?>     v_List     = (List<?>) v_End;
                     Iterator<?> v_Iterator = null;
+                    if ( Help.isNull(v_List) )
+                    {
+                        v_Result.setResult(false);
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
+                        this.success(Date.getTimeNano() - v_BeginTime);
+                        return v_Result;
+                    }
                     if ( v_OldIndex != null )
                     {
                         v_Index    = v_OldIndex + 1;
@@ -476,6 +484,13 @@ public class ForConfig extends ExecuteElement implements Cloneable
                 {
                     Set<?>      v_Set      = (Set<?>) v_End;
                     Iterator<?> v_Iterator = null;
+                    if ( Help.isNull(v_Set) )
+                    {
+                        v_Result.setResult(false);
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
+                        this.success(Date.getTimeNano() - v_BeginTime);
+                        return v_Result;
+                    }
                     if ( v_OldIndex != null )
                     {
                         v_Index    = v_OldIndex + 1;
@@ -500,6 +515,13 @@ public class ForConfig extends ExecuteElement implements Cloneable
                 {
                     Collection<?> v_Collection = (Collection<?>) v_End;
                     Iterator<?>   v_Iterator   = null;
+                    if ( Help.isNull(v_Collection) )
+                    {
+                        v_Result.setResult(false);
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
+                        this.success(Date.getTimeNano() - v_BeginTime);
+                        return v_Result;
+                    }
                     if ( v_OldIndex != null )
                     {
                         v_Index    = v_OldIndex + 1;
@@ -524,6 +546,13 @@ public class ForConfig extends ExecuteElement implements Cloneable
                 {
                     Map<? ,?>   v_Map      = (Map<? ,?>) v_End;
                     Iterator<?> v_Iterator = null;
+                    if ( Help.isNull(v_Map) )
+                    {
+                        v_Result.setResult(false);
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
+                        this.success(Date.getTimeNano() - v_BeginTime);
+                        return v_Result;
+                    }
                     if ( v_OldIndex != null )
                     {
                         v_Index    = v_OldIndex + 1;
@@ -547,6 +576,13 @@ public class ForConfig extends ExecuteElement implements Cloneable
                 else if ( Help.isArray(v_End) )
                 {
                     int v_Len = Array.getLength(v_End);
+                    if ( v_Len <= 0 )
+                    {
+                        v_Result.setResult(false);
+                        this.refreshStatus(io_Context ,v_Result.getStatus());
+                        this.success(Date.getTimeNano() - v_BeginTime);
+                        return v_Result;
+                    }
                     if ( v_OldIndex != null )
                     {
                         v_Index = v_OldIndex + 1;

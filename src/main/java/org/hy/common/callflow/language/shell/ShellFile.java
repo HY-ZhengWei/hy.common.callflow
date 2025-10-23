@@ -24,8 +24,8 @@ public class ShellFile
     
     public ShellFile(String i_File ,String i_Dir) 
     {
-        this.file = i_File;
-        this.dir  = i_Dir;
+        this.file = i_File.trim();
+        this.dir  = i_Dir.trim();
     }
     
     

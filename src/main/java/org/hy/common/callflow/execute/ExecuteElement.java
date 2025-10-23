@@ -419,7 +419,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      * @param i_DelayedTime   延时执行时长(单位：毫秒)，0为立即执行，负数不执行，正数延时执行
      * @throws Exception 
      */
-    public void setExecute(String i_DelayedTime)
+    public synchronized void setExecute(String i_DelayedTime)
     {
         this.delayedTime = i_DelayedTime.trim();
         if ( !Help.isNull(this.delayedTime) )

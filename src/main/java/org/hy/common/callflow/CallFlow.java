@@ -20,6 +20,7 @@ import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.execute.IExecuteEvent;
 import org.hy.common.callflow.file.ExportXml;
 import org.hy.common.callflow.file.ImportXML;
+import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.CalculateConfig;
@@ -42,6 +43,7 @@ import org.hy.common.xml.log.Logger;
  *              v1.1  2025-08-20  修正：静态检查出异常时，未能在上下文记录异常。发现人：李浩
  *              v2.0  2025-10-11  修正：高并发同一编排时，并发计算树ID及寻址相关的信息时的并发异常
  *              v3.0  2025-10-15  添加：Switch分支
+ *              v4.0  2025-10-23  修正：循环元素自身也有可能结束循环。如，集合循环下，集合对象为空
  */
 public class CallFlow
 {
@@ -886,6 +888,26 @@ public class CallFlow
                 else
                 {
                     v_Nexts = ((SelfLoop) i_ExecObject).gatRoute().getSucceeds();
+                }
+            }
+            // 循环元素自身也有可能结束循环。如，集合循环下，集合对象为空
+            else if ( i_ExecObject instanceof ForConfig )
+            {
+                Object v_RetValue = v_Result.getResult();
+                if ( v_RetValue instanceof Boolean )
+                {
+                    if ( (Boolean) v_RetValue )
+                    {
+                        v_Nexts = i_ExecObject.getRoute().getSucceeds();
+                    }
+                    else
+                    {
+                        v_Nexts = i_ExecObject.getRoute().getExceptions();
+                    }
+                }
+                else
+                {
+                    v_Nexts = i_ExecObject.getRoute().getSucceeds();
                 }
             }
             else

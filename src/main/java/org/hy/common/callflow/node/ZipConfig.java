@@ -132,6 +132,11 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
      */
     public boolean check(Return<Object> io_Result)
     {
+        if ( !super.check(io_Result) )
+        {
+            return false;
+        }
+        
         if ( Help.isNull(this.getFile()) )
         {
             io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].file is null.");

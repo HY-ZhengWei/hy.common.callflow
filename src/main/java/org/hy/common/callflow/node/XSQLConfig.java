@@ -111,6 +111,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      */
     public boolean check(Return<Object> io_Result)
     {
+        // 它不能执行父类的静态检查，因为此时它的执行方法还没有确认，执行方法是在运行时确定的。
+        /*
+        if ( !super.check(io_Result) )
+        {
+            return false;
+        }
+        */
+        
         // 执行对象不能为空
         if ( Help.isNull(this.getCallXID()) )
         {
