@@ -612,7 +612,8 @@ public class ReturnConfig extends ExecuteElement implements Cloneable
         
         v_Builder.append(v_Value);
         
-        return v_Builder.toString();
+        // 返回元素无须再解析，直接返回下面的字符串即可。
+        return "Return：";
     }
     
     

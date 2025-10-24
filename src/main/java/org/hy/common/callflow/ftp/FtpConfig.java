@@ -1,10 +1,6 @@
-package org.hy.common.callflow.language;
+package org.hy.common.callflow.ftp;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,42 +20,30 @@ import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
-import org.hy.common.callflow.language.shell.ShellFile;
-import org.hy.common.callflow.language.shell.ShellResult;
 import org.hy.common.db.DBSQL;
+import org.hy.common.file.FileHelp;
+import org.hy.common.ftp.FTPHelp;
+import org.hy.common.ftp.FTPInfo;
+import org.hy.common.ftp.FTPPath;
+import org.hy.common.ftp.enums.PathType;
 import org.hy.common.xml.log.Logger;
-
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.connection.channel.direct.Session;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
-import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
-import net.schmizz.sshj.xfer.FileSystemFile;
-import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 
 
 
 
 
 /**
- * 脚本元素：在Java中嵌入Shell代码
- * 
- *   支持远程连接1：用户&密码
- *   支持远程连接2：用户&免密私钥
- *   
- * 注1：先上传文件，现执行Shell代码，最后下载文件
- * 注2：主机IP、端口、用户、密码、超时时长等属性未设置数据时，当参考对象initXID有值时，从参考对象XID中取值
- * 注3：若参考对象initXID有值时，主机IP、端口、用户、密码、超时时长等属性也有值时，它们优先级高于参考对象initXID
- * 
+ * FTP文传元素：File Transfer Protocol（文件传输协议）
+ *
  * @author      ZhengWei(HY)
- * @createDate  2025-09-25
+ * @createDate  2025-10-19
  * @version     v1.0
- *              v1.1  2025-09-30  添加：实时回显脚本执行日志
- *              v2.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  */
-public class ShellConfig extends ExecuteElement implements Cloneable
+public class FtpConfig extends ExecuteElement implements Cloneable
 {
     
-    private static final Logger $Logger = new Logger(ShellConfig.class ,true);
+    private static final Logger $Logger = new Logger(FtpConfig.class ,true);
+    
     
     
     /** 基本连接参数可参考的对象XID */
@@ -83,11 +67,14 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     /** 用户密码。可以是数值、上下文变量、XID标识 */
     private String                        password;
     
-    /** 脚本代码 */
-    private String                        shell;
+    /** 连接成功后的初始化目录 */
+    private String                        initPath;
     
-    /** 脚本代码，已解释完成的占位符（性能有优化，仅内部使用） */
-    private PartitionMap<String ,Integer> shellPlaceholders;
+    /** 本地是否被动模式 */
+    private String                        localPassiveMode;
+    
+    /** 远程服务是否被动模式 */
+    private String                        remotePassiveMode;
     
     /** 上传文件。多个文件间有换行分隔，本地文件与远程上传目录间用英文逗号,分隔 */
     private String                        upFile;
@@ -101,26 +88,24 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     /** 下载文件，已解释完成的占位符（性能有优化，仅内部使用） */
     private PartitionMap<String ,Integer> downFilePlaceholders;
     
-    /** 是否实时回显脚本执行日志。默认值：null 不实时回显示 */
-    private Boolean                       showLog;
     
     
-    
-    public ShellConfig()
+    public FtpConfig()
     {
         this(0L ,0L);
     }
     
     
     
-    public ShellConfig(long i_RequestTotal ,long i_SuccessTotal)
+    public FtpConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
         
-        this.port           = "22";
-        this.connectTimeout = "0";
-        this.timeout        = "0";
-        this.showLog        = null;
+        this.port              = "21";
+        this.connectTimeout    = "0";
+        this.timeout           = "0";
+        this.localPassiveMode  = "false";
+        this.remotePassiveMode = "false";
     }
     
     
@@ -129,7 +114,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 静态检查
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-26
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param io_Result     表示检测结果
@@ -149,9 +134,9 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].user is null.");
                 return false;
             }
-            if ( Help.isNull(this.getShell()) && Help.isNull(this.getUpFile()) && Help.isNull(this.getDownFile()) )
+            if ( Help.isNull(this.getUpFile()) && Help.isNull(this.getDownFile()) )
             {
-                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].shell、upFile and downFile is null.");
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].upFile and downFile is null.");
                 return false;
             }
         }
@@ -172,7 +157,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      */
     public String makeXID()
     {
-        return "XShell_" + StringHelp.getUUID9n();
+        return "XFTP_" + StringHelp.getUUID9n();
     }
     
     
@@ -206,7 +191,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 按运行时的上下文获取主机IP地址
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-26
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -219,14 +204,14 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         
         if ( Help.isNull(v_Host) && !Help.isNull(this.initXID) )
         {
-            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
-            if ( v_Shell == null )
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
             {
                 v_Host = null;
             }
             else
             {
-                v_Host = v_Shell.getHost();
+                v_Host = v_Ftp.getHost();
             }
         }
         
@@ -263,7 +248,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 按运行时的上下文获取主机端口
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-26
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -274,16 +259,16 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     {
         String v_Port = this.port;
         
-        if ( (Help.isNull(v_Port) || "0".equals(v_Port) || "22".equals(v_Port)) && !Help.isNull(this.initXID) )
+        if ( (Help.isNull(v_Port) || "0".equals(v_Port) || "21".equals(v_Port)) && !Help.isNull(this.initXID) )
         {
-            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
-            if ( v_Shell == null )
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
             {
                 v_Port = null;
             }
             else
             {
-                v_Port = v_Shell.getPort();
+                v_Port = v_Ftp.getPort();
             }
         }
         
@@ -356,7 +341,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 从上下文中获取连接时的超时时长
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -369,14 +354,14 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         
         if ( (Help.isNull(v_ConnectTimeout) || "0".equals(v_ConnectTimeout)) && !Help.isNull(this.initXID) )
         {
-            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
-            if ( v_Shell == null )
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
             {
                 v_ConnectTimeout = null;
             }
             else
             {
-                v_ConnectTimeout = v_Shell.getConnectTimeout();
+                v_ConnectTimeout = v_Ftp.getConnectTimeout();
             }
         }
         
@@ -444,7 +429,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 从上下文中获取运行时的超时时长
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -457,14 +442,14 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         
         if ( (Help.isNull(v_Timeout) || "0".equals(v_Timeout)) && !Help.isNull(this.initXID) )
         {
-            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
-            if ( v_Shell == null )
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
             {
                 v_Timeout = null;
             }
             else
             {
-                v_Timeout = v_Shell.getTimeout();
+                v_Timeout = v_Ftp.getTimeout();
             }
         }
         
@@ -532,7 +517,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 按运行时的上下文获取用户名称
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-26
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -545,14 +530,14 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         
         if ( Help.isNull(v_User) && !Help.isNull(this.initXID) )
         {
-            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
-            if ( v_Shell == null )
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
             {
                 v_User = null;
             }
             else
             {
-                v_User = v_Shell.getUser();
+                v_User = v_Ftp.getUser();
             }
         }
         
@@ -589,7 +574,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 按运行时的上下文获取用户密码
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-26
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -602,14 +587,14 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         
         if ( Help.isNull(v_Password) && !Help.isNull(this.initXID) )
         {
-            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
-            if ( v_Shell == null )
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
             {
                 v_Password = null;
             }
             else
             {
-                v_Password = v_Shell.getPassword();
+                v_Password = v_Ftp.getPassword();
             }
         }
         
@@ -639,49 +624,180 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
-
     
-
+    
+    
     /**
-     * 获取：脚本内容
+     * 连接成功后的初始化目录
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-19
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
      */
-    public String getShell()
+    private String gatInitPath(Map<String ,Object> i_Context) throws Exception
     {
-        return shell;
+        String v_InitPath = this.initPath;
+        
+        if ( Help.isNull(v_InitPath) && !Help.isNull(this.initXID) )
+        {
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
+            {
+                v_InitPath = null;
+            }
+            else
+            {
+                v_InitPath = v_Ftp.getInitPath();
+            }
+        }
+        
+        return (String) ValueHelp.getValue(v_InitPath ,String.class ,"" ,i_Context);
+    }
+    
+    
+    
+    /**
+     * 获取：连接成功后的初始化目录
+     */
+    public String getInitPath()
+    {
+        return initPath;
     }
 
 
     
     /**
-     * 设置：脚本内容
+     * 设置：连接成功后的初始化目录
      * 
-     * @param i_Shell 脚本内容
+     * @param i_InitPath 连接成功后的初始化目录
      */
-    public void setShell(String i_Shell)
+    public void setInitPath(String i_InitPath)
     {
-        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
-        if ( !Help.isNull(i_Shell) )
-        {
-            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,i_Shell ,true);
-        }
-        
-        if ( !Help.isNull(v_PlaceholdersOrg) )
-        {
-            this.shellPlaceholders = Help.toReverse(v_PlaceholdersOrg);
-            v_PlaceholdersOrg.clear();
-            v_PlaceholdersOrg = null;
-        }
-        else
-        {
-            this.shellPlaceholders = new TablePartitionLink<String ,Integer>();
-        }
-        this.shell = i_Shell;
+        this.initPath = i_InitPath;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
     
     
     
+    /**
+     * 本地是否被动模式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-19
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Boolean gatLocalPassiveMode(Map<String ,Object> i_Context) throws Exception
+    {
+        String v_LocalPassiveMode = this.localPassiveMode;
+        
+        if ( (Help.isNull(v_LocalPassiveMode) || "false".equals(v_LocalPassiveMode)) && !Help.isNull(this.initXID) )
+        {
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
+            {
+                v_LocalPassiveMode = null;
+            }
+            else
+            {
+                v_LocalPassiveMode = v_Ftp.getLocalPassiveMode();
+            }
+        }
+        
+        return (Boolean) ValueHelp.getValue(v_LocalPassiveMode ,Boolean.class ,"false" ,i_Context);
+    }
+
+
+    
+    /**
+     * 获取：本地是否被动模式
+     */
+    public String getLocalPassiveMode()
+    {
+        return localPassiveMode;
+    }
+
+
+    
+    /**
+     * 设置：本地是否被动模式
+     * 
+     * @param i_LocalPassiveMode 本地是否被动模式
+     */
+    public void setLocalPassiveMode(String i_LocalPassiveMode)
+    {
+        this.localPassiveMode = i_LocalPassiveMode;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 远程服务是否被动模式
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-10-19
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Boolean gatRemotePassiveMode(Map<String ,Object> i_Context) throws Exception
+    {
+        String v_RemotePassiveMode = this.remotePassiveMode;
+        
+        if ( (Help.isNull(v_RemotePassiveMode) || "false".equals(v_RemotePassiveMode)) && !Help.isNull(this.initXID) )
+        {
+            FtpConfig v_Ftp = (FtpConfig) ValueHelp.getValue(this.getInitXID() ,FtpConfig.class ,null ,i_Context);
+            if ( v_Ftp == null )
+            {
+                v_RemotePassiveMode = null;
+            }
+            else
+            {
+                v_RemotePassiveMode = v_Ftp.getRemotePassiveMode();
+            }
+        }
+        
+        return (Boolean) ValueHelp.getValue(v_RemotePassiveMode ,Boolean.class ,"false" ,i_Context);
+    }
+
+
+    
+    /**
+     * 获取：远程服务是否被动模式
+     */
+    public String getRemotePassiveMode()
+    {
+        return remotePassiveMode;
+    }
+
+
+    
+    /**
+     * 设置：远程服务是否被动模式
+     * 
+     * @param i_RemotePassiveMode 远程服务是否被动模式
+     */
+    public void setRemotePassiveMode(String i_RemotePassiveMode)
+    {
+        this.remotePassiveMode = i_RemotePassiveMode;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
     /**
      * 获取：上传文件。多个文件间有换行分隔，本地文件与远程上传目录间用英文逗号,分隔
      */
@@ -763,72 +879,17 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 按运行时的上下文获取是否实时回显脚本执行日志
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-09-30
-     * @version     v1.0
-     *
-     * @param i_Context  上下文类型的变量信息
-     * @return
-     * @throws Exception 
-     */
-    private Boolean gatShowLog(Map<String ,Object> i_Context) throws Exception
-    {
-        Boolean v_ShowLog = this.showLog;
-        
-        if ( Help.isNull(v_ShowLog) && !Help.isNull(this.initXID) )
-        {
-            ShellConfig v_Shell = (ShellConfig) ValueHelp.getValue(this.getInitXID() ,ShellConfig.class ,null ,i_Context);
-            if ( v_Shell == null )
-            {
-                v_ShowLog = null;
-            }
-            else
-            {
-                v_ShowLog = v_Shell.getShowLog();
-            }
-        }
-        
-        return v_ShowLog;
-    }
-    
-    
-    
-    /**
-     * 获取：是否实时回显脚本执行日志。默认值：null 不实时回显示
-     */
-    public Boolean getShowLog()
-    {
-        return showLog;
-    }
-
-
-    
-    /**
-     * 设置：是否实时回显脚本执行日志。默认值：null 不实时回显示
-     * 
-     * @param i_ShowLog 是否实时回显脚本执行日志。默认值：null 不实时回显示
-     */
-    public void setShowLog(Boolean i_ShowLog)
-    {
-        this.showLog = i_ShowLog;
-    }
-
-
-
-    /**
      * 元素的类型
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @return
      */
     public String getElementType()
     {
-        return ElementType.Shell.getValue();
+        return ElementType.Ftp.getValue();
     }
     
     
@@ -837,22 +898,24 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 解释上传文件
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      * 
      * @param io_Context  上下文类型的变量信息
      * 
      * @return
      */
-    private List<ShellFile> parserUpFile(Map<String ,Object> i_Context)
+    private List<FtpFile> parserUpFile(Map<String ,Object> i_Context)
     {
         if ( !Help.isNull(this.upFile) )
         {
-            String          v_UpFile = ValueHelp.replaceByContext(this.upFile ,this.upFilePlaceholders ,i_Context);
-            String          v_Temp   = StringHelp.replaceAll(v_UpFile ,"\r\n" ,"\n");
-            String []       v_Files  = StringHelp.split(v_Temp ,"\n");
-            List<ShellFile> v_Ret    = new ArrayList<ShellFile>();
+            String        v_UpFile = ValueHelp.replaceByContext(this.upFile ,this.upFilePlaceholders ,i_Context);
+            String        v_Temp   = StringHelp.replaceAll(v_UpFile ,"\r\n" ,"\n");
+            String []     v_Files  = StringHelp.split(v_Temp ,"\n");
+            List<FtpFile> v_Ret    = new ArrayList<FtpFile>();
+            FileHelp      v_FHelp  = new FileHelp();
             
+            // 先解析用户定义的每一行
             for (String v_Item : v_Files)
             {
                 if ( Help.isNull(v_Item) )
@@ -867,18 +930,41 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                     continue;
                 }
                 
-                ShellFile v_ShellFile  = new ShellFile(v_FileAndDir[0] ,v_FileAndDir[1]);
-                File      v_LocalFile  = new File(v_ShellFile.getFile());
+                FtpFile v_FtpFile   = new FtpFile(v_FileAndDir[0] ,v_FileAndDir[1]);
+                File    v_LocalFile = new File(v_FtpFile.getSource());
                 if ( !v_LocalFile.exists() )
                 {
-                    throw new RuntimeException("File[" + v_ShellFile.getFile() + "] is not exists.");
+                    throw new RuntimeException("File[" + v_FtpFile.getSource() + "] is not exists.");
                 }
                 if ( !v_LocalFile.canRead() )
                 {
-                    throw new RuntimeException("File[" + v_ShellFile.getFile() + "] can not read.");
+                    throw new RuntimeException("File[" + v_FtpFile.getSource() + "] can not read.");
                 }
-                
-                v_Ret.add(v_ShellFile);
+                if ( v_LocalFile.isFile() )
+                {
+                    v_Ret.add(v_FtpFile);
+                }
+                // 遍历本地目录后，细化为每个文件
+                else if ( v_LocalFile.isDirectory() )
+                {
+                    List<File> v_ChildFiles = v_FHelp.getFiles(v_FtpFile.getSource() ,false);
+                    if ( !Help.isNull(v_ChildFiles) )
+                    {
+                        for (File v_ChildFile : v_ChildFiles)
+                        {
+                            String v_ChildFullName = v_ChildFile.getPath();
+                            String v_RemoteDir     = StringHelp.replaceFirst(StringHelp.replaceAll(v_ChildFullName ,"\\" ,"/") ,v_FtpFile.getSource() ,"");
+                            
+                            if ( v_RemoteDir.startsWith("/") )
+                            {
+                                v_RemoteDir = v_RemoteDir.substring(1);
+                            }
+                            
+                            v_RemoteDir = v_FtpFile.getTarget() + v_RemoteDir;
+                            v_Ret.add(new FtpFile(v_ChildFullName ,v_RemoteDir));
+                        }
+                    }
+                }
             }
             
             return v_Ret;
@@ -893,21 +979,23 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 解释下载文件
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      * 
      * @param io_Context  上下文类型的变量信息
+     * @param i_FTPHelp   FTP操作的辅助类
      * 
      * @return
      */
-    private List<ShellFile> parserDownFile(Map<String ,Object> i_Context)
+    private List<FtpFile> parserDownFile(Map<String ,Object> i_Context ,FTPHelp i_FTPHelp)
     {
         if ( !Help.isNull(this.downFile) )
         {
-            String          v_DownFile = ValueHelp.replaceByContext(this.downFile ,this.downFilePlaceholders ,i_Context);
-            String          v_Temp     = StringHelp.replaceAll(v_DownFile ,"\r\n" ,"\n");
-            String []       v_Files    = StringHelp.split(v_Temp ,"\n");
-            List<ShellFile> v_Ret      = new ArrayList<ShellFile>();
+            String               v_DownFile = ValueHelp.replaceByContext(this.downFile ,this.downFilePlaceholders ,i_Context);
+            String               v_Temp     = StringHelp.replaceAll(v_DownFile ,"\r\n" ,"\n");
+            String []            v_Files    = StringHelp.split(v_Temp ,"\n");
+            List<FtpFile>        v_Ret      = new ArrayList<FtpFile>();
+            Map<String ,Integer> v_MakeDirs = new HashMap<String ,Integer>();
             
             for (String v_Item : v_Files)
             {
@@ -923,30 +1011,129 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                     continue;
                 }
                 
-                ShellFile v_ShellFile  = new ShellFile(v_FileAndDir[0] ,v_FileAndDir[1]);
-                File      v_LocalDir   = new File(v_ShellFile.getDir());
+                String v_SourceFile = v_FileAndDir[0].trim();         // 远程文件（下载时）
+                String v_TargetFile = v_FileAndDir[1].trim();         // 本地文件（下载时）
                 
-                if ( !v_LocalDir.exists() )
+                v_SourceFile = StringHelp.replaceAll(v_SourceFile ,"\\" ,"/");
+                v_TargetFile = StringHelp.replaceAll(v_TargetFile ,"\\" ,"/");
+                
+                PathType v_SourceType = i_FTPHelp.getPathType(v_SourceFile);
+                if ( PathType.Directory.equals(v_SourceType) )
                 {
-                    v_LocalDir.mkdirs();
+                    if ( !v_SourceFile.endsWith("/") )
+                    {
+                        v_SourceFile += "/";
+                    }
+                    if ( !v_TargetFile.endsWith("/") )
+                    {
+                        v_TargetFile += "/";
+                    }
+                    
+                    List<FTPPath> v_SourcePaths = i_FTPHelp.getFiles(v_SourceFile ,false);
+                    if ( !Help.isNull(v_SourcePaths) )
+                    {
+                        int v_SourceRootLen = v_SourceFile.length();
+                        for (FTPPath v_FTPPath : v_SourcePaths)
+                        {
+                            // 仅要相对路径，也不要文件名称，掐头取尾
+                            String  v_RelativePath = v_FTPPath.getPathName().substring(v_SourceRootLen ,v_FTPPath.getPathName().length() - v_FTPPath.getSimpleName().length());
+                            String  v_TargetDir    = v_TargetFile + v_RelativePath;
+                            FtpFile v_FtpFile      = new FtpFile(v_FTPPath.getPathName() ,v_TargetDir + v_FTPPath.getSimpleName());
+                            v_Ret.add(v_FtpFile);
+                            
+                            if ( !v_MakeDirs.containsKey(v_TargetDir) )
+                            {
+                                // 自动创建目标目录
+                                File v_TargetDirFile = new File(v_TargetDir);
+                                if ( !v_TargetDirFile.exists() )
+                                {
+                                    v_TargetDirFile.mkdirs();
+                                    v_MakeDirs.put(v_TargetDir ,1);
+                                }
+                                else
+                                {
+                                    v_MakeDirs.put(v_TargetDir ,0);
+                                }
+                            }
+                        }
+                    }
                 }
-                
-                v_Ret.add(v_ShellFile);
+                else if ( PathType.File.equals(v_SourceType) )
+                {
+                    int    v_Index      = v_SourceFile.lastIndexOf("/");
+                    String v_SourceName = v_SourceFile;
+                    if ( v_Index >= 0 )
+                    {
+                        v_SourceName = v_SourceFile.substring(v_Index + 1);
+                    }
+                    
+                    if ( !v_MakeDirs.containsKey(v_TargetFile) )
+                    {
+                        File v_TargetDirFile = new File(v_TargetFile);
+                        if ( !v_TargetDirFile.exists() )
+                        {
+                            // 以 / 结尾时，当目录处理
+                            if ( v_TargetFile.endsWith("/") )
+                            {
+                                // 自动创建目标目录
+                                v_TargetDirFile.mkdirs();
+                                v_MakeDirs.put(v_TargetFile ,1);
+                                
+                                v_TargetFile += v_SourceName;
+                            }
+                            // 否则当文件处理
+                            else
+                            {
+                                v_Index         = v_TargetFile.lastIndexOf("/");
+                                v_TargetDirFile = new File(v_TargetFile.substring(0 ,v_Index));
+                                if ( !v_TargetDirFile.exists() )
+                                {
+                                    // 自动创建目标目录
+                                    v_TargetDirFile.mkdirs();
+                                    v_MakeDirs.put(v_TargetDirFile.getPath() ,1);
+                                }
+                                else
+                                {
+                                    v_MakeDirs.put(v_TargetDirFile.getPath() ,0);
+                                }
+                            }
+                        }
+                        else if ( v_TargetDirFile.isDirectory() )
+                        {
+                            v_MakeDirs.put(v_TargetFile ,0);
+                            v_TargetFile += v_SourceName;
+                        }
+                    }
+                    else
+                    {
+                        // 之前已创建过目录
+                        v_TargetFile += v_SourceName;
+                    }
+                    
+                    FtpFile v_FtpFile = new FtpFile(v_SourceFile ,v_TargetFile);
+                    v_Ret.add(v_FtpFile);
+                }
+                else
+                {
+                    $Logger.warn("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] DOWN [" + v_SourceFile + "] is not File and Directory.");
+                }
             }
             
+            v_MakeDirs.clear();
+            v_MakeDirs = null;
             return v_Ret;
         }
         
         return null;
     }
-
-
-
+    
+    
+    
     /**
      * 执行
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_SuperTreeID  父级执行对象的树ID
@@ -968,25 +1155,27 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
-        if ( Help.isNull(this.shell) && Help.isNull(this.upFile) && Help.isNull(this.downFile) )
+        if ( Help.isNull(this.upFile) && Help.isNull(this.downFile) )
         {
-            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s shell、upFile and downFile is null."));
+            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s upFile and downFile is null."));
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
         }
         
-        try (SSHClient v_SSH = new SSHClient())
+        try
         {
-            ShellResult     v_ShellRet    = new ShellResult();
-            List<ShellFile> v_UpFiles     = this.parserUpFile(io_Context);
-            SCPFileTransfer v_SCP         = null;
-            String          v_Host        = this.gatHost(io_Context);
-            Integer         v_Port        = this.gatPort(io_Context);
-            String          v_User        = this.gatUser(io_Context);
-            String          v_Password    = this.gatPassword(io_Context);
-            Integer         v_ConnectTime = this.gatConnectTimeout(io_Context);
-            Integer         v_Time        = this.gatTimeout(io_Context);
-            Boolean         v_ShowLog     = this.gatShowLog(io_Context);
+            FTPInfo       v_FTPInfo           = new FTPInfo();
+            FtpResult     v_FtpRet            = new FtpResult();
+            List<FtpFile> v_UpFiles           = this.parserUpFile(io_Context);
+            String        v_Host              = this.gatHost(io_Context);
+            Integer       v_Port              = this.gatPort(io_Context);
+            String        v_User              = this.gatUser(io_Context);
+            String        v_Password          = this.gatPassword(io_Context);
+            Integer       v_ConnectTime       = this.gatConnectTimeout(io_Context);
+            Integer       v_Time              = this.gatTimeout(io_Context);
+            String        v_InitPath          = this.gatInitPath(io_Context);
+            Boolean       v_LocalPassiveMode  = this.gatLocalPassiveMode(io_Context);
+            Boolean       v_RemotePassiveMode = this.gatRemotePassiveMode(io_Context);
             
             if ( Help.isNull(v_Host) )
             {
@@ -1001,118 +1190,100 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 return v_Result;
             }
             
+            v_FTPInfo.setIp(v_Host);
+            v_FTPInfo.setUser(v_User);
+            
             if ( v_ConnectTime > 0 )
             {
-                v_SSH.setConnectTimeout(v_ConnectTime);
+                v_FTPInfo.setConnectTimeout(v_ConnectTime);
             }
             if ( v_Time > 0 )
             {
-                v_SSH.setTimeout(v_Time);
+                v_FTPInfo.setDataTimeoutMillis(v_Time);
             }
-            
-            v_SSH.addHostKeyVerifier(new PromiscuousVerifier());
-            if ( v_Port > 0 && v_Port != 22 )
+            if ( v_Port > 0 && v_Port != 21 )
             {
-                v_SSH.connect(v_Host ,v_Port);
+                v_FTPInfo.setPort(v_Port);
             }
-            else
+            if ( !Help.isNull(v_User) )
             {
-                v_SSH.connect(v_Host);
+                v_FTPInfo.setUser(v_User);
             }
-            
             if ( !Help.isNull(v_Password) )
             {
-                v_SSH.authPassword(v_User ,v_Password);
+                v_FTPInfo.setPassword(v_Password);
             }
-            else
+            if ( !Help.isNull(v_InitPath) )
             {
-                String      v_PrivateKeyPath = System.getProperty("user.home") + "/.ssh/id_rsa";
-                KeyProvider v_KeyProvider    = v_SSH.loadKeys(v_PrivateKeyPath);  // 加载私钥（支持无密码或有密码的私钥）
-                v_SSH.authPublickey(v_User, v_KeyProvider);                       // 用私钥认证
+                v_FTPInfo.setInitPath(v_InitPath);
             }
-            
-            // 先上传文件
-            if ( !Help.isNull(v_UpFiles) )
+            if ( !Help.isNull(v_LocalPassiveMode) )
             {
-                // 先创建远程目录，并且已创建过的，不在重复创建
-                Map<String ,Integer> v_MakeDirectoryRets = new HashMap<String ,Integer>();
-                for (ShellFile v_UpFile : v_UpFiles)
-                {
-                    Integer v_MDRet = v_MakeDirectoryRets.get(v_UpFile.getDir());
-                    if ( v_MDRet == null )
-                    {
-                        try (Session v_Session = v_SSH.startSession()) 
-                        {
-                            try (Session.Command v_Command = v_Session.exec("mkdir -p " + v_UpFile.getDir()))
-                            {
-                                this.showLog(v_ShowLog ,v_Command);
-                                v_Command.join();
-                                v_MakeDirectoryRets.put(v_UpFile.getDir() ,v_Command.getExitStatus());
-                            }
-                        }
-                    }
-                }
-                v_MakeDirectoryRets.clear();
-                v_MakeDirectoryRets = null;
-                
-                v_SCP = v_SSH.newSCPFileTransfer();
-                for (ShellFile v_UpFile : v_UpFiles)
-                {
-                    v_SCP.upload(new FileSystemFile(v_UpFile.getFile()) ,v_UpFile.getDir());
-                }
-                
-                v_ShellRet.setUpFiles(v_UpFiles);
+                v_FTPInfo.setLocalPassiveMode(v_LocalPassiveMode);
+            }
+            if ( !Help.isNull(v_RemotePassiveMode) )
+            {
+                v_FTPInfo.setRemotePassiveMode(v_RemotePassiveMode);
             }
             
-            // 再执行Shell脚本代码
-            if ( !Help.isNull(this.shell) )
+            try (FTPHelp v_FTPHelp = new FTPHelp(v_FTPInfo))
             {
-                String v_Shell = ValueHelp.replaceByContext(this.shell ,this.shellPlaceholders ,io_Context);
-                try (Session v_Session = v_SSH.startSession()) 
+                v_FTPHelp.connect();
+                
+                // 先上传文件
+                if ( !Help.isNull(v_UpFiles) )
                 {
-                    try ( Session.Command v_Command = v_Session.exec(v_Shell) )
+                    int                  v_Len               = (v_UpFiles.size() + "").length();
+                    int                  v_Index             = 0;
+                    Map<String ,Integer> v_MakeDirectoryRets = new HashMap<String ,Integer>();
+                    for (FtpFile v_UpFile : v_UpFiles)
                     {
-                        ByteArrayOutputStream v_Output = null;
-                        StringBuilder         v_Log    = this.showLog(v_ShowLog ,v_Command);
-                        if ( v_Log == null )
+                        String v_UpFileRet     = v_FTPHelp.upload(v_UpFile.getSource() ,v_UpFile.getTarget() ,false);
+                        String v_UpFileRetFlag = "成功 "; 
+                        if ( !Help.isNull(v_UpFileRet) )
                         {
-                            v_Output = new ByteArrayOutputStream();
-                            v_Command.getInputStream().transferTo(v_Output);
-                            
-                        }
-                        
-                        v_Command.join();
-                        v_ShellRet.setExitStatus(v_Command.getExitStatus());
-                        
-                        if ( v_Log == null )
-                        {
-                            v_ShellRet.setResult(v_Output.toString().trim());
-                            v_Output.close();
+                            v_UpFile.setErrorInfo(v_UpFileRet);
+                            v_UpFileRetFlag = "异常 ";
                         }
                         else
                         {
-                            v_ShellRet.setResult(v_Log.toString());
+                            v_FtpRet.setUpSucceed(v_FtpRet.getUpSucceed() + 1);
                         }
+                        
+                        $Logger.info("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] " + StringHelp.rpad(++v_Index ,v_Len ," ") + " UP " + v_UpFileRetFlag + v_UpFile.getTarget());
                     }
+                    v_MakeDirectoryRets.clear();
+                    v_MakeDirectoryRets = null;
+                    v_FtpRet.setUpFiles(v_UpFiles);
+                }
+                
+                // 最后下载文件
+                if ( !Help.isNull(this.downFile) )
+                {
+                    List<FtpFile> v_DownFiles = this.parserDownFile(io_Context ,v_FTPHelp);   // 应在此解析下载文件。适配先上传后下载上传的文件
+                    int           v_Len       = (v_DownFiles.size() + "").length();
+                    int           v_Index     = 0;
+                    for (FtpFile v_DownFile : v_DownFiles)
+                    {
+                        String v_DownFileRet     = v_FTPHelp.download(v_DownFile.getSource() ,v_DownFile.getTarget());
+                        String v_DownFileRetFlag = "成功 "; 
+                        if ( !Help.isNull(v_DownFileRet) )
+                        {
+                            v_DownFile.setErrorInfo(v_DownFileRet);
+                            v_DownFileRetFlag = "异常 ";
+                        }
+                        else
+                        {
+                            v_FtpRet.setDownSucceed(v_FtpRet.getDownSucceed() + 1);
+                        }
+                        
+                        $Logger.info("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] " + StringHelp.rpad(++v_Index ,v_Len ," ") + " DOWN " + v_DownFileRetFlag + v_DownFile.getTarget());
+                    }
+                    v_FtpRet.setDownFiles(v_DownFiles);
                 }
             }
             
-            // 最后下载文件
-            if ( !Help.isNull(this.downFile) )
-            {
-                List<ShellFile> v_DownFiles = this.parserDownFile(io_Context);  // 应在此解析下载文件。适配Shell代码动态生成的文件
-                if ( v_SCP == null )
-                {
-                    v_SCP = v_SSH.newSCPFileTransfer();
-                }
-                for (ShellFile v_DownFile : v_DownFiles)
-                {
-                    v_SCP.download(v_DownFile.getFile() ,new FileSystemFile(v_DownFile.getDir()));
-                }
-                v_ShellRet.setDownFiles(v_DownFiles);
-            }
-            
-            v_Result.setResult(v_ShellRet);
+            v_Result.setResult(v_FtpRet);
             this.refreshReturn(io_Context ,v_Result.getResult());
             this.refreshStatus(io_Context ,v_Result.getStatus());
             this.success(Date.getTimeNano() - v_BeginTime);
@@ -1129,70 +1300,10 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 显示脚本执行的实时日志
-     * 
-     * @author      ZhengWei(HY)
-     * @createDate  2025-09-30
-     * @version     v1.0
-     *
-     * @param i_ShowLog  是否实时回显脚本执行日志
-     * @param i_Command  脚本执行对象
-     * @return           返回日志缓存
-     */
-    private StringBuilder showLog(Boolean i_ShowLog ,Session.Command i_Command)
-    {
-        if ( i_ShowLog == null || !i_ShowLog )
-        {
-            return null;
-        }
-        
-        StringBuilder v_Log = new StringBuilder();
-        // 读取标准输出
-        new Thread(() -> 
-        {
-            try ( InputStream v_Input = i_Command.getInputStream(); BufferedReader v_Reader = new BufferedReader(new InputStreamReader(v_Input)) )
-            {
-                String v_Line = null;
-                while ( (v_Line = v_Reader.readLine()) != null )
-                {
-                    v_Log.append(v_Line).append("\r\n");
-                    $Logger.info(this.getXid() + "[INFO] " + v_Line);
-                }
-            }
-            catch (Exception error)
-            {
-                $Logger.error(error);
-            }
-        }).start();
-        
-        // 读取错误输出
-        new Thread(() -> 
-        {
-            try ( InputStream v_ErrorInput = i_Command.getErrorStream(); BufferedReader v_Reader = new BufferedReader(new InputStreamReader(v_ErrorInput)) )
-            {
-                String v_Line = null;
-                while ( (v_Line = v_Reader.readLine()) != null )
-                {
-                    v_Log.append(v_Line).append("\r\n");
-                    $Logger.info(this.getXid() + "[WARN] " + v_Line);
-                }
-            }
-            catch (Exception error)
-            {
-                $Logger.error(error);
-            }
-        }).start();
-        
-        return v_Log;
-    }
-    
-    
-    
-    /**
      * 转为Xml格式的内容
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_Level        层级。最小下标从0开始。
@@ -1220,7 +1331,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         StringBuilder v_Xml      = new StringBuilder();
         String        v_Level1   = "    ";
         String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName    = ElementType.Shell.getXmlName();
+        String        v_XName    = ElementType.Ftp.getXmlName();
         String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( !Help.isNull(this.getXJavaID()) )
@@ -1288,10 +1399,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 }
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("upFile" ,v_UpFile));
             }
-            if ( !Help.isNull(this.shell) )
-            {
-                v_Xml.append(v_NewSpace).append(IToXml.toValue("shell" ,this.shell));
-            }
             if ( !Help.isNull(this.downFile) )
             {
                 String v_Classhome = Help.getClassHomePath();
@@ -1308,10 +1415,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                     v_DownFile = StringHelp.replaceAll(v_DownFile ,v_Webhome ,"webhome:");
                 }
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("downFile" ,v_DownFile));
-            }
-            if ( !Help.isNull(this.showLog) )
-            {
-                v_Xml.append(v_NewSpace).append(IToXml.toValue("showLog" ,this.showLog));
             }
             if ( !Help.isNull(this.returnID) )
             {
@@ -1364,7 +1467,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 注：禁止在此真的执行方法
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -1388,7 +1491,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             $Logger.error("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "].toString is error" ,exce);
         }
         
-        v_Builder.append("ssh ");
+        v_Builder.append("ftp ");
         if ( !Help.isNull(v_User) )
         {
             v_Builder.append(v_User);
@@ -1418,17 +1521,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             v_Builder.append("?");
         }
         
-        v_Builder.append(" ");
-        if ( !Help.isNull(this.shell) )
-        {
-            String v_Shell = ValueHelp.replaceByContext(this.shell.trim() ,this.shellPlaceholders ,i_Context).trim();
-            v_Builder.append(StringHelp.replaceAll(v_Shell ,new String[]{"\r" ,"\n"} ,StringHelp.$ReplaceSpace));
-        }
-        else
-        {
-            v_Builder.append("?");
-        }
-        
         return v_Builder.toString();
     }
     
@@ -1438,7 +1530,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 解析为执行表达式
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @return
@@ -1478,16 +1570,6 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             v_Builder.append("?");
         }
         
-        v_Builder.append(" ");
-        if ( !Help.isNull(this.shell) )
-        {
-            v_Builder.append(this.shell);
-        }
-        else
-        {
-            v_Builder.append("?");
-        }
-        
         return v_Builder.toString();
     }
     
@@ -1497,14 +1579,14 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 仅仅创建一个新的实例，没有任何赋值
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @return
      */
     public Object newMy()
     {
-        return new ShellConfig();
+        return new FtpConfig();
     }
     
     
@@ -1515,13 +1597,13 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 注：不克隆XID。
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      */
     public Object cloneMyOnly()
     {
-        ShellConfig v_Clone = new ShellConfig();
+        FtpConfig v_Clone = new FtpConfig();
         
         this.cloneMyOnly(v_Clone);
         v_Clone.initXID        = this.initXID;
@@ -1531,10 +1613,8 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         v_Clone.timeout        = this.timeout;
         v_Clone.user           = this.user;
         v_Clone.password       = this.password;
-        v_Clone.shell          = this.shell;
         v_Clone.upFile         = this.upFile;
         v_Clone.downFile       = this.downFile;
-        v_Clone.showLog        = this.showLog;
         
         return v_Clone;
     }
@@ -1545,7 +1625,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 深度克隆编排元素
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @param io_Clone        克隆的复制品对象
@@ -1559,10 +1639,10 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone ShellConfig xid is null.");
+            throw new NullPointerException("Clone FtpConfig xid is null.");
         }
         
-        ShellConfig v_Clone = (ShellConfig) io_Clone;
+        FtpConfig v_Clone = (FtpConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
         v_Clone.initXID        = this.initXID;
@@ -1572,10 +1652,8 @@ public class ShellConfig extends ExecuteElement implements Cloneable
         v_Clone.timeout        = this.timeout;
         v_Clone.user           = this.user;
         v_Clone.password       = this.password;
-        v_Clone.shell          = this.shell;
         v_Clone.upFile         = this.upFile;
         v_Clone.downFile       = this.downFile;
-        v_Clone.showLog        = this.showLog;
     }
     
     
@@ -1584,7 +1662,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
      * 深度克隆编排元素
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-09-25
+     * @createDate  2025-10-19
      * @version     v1.0
      *
      * @return
@@ -1597,12 +1675,12 @@ public class ShellConfig extends ExecuteElement implements Cloneable
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone ShellConfig xid is null.");
+            throw new NullPointerException("Clone FtpConfig xid is null.");
         }
         
         Map<String ,ExecuteElement> v_XIDObjects = new HashMap<String ,ExecuteElement>();
         Return<String>              v_Version    = parserXIDVersion(this.xid);
-        ShellConfig                 v_Clone      = new ShellConfig();
+        FtpConfig                   v_Clone      = new FtpConfig();
         
         if ( v_Version.booleanValue() )
         {
