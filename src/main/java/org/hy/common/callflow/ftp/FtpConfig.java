@@ -76,6 +76,9 @@ public class FtpConfig extends ExecuteElement implements Cloneable
     /** 远程服务是否被动模式 */
     private String                        remotePassiveMode;
     
+    /** 字符集（可解决中文路径问题） */
+    private String                        charEncoding;
+    
     /** 上传文件。多个文件间有换行分隔，本地文件与远程上传目录间用英文逗号,分隔 */
     private String                        upFile;
     
@@ -106,6 +109,7 @@ public class FtpConfig extends ExecuteElement implements Cloneable
         this.timeout           = "0";
         this.localPassiveMode  = "false";
         this.remotePassiveMode = "false";
+        this.charEncoding      = "UTF-8";
     }
     
     
@@ -879,6 +883,30 @@ public class FtpConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 获取：字符集（可解决中文路径问题）
+     */
+    public String getCharEncoding()
+    {
+        return charEncoding;
+    }
+
+
+    
+    /**
+     * 设置：字符集（可解决中文路径问题）
+     * 
+     * @param i_CharEncoding 字符集（可解决中文路径问题）
+     */
+    public void setCharEncoding(String i_CharEncoding)
+    {
+        this.charEncoding = i_CharEncoding;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
      * 元素的类型
      * 
      * @author      ZhengWei(HY)
@@ -902,10 +930,11 @@ public class FtpConfig extends ExecuteElement implements Cloneable
      * @version     v1.0
      * 
      * @param io_Context  上下文类型的变量信息
+     * @param i_FTPHelp   FTP操作的辅助类
      * 
      * @return
      */
-    private List<FtpFile> parserUpFile(Map<String ,Object> i_Context)
+    private List<FtpFile> parserUpFile(Map<String ,Object> i_Context ,FTPHelp i_FTPHelp)
     {
         if ( !Help.isNull(this.upFile) )
         {
@@ -930,38 +959,66 @@ public class FtpConfig extends ExecuteElement implements Cloneable
                     continue;
                 }
                 
-                FtpFile v_FtpFile   = new FtpFile(v_FileAndDir[0] ,v_FileAndDir[1]);
-                File    v_LocalFile = new File(v_FtpFile.getSource());
-                if ( !v_LocalFile.exists() )
+                String  v_SourceFile = v_FileAndDir[0].trim();
+                String  v_TargetFile = v_FileAndDir[1].trim();
+                
+                v_SourceFile = StringHelp.replaceAll(v_SourceFile ,"\\" ,"/");
+                v_TargetFile = StringHelp.replaceAll(v_TargetFile ,"\\" ,"/");
+                
+                File v_SourceLocal = new File(v_SourceFile);
+                if ( !v_SourceLocal.exists() )
                 {
-                    throw new RuntimeException("File[" + v_FtpFile.getSource() + "] is not exists.");
+                    throw new RuntimeException("File[" + v_SourceFile + "] is not exists.");
                 }
-                if ( !v_LocalFile.canRead() )
+                if ( !v_SourceLocal.canRead() )
                 {
-                    throw new RuntimeException("File[" + v_FtpFile.getSource() + "] can not read.");
+                    throw new RuntimeException("File[" + v_SourceFile + "] can not read.");
                 }
-                if ( v_LocalFile.isFile() )
+                
+                if ( v_SourceLocal.isFile() )
                 {
-                    v_Ret.add(v_FtpFile);
+                    PathType v_TargetType = i_FTPHelp.getPathType(v_TargetFile);
+                    if ( PathType.Directory.equals(v_TargetType) )
+                    {
+                        v_TargetFile += v_SourceLocal.getName();
+                        v_Ret.add(new FtpFile(v_SourceFile ,v_TargetFile));
+                    }
+                    else if ( PathType.File.equals(v_TargetType) )
+                    {
+                        v_Ret.add(new FtpFile(v_SourceFile ,v_TargetFile));
+                    }
+                    else if ( PathType.NotExist.equals(v_TargetType) )
+                    {
+                        v_Ret.add(new FtpFile(v_SourceFile ,v_TargetFile));
+                    }
+                    else
+                    {
+                        $Logger.warn("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] UP [" + v_SourceFile + "] is not File and Directory.");
+                    }
                 }
                 // 遍历本地目录后，细化为每个文件
-                else if ( v_LocalFile.isDirectory() )
+                else if ( v_SourceLocal.isDirectory() )
                 {
-                    List<File> v_ChildFiles = v_FHelp.getFiles(v_FtpFile.getSource() ,false);
+                    if ( !v_TargetFile.endsWith("/") )
+                    {
+                        v_TargetFile += "/";
+                    }
+                    
+                    List<File> v_ChildFiles = v_FHelp.getFiles(v_SourceFile ,false);
                     if ( !Help.isNull(v_ChildFiles) )
                     {
                         for (File v_ChildFile : v_ChildFiles)
                         {
                             String v_ChildFullName = v_ChildFile.getPath();
-                            String v_RemoteDir     = StringHelp.replaceFirst(StringHelp.replaceAll(v_ChildFullName ,"\\" ,"/") ,v_FtpFile.getSource() ,"");
+                            String v_TargetDir     = StringHelp.replaceFirst(StringHelp.replaceAll(v_ChildFullName ,"\\" ,"/") ,v_SourceFile ,"");
                             
-                            if ( v_RemoteDir.startsWith("/") )
+                            if ( v_TargetDir.startsWith("/") )
                             {
-                                v_RemoteDir = v_RemoteDir.substring(1);
+                                v_TargetDir = v_TargetDir.substring(1);
                             }
                             
-                            v_RemoteDir = v_FtpFile.getTarget() + v_RemoteDir;
-                            v_Ret.add(new FtpFile(v_ChildFullName ,v_RemoteDir));
+                            v_TargetDir = v_TargetFile + v_TargetDir;
+                            v_Ret.add(new FtpFile(v_ChildFullName ,v_TargetDir));
                         }
                     }
                 }
@@ -1166,7 +1223,6 @@ public class FtpConfig extends ExecuteElement implements Cloneable
         {
             FTPInfo       v_FTPInfo           = new FTPInfo();
             FtpResult     v_FtpRet            = new FtpResult();
-            List<FtpFile> v_UpFiles           = this.parserUpFile(io_Context);
             String        v_Host              = this.gatHost(io_Context);
             Integer       v_Port              = this.gatPort(io_Context);
             String        v_User              = this.gatUser(io_Context);
@@ -1225,12 +1281,14 @@ public class FtpConfig extends ExecuteElement implements Cloneable
             {
                 v_FTPInfo.setRemotePassiveMode(v_RemotePassiveMode);
             }
+            v_FTPInfo.setControlEncoding(Help.NVL(this.charEncoding ,"UTF-8"));
             
             try (FTPHelp v_FTPHelp = new FTPHelp(v_FTPInfo))
             {
                 v_FTPHelp.connect();
                 
                 // 先上传文件
+                List<FtpFile> v_UpFiles = this.parserUpFile(io_Context ,v_FTPHelp);
                 if ( !Help.isNull(v_UpFiles) )
                 {
                     int                  v_Len               = (v_UpFiles.size() + "").length();
@@ -1362,7 +1420,7 @@ public class FtpConfig extends ExecuteElement implements Cloneable
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("host" ,this.host));
             }
-            if ( !Help.isNull(this.port) && !"0".equals(this.port) && !"22".equals(this.port) )
+            if ( !Help.isNull(this.port) && !"0".equals(this.port) && !"21".equals(this.port) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("port" ,this.port));
             }
@@ -1381,6 +1439,22 @@ public class FtpConfig extends ExecuteElement implements Cloneable
             if ( !Help.isNull(this.password) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("password" ,this.password));
+            }
+            if ( !Help.isNull(this.initPath) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("initPath" ,this.initPath));
+            }
+            if ( !Help.isNull(this.charEncoding) && !"UTF-8".equalsIgnoreCase(this.charEncoding) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("charEncoding" ,this.charEncoding));
+            }
+            if ( !Help.isNull(this.localPassiveMode) && !"false".equalsIgnoreCase(this.localPassiveMode) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("localPassiveMode" ,this.localPassiveMode));
+            }
+            if ( !Help.isNull(this.remotePassiveMode) && !"false".equalsIgnoreCase(this.remotePassiveMode) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("remotePassiveMode" ,this.remotePassiveMode));
             }
             if ( !Help.isNull(this.upFile) )
             {
@@ -1606,15 +1680,19 @@ public class FtpConfig extends ExecuteElement implements Cloneable
         FtpConfig v_Clone = new FtpConfig();
         
         this.cloneMyOnly(v_Clone);
-        v_Clone.initXID        = this.initXID;
-        v_Clone.host           = this.host;
-        v_Clone.port           = this.port;
-        v_Clone.connectTimeout = this.connectTimeout;
-        v_Clone.timeout        = this.timeout;
-        v_Clone.user           = this.user;
-        v_Clone.password       = this.password;
-        v_Clone.upFile         = this.upFile;
-        v_Clone.downFile       = this.downFile;
+        v_Clone.initXID           = this.initXID;
+        v_Clone.host              = this.host;
+        v_Clone.port              = this.port;
+        v_Clone.connectTimeout    = this.connectTimeout;
+        v_Clone.timeout           = this.timeout;
+        v_Clone.user              = this.user;
+        v_Clone.password          = this.password;
+        v_Clone.initPath          = this.initPath;
+        v_Clone.localPassiveMode  = this.localPassiveMode;
+        v_Clone.remotePassiveMode = this.remotePassiveMode;
+        v_Clone.charEncoding      = this.charEncoding;
+        v_Clone.upFile            = this.upFile;
+        v_Clone.downFile          = this.downFile;
         
         return v_Clone;
     }
@@ -1645,15 +1723,19 @@ public class FtpConfig extends ExecuteElement implements Cloneable
         FtpConfig v_Clone = (FtpConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.initXID        = this.initXID;
-        v_Clone.host           = this.host;
-        v_Clone.port           = this.port;
-        v_Clone.connectTimeout = this.connectTimeout;
-        v_Clone.timeout        = this.timeout;
-        v_Clone.user           = this.user;
-        v_Clone.password       = this.password;
-        v_Clone.upFile         = this.upFile;
-        v_Clone.downFile       = this.downFile;
+        v_Clone.initXID           = this.initXID;
+        v_Clone.host              = this.host;
+        v_Clone.port              = this.port;
+        v_Clone.connectTimeout    = this.connectTimeout;
+        v_Clone.timeout           = this.timeout;
+        v_Clone.user              = this.user;
+        v_Clone.password          = this.password;
+        v_Clone.initPath          = this.initPath;
+        v_Clone.localPassiveMode  = this.localPassiveMode;
+        v_Clone.remotePassiveMode = this.remotePassiveMode;
+        v_Clone.charEncoding      = this.charEncoding;
+        v_Clone.upFile            = this.upFile;
+        v_Clone.downFile          = this.downFile;
     }
     
     
