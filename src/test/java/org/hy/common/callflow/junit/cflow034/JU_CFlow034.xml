@@ -23,6 +23,7 @@
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
