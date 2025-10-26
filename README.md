@@ -48,6 +48,7 @@
     * [蟒蛇元素的举例](#蟒蛇元素的举例)
     * [酷语元素的举例](#酷语元素的举例)
     * [脚本元素的举例](#脚本元素的举例)
+    * [文传元素的举例](#文传元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -70,7 +71,7 @@
 概要说明
 ------
 
-    1. 14种编排元素（基本元素）。
+    1. 15种编排元素（基本元素）。
     
         1.1.  执行元素，配置及执行Java方法。可轻松扩展它，衍生成特定的业务元素。
     
@@ -99,6 +100,8 @@
         1.13. GV酷语元素，在Java中嵌入Groovy代码。也可嵌入Java代码。
         
         1.14. SH脚本元素，在Java中嵌入Shell代码。可远程上传及下载文件。
+        
+        1.15. FTP文传元素，上传下载文件和目录中的文件。
         
     2. 15种衍生元素。
     
@@ -334,6 +337,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -424,6 +428,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -562,6 +567,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -768,6 +774,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    ‘<import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -893,6 +900,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1019,6 +1027,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1202,6 +1211,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1346,6 +1356,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1511,6 +1522,7 @@ __编排配置：分支逻辑__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1702,6 +1714,7 @@ __编排配置：多逻辑组合__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -1947,6 +1960,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2029,6 +2043,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2124,6 +2139,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2269,6 +2285,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2384,6 +2401,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2516,6 +2534,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2640,6 +2659,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2770,6 +2790,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -2930,6 +2951,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3102,6 +3124,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3196,6 +3219,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3378,6 +3402,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3512,6 +3537,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3647,6 +3673,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3733,6 +3760,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3844,6 +3872,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -3967,6 +3996,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -4094,6 +4124,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -4248,6 +4279,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -4482,6 +4514,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -4579,6 +4612,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -4680,6 +4714,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -4876,6 +4911,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -5085,6 +5121,8 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -5202,6 +5240,138 @@ ExecuteResult       v_Result  = CallFlow.execute(v_Shell ,v_Context);
 
 
 
+#文传元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow039FTP) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow039FTP/JU_CFlow039.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：FTP文传 -->
+    <xconfig>
+    
+        <xftp id="XFTP_CF039_下载目录">
+            <comment>下载目录</comment>
+            <host>127.0.0.1</host>                         <!-- 主机IP地址 -->
+            <user>iot202498</user>                         <!-- 用户名称 -->
+            <password>1234567890</password>                <!-- 用户密码 -->
+            <localPassiveMode>true</localPassiveMode>      <!-- 本地被动模式 -->
+            <downFile type="textarea">
+                /opt/ftpRoot/ , D:/ftpRoot/
+            </downFile>                                    <!-- 多个文件间用换行分隔，每行用英文逗号分隔远程下载文件和本地目录 -->
+                                                           <!-- 本地目录不存时，自动创建。目录必须以/结尾表示，否则表示文件 -->
+        </xftp>
+        
+    
+        <xftp id="XFTP_CF039_下载文件">
+            <comment>下载一个文件</comment>
+            <initXID>:XFTP_CF039_下载目录</initXID>          <!-- 用参考对象配置连接信息 -->
+            <downFile type="textarea">
+                /opt/ftpRoot/Install_USB_Win11.zip , D:/ftpRoot/
+            </downFile>                                    <!-- 多个文件间用换行分隔，每行用英文逗号分隔远程下载文件和本地目录 -->
+                                                           <!-- 本地目录不存时，自动创建。目录必须以/结尾表示，否则表示文件 -->
+            <route>
+                <succeed>
+                    <next ref="XFTP_CF039_下载目录" />
+                </succeed>
+            </route>
+        </xftp>
+        
+    
+        <xftp id="XFTP_CF039_上传目录">
+            <comment>上传目录</comment>
+            <initXID>:XFTP_CF039_下载目录</initXID>          <!-- 用参考对象配置连接信息 -->
+            <upFile type="textarea">
+                D:/Maven/org/hy.common.callflow , /opt/ftpRoot/
+            </upFile>                                      <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
+                                                           <!-- 远程目录不存时，自动创建 -->
+            <route>
+                <succeed>
+                    <next ref="XFTP_CF039_下载文件" />
+                </succeed>
+            </route>
+        </xftp>
+        
+    
+        <xftp id="XFTP_CF039_上传文件">
+            <comment>上传一个文件</comment>
+            <initXID>:XFTP_CF039_下载目录</initXID>          <!-- 用参考对象配置连接信息 -->
+            <upFile type="textarea">
+                D:/迅雷下载/Install_USB_Win11_11017_20_12302024_02062025.zip , /opt/ftpRoot/Install_USB_Win11.zip
+                D:/中文测试.txt                                              , /opt/ftpRoot/
+            </upFile>                                      <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
+            <route>
+                <succeed>
+                    <next ref="XFTP_CF039_上传目录" />
+                </succeed>
+            </route>
+        </xftp>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+FtpConfig           v_Ftp     = (FtpConfig) XJava.getObject("XFTP_CF039_上传文件");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Ftp ,v_Context);
+```
+
+
+
+
+
 占位符的举例
 ------
 
@@ -5236,6 +5406,7 @@ __编排配置__
     <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
     <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
     <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
     <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
     <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
     <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
@@ -5430,5 +5601,5 @@ NodeConfig          v_NodeConfig = (NodeConfig) XJava.getObject("XNode_CF024_1")
 Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
-ExecuteResult       v_Result  = CallFlow.execute(v_Subscribe ,v_Context);
+ExecuteResult       v_Result  = CallFlow.execute(v_NodeConfig ,v_Context);
 ```
