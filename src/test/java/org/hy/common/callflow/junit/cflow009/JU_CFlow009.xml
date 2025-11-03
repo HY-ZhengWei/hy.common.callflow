@@ -52,7 +52,7 @@
         <xwait id="XWait_CF009_1_1_1">
             <comment>等待1秒</comment>
             <waitTime>1000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
-            <counter>1</counter>
+            <counter>Counter</counter>
             <counterMax>5</counterMax>
             <route>
                 <if>                                        <!-- 自引用 -->

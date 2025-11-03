@@ -213,7 +213,8 @@
 |Map取一|:Map.key|从Map取某个元素的Value（关键字为字符串key，key是固定值）|
 |Map取一|:Map.key.xxx|同上|
 |Map取一|:Map.{xxx.yyy}.uuu|同上，并且组合多层占位符，使Map的关键字也变成动态取值的|
-|嵌套占位符|:{:xxx}.uuu|xxx是一个占位符，它的值是另一个占位符|
+|嵌套占位符|:{:xxx}|xxx是一个占位符，它的值是另一个占位符|
+|嵌套占位符|:{:xxx}.uuu|xxx是一个占位符，它的值是另一个占位符，并取对象的属性|
 |嵌套占位符|:{:{:xxx}}.uuu |同上，嵌套了三层|
 
 
@@ -2425,7 +2426,7 @@ __编排配置__
         <xwait id="XWait_CF009_1_1_1">
             <comment>等待1秒</comment>
             <waitTime>1000</waitTime>                       <!-- 等待时长（单位：毫秒） -->
-            <counter>1</counter>
+            <counter>Counter</counter>
             <counterMax>5</counterMax>
             <route>
                 <if>                                        <!-- 自引用 -->
