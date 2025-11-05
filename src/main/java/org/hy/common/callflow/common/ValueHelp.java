@@ -35,7 +35,8 @@ import org.hy.common.xml.log.Logger;
  *   :Map.key                 支持单个占位符的Map取一。即从Map取某个元素的Value（关键字为字符串key，key是固定值）。
  *   :Map.key.xxx             支持单个占位符的Map取一。
  *   :Map.{xxx.yyy}.uuu       支持单个占位符的Map取一组合多层的占位符。使Map的关键字也变成动态取值的。
- *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+ *   :{:xxx}                  支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+ *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符，并取对象的属性。
  *   :{:{:xxx}}.uuu           支持占位符的嵌套获取对象。嵌套三层。
  *
  * @author      ZhengWei(HY)
@@ -368,7 +369,8 @@ public class ValueHelp
      *   :Map.key                 支持单个占位符的Map取一。即从Map取某个元素的Value（关键字为字符串key，key是固定值）。
      *   :Map.key.xxx             支持单个占位符的Map取一。
      *   :Map.{xxx.yyy}.uuu       支持单个占位符的Map取一组合多层的占位符。使Map的关键字也变成动态取值的。
-     *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+     *   :{:xxx}                  支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+     *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符，并取对象的属性。
      *   :{:{:xxx}}.uuu           支持占位符的嵌套获取对象。嵌套三层。
      * 
      * @author      ZhengWei(HY)
@@ -406,7 +408,8 @@ public class ValueHelp
      *   :Map.key                 支持单个占位符的Map取一。即从Map取某个元素的Value（关键字为字符串key，key是固定值）。
      *   :Map.key.xxx             支持单个占位符的Map取一。
      *   :Map.{xxx.yyy}.uuu       支持单个占位符的Map取一组合多层的占位符。使Map的关键字也变成动态取值的。
-     *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+     *   :{:xxx}                  支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符。
+     *   :{:xxx}.uuu              支持占位符的嵌套获取对象。:xxx是一个占位符，它的值是另一个占位符，并取对象的属性。
      *   :{:{:xxx}}.uuu           支持占位符的嵌套获取对象。嵌套三层。
      * 
      * @author      ZhengWei(HY)
