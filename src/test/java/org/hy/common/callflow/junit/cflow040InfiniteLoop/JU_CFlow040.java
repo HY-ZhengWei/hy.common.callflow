@@ -1,4 +1,4 @@
-package org.hy.common.callflow.junit.cflow04InfiniteLoop;
+package org.hy.common.callflow.junit.cflow040InfiniteLoop;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
-import org.hy.common.callflow.junit.cflow04InfiniteLoop.program.Program;
+import org.hy.common.callflow.junit.cflow040InfiniteLoop.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;

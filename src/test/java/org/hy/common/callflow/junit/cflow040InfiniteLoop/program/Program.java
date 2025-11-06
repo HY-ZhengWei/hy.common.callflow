@@ -1,4 +1,4 @@
-package org.hy.common.callflow.junit.cflow04InfiniteLoop.program;
+package org.hy.common.callflow.junit.cflow040InfiniteLoop.program;
 
 import java.util.Map;
 
