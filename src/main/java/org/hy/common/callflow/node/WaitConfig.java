@@ -386,7 +386,7 @@ public class WaitConfig extends ExecuteElement implements Cloneable
         
         if ( !ExportType.UI.equals(i_ExportType) )
         {
-            if ( !Help.isNull(this.waitTime) )
+            if ( !Help.isNull(this.waitTime) && !"0".equals(this.waitTime) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("waitTime" ,this.waitTime));
             }

@@ -935,7 +935,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("redoXID" ,this.getRedoXID()));
             }
-            if ( !Help.isNull(this.waitTime) )
+            if ( !Help.isNull(this.waitTime) && !"0".equals(this.waitTime) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("waitTime" ,this.waitTime));
             }
