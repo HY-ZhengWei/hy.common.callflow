@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：无限循环 -->
+    <!-- 须扩大内存，配置举例： -Xmx1G -XX:MetaspaceSize=512M -Xss1G -->
+    <xconfig>
+    
+        <xnode id="XNode_CF040_Finish">
+            <comment>完成</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>finish</callMethod>
+        </xnode>
+        
+    
+        <xnode id="XNode_CF040_Loop">
+            <comment>无限循环</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>loop</callMethod>
+            <callParam>
+                <value>:CallFlowContext</value>             <!-- 系统预设的上下文内容变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next>:XWait_CF040_Wait</next>
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xwait id="XWait_CF040_Wait">
+            <comment>等待1秒</comment>
+            <waitTime>1</waitTime>                          <!-- 等待时长（单位：毫秒） -->
+            <counter>Counter</counter>
+            <counterMax>12000</counterMax>                  <!-- 20分钟 -->
+            <route>
+                <if>                                        <!-- 自引用 -->
+                    <next ref="XNode_CF040_Loop" />
+                    <comment>While循环的下一步</comment>
+                </if>
+                <else>
+                    <next ref="XNode_CF040_Finish" />
+                </else>
+            </route>
+        </xwait>
+        
+    
+        <xnode id="XNode_CF040_Start">
+            <comment>准备开始无限循环</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>start</callMethod>
+            <route>
+                <succeed>
+                    <next ref="XWait_CF040_Wait" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
