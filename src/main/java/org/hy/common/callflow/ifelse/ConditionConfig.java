@@ -64,7 +64,7 @@ import org.hy.common.xml.log.Logger;
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v3.0  2025-09-26  迁移：静态检查
  *              v4.0  2025-10-15  添加：Switch分支
- *              v5.0  2025-11-06  添加：重做的编排元素XID、重做时的等待时长、重做时的计数器最大值
+ *              v5.0  2025-11-06  添加：三合一的重做编排元素XID、重做时的等待时长、重做时的计数器最大值。建议人：王雨墨、王可
  */
 public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
 {
