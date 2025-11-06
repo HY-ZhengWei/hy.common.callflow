@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hy.common.Date;
+import org.hy.common.Help;
+import org.hy.common.PartitionMap;
+import org.hy.common.StringHelp;
+import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.db.DBSQL;
 import org.junit.Test;
 
 
@@ -30,6 +35,37 @@ public class JU_ValueHelp
     private String                        comment    = null;
     
     private Map<String ,JU_ValueHelpUser> users;
+    
+    
+    
+    @Test
+    public void test_replaceByContext_datagramXID() throws Exception
+    {
+        String v_DatagramXID = ":XID";
+        PartitionMap<String ,Integer> v_DatagramXIDPlaceholders;
+        PartitionMap<String ,Integer> v_PlaceholdersOrg = null;
+        if ( !Help.isNull(v_DatagramXID) )
+        {
+            v_PlaceholdersOrg = StringHelp.parsePlaceholdersSequence(DBSQL.$Placeholder ,v_DatagramXID ,true);
+        }
+        
+        if ( !Help.isNull(v_PlaceholdersOrg) )
+        {
+            v_DatagramXIDPlaceholders = Help.toReverse(v_PlaceholdersOrg);
+            v_PlaceholdersOrg.clear();
+            v_PlaceholdersOrg = null;
+        }
+        else
+        {
+            v_DatagramXIDPlaceholders = new TablePartitionLink<String ,Integer>();
+        }
+        
+        Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        v_Context.put("XID" , new Date());
+        
+        Object v_Value = ValueHelp.getValueReplace(v_DatagramXID ,v_DatagramXIDPlaceholders ,null ,null ,v_Context);
+        System.out.println(v_Value);
+    }
     
     
     

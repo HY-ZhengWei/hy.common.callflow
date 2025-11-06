@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.MethodReflect;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
@@ -19,6 +20,11 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.forloop.ForConfig;
+import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.returns.ReturnConfig;
+import org.hy.common.xml.XJava;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -43,6 +49,14 @@ import org.hy.common.callflow.file.IToXml;
  *              依次判定顶层的每个条件项，当第N个项层条件项为真时，走真值路由的第N个分支，其它条件项不再判定。
  *              即，多个真值路由时仅有一个路由被执行。
  *              当所有条件项均为假时，走假值路由，当有多个假值路由时，依次遍历挨个执行。
+ *              
+ *              
+ * 条件逻辑运行时计算结果为假值时有两种情况：1常规情况、2重做情况。
+ *    1. 常规情况。直接走向假值路由，继续向后面的编排执行。
+ *    
+ *    2. 重做情况。尝试等待一段时间后重做某个编排元素后，再次执行条件逻辑判定一次。
+ *              当计算结果还为假值时，重复上面的操作，至到计数器的最大值为止，依然为假值时，走向假值路由。
+ *              当某次计算结果为真值时，走向真值路由。
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-02-12
@@ -50,15 +64,29 @@ import org.hy.common.callflow.file.IToXml;
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
  *              v3.0  2025-09-26  迁移：静态检查
  *              v4.0  2025-10-15  添加：Switch分支
+ *              v5.0  2025-11-06  添加：重做的编排元素XID、重做时的等待时长、重做时的计数器最大值
  */
 public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
 {
+    
+    private static final Logger $Logger = new Logger(ConditionConfig.class);
+    
+    
     
     /** 逻辑 */
     private Logical      logical;
     
     /** 条件项或嵌套条件逻辑 */
     private List<IfElse> items;
+    
+    /** 重做的编排元素XID。采用弱关联的方式 */
+    private String       redoXID;
+    
+    /** 重做时的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    private String       waitTime;
+    
+    /** 重做时的计数器最大值（正整数，允许counter等于最大值）。可以是数值、上下文变量、XID标识 */
+    private String       counterMax;
     
     
     
@@ -81,8 +109,9 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     public ConditionConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.logical = Logical.And;
-        this.items   = new ArrayList<>();
+        this.logical  = Logical.And;
+        this.waitTime = "0";
+        this.items    = new ArrayList<>();
     }
     
     
@@ -117,6 +146,15 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
             if ( Help.isNull(this.getRoute().getSucceeds()) )
             {
                 io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "] True route must be present during SWITCH.");
+                return false;
+            }
+        }
+        
+        if ( !Help.isNull(this.redoXID) )
+        {
+            if ( "0".equals(this.getWaitTime()) )
+            {
+                io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].waitTime is 0.");
                 return false;
             }
         }
@@ -256,6 +294,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
     
     
+    
     /**
      * 执行
      * 
@@ -285,6 +324,87 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         {
             int v_ExceRet = this.allow(io_Context);
             
+            // 重做
+            if ( v_ExceRet <= -1 && !Help.isNull(this.redoXID) )
+            {
+                // 获取执行对象
+                Object v_RedoObject = XJava.getObject(this.redoXID);
+                if ( v_RedoObject == null )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s redoXID[" + this.redoXID + "] is not find."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
+                }
+                // 执行对象不是编排元素
+                if ( !MethodReflect.isExtendImplement(v_RedoObject ,ExecuteElement.class) )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s redoXID[" + this.redoXID + "] is not ExecuteElement."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
+                }
+                // 执行对象不允许是条件逻辑元素
+                if ( v_RedoObject instanceof ConditionConfig )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s redoXID[" + this.redoXID + "] cannot be ConditionConfig."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
+                }
+                // 执行对象不允许是循环元素
+                if ( v_RedoObject instanceof ForConfig )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s redoXID[" + this.redoXID + "] cannot be ForConfig."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
+                }
+                // 执行对象不允许是返回元素
+                if ( v_RedoObject instanceof ReturnConfig )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s redoXID[" + this.redoXID + "] cannot be ReturnConfig."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
+                }
+                // 执行对象不允许是等待元素
+                if ( v_RedoObject instanceof WaitConfig )
+                {
+                    v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s redoXID[" + this.redoXID + "] cannot be WaitConfig."));
+                    this.refreshStatus(io_Context ,v_Result.getStatus());
+                    return v_Result;
+                }
+                
+                ExecuteElement v_RedoElement = (ExecuteElement) v_RedoObject;
+                Long           v_WaitTime    = this.getWaitTime(io_Context);
+                Integer        v_CounterMax  = this.getCounterMax(io_Context);
+                int            v_Counter     = 0;
+                
+                if ( v_WaitTime <= 0L )
+                {
+                    $Logger.warn("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s waitTime[" + this.waitTime + "] is less than 0.");
+                }
+                else
+                {
+                    do
+                    {
+                        // 先等待
+                        Thread.sleep(v_WaitTime ,0);
+                        
+                        // 再重做
+                        ExecuteResult v_TempResult = v_RedoElement.execute(i_SuperTreeID ,io_Context);
+                        if ( v_TempResult.getException() != null )
+                        {
+                            throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s redoXID[" + this.redoXID + "] is error." ,v_TempResult.getException());
+                        }
+                        
+                        // 后判断
+                        v_ExceRet = this.allow(io_Context);
+                        
+                        v_Counter++;
+                    } while ( v_ExceRet <= -1 && (v_CounterMax <= 0 || v_Counter < v_CounterMax) );
+                    
+                    // 重做日志：执行逻辑
+                    v_Result.setExecuteLogic(this.toString(io_Context));
+                }
+            }
+            
             if ( !Help.isNull(this.returnID) )
             {
                 io_Context.put(this.returnID ,v_ExceRet);
@@ -302,6 +422,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
             return v_Result;
         }
     }
+    
     
     
     /**
@@ -405,6 +526,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
     
     
+    
     /**
      * 拒绝判定。即：假判定
      * 
@@ -431,6 +553,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
     
     
+    
     /**
      * 添加条件项
      * 
@@ -446,6 +569,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
     
     
+    
     /**
      * 添加条件逻辑
      * 
@@ -459,6 +583,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     {
         return this.setItem(i_Condition);
     }
+    
     
     
     /**
@@ -487,6 +612,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
     
     
+    
     /**
      * 添加嵌套条件逻辑
      * 
@@ -513,6 +639,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
     
     
+    
     /**
      * 获取：逻辑
      */
@@ -521,6 +648,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         return logical;
     }
 
+    
     
     /**
      * 设置：逻辑
@@ -535,6 +663,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
     
     
+    
     /**
      * 获取：条件项或嵌套条件逻辑
      */
@@ -542,6 +671,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     {
         return items;
     }
+    
     
     
     /**
@@ -562,6 +692,176 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
+    
+    
+    
+    /**
+     * 获取：子重做的编排元素XID。采用弱关联的方式
+     */
+    public String getRedoXID()
+    {
+        return ValueHelp.standardRefID(this.redoXID);
+    }
+
+    
+    
+    /**
+     * 设置：重做的编排元素XID。采用弱关联的方式
+     * 
+     * @param i_RedoXID 重做的编排元素XID。采用弱关联的方式
+     */
+    public void setRedoXID(String i_RedoXID)
+    {
+        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
+        this.redoXID = ValueHelp.standardValueID(i_RedoXID);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 获取重做的等待时长（单位：毫秒）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-05
+     * @version     v1.0
+     *
+     * @param i_Context     上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Long getWaitTime(Map<String ,Object> i_Context) throws Exception
+    {
+        Long v_WaitTime = null;
+        
+        if ( Help.isNumber(this.waitTime) )
+        {
+            v_WaitTime = Long.valueOf(this.waitTime);
+        }
+        else
+        {
+            v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,0L ,i_Context);
+        }
+        
+        return v_WaitTime;
+    }
+    
+    
+    
+    /**
+     * 获取：重做的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public String getWaitTime()
+    {
+        return waitTime;
+    }
+
+    
+    
+    /**
+     * 设置：重做的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_WaitTime 重做的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public void setWaitTime(String i_WaitTime)
+    {
+        if ( Help.isNull(i_WaitTime) )
+        {
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTime is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_WaitTime) )
+        {
+            Long v_WaitTime = Long.valueOf(i_WaitTime);
+            if ( v_WaitTime < 0L )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTime Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.waitTime = i_WaitTime.trim();
+        }
+        else
+        {
+            this.waitTime = ValueHelp.standardRefID(i_WaitTime);
+        }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 获取重做的计数器最大值
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-05
+     * @version     v1.0
+     *
+     * @param i_Context     上下文类型的变量信息
+     * @return
+     * @throws Exception 
+     */
+    private Integer getCounterMax(Map<String ,Object> i_Context) throws Exception
+    {
+        Integer v_CounterMax = 0;
+        
+        if ( !Help.isNull(this.counterMax) )
+        {
+            v_CounterMax = (Integer) ValueHelp.getValue(this.counterMax ,Integer.class ,0 ,i_Context);
+        }
+        
+        return v_CounterMax;
+    }
+    
+    
+    
+    /**
+     * 获取：重做的计数器最大值（正整数，允许counter等于最大值）。可以是数值、上下文变量、XID标识
+     */
+    public String getCounterMax()
+    {
+        return counterMax;
+    }
+
+    
+    
+    /**
+     * 设置：重做的计数器最大值（正整数，允许counter等于最大值）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_CounterMax 重做的计数器最大值（正整数，允许counter等于最大值）。可以是数值、上下文变量、XID标识
+     */
+    public void setCounterMax(String i_CounterMax)
+    {
+        if ( Help.isNull(i_CounterMax) )
+        {
+            this.counterMax = null;
+        }
+        else
+        {
+            if ( Help.isNumber(i_CounterMax) )
+            {
+                Integer v_CounterMax = Integer.valueOf(i_CounterMax);
+                if ( v_CounterMax <= 0 )
+                {
+                    IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CounterMax Less than or Equal to zero.");
+                    $Logger.error(v_Exce);
+                    throw v_Exce;
+                }
+                this.counterMax = i_CounterMax.trim();
+            }
+            else
+            {
+                this.counterMax = ValueHelp.standardRefID(i_CounterMax);
+            }
+        }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
     
     
     /**
@@ -631,6 +931,18 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                     v_Xml.append(v_Item.toXml(i_Level + 1 ,v_TreeID ,i_ExportType));
                 }
             }
+            if ( !Help.isNull(this.redoXID) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("redoXID" ,this.getRedoXID()));
+            }
+            if ( !Help.isNull(this.waitTime) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("waitTime" ,this.waitTime));
+            }
+            if ( !Help.isNull(this.counterMax) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("counterMax" ,this.counterMax));
+            }
             if ( !Help.isNull(this.returnID) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("returnID" ,this.returnID));
@@ -681,6 +993,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
 
     
+    
     /**
      * 解析为实时运行时的逻辑判定表达式
      * 
@@ -720,6 +1033,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         
         return v_Builder.toString();
     }
+    
     
     
     /**
@@ -763,6 +1077,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     }
     
     
+    
     /**
      * 仅仅创建一个新的实例，没有任何赋值
      * 
@@ -776,6 +1091,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
     {
         return new ConditionConfig();
     }
+    
     
     
     /**
@@ -793,7 +1109,10 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         ConditionConfig v_Clone = new ConditionConfig();
         
         this.cloneMyOnly(v_Clone);
-        v_Clone.logical = this.logical;
+        v_Clone.logical    = this.logical;
+        v_Clone.redoXID    = this.redoXID;
+        v_Clone.waitTime   = this.waitTime;
+        v_Clone.counterMax = this.counterMax;
         
         for (IfElse v_Item : this.items)
         {
@@ -813,6 +1132,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         
         return v_Clone;
     }
+    
     
     
     /**
@@ -839,7 +1159,10 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         ConditionConfig v_Clone = (ConditionConfig) io_Clone;
         super.clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.logical = this.logical;
+        v_Clone.logical    = this.logical;
+        v_Clone.redoXID    = this.redoXID;
+        v_Clone.waitTime   = this.waitTime;
+        v_Clone.counterMax = this.counterMax;
         
         for (IfElse v_Item : this.items)
         {
@@ -861,6 +1184,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
             }
         }
     }
+    
     
     
     /**

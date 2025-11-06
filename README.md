@@ -24,6 +24,7 @@
     * [条件逻辑元素的非空及多路径举例](#条件逻辑元素的非空及多路径举例)
     * [多路径裂变举例](#多路径裂变举例)
     * [条件逻辑元素的分支逻辑举例](#条件逻辑元素的分支逻辑举例)
+    * [条件逻辑元素的三合一重做举例](#条件逻辑元素的三合一重做举例)
     * [嵌套元素举例](#嵌套元素举例)
     * [嵌套元素的嵌套多个举例](#嵌套元素的嵌套多个举例)
     * [嵌套元素的超时和异常举例](#嵌套元素的超时和异常举例)
@@ -1920,6 +1921,148 @@ Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_For ,v_Context);
+```
+
+
+
+
+
+条件逻辑元素的三合一重做举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow041ThreeInOne) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow041ThreeInOne/JU_CFlow041.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：条件逻辑元素的三合一功能：重做 -->
+    <xconfig>
+    
+    
+        <xreturn id="XCondition_CF041_ThreeInOne_完成_真值时">
+            <comment>完成，真值时</comment>
+            <retValue>
+            {
+                "retInt": 200,
+                "retText": "累加到 :Index 时完成"
+            }
+            </retValue>
+        </xreturn>
+        
+        
+        <xreturn id="XCondition_CF041_ThreeInOne_完成_假值时">
+            <comment>完成，假值时</comment>
+            <retValue>
+            {
+                "retInt": -501,
+                "retText": "累加到 :Index 时完成"
+            }
+            </retValue>
+        </xreturn>
+    
+    
+        <xcondition id="XCondition_CF041_ThreeInOne_三合一">
+            <comment>判定条件是否满足</comment>
+            <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
+            <conditionItem>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义变量类型 -->
+                <valueXIDA>10</valueXIDA>                   <!-- 常量值 -->
+                <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                <valueXIDB>:Index</valueXIDB>               <!-- 变量 -->
+            </conditionItem>
+            <redoXID>:XNode_CF041_ThreeInOne_执行</redoXID>  <!-- 三合一：重做的执行对象 -->
+            <waitTime>1000</waitTime>                       <!-- 三合一：重做的等待时长（单位：毫秒） -->
+            <counterMax>:CounterMax</counterMax>            <!-- 三合一：重做的等待计数器最大值（可选项） -->
+            <route>
+                <if>
+                    <next ref="XCondition_CF041_ThreeInOne_完成_真值时" />
+                    <comment>真时</comment>
+                </if>
+                <else>
+                    <next ref="XCondition_CF041_ThreeInOne_完成_假值时" />
+                    <comment>假时</comment>
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xnode id="XNode_CF041_ThreeInOne_执行">
+            <comment>执行</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>addUp</callMethod>
+            <callParam>
+                <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
+                <value>:Index</value>                       <!-- 定义入参变量名称 -->
+                <valueDefault>0</valueDefault>              <!-- 定义入参默认值 -->
+            </callParam>
+            <returnID>Index</returnID>                      <!-- 定义返回结果的变量名称。名称相同时会覆盖 -->
+            <route>
+                <succeed>
+                    <next ref="XCondition_CF041_ThreeInOne_三合一" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NodeConfig          v_Node    = (NodeConfig) XJava.getObject("XNode_CF041_ThreeInOne_执行");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+// v_Context.put("CounterMax" ,5);     // 超时完成
+v_Context.put("CounterMax" ,100);      // 重做数次后成功完成
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Node ,v_Context);
 ```
 
 

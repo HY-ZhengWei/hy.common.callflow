@@ -83,7 +83,6 @@ public class WaitConfig extends ExecuteElement implements Cloneable
      */
     public boolean check(Return<Object> io_Result)
     {
-        // 返回元素的返回结果数据不能为空
         if ( "0".equals(this.getWaitTime()) )
         {
             io_Result.set(false).setParamStr("CFlowCheck：" + this.getClass().getSimpleName() + "[" + Help.NVL(this.getXid()) + "].waitTime is 0.");
