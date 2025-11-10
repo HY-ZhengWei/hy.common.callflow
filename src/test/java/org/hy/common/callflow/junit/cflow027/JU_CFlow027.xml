@@ -56,6 +56,36 @@
                     <comment>成功时</comment>
                 </succeed>
             </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟操作系统命令成功结果</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data type="textarea">                  <!-- Mock模拟成功时的模拟数据 -->
+                    <![CDATA[
+                         模拟数据
+                         驱动器 C 中的卷是 Windows
+                         卷的序列号是 006A-D1C7
+                        
+                         C:\Windows 的目录
+                        
+                        2025/11/10  00:00    <DIR>          .
+                        2025/11/10  01:00    <DIR>          appcompat
+                        2025/11/10  02:00    <DIR>          apppatch
+                        2025/11/10  03:00    <DIR>          AppReadiness
+                        2025/11/10  04:00    <DIR>          bcastdvr
+                        2025/11/10  05:00           126,976 bfsvc.exe
+                        2025/11/10  06:00    <DIR>          Boot
+                        2025/11/10  07:00    <DIR>          Branding
+                        2025/11/10  08:00    <DIR>          BrowserCore
+                        2025/11/10  09:00    <DIR>          CbsTemp
+                        2025/11/10  10:00               759 comsetup.log
+                        2025/11/10  11:00            23,885 CoreCountrySpecific.xml
+                        2025/11/10  12:00                12 csup.txt
+                    ]]>
+                    </data>
+                </succeed>
+            </mock>
         </xcommand>
         
         

@@ -93,6 +93,36 @@
                     <comment>成功时</comment>
                 </succeed>
             </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟接口请求成功后返回结果</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>                                  <!-- Mock模拟成功时的模拟数据 -->
+                    {
+                        "status": "模拟success",
+                        "country": "China",
+                        "countryCode": "CN",
+                        "region": "SD",
+                        "regionName": "Shandong",
+                        "city": "Jinan",
+                        "zip": "250000",
+                        "lat": 36.6518,
+                        "lon": 117.12,
+                        "timezone": "Asia/Shanghai",
+                        "isp": "China Unicom Shandong Province network",
+                        "org": "NanJing XinFeng Information Technologies, Inc.",
+                        "as": "AS137702 Nanjing, Jiangsu Province, P.R.China.",
+                        "query": "114.114.114.114"
+                    }
+                    </data>
+                </succeed>
+                <error>                                     <!-- Mock模拟异常时 -->
+                    <comment>模拟接口请求异常</comment>
+                    <enable>:MockError</enable>             <!-- Mock模拟异常时的生效变量 -->
+                    <data>模拟接口请求异常</data>               <!-- Mock模拟异常时的模拟数据 -->
+                </error>
+            </mock>
         </xapi>
         
     </xconfig>

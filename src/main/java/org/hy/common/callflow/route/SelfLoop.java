@@ -14,6 +14,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.forloop.ForConfig;
+import org.hy.common.callflow.mock.MockConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
@@ -324,6 +325,18 @@ public class SelfLoop extends ExecuteElement
     public String getMinTreeID()
     {
         return gatExecuteElement().getMinTreeID();
+    }
+    
+    
+    
+    /**
+     * 设置：模拟元素
+     * 
+     * @param i_Mock 模拟元素
+     */
+    public void setMock(MockConfig i_Mock)
+    {
+        throw new RuntimeException("Not allowed to call SelfLoop.setMock().");
     }
 
     

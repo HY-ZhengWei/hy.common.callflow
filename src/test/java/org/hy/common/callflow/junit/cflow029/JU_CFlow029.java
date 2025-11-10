@@ -85,6 +85,7 @@ public class JU_CFlow029 extends AppInitConfig
         
         v_Context.put("RowDataObject" ,v_RowData);
         v_Context.put("PKID"          ,v_RowData.getId());
+        v_Context.put("MockSucceed"   ,true);
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_CS);

@@ -68,7 +68,9 @@ public class JU_CFlow019 extends JUBase
         APIConfig           v_API     = (APIConfig) XJava.getObject("XAPI_CF019_1");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
-        v_Context.put("IP" ,"114.114.114.114");
+        v_Context.put("IP"          ,"114.114.114.114");
+        v_Context.put("MockSucceed" ,true);
+        v_Context.put("MockError"   ,true);
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_API);

@@ -20,6 +20,7 @@ import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.mock.MockConfig;
 import org.hy.common.callflow.timeout.TimeoutConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.log.Logger;
@@ -573,6 +574,18 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 设置：模拟元素
+     * 
+     * @param i_Mock 模拟元素
+     */
+    public void setMock(MockConfig i_Mock)
+    {
+        throw new RuntimeException("Not allowed to call MTConfig.setMock().");
+    }
+    
+    
+    
+    /**
      * 执行
      * 
      * @author      ZhengWei(HY)
@@ -598,6 +611,8 @@ public class MTConfig extends ExecuteElement implements Cloneable
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
         }
+        
+        // 不允许有Mock模拟
         
         try
         {
@@ -984,6 +999,24 @@ public class MTConfig extends ExecuteElement implements Cloneable
                 this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error.getXmlName()   ,i_Level ,v_TreeID ,i_ExportType);
                 
                 v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
+            }
+            
+            // 模拟数据
+            if ( !Help.isNull(this.mock.getSucceeds()) 
+              || !Help.isNull(this.mock.getExceptions()) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toBegin("mock"));
+                if ( this.mock.isValid() )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid" ,"true"));
+                }
+                if ( !Help.isNull(this.mock.getDataClass()) )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("dataClass" ,this.mock.getDataClass()));
+                }
+                this.toXmlMockItems(v_Xml ,this.mock.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                this.toXmlMockItems(v_Xml ,this.mock.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                v_Xml.append(v_NewSpace).append(IToXml.toEnd("mock"));
             }
             
             this.toXmlExecute(v_Xml ,v_NewSpace);

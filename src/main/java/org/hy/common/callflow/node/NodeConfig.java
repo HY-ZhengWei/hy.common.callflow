@@ -219,6 +219,27 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     
     
     /**
+     * 运行时中获取模拟数据。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-07
+     * @version     v1.0
+     *
+     * @param io_Context   上下文类型的变量信息
+     * @param i_BeginTime  编排元素的开始时间
+     * @param io_Result    编排元素的执行结果
+     * @return             表示是否有模拟数据
+     */
+    public boolean mock(Map<String ,Object> io_Context ,long i_BeginTime ,ExecuteResult io_Result)
+    {
+        return super.mock(io_Context ,i_BeginTime ,io_Result ,null ,null);
+    }
+    
+    
+    
+    /**
      * 执行
      * 
      * @author      ZhengWei(HY)
@@ -244,9 +265,17 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             return v_Result;
         }
         
-        if ( Help.isNull(this.callXID) )
+        // Mock模拟
+        try
         {
-            v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID is null."));
+            if ( this.mock(io_Context ,v_BeginTime ,v_Result) )
+            {
+                return v_Result;
+            }
+        }
+        catch (Exception exce)
+        {
+            v_Result.setException(exce);
             this.refreshStatus(io_Context ,v_Result.getStatus());
             return v_Result;
         }
@@ -1132,6 +1161,24 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                 this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error.getXmlName()   ,i_Level ,v_TreeID ,i_ExportType);
                 
                 v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
+            }
+            
+            // 模拟数据
+            if ( !Help.isNull(this.mock.getSucceeds()) 
+              || !Help.isNull(this.mock.getExceptions()) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toBegin("mock"));
+                if ( this.mock.isValid() )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid" ,"true"));
+                }
+                if ( !Help.isNull(this.mock.getDataClass()) )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("dataClass" ,this.mock.getDataClass()));
+                }
+                this.toXmlMockItems(v_Xml ,this.mock.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                this.toXmlMockItems(v_Xml ,this.mock.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                v_Xml.append(v_NewSpace).append(IToXml.toEnd("mock"));
             }
             
             this.toXmlExecute(v_Xml ,v_NewSpace);

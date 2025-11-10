@@ -72,6 +72,8 @@ public class JU_CFlow028 extends AppInitConfig
         CacheGetConfig      v_CG      = (CacheGetConfig) XJava.getObject("XCG_Query_AllTables");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
+        v_Context.put("MockSucceed" ,true);
+        
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_CG);
         if ( !v_CheckRet.get() )

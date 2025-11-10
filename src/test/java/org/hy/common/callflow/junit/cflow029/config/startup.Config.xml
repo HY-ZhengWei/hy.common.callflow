@@ -14,11 +14,11 @@
         <startupConfig id="StartupConfig">
         
             <item>
-                <value>/config/Redis.Cluster.xml</value>
+                <value>JU_CFlow029.xml</value>
             </item>
             
             <item>
-                <value>JU_CFlow029.xml</value>
+                <value>/config/Redis.Cluster.xml</value>
             </item>
 
         </startupConfig>

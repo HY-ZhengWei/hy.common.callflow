@@ -12,6 +12,7 @@ import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.ExecuteElement;
+import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.file.FileHelp;
 import org.hy.common.xml.log.Logger;
@@ -149,6 +150,27 @@ public class ZipConfig extends NodeConfig implements NodeConfigBase
         }
         
         return true;
+    }
+    
+    
+    
+    /**
+     * 运行时中获取模拟数据。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-07
+     * @version     v1.0
+     *
+     * @param io_Context   上下文类型的变量信息
+     * @param i_BeginTime  编排元素的开始时间
+     * @param io_Result    编排元素的执行结果
+     * @return             表示是否有模拟数据
+     */
+    public boolean mock(Map<String ,Object> io_Context ,long i_BeginTime ,ExecuteResult io_Result) 
+    {
+        return super.mock(io_Context ,i_BeginTime ,io_Result ,null ,HashMap.class.getName());
     }
     
     

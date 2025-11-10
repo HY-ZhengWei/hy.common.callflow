@@ -320,6 +320,12 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
             return v_Result;
         }
         
+        // Mock模拟
+        if ( super.mock(io_Context ,v_BeginTime ,v_Result ,null ,Integer.class.getName()) )
+        {
+            return v_Result;
+        }
+        
         try
         {
             int v_ExceRet = this.allow(io_Context);
@@ -959,13 +965,33 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
                 v_Xml.append(v_NewSpace).append(IToXml.toBegin("route"));
                 
                 // 真值路由
-                this.toXmlRouteItems(v_Xml ,this.route.getSucceeds()   ,RouteType.If.getXmlName()    ,i_Level ,v_TreeID ,i_ExportType);
+                this.toXmlRouteItems(v_Xml ,this.route.getSucceeds()   ,RouteType.If   .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
                 // 假值路由
                 this.toXmlRouteItems(v_Xml ,this.route.getFaileds()    ,RouteType.Else.getXmlName()  ,i_Level ,v_TreeID ,i_ExportType);
                 // 异常路由
                 this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
                 
                 v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
+            }
+            
+            // 模拟数据
+            if ( !Help.isNull(this.mock.getSucceeds()) 
+              || !Help.isNull(this.mock.getFaileds())
+              || !Help.isNull(this.mock.getExceptions()) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toBegin("mock"));
+                if ( this.mock.isValid() )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid" ,"true"));
+                }
+                if ( !Help.isNull(this.mock.getDataClass()) )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("dataClass" ,this.mock.getDataClass()));
+                }
+                this.toXmlMockItems(v_Xml ,this.mock.getSucceeds()   ,RouteType.If   .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                this.toXmlMockItems(v_Xml ,this.mock.getFaileds()    ,RouteType.Else .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                this.toXmlMockItems(v_Xml ,this.mock.getExceptions() ,RouteType.Error.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                v_Xml.append(v_NewSpace).append(IToXml.toEnd("mock"));
             }
             
             this.toXmlExecute(v_Xml ,v_NewSpace);

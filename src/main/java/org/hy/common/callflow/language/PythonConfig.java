@@ -527,6 +527,12 @@ public class PythonConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
+        // Mock模拟
+        if ( super.mock(io_Context ,v_BeginTime ,v_Result ,null ,HashMap.class.getName()) )
+        {
+            return v_Result;
+        }
+        
         try (SubInterpreter v_Jep = new SubInterpreter())
         {
             Map<String ,Object> v_In      = this.parserIn(io_Context);
@@ -723,6 +729,24 @@ public class PythonConfig extends ExecuteElement implements Cloneable
                 this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
                 
                 v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
+            }
+            
+            // 模拟数据
+            if ( !Help.isNull(this.mock.getSucceeds()) 
+              || !Help.isNull(this.mock.getExceptions()) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toBegin("mock"));
+                if ( this.mock.isValid() )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid" ,"true"));
+                }
+                if ( !Help.isNull(this.mock.getDataClass()) )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("dataClass" ,this.mock.getDataClass()));
+                }
+                this.toXmlMockItems(v_Xml ,this.mock.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                this.toXmlMockItems(v_Xml ,this.mock.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                v_Xml.append(v_NewSpace).append(IToXml.toEnd("mock"));
             }
             
             this.toXmlExecute(v_Xml ,v_NewSpace);

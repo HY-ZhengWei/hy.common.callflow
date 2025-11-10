@@ -467,11 +467,17 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
+        // Mock模拟
+        if ( super.mock(io_Context ,v_BeginTime ,v_Result ,null ,Long.class.getName()) )
+        {
+            return v_Result;
+        }
+        
         try
         {
             this.gatCache();
             
-            Object v_CacheRetDatas = null;
+            Long v_CacheRetDatas = null;
             if ( !Help.isNull(this.dataBase) )
             {
                 String v_DataBase = (String) ValueHelp.getValue(this.dataBase ,String.class ,"" ,io_Context);
@@ -551,7 +557,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                         // 约定2：仅有库、表名称时，删除表中所有行数据。
                         if ( this.allowDelTable )
                         {
-                            v_CacheRetDatas = this.cache.dropTable(v_DataBase ,v_Table);
+                            v_CacheRetDatas = this.cache.dropTable(v_DataBase ,v_Table) ? 1L : 0L;
                         }
                         else
                         {
@@ -567,7 +573,7 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                     // 约定1：仅有库名称时，删除库。
                     if ( this.allowDelTable )
                     {
-                        v_CacheRetDatas = this.cache.dropDatabase(v_DataBase);
+                        v_CacheRetDatas = this.cache.dropDatabase(v_DataBase) ? 1L : 0L;
                     }
                     else
                     {
@@ -825,9 +831,27 @@ public class CacheSetConfig extends ExecuteElement implements Cloneable
                 // 成功路由
                 this.toXmlRouteItems(v_Xml ,this.route.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
                 // 异常路由
-                this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error.getXmlName()   ,i_Level ,v_TreeID ,i_ExportType);
+                this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
                 
                 v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
+            }
+            
+            // 模拟数据
+            if ( !Help.isNull(this.mock.getSucceeds()) 
+              || !Help.isNull(this.mock.getExceptions()) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toBegin("mock"));
+                if ( this.mock.isValid() )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid" ,"true"));
+                }
+                if ( !Help.isNull(this.mock.getDataClass()) )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("dataClass" ,this.mock.getDataClass()));
+                }
+                this.toXmlMockItems(v_Xml ,this.mock.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                this.toXmlMockItems(v_Xml ,this.mock.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
+                v_Xml.append(v_NewSpace).append(IToXml.toEnd("mock"));
             }
             
             this.toXmlExecute(v_Xml ,v_NewSpace);

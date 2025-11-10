@@ -25,6 +25,9 @@ import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.mock.MockConfig;
+import org.hy.common.callflow.mock.MockException;
+import org.hy.common.callflow.mock.MockItem;
 import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.db.DBSQL;
@@ -153,6 +156,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     /** 执行链：双向链表：其后多个路由 */
     protected RouteConfig                   route;
     
+    /** 模拟元素 */
+    protected MockConfig                    mock;
+    
     /** 向上下文中赋值 */
     protected String                        context;
     
@@ -209,8 +215,114 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         this.treeLevels  = new LinkedHashMap<String ,Integer>();
         this.treeNos     = new LinkedHashMap<String ,Integer>();
         this.route       = new RouteConfig(this);
+        this.mock        = new MockConfig();
         this.keyChange   = false;
         this.delayedTime = "-1";
+    }
+    
+    
+    
+    /**
+     * 运行时中获取模拟数据。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-07
+     * @version     v1.0
+     *
+     * @param io_Context     上下文类型的变量信息
+     * @param i_BeginTime    编排元素的开始时间
+     * @param io_Result      编排元素的执行结果
+     * @param i_JsonRootKey  Json子项Key名称
+     * @param i_DataClass    模拟数据的元类型
+     * @return               表示是否有模拟数据
+     */
+    protected boolean mock(Map<String ,Object> io_Context ,long i_BeginTime ,ExecuteResult io_Result ,String i_JsonRootKey ,String i_DataClass) 
+    {
+        try
+        {
+            Object v_MockData = this.mock.mock(io_Context ,i_JsonRootKey ,i_DataClass);
+            if ( v_MockData != null )
+            {
+                io_Result.setResult(v_MockData);
+                io_Result.setExecuteLogic("Mock data：" + io_Result.getExecuteLogic());
+                
+                this.refreshReturn(io_Context ,io_Result.getResult());
+                this.refreshStatus(io_Context ,io_Result.getStatus());
+                this.success(Date.getTimeNano() - i_BeginTime);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (MockException exce)
+        {
+            io_Result.setExecuteLogic("Mock exception：" + io_Result.getExecuteLogic());
+            io_Result.setException(exce);
+            this.refreshStatus(io_Context ,io_Result.getStatus());
+            return true;
+        }
+        catch (Exception exce)
+        {
+            io_Result.setException(exce);
+            this.refreshStatus(io_Context ,io_Result.getStatus());
+            return true;
+        }
+    }
+    
+    
+    
+    /**
+     * 运行时中获取模拟数据。
+     * 
+     * 建议：子类重写此方法
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-10
+     * @version     v1.0
+     *
+     * @param io_Context     上下文类型的变量信息
+     * @param i_BeginTime    编排元素的开始时间
+     * @param io_Result      编排元素的执行结果
+     * @param i_Split        行分隔符
+     * @return               表示是否有模拟数据
+     */
+    protected boolean mockRows(Map<String ,Object> io_Context ,long i_BeginTime ,ExecuteResult io_Result ,String i_Split) 
+    {
+        try
+        {
+            List<String> v_MockData = this.mock.mockRows(io_Context ,i_Split);
+            if ( v_MockData != null )
+            {
+                io_Result.setResult(v_MockData);
+                io_Result.setExecuteLogic("Mock data：" + io_Result.getExecuteLogic());
+                
+                this.refreshReturn(io_Context ,io_Result.getResult());
+                this.refreshStatus(io_Context ,io_Result.getStatus());
+                this.success(Date.getTimeNano() - i_BeginTime);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (MockException exce)
+        {
+            io_Result.setExecuteLogic("Mock exception：" + io_Result.getExecuteLogic());
+            io_Result.setException(exce);
+            this.refreshStatus(io_Context ,io_Result.getStatus());
+            return true;
+        }
+        catch (Exception exce)
+        {
+            io_Result.setException(exce);
+            this.refreshStatus(io_Context ,io_Result.getStatus());
+            return true;
+        }
     }
     
     
@@ -1298,6 +1410,28 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     
     
     /**
+     * 获取：模拟元素
+     */
+    public MockConfig getMock()
+    {
+        return mock;
+    }
+
+
+    
+    /**
+     * 设置：模拟元素
+     * 
+     * @param i_Mock 模拟元素
+     */
+    public void setMock(MockConfig i_Mock)
+    {
+        this.mock = i_Mock;
+    }
+
+
+
+    /**
      * 刷新返回值
      * 
      * @author      ZhengWei(HY)
@@ -1479,6 +1613,57 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         }
         
         return v_Xml.toString();
+    }
+    
+    
+    
+    /**
+     * 转为Xml格式的内容
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-06
+     * @version     v1.0
+     *
+     * @param io_Xml        输出的字符串缓存
+     * @param i_RouteItems  输出的字符串缓存
+     * @param i_XmlName     XML节点名称
+     * @param i_Level       层级。最小下标从0开始。
+     *                         0表示每行前面有0个空格；
+     *                         1表示每行前面有4个空格；
+     *                         2表示每行前面有8个空格；
+     * @param i_SuperTreeID 上级树ID
+     * @param i_ExportType  导出类型
+     *                  
+     * @return
+     */
+    protected void toXmlMockItems(StringBuilder  io_Xml 
+                                 ,List<MockItem> i_MockItems 
+                                 ,String         i_XmlName 
+                                 ,int            i_Level
+                                 ,String         i_SuperTreeID
+                                 ,ExportType     i_ExportType)
+    {
+        if ( !Help.isNull(i_MockItems) )
+        {
+            String v_Level1   = "    ";
+            String v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
+            String v_NewSpace = "\n" + v_LevelN + v_Level1;
+            
+            for (MockItem v_MockItem : i_MockItems)
+            {
+                if ( ExportType.UI.equals(i_ExportType) )
+                {
+                    io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBeginThis(i_XmlName ,v_MockItem.getXJavaID()));
+                }
+                else
+                {
+                    io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBeginID(i_XmlName ,v_MockItem.getXJavaID()));
+                }
+                
+                io_Xml.append(v_MockItem.toXml(i_Level + 1 ,i_SuperTreeID ,i_ExportType));
+                io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(i_XmlName));
+            }
+        }
     }
     
     

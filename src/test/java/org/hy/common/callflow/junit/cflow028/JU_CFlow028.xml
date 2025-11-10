@@ -59,7 +59,7 @@
             <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
-            <pkID>App_IOT</pkID>                           <!-- 主键ID名称 -->
+            <pkID>App_FlowApis</pkID>                      <!-- 主键ID名称 -->
             <rowClass>org.hy.common.callflow.junit.cflow028.program.AppConfig</rowClass>  <!-- 行类型 -->
             <returnID>RetRowObject</returnID>              <!-- 定义返回结果的变量名称 -->
             <route>
@@ -68,6 +68,26 @@
                     <comment>成功时</comment>
                 </succeed>
             </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟成功结果，按rowClass对象结构返回</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>                                  <!-- Mock模拟成功时的模拟数据 -->
+                    {
+                        "xid": "模拟App_FlowApis",
+                        "createUserID": "模拟郑伟",
+                        "updateUserID": "模拟郑伟",
+                        "createTime": "2024-09-03 16:05:42",
+                        "appName": "模拟编排",
+                        "updateTime": "2024-09-03 16:05:51",
+                        "comment": "模拟编排",
+                        "id": "模拟XAppC23FF0A20B724BDFBFCC2F6DEB63DD48",
+                        "isDel": 0
+                    }
+                    </data>
+                </succeed>
+            </mock>
         </xcg>
         
     
@@ -76,7 +96,7 @@
             <cacheXID>:RedisOperation_MS_Common</cacheXID> <!-- 缓存实例的XID -->
             <dataBase>msOpenApis</dataBase>                <!-- 数据库名称 -->
             <table>TAppConfig</table>                      <!-- 表名称 -->
-            <pkID>App_IOT</pkID>                           <!-- 主键ID名称 -->
+            <pkID>App_FlowApis</pkID>                      <!-- 主键ID名称 -->
             <returnID>RetRow</returnID>                    <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed>
@@ -84,6 +104,26 @@
                     <comment>成功时</comment>
                 </succeed>
             </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟成功结果</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>                                  <!-- Mock模拟成功时的模拟数据 -->
+                    {
+                        "xid": "模拟App_FlowApis",
+                        "createUserID": "模拟郑伟",
+                        "updateUserID": "模拟郑伟",
+                        "createTime": "2024-09-03 16:05:42",
+                        "appName": "模拟编排",
+                        "updateTime": "2024-09-03 16:05:51",
+                        "comment": "模拟编排",
+                        "id": "模拟XAppC23FF0A20B724BDFBFCC2F6DEB63DD48",
+                        "isDel": 0
+                    }
+                    </data>
+                </succeed>
+            </mock>
         </xcg>
     
     
@@ -99,6 +139,27 @@
                     <comment>成功时</comment>
                 </succeed>
             </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟成功结果</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>                                  <!-- Mock模拟成功时的模拟数据 -->
+                    {
+                        "模拟App_FlowApis": {
+                            "模拟xid": "App_FlowApis",
+                            "模拟updateUserID": "郑伟",
+                            "模拟createTime": "2024-09-03 16:05:42",
+                            "模拟appName": "柔性编排",
+                            "模拟updateTime": "2024-09-03 16:05:51",
+                            "模拟comment": "柔性编排",
+                            "模拟id": "XAppC23FF0A20B724BDFBFCC2F6DEB63DD48",
+                            "模拟isDel": 0
+                        }
+                    }
+                    </data>
+                </succeed>
+            </mock>
         </xcg>
         
     
@@ -113,6 +174,20 @@
                     <comment>成功时</comment>
                 </succeed>
             </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟成功结果</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>                                  <!-- Mock模拟成功时的模拟数据 -->
+                    {
+                        "模拟msOpenApis.TRouteConfig": "2025-10-09 13:53:09",
+                        "模拟msOpenApis.TAppConfig": "2025-10-09 13:53:09",
+                        "模拟msOpenApis.TApiRelease": "2025-10-09 13:53:09"
+                    }
+                    </data>
+                </succeed>
+            </mock>
         </xcg>
         
     </xconfig>

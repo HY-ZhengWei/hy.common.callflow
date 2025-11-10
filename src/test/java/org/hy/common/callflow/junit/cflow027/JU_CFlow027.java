@@ -66,7 +66,8 @@ public class JU_CFlow027 extends JUBase
         CommandConfig       v_CMD     = (CommandConfig) XJava.getObject("XCMD");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
-        v_Context.put("DIRName" ,"C:\\Windows");
+        v_Context.put("DIRName"     ,"C:\\Windows");
+        v_Context.put("MockSucceed" ,true);
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_CMD);

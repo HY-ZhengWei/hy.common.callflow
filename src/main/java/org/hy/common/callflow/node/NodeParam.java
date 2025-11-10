@@ -262,7 +262,7 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
         }
         else
         {
-            this.valueClass = i_ValueClass;
+            this.valueClass = i_ValueClass.trim();
         }
         this.valueDefaultObject = null;
     }
@@ -469,9 +469,9 @@ public class NodeParam implements IToXml ,CloneableCallFlow ,XJavaID
         {
             v_Xml.append(v_NewSpace).append(IToXml.toValue("comment" ,this.comment));
         }
-        if ( this.valueClass != null )
+        if ( !Help.isNull(this.valueClass) )
         {
-            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueClass" ,this.gatValueClass().getName()));
+            v_Xml.append(v_NewSpace).append(IToXml.toValue("valueClass" ,this.valueClass));
         }
         if ( !Help.isNull(this.value) )
         {
