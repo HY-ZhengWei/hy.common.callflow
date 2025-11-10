@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hy.common.Date;
 import org.hy.common.Help;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
@@ -44,6 +45,7 @@ import org.hy.common.xml.log.Logger;
  *              v2.0  2025-10-11  修正：高并发同一编排时，并发计算树ID及寻址相关的信息时的并发异常
  *              v3.0  2025-10-15  添加：Switch分支
  *              v4.0  2025-10-23  修正：循环元素自身也有可能结束循环。如，集合循环下，集合对象为空
+ *              v5.0  2025-11-10  添加：编排预设变量，编排执行开始时间、累计时长
  */
 public class CallFlow
 {
@@ -55,6 +57,12 @@ public class CallFlow
     
     /** 变量ID名称：编排执行实例ID */
     public static final  String $WorkID                  = "CallFlowWorkID";
+    
+    /** 变量ID名称：编排执行开始时间 */
+    public static final  String $BeginTime               = "CallFlowBeginTime";
+    
+    /** 变量ID名称：编排执行累计时长（单位：毫秒） */
+    public static final  String $TimeLen                 = "CallFlowTimeLen";
     
     /** 变量ID名称：编排执行实例的首个执行对象的执行结果 */
     public static final  String $FirstExecuteResult      = "CallFlowFirstExecuteResult";
@@ -110,8 +118,10 @@ public class CallFlow
         
         String v_XID = ValueHelp.standardValueID(i_XID);
         
-        if ( CallFlow.$WorkID                .equals(v_XID) 
-          || CallFlow.$FirstExecuteResult    .equals(v_XID) 
+        if ( CallFlow.$WorkID                .equals(v_XID)
+          || CallFlow.$BeginTime             .equals(v_XID)
+          || CallFlow.$TimeLen               .equals(v_XID)
+          || CallFlow.$FirstExecuteResult    .equals(v_XID)
           || CallFlow.$LastExecuteResult     .equals(v_XID) 
           || CallFlow.$LastNestingBeginResult.equals(v_XID) 
           || CallFlow.$NestingLevel          .equals(v_XID) 
@@ -164,6 +174,58 @@ public class CallFlow
     public static String getWorkID(Map<String ,Object> i_Context)
     {
         return (String) i_Context.get($WorkID);
+    }
+    
+    
+    
+    /**
+     * 在执行上下文中，设置编排执行开始时间
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-10
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @return
+     */
+    public static Map<String ,Object> setBeginTime(Map<String ,Object> io_Context ,Date i_BeginTime)
+    {
+        io_Context.put($BeginTime ,i_BeginTime);
+        return io_Context;
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，获取编排执行开始时间
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-10
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public static Date getBeginTime(Map<String ,Object> i_Context)
+    {
+        return (Date) i_Context.get($BeginTime);
+    }
+    
+    
+    
+    /**
+     * 从执行上下文中，获取编排执行累计时长（单位：毫秒）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-10
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return
+     */
+    public static long getTimeLen(Map<String ,Object> i_Context)
+    {
+        return new Date().differ(getBeginTime(i_Context));
     }
     
     
@@ -651,10 +713,16 @@ public class CallFlow
             
             CallFlow.clearError(v_Context);
             
-            // 外界未定义编排执行实例ID时，自动生成
-            if ( v_Context.get($WorkID) == null )
+            // 设置编排执行开始时间
+            if ( CallFlow.getBeginTime(v_Context) == null )
             {
-                v_Context.put($WorkID ,"CFW" + StringHelp.getUUID9n());
+                CallFlow.setBeginTime(io_Context ,new Date());
+            }
+            
+            // 外界未定义编排执行实例ID时，自动生成
+            if ( CallFlow.getWorkID(v_Context) == null )
+            {
+                CallFlow.setWorkID(io_Context ,"CFW" + StringHelp.getUUID9n());
             }
             
             // 嵌套层次一般不用外界定义

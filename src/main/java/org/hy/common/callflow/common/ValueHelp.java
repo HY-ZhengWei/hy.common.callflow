@@ -243,6 +243,16 @@ public class ValueHelp
                 // 编排执行实例ID
                 return CallFlow.getWorkID(i_Context);
             }
+            else if ( CallFlow.$TimeLen.equals(v_ValueID) )
+            {
+                // 编排执行时长（单位：毫秒）
+                return CallFlow.getTimeLen(i_Context);
+            }
+            else if ( CallFlow.$BeginTime.equals(v_ValueID) )
+            {
+                // 编排执行开始时间
+                return CallFlow.getBeginTime(i_Context);
+            }
             
             String v_YYYZZZ = null;
             int    v_Index  = v_ValueID.indexOf($Split);
