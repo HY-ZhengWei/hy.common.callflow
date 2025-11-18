@@ -527,6 +527,12 @@ public class PythonConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
+        // 编排整体二次重做
+        if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
+        {
+            return v_Result;
+        }
+        
         // Mock模拟
         if ( super.mock(io_Context ,v_BeginTime ,v_Result ,null ,HashMap.class.getName()) )
         {

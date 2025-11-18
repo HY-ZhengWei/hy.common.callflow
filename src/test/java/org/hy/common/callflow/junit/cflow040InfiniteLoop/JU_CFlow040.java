@@ -7,6 +7,7 @@ import org.hy.common.Date;
 import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.execute.ExecuteResultNext;
 import org.hy.common.callflow.junit.JUBase;
 import org.hy.common.callflow.junit.cflow040InfiniteLoop.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
@@ -93,6 +94,13 @@ public class JU_CFlow040 extends JUBase
         System.out.println(CallFlow.getHelpExport().export(v_Node));
         
         toJson(v_Node);
+        
+        ExecuteResultNext v_ERNext = new ExecuteResultNext(v_FirstResult);
+        ExecuteResult     v_Next   = null;
+        while ( (v_Next = v_ERNext.next()) != null )
+        {
+            System.out.println(v_Next.getExecuteXID());
+        }
     }
     
 }

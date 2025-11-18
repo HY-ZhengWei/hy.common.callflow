@@ -16,6 +16,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteElementCheckHelp;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.ExecuteResultLogHelp;
+import org.hy.common.callflow.execute.ExecuteResultNext;
 import org.hy.common.callflow.execute.ExecuteTreeHelp;
 import org.hy.common.callflow.execute.IExecute;
 import org.hy.common.callflow.execute.IExecuteEvent;
@@ -87,6 +88,9 @@ public class CallFlow
     
     /** 变量ID名称：编排执行实例异常的结果 */
     public static final  String $ErrorResult             = "CallFlowErrorResult";
+    
+    /** 变量ID名称：编排执行实例的异常后，二次编排整体重做的标记 */
+    public static final  String $ErrorRedo               = "CallFlowErrorRedo";
     
     /** 变量ID名称：编排执行实例的监听事件（事件可以传递到嵌套子编排中去） */
     public static final  String $ExecuteEvent            = "CallFlowExecuteEvent";
@@ -507,6 +511,58 @@ public class CallFlow
         io_Context.put($ExecuteIsError ,true);
         io_Context.put($ErrorResult    ,i_ErrorResult);
         return i_ErrorResult;
+    }
+    
+    
+    
+    /**
+     * 获取编排执行实例的异常后，二次编排整体重做的上一次执行结果
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-17
+     * @version     v1.0
+     *
+     * @param i_Context
+     * @return
+     */
+    public static ExecuteResultNext getRedo(Map<String ,Object> i_Context)
+    {
+        return (ExecuteResultNext) i_Context.get($ErrorRedo);
+    }
+    
+    
+    
+    /**
+     * 为二次准备执行的新的上下文内容中添加上次执行结果
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-17
+     * @version     v1.0
+     *
+     * @param i_NewContext   二次新的上下文内容
+     * @param i_OldContext   上次执行异常的上下文内容
+     */
+    public static void putRedo(Map<String ,Object> i_NewContext ,Map<String ,Object> i_OldContext)
+    {
+        ExecuteResult v_FirstResult = CallFlow.getFirstResult(i_OldContext);
+        CallFlow.putRedo(i_NewContext ,v_FirstResult);
+    }
+    
+    
+    
+    /**
+     * 为二次准备执行的新的上下文内容中添加上次执行结果
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-17
+     * @version     v1.0
+     *
+     * @param i_NewContext   二次新的上下文内容
+     * @param i_FirstResult  上次执行异常结果（首个执行结果）
+     */
+    public static void putRedo(Map<String ,Object> i_NewContext ,ExecuteResult i_FirstResult)
+    {
+        i_NewContext.put($ErrorRedo ,new ExecuteResultNext(i_FirstResult));
     }
     
     

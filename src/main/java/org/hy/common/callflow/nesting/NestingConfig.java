@@ -13,6 +13,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.ExportType;
+import org.hy.common.callflow.enums.RedoType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -71,7 +72,8 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     public NestingConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.timeout = "0";
+        this.timeout  = "0";
+        this.redoType = RedoType.Active;
     }
     
     
@@ -140,6 +142,19 @@ public class NestingConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 设置：编排整体重做的类型
+     * 
+     * @param i_AllowRedo 编排整体重做的类型
+     */
+    @Override
+    public void setRedoType(RedoType i_RedoType)
+    {
+        throw new RuntimeException("Not allowed to call setRedoType().");
+    }
+    
+    
+    
+    /**
      * 设置：模拟元素
      * 
      * @param i_Mock 模拟元素
@@ -183,6 +198,12 @@ public class NestingConfig extends ExecuteElement implements Cloneable
         {
             v_NestingBegin.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallFlowXID is null."));
             this.refreshStatus(io_Context ,v_NestingBegin.getStatus());
+            return v_NestingBegin;
+        }
+        
+        // 编排整体二次重做
+        if ( !this.redo(io_Context ,v_BeginTime ,v_NestingBegin) )
+        {
             return v_NestingBegin;
         }
         

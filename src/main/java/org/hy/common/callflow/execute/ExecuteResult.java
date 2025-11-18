@@ -10,6 +10,7 @@ import org.hy.common.Help;
 import org.hy.common.callflow.common.ITreeID;
 import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
+import org.hy.common.callflow.enums.RedoType;
 import org.hy.common.xml.log.Logger;
 
 
@@ -67,6 +68,9 @@ public class ExecuteResult implements ITreeID
                                 
     /** 执行结果是否成功 */
     private boolean             success;
+    
+    /** 用户标记的编排整体重做的类型 */
+    private RedoType            redoType;
                                 
     /** 为异常对象 */           
     private Exception           exception;
@@ -102,6 +106,7 @@ public class ExecuteResult implements ITreeID
         this.beginTime     = Date.getTimeNano();
         this.nestingLevel  = i_NestingLevel;
         this.success       = false;
+        this.redoType      = RedoType.Default;
         this.executeTreeID = i_ExecuteTreeID;
         this.executeXID    = i_ExecuteXID;
         this.executeLogic  = i_ExecuteLogic;
@@ -537,8 +542,28 @@ public class ExecuteResult implements ITreeID
     {
         return success;
     }
+    
+
+    /**
+     * 获取：用户标记的编排整体重做的类型
+     */
+    public RedoType getRedoType()
+    {
+        return redoType;
+    }
 
     
+    /**
+     * 设置：用户标记的编排整体重做的类型
+     * 
+     * @param i_RedoType 用户标记的编排整体重做的类型
+     */
+    public void setRedoType(RedoType i_RedoType)
+    {
+        this.redoType = i_RedoType == null ? RedoType.Default : i_RedoType;
+    }
+
+
     /**
      * 获取：执行开始时间（精度：纳秒）
      */

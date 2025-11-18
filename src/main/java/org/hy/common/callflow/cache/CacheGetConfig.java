@@ -478,6 +478,12 @@ public class CacheGetConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
+        // 编排整体二次重做
+        if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
+        {
+            return v_Result;
+        }
+        
         // Mock模拟
         Class<?> v_RowClas  = this.gatRowClass();
         String   v_RowClass = Help.NVL(v_RowClas == null ? null : v_RowClas.getName() ,HashMap.class.getName());

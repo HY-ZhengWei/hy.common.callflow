@@ -265,6 +265,18 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             return v_Result;
         }
         
+        // 编排整体二次重做
+        if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
+        {
+            return v_Result;
+        }
+        
+        // 编排整体二次重做
+        if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
+        {
+            return v_Result;
+        }
+        
         // Mock模拟
         try
         {

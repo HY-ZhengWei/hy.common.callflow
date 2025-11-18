@@ -24,6 +24,7 @@ import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.enums.ExportType;
+import org.hy.common.callflow.enums.RedoType;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.mock.MockConfig;
 import org.hy.common.callflow.mock.MockException;
@@ -156,6 +157,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     /** 执行链：双向链表：其后多个路由 */
     protected RouteConfig                   route;
     
+    /** 编排整体重做的类型 */
+    protected RedoType                      redoType;
+    
     /** 模拟元素 */
     protected MockConfig                    mock;
     
@@ -218,6 +222,75 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         this.mock        = new MockConfig();
         this.keyChange   = false;
         this.delayedTime = "-1";
+        this.redoType    = RedoType.Default;
+    }
+    
+    
+    
+    /**
+     * 编排整体二次重做
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-17
+     * @version     v1.0
+     *
+     * @param io_Context    上下文类型的变量信息
+     * @param i_BeginTime   编排元素的开始时间
+     * @param io_Result     编排元素的执行结果
+     * @return              返回 true 表示：当前元素真的重新执行一次；否则，不会真的执行元素，而是延用上次执行结果
+     */
+    protected boolean redo(Map<String ,Object> io_Context ,long i_BeginTime ,ExecuteResult io_Result)
+    {
+        ExecuteResultNext v_OldERNext = CallFlow.getRedo(io_Context);
+        if ( v_OldERNext != null )
+        {
+            ExecuteResult v_OldResult = v_OldERNext.next();
+            if ( v_OldResult != null )
+            {
+                // 上次的与本次的执行元素必须一致
+                if ( v_OldResult.getExecuteXID().equals(io_Result.getExecuteXID()) )
+                {
+                    // 必须重做：主动重做
+                    if ( RedoType.Active.equals(this.redoType) )
+                    {
+                        return true;
+                    }
+                    // 上次异常时：重做
+                    else if ( !v_OldResult.isSuccess() )
+                    {
+                        return true;
+                    }
+                    // 用户标记重做
+                    else if ( RedoType.Active.equals(v_OldResult.getRedoType()) )
+                    {
+                        return true;
+                    }
+                    // 返回上次的结果
+                    else
+                    {
+                        io_Result.setResult(v_OldResult.getResult());
+                        io_Result.setExecuteLogic("NoRedo：" + io_Result.getExecuteLogic());
+                        
+                        this.refreshReturn(io_Context ,io_Result.getResult());
+                        this.refreshStatus(io_Context ,io_Result.getStatus());
+                        this.success(Date.getTimeNano() - i_BeginTime);
+                        return false;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return true;
+        }
     }
     
     
@@ -246,7 +319,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
             if ( v_MockData != null )
             {
                 io_Result.setResult(v_MockData);
-                io_Result.setExecuteLogic("Mock data：" + io_Result.getExecuteLogic());
+                io_Result.setExecuteLogic("Mock：" + io_Result.getExecuteLogic());
                 
                 this.refreshReturn(io_Context ,io_Result.getResult());
                 this.refreshStatus(io_Context ,io_Result.getStatus());
@@ -298,7 +371,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
             if ( v_MockData != null )
             {
                 io_Result.setResult(v_MockData);
-                io_Result.setExecuteLogic("Mock data：" + io_Result.getExecuteLogic());
+                io_Result.setExecuteLogic("Mock：" + io_Result.getExecuteLogic());
                 
                 this.refreshReturn(io_Context ,io_Result.getResult());
                 this.refreshStatus(io_Context ,io_Result.getStatus());
@@ -1430,6 +1503,28 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     }
 
 
+    
+    /**
+     * 获取：编排整体重做的类型
+     */
+    public RedoType getRedoType()
+    {
+        return redoType;
+    }
+
+
+    
+    /**
+     * 设置：编排整体重做的类型
+     * 
+     * @param i_RedoType 编排整体重做的类型
+     */
+    public void setRedoType(RedoType i_RedoType)
+    {
+        this.redoType = i_RedoType;
+    }
+    
+
 
     /**
      * 刷新返回值
@@ -1514,6 +1609,10 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
             if ( !Help.isNull(this.context) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
+            }
+            if ( !RedoType.Default.equals(this.redoType) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("redoType" ,this.redoType.getValue()));
             }
         }
         else
@@ -1783,6 +1882,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         v_Clone.returnID        = this.returnID;
         v_Clone.statusID        = this.statusID;
         v_Clone.context         = this.context;
+        v_Clone.redoType        = this.redoType;
         v_Clone.delayedTime     = this.delayedTime;
     }
     
