@@ -24,11 +24,18 @@ import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.enums.ExportType;
+import org.hy.common.callflow.event.JOBConfig;
 import org.hy.common.callflow.enums.ContinueType;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.mock.MockConfig;
 import org.hy.common.callflow.mock.MockException;
 import org.hy.common.callflow.mock.MockItem;
+import org.hy.common.callflow.nesting.MTConfig;
+import org.hy.common.callflow.nesting.NestingConfig;
+import org.hy.common.callflow.node.CalculateConfig;
+import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.returns.ReturnConfig;
 import org.hy.common.callflow.route.RouteConfig;
 import org.hy.common.callflow.route.RouteItem;
 import org.hy.common.db.DBSQL;
@@ -1613,7 +1620,20 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
             }
             if ( !ContinueType.Default.equals(this.continueType) )
             {
-                v_Xml.append(v_NewSpace).append(IToXml.toValue("continueType" ,this.continueType.getValue()));
+                if ( this instanceof ForConfig 
+                  || this instanceof ReturnConfig 
+                  || this instanceof CalculateConfig 
+                  || this instanceof NestingConfig 
+                  || this instanceof MTConfig 
+                  || this instanceof JOBConfig
+                  || this instanceof WaitConfig )
+                {
+                    // 主动重做的元素不允许XML生成
+                }
+                else
+                {
+                    v_Xml.append(v_NewSpace).append(IToXml.toValue("continueType" ,this.continueType.getValue()));
+                }
             }
         }
         else
@@ -1883,7 +1903,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         v_Clone.returnID        = this.returnID;
         v_Clone.statusID        = this.statusID;
         v_Clone.context         = this.context;
-        v_Clone.continueType        = this.continueType;
+        v_Clone.continueType    = this.continueType;
         v_Clone.delayedTime     = this.delayedTime;
     }
     
