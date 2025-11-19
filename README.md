@@ -14,6 +14,7 @@
     * [执行前的静态检查](#执行前的静态检查)
     * [编排的执行](#编排的执行)
     * [编排执行结果的轨迹](#编排执行结果的轨迹)
+    <!-- * [编排续跑](#编排续跑) -->
 * 使用举例
     * [执行元素：简单编排](#执行元素举例)
     * [执行元素的多路分支和异常举例](#执行元素的多路分支和异常举例)
@@ -306,6 +307,25 @@ else
 // 打印执行路径（从首个执行的元素开始打印）
 ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
 System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
+```
+
+
+
+编排续跑
+------
+```java
+// 适用场景：异常后，异常点已恢复，延续编排上下文，重新执行异常点。
+//          精准续跑、编排不中断，如果异常点二次执行成功，继续执行后面编排元素。
+// 
+// 第一次异常后，从异常点的地方续跑。
+// 已成功执行的默认不再重新执行（除用户标记的和主动重做的元素外），仅对异常点重新执行
+Map<String ,Object> v_OldContext = v_Context;                     // 第一次执行后的编排上下文
+Map<String ,Object> v_NewContext = new HashMap<String ,Object>(); // 第二次执行时创建新的上下文
+
+v_NewContext.put("参数" ,"数值");                                  // 第二次时的执行参数（与第一次一样）
+
+CallFlow.putContinue(v_NewContext ,v_OldContext);                 // 分析异常后的续跑信息
+v_Result = CallFlow.execute(v_Node ,v_NewContext);                // 第二次执行，请用新的上下文
 ```
 
 

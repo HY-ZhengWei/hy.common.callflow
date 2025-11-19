@@ -16,7 +16,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.ExportType;
-import org.hy.common.callflow.enums.RedoType;
+import org.hy.common.callflow.enums.ContinueType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -54,6 +54,7 @@ import org.hy.common.xml.log.Logger;
  *              v5.0  2025-10-10  添加：集群级别的并发
  *              v5.1  2025-10-11  修正：高并发同一编排时，并发计算树ID及寻址相关的信息时的并发异常
  *              v6.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
+ *              v7.0  2025-11-18  添加：编排续跑（主动重做）
  */
 public class MTConfig extends ExecuteElement implements Cloneable
 {
@@ -98,7 +99,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
         this.mtitems  = new ArrayList<MTItem>();
         this.oneByOne = false;
         this.waitTime = "0";
-        this.redoType = RedoType.Active;
+        this.continueType = ContinueType.Active;
     }
     
     
@@ -576,14 +577,14 @@ public class MTConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 设置：编排整体重做的类型
+     * 设置：编排续跑的类型
      * 
-     * @param i_AllowRedo 编排整体重做的类型
+     * @param i_ContinueType 编排续跑的类型
      */
     @Override
-    public void setRedoType(RedoType i_RedoType)
+    public void setContinueType(ContinueType i_ContinueType)
     {
-        throw new RuntimeException("Not allowed to call setRedoType().");
+        throw new RuntimeException("Not allowed to call setContinueType().");
     }
     
     
@@ -627,7 +628,7 @@ public class MTConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
-        // 编排整体二次重做
+        // 编排异常后续跑
         if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
         {
             return v_Result;

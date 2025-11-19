@@ -24,7 +24,7 @@ import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
 import org.hy.common.callflow.enums.ExportType;
-import org.hy.common.callflow.enums.RedoType;
+import org.hy.common.callflow.enums.ContinueType;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.mock.MockConfig;
 import org.hy.common.callflow.mock.MockException;
@@ -51,6 +51,7 @@ import org.hy.common.xml.log.Logger;
  *              v3.0  2025-09-26  添加：静态检查
  *              v4.0  2025-10-09  添加：是否在初始时立即执行
  *              v4.1  2025-10-10  添加：是否在初始时延时执行
+ *              v5.0  2025-11-18  添加：编排续跑。建议人：李浩
  */
 public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
@@ -157,8 +158,8 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     /** 执行链：双向链表：其后多个路由 */
     protected RouteConfig                   route;
     
-    /** 编排整体重做的类型 */
-    protected RedoType                      redoType;
+    /** 编排续跑的类型 */
+    protected ContinueType                  continueType;
     
     /** 模拟元素 */
     protected MockConfig                    mock;
@@ -222,13 +223,13 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         this.mock        = new MockConfig();
         this.keyChange   = false;
         this.delayedTime = "-1";
-        this.redoType    = RedoType.Default;
+        this.continueType    = ContinueType.Default;
     }
     
     
     
     /**
-     * 编排整体二次重做
+     * 编排续跑
      * 
      * @author      ZhengWei(HY)
      * @createDate  2025-11-17
@@ -241,7 +242,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      */
     protected boolean redo(Map<String ,Object> io_Context ,long i_BeginTime ,ExecuteResult io_Result)
     {
-        ExecuteResultNext v_OldERNext = CallFlow.getRedo(io_Context);
+        ExecuteResultNext v_OldERNext = CallFlow.getContinue(io_Context);
         if ( v_OldERNext != null )
         {
             ExecuteResult v_OldResult = v_OldERNext.next();
@@ -251,7 +252,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
                 if ( v_OldResult.getExecuteXID().equals(io_Result.getExecuteXID()) )
                 {
                     // 必须重做：主动重做
-                    if ( RedoType.Active.equals(this.redoType) )
+                    if ( ContinueType.Active.equals(this.continueType) )
                     {
                         return true;
                     }
@@ -261,7 +262,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
                         return true;
                     }
                     // 用户标记重做
-                    else if ( RedoType.Active.equals(v_OldResult.getRedoType()) )
+                    else if ( ContinueType.Active.equals(v_OldResult.getContinueType()) )
                     {
                         return true;
                     }
@@ -1505,23 +1506,23 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
 
     
     /**
-     * 获取：编排整体重做的类型
+     * 获取：编排续跑的类型
      */
-    public RedoType getRedoType()
+    public ContinueType getContinueType()
     {
-        return redoType;
+        return continueType;
     }
 
 
     
     /**
-     * 设置：编排整体重做的类型
+     * 设置：编排续跑的类型
      * 
-     * @param i_RedoType 编排整体重做的类型
+     * @param i_ContinueType 编排续跑的类型
      */
-    public void setRedoType(RedoType i_RedoType)
+    public void setContinueType(ContinueType i_ContinueType)
     {
-        this.redoType = i_RedoType;
+        this.continueType = i_ContinueType;
     }
     
 
@@ -1610,9 +1611,9 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("context" ,this.context ,v_NewSpace));
             }
-            if ( !RedoType.Default.equals(this.redoType) )
+            if ( !ContinueType.Default.equals(this.continueType) )
             {
-                v_Xml.append(v_NewSpace).append(IToXml.toValue("redoType" ,this.redoType.getValue()));
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("continueType" ,this.continueType.getValue()));
             }
         }
         else
@@ -1882,7 +1883,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         v_Clone.returnID        = this.returnID;
         v_Clone.statusID        = this.statusID;
         v_Clone.context         = this.context;
-        v_Clone.redoType        = this.redoType;
+        v_Clone.continueType        = this.continueType;
         v_Clone.delayedTime     = this.delayedTime;
     }
     

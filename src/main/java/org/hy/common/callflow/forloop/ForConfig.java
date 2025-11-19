@@ -17,7 +17,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.ExportType;
-import org.hy.common.callflow.enums.RedoType;
+import org.hy.common.callflow.enums.ContinueType;
 import org.hy.common.callflow.enums.RouteType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
@@ -52,6 +52,7 @@ import org.hy.common.xml.log.Logger;
  *              v4.0  2025-09-29  添加：For循环的每级元素"序号"的变量名称。下标从1开始
  *              v5.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  *              v5.1  2025-10-23  修正：循环元素自身也有可能结束循环。如，集合循环下，集合对象为空
+ *              v6.0  2025-11-18  添加：编排续跑（主动重做）
  */
 public class ForConfig extends ExecuteElement implements Cloneable
 {
@@ -90,7 +91,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
     public ForConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.redoType = RedoType.Active;
+        this.continueType = ContinueType.Active;
     }
     
     
@@ -392,14 +393,14 @@ public class ForConfig extends ExecuteElement implements Cloneable
     
     
     /**
-     * 设置：编排整体重做的类型
+     * 设置：编排续跑的类型
      * 
-     * @param i_AllowRedo 编排整体重做的类型
+     * @param i_ContinueType 编排续跑的类型
      */
     @Override
-    public void setRedoType(RedoType i_RedoType)
+    public void setContinueType(ContinueType i_ContinueType)
     {
-        throw new RuntimeException("Not allowed to call setRedoType().");
+        throw new RuntimeException("Not allowed to call setContinueType().");
     }
     
     
@@ -442,7 +443,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
-        // 编排整体二次重做
+        // 编排异常后续跑
         if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
         {
             return v_Result;

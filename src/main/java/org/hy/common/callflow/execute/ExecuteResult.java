@@ -10,7 +10,7 @@ import org.hy.common.Help;
 import org.hy.common.callflow.common.ITreeID;
 import org.hy.common.callflow.common.TreeIDHelp;
 import org.hy.common.callflow.enums.ExecuteStatus;
-import org.hy.common.callflow.enums.RedoType;
+import org.hy.common.callflow.enums.ContinueType;
 import org.hy.common.xml.log.Logger;
 
 
@@ -23,6 +23,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-15
  * @version     v1.0
+ *              v2.0  2025-11-18  添加：用户标记的编排续跑的类型
  */
 public class ExecuteResult implements ITreeID
 {
@@ -69,8 +70,8 @@ public class ExecuteResult implements ITreeID
     /** 执行结果是否成功 */
     private boolean             success;
     
-    /** 用户标记的编排整体重做的类型 */
-    private RedoType            redoType;
+    /** 用户标记的编排续跑的类型 */
+    private ContinueType        continueType;
                                 
     /** 为异常对象 */           
     private Exception           exception;
@@ -106,7 +107,7 @@ public class ExecuteResult implements ITreeID
         this.beginTime     = Date.getTimeNano();
         this.nestingLevel  = i_NestingLevel;
         this.success       = false;
-        this.redoType      = RedoType.Default;
+        this.continueType  = ContinueType.Default;
         this.executeTreeID = i_ExecuteTreeID;
         this.executeXID    = i_ExecuteXID;
         this.executeLogic  = i_ExecuteLogic;
@@ -545,22 +546,22 @@ public class ExecuteResult implements ITreeID
     
 
     /**
-     * 获取：用户标记的编排整体重做的类型
+     * 获取：用户标记的编排续跑的类型
      */
-    public RedoType getRedoType()
+    public ContinueType getContinueType()
     {
-        return redoType;
+        return continueType;
     }
 
     
     /**
-     * 设置：用户标记的编排整体重做的类型
+     * 设置：用户标记的编排续跑的类型
      * 
-     * @param i_RedoType 用户标记的编排整体重做的类型
+     * @param i_ContinueType 用户标记的编排续跑的类型
      */
-    public void setRedoType(RedoType i_RedoType)
+    public void setContinueType(ContinueType i_ContinueType)
     {
-        this.redoType = i_RedoType == null ? RedoType.Default : i_RedoType;
+        this.continueType = i_ContinueType == null ? ContinueType.Default : i_ContinueType;
     }
 
 

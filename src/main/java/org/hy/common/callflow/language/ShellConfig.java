@@ -55,6 +55,7 @@ import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
  * @version     v1.0
  *              v1.1  2025-09-30  添加：实时回显脚本执行日志
  *              v2.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
+ *              v3.0  2025-11-18  添加：编排续跑
  */
 public class ShellConfig extends ExecuteElement implements Cloneable
 {
@@ -975,7 +976,7 @@ public class ShellConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
-        // 编排整体二次重做
+        // 编排异常后续跑
         if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
         {
             return v_Result;

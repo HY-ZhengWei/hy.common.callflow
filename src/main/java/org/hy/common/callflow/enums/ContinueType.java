@@ -5,16 +5,14 @@ package org.hy.common.callflow.enums;
 
 
 /**
- * 编排整体重做的类型
+ * 编排续跑的类型
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-11-17
  * @version     v1.0
  */
-public enum RedoType
+public enum ContinueType
 {
-    
-    Disable(-1 ,"禁止重做"),
     
     Default( 0 ,"默认重做：异常时或用户标记时重做"),
     
@@ -42,14 +40,14 @@ public enum RedoType
      * @param i_Value
      * @return
      */
-    public static RedoType get(Integer i_Value)
+    public static ContinueType get(Integer i_Value)
     {
         if ( i_Value == null )
         {
             return null;
         }
         
-        for (RedoType v_Enum : RedoType.values())
+        for (ContinueType v_Enum : ContinueType.values())
         {
             if ( v_Enum.value.equals(i_Value) )
             {
@@ -62,7 +60,7 @@ public enum RedoType
     
     
     
-    RedoType(Integer i_Value ,String i_Comment)
+    ContinueType(Integer i_Value ,String i_Comment)
     {
         this.value   = i_Value;
         this.comment = i_Comment;

@@ -38,6 +38,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-10-19
  * @version     v1.0
+ *              v2.0  2025-11-18  添加：编排续跑
  */
 public class FtpConfig extends ExecuteElement implements Cloneable
 {
@@ -1219,7 +1220,7 @@ public class FtpConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
-        // 编排整体二次重做
+        // 编排异常后续跑
         if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
         {
             return v_Result;

@@ -108,6 +108,7 @@ import jep.SubInterpreter;
  *                                添加：Python中分数结果的支持
  *              v1.2  2025-09-26  迁移：静态检查
  *              v2.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
+ *              v3.0  2025-11-18  添加：编排续跑
  */
 public class PythonConfig extends ExecuteElement implements Cloneable
 {
@@ -527,7 +528,7 @@ public class PythonConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
-        // 编排整体二次重做
+        // 编排异常后续跑
         if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
         {
             return v_Result;

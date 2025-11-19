@@ -65,6 +65,7 @@ import org.hy.common.xml.log.Logger;
  *              v3.0  2025-09-26  迁移：静态检查
  *              v4.0  2025-10-15  添加：Switch分支
  *              v5.0  2025-11-06  添加：三合一的重做编排元素XID、重做时的等待时长、重做时的计数器最大值。建议人：王雨墨、王可
+ *              v6.0  2025-11-18  添加：编排续跑
  */
 public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
 {
@@ -320,7 +321,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
             return v_Result;
         }
         
-        // 编排整体二次重做
+        // 编排异常后续跑
         if ( !this.redo(io_Context ,v_BeginTime ,v_Result) )
         {
             return v_Result;
