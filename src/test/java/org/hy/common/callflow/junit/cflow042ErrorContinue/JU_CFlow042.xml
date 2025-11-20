@@ -36,7 +36,7 @@
     <xconfig>
     
     
-        <xreturn id="XCondition_CF041_ThreeInOne_完成_真值时">
+        <xreturn id="XCondition_CF042_ErrorContinue_完成_真值时">
             <comment>完成，真值时</comment>
             <retValue>
             {
@@ -47,7 +47,7 @@
         </xreturn>
         
         
-        <xreturn id="XCondition_CF041_ThreeInOne_完成_假值时">
+        <xreturn id="XCondition_CF042_ErrorContinue_完成_假值时">
             <comment>完成，假值时</comment>
             <retValue>
             {
@@ -56,9 +56,26 @@
             }
             </retValue>
         </xreturn>
+        
+        
+        <xnode id="XNode_CF042_ErrorContinue_异常点位">
+            <comment>异常点位</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>errorContinue</callMethod>
+            <callParam>
+                <valueClass>java.lang.Boolean</valueClass>  <!-- 定义入参类型 -->
+                <value>:IsError</value>                     <!-- 定义入参变量名称 -->
+                <valueDefault>true</valueDefault>           <!-- 定义入参默认值 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCondition_CF042_ErrorContinue_完成_真值时" />
+                </succeed>
+            </route>
+        </xnode>
     
     
-        <xcondition id="XCondition_CF041_ThreeInOne_三合一">
+        <xcondition id="XCondition_CF042_ErrorContinue_三合一">
             <comment>判定条件是否满足</comment>
             <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
             <conditionItem>
@@ -67,23 +84,23 @@
                 <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
                 <valueXIDB>:Index</valueXIDB>               <!-- 变量 -->
             </conditionItem>
-            <redoXID>:XNode_CF041_ThreeInOne_执行</redoXID>  <!-- 三合一：重做的执行对象 -->
+            <redoXID>:XNode_CF042_ErrorContinue_执行</redoXID>  <!-- 三合一：重做的执行对象 -->
             <waitTime>1000</waitTime>                       <!-- 三合一：重做的等待时长（单位：毫秒） -->
             <counterMax>:CounterMax</counterMax>            <!-- 三合一：重做的等待计数器最大值（可选项） -->
             <route>
                 <if>
-                    <next ref="XCondition_CF041_ThreeInOne_完成_真值时" />
+                    <next ref="XNode_CF042_ErrorContinue_异常点位" />
                     <comment>真时</comment>
                 </if>
                 <else>
-                    <next ref="XCondition_CF041_ThreeInOne_完成_假值时" />
+                    <next ref="XCondition_CF042_ErrorContinue_完成_假值时" />
                     <comment>假时</comment>
                 </else>
             </route>
         </xcondition>
         
         
-        <xnode id="XNode_CF041_ThreeInOne_执行">
+        <xnode id="XNode_CF042_ErrorContinue_执行">
             <comment>执行</comment>
             <callXID>:XProgram</callXID>
             <callMethod>addUp</callMethod>
@@ -95,7 +112,7 @@
             <returnID>Index</returnID>                      <!-- 定义返回结果的变量名称。名称相同时会覆盖 -->
             <route>
                 <succeed>
-                    <next ref="XCondition_CF041_ThreeInOne_三合一" />
+                    <next ref="XCondition_CF042_ErrorContinue_三合一" />
                     <comment>成功时</comment>
                 </succeed>
             </route>

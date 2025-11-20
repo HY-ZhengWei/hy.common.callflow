@@ -30,4 +30,28 @@ public class Program
         return i_Value + 1;
     }
     
+    
+    
+    /**
+     * 异常发生器
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-11-20
+     * @version     v1.0
+     *
+     * @param i_IsError
+     */
+    public void errorContinue(Boolean i_IsError)
+    {
+        if ( i_IsError )
+        {
+            System.out.println("模拟发生异常");
+            throw new RuntimeException("发生运行时异常");
+        }
+        else
+        {
+            System.out.println("没有发生异常");
+        }
+    }
+    
 }

@@ -63,10 +63,12 @@ public class JU_CFlow042 extends JUBase
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        NodeConfig          v_Node    = (NodeConfig) XJava.getObject("XNode_CF041_ThreeInOne_执行");
+        NodeConfig          v_Node    = (NodeConfig) XJava.getObject("XNode_CF042_ErrorContinue_执行");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
-        v_Context.put("CounterMax" ,5);     // 超时完成
+        // v_Context.put("CounterMax" ,5);     // 超时完成
+        v_Context.put("CounterMax" ,100);      // 重做数次后成功完成
+        v_Context.put("IsError"    ,true);
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_Node);
@@ -102,7 +104,8 @@ public class JU_CFlow042 extends JUBase
         Map<String ,Object> v_OldContext = v_Context;                      // 第一次执行后的编排上下文
         Map<String ,Object> v_NewContext = new HashMap<String ,Object>();  // 第二次执行时创建新的上下文
         
-        v_NewContext.put("CounterMax" ,5);                                 // 第二次时的执行参数（与第一次一样）
+        v_NewContext.put("CounterMax" ,100);                               // 第二次时的执行参数（与第一次一样）
+        v_NewContext.put("IsError"    ,false);
         
         CallFlow.putContinue(v_NewContext ,v_OldContext);                  // 分析异常后的续跑信息
         v_Result = CallFlow.execute(v_Node ,v_NewContext);                 // 第二次执行，请用新的上下文
