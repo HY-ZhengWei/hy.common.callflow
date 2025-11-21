@@ -28,7 +28,7 @@ public interface IExecuteEvent
      *
      * @param i_FirstExec  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）（编排中的首个执行元素）
      * @param io_Context   上下文类型的变量信息
-     * @return             是否允许执行，否则中断
+     * @return             是否允编排的执行，否则中断。true表示允许编排执行，false表示中断编排
      */
     public boolean start(IExecute i_FirstExec ,Map<String ,Object> io_Context);
     
@@ -58,7 +58,7 @@ public interface IExecuteEvent
      *
      * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param io_Context    上下文类型的变量信息
-     * @return              是否允许执行，否则中断
+     * @return              是否允编排的执行，否则中断。true表示允许编排执行，false表示中断编排
      */
     public boolean before(IExecute i_ExecObject ,Map<String ,Object> io_Context);
     
@@ -76,7 +76,7 @@ public interface IExecuteEvent
      * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param io_Context    上下文类型的变量信息
      * @param i_Result      执行结果 
-     * @return              是否允许后续流程的执行，否则中断
+     * @return              是否真正的发生异常。true表示发生异常，并中断编排；false表示发生的异常可以忽略，编排将继续执行。
      */
     public boolean error(IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
     
@@ -94,7 +94,7 @@ public interface IExecuteEvent
      * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param i_Context     上下文类型的变量信息
      * @param i_Result      执行结果 
-     * @return              是否允许后续流程的执行，否则中断
+     * @return              是否允许后续编排的执行，否则中断。true表示允许后续编排执行，false表示中断编排
      */
     public boolean success(IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
     
@@ -114,7 +114,7 @@ public interface IExecuteEvent
      * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      * @param io_Context    上下文类型的变量信息
      * @param i_Result      执行结果 
-     * @return              是否允许后续流程的执行，否则中断
+     * @return              是否允许后续编排的执行，否则中断。true表示允许后续编排执行，false表示中断编排
      */
     public boolean after(IExecute i_ExecObject ,Map<String ,Object> io_Context ,ExecuteResult i_Result);
     
