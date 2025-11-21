@@ -16,51 +16,37 @@ import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
-import org.hy.common.callflow.enums.XSQLType;
+import org.hy.common.callflow.enums.XCQLType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xcql.DBCQL;
+import org.hy.common.xcql.XCQL;
+import org.hy.common.xcql.XCQLData;
 import org.hy.common.xml.XJava;
-import org.hy.common.xml.XSQL;
-import org.hy.common.xml.XSQLData;
-import org.hy.common.xml.plugins.XSQLGroup;
-import org.hy.common.xml.plugins.XSQLGroupResult;
 
 
 
 
 
 /**
- * XSQL元素。衍生于执行元素， 数据库的查询、插入、更新、删除、DDL、DML、XSQL组等操作。
+ * XCQL图谱元素。衍生于执行元素， 图数据库的查询、插入、更新、删除、DDL、DML等操作。
  *
  * @author      ZhengWei(HY)
- * @createDate  2025-04-09
+ * @createDate  2025-11-20
  * @version     v1.0
- *              v2.0  2025-06-04  添加：用于XSQL组的returnID返回ID
- *                                添加：用于查询类的returnOne
- *              v3.0  2025-09-26  迁移：静态检查
  */
-public class XSQLConfig extends NodeConfig implements NodeConfigBase
+public class XCQLConfig extends NodeConfig implements NodeConfigBase
 {
     
-    /** XSQL元素类型 */
-    private XSQLType type;
-    
-    /**
-     * 与 XSQLNode.returnID 同义。
-     * 
-     * 说明代理方法执行结果的返回值是哪个。
-     * 
-     * 只用于XSQLGroup
-     */
-    public String    returnXSGRID;
+    /** XCQL元素类型 */
+    private XCQLType type;
     
     /**
      * 表示只取查询结果集中的首行记录。即只返回一个对象。
      * 
      * 只用于方法。
-     * 只用于查询SQL，并且结果集的类型为List集合。
-     * 当用于XSQL组时，须要与 returnXSGRID 属性配合使用，可以获取XSQL组中有 returnID 标记的首行记录
+     * 只用于查询CQL，并且结果集的类型为List集合。
      */
     private boolean  returnOne;
     
@@ -70,11 +56,11 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 构造器
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      */
-    public XSQLConfig()
+    public XCQLConfig()
     {
         this(0L ,0L);
     }
@@ -85,16 +71,16 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 构造器
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @param i_RequestTotal  累计的执行次数
      * @param i_SuccessTotal  累计的执行成功次数
      */
-    public XSQLConfig(long i_RequestTotal ,long i_SuccessTotal)
+    public XCQLConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.type      = XSQLType.Auto;
+        this.type      = XCQLType.Auto;
         this.returnOne = false;
     }
     
@@ -185,16 +171,16 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      */
     public String makeXID()
     {
-        // 重写NodeConfig中方法的原因是：ElementType.XSQL.getValue() 中的首字母已有一个X了， 就没有必要重复出现
+        // 重写NodeConfig中方法的原因是：ElementType.XCQL.getValue() 中的首字母已有一个X了， 就没有必要重复出现
         return this.getElementType() + "_" + StringHelp.getUUID9n();
     }
 
 
     
     /**
-     * 获取：XSQL元素类型
+     * 获取：XCQL元素类型
      */
-    public XSQLType getType()
+    public XCQLType getType()
     {
         return type;
     }
@@ -202,15 +188,15 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
 
     
     /**
-     * 设置：XSQL元素类型
+     * 设置：XCQL元素类型
      * 
-     * @param i_Type XSQL元素类型
+     * @param i_Type XCQL元素类型
      */
-    public void setType(XSQLType i_Type)
+    public void setType(XCQLType i_Type)
     {
         if ( i_Type == null )
         {
-            this.type = XSQLType.Auto;
+            this.type = XCQLType.Auto;
         }
         else
         {
@@ -223,51 +209,10 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
-     * 获取：与 XSQLNode.returnID 同义。
-     * 
-     * 说明代理方法执行结果的返回值是哪个。
-     * 
-     * 只用于XSQLGroup
-     */
-    public String getReturnXSGRID()
-    {
-        if ( Help.isNull(this.returnXSGRID) )
-        {
-            return null;
-        }
-        else
-        {
-            return DBSQL.$Placeholder + this.returnXSGRID;
-        }
-    }
-
-
-    
-    /**
-     * 设置：与 XSQLNode.returnID 同义。
-     * 
-     * 说明代理方法执行结果的返回值是哪个。
-     * 
-     * 只用于XSQLGroup
-     * 
-     * @param i_ReturnXSGRID  与 XSQLNode.returnID 同义。
-     */
-    public void setReturnXSGRID(String i_ReturnXSGRID)
-    {
-        // 虽然是引用ID，但为了执行性能，按定义ID处理，在getter方法还原成占位符
-        this.returnXSGRID = ValueHelp.standardValueID(i_ReturnXSGRID);
-        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
-        this.keyChange();
-    }
-
-
-
-    /**
      * 获取：表示只取查询结果集中的首行记录。即只返回一个对象。
      * 
      * 只用于方法。
-     * 只用于查询SQL，并且结果集的类型为List集合。
-     * 当用于XSQL组时，须要与 returnXSGRID 属性配合使用，可以获取XSQL组中有 returnID 标记的首行记录
+     * 只用于查询CQL，并且结果集的类型为List集合。
      */
     public boolean isReturnOne()
     {
@@ -280,8 +225,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 设置：表示只取查询结果集中的首行记录。即只返回一个对象。
      * 
      * 只用于方法。
-     * 只用于查询SQL，并且结果集的类型为List集合。
-     * 当用于XSQL组时，须要与 returnXSGRID 属性配合使用，可以获取XSQL组中有 returnID 标记的首行记录
+     * 只用于查询CQL，并且结果集的类型为List集合。
      * 
      * @param i_ReturnOne  表示只取查询结果集中的首行记录。即只返回一个对象。
      */
@@ -295,19 +239,19 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
 
 
     /**
-     * 按XSQL元素类型初始化执行方法名称
+     * 按XCQL元素类型初始化执行方法名称
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @param i_ExecuteObject  执行对象
      */
     private void initCallMethod(Object i_ExecuteObject)
     {
-        XSQLType v_XSQLType = this.type;
+        XCQLType v_XCQLType = this.type;
         
-        if ( XSQLType.Auto.equals(v_XSQLType) )
+        if ( XCQLType.Auto.equals(v_XCQLType) )
         {
             if ( Help.isNull(this.getCallXID()) )
             {
@@ -318,13 +262,9 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
             {
                 throw new RuntimeException("CallXID is not find");
             }
-            else if ( i_ExecuteObject instanceof XSQL )
+            else if ( i_ExecuteObject instanceof XCQL )
             {
-                v_XSQLType = this.parserXSQLType((XSQL) i_ExecuteObject);
-            }
-            else if ( i_ExecuteObject instanceof XSQLGroup )
-            {
-                v_XSQLType = XSQLType.XSQLGroup;
+                v_XCQLType = this.parserXCQLType((XCQL) i_ExecuteObject);
             }
             else
             {
@@ -332,13 +272,9 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
             }
         }
         
-        if ( XSQLType.XSQLGroup.equals(v_XSQLType) )
+        if ( XCQLType.Create.equals(v_XCQLType) )
         {
-            this.setCallMethod("executes");
-        }
-        else if ( XSQLType.Create.equals(v_XSQLType) )
-        {
-            this.setCallMethod("executeInsertPrepared");
+            this.setCallMethod("executeInsert");
             
             if ( !Help.isNull(this.getCallParams()) )
             {
@@ -352,7 +288,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
                         if ( MethodReflect.isExtendImplement(v_VClass ,List.class) )
                         {
                             // 批量写
-                            this.setCallMethod("executeInsertsPrepared");
+                            this.setCallMethod("executeInserts");
                         }
                     }
                 }
@@ -362,14 +298,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
                 }
             }
         }
-        else if ( XSQLType.Read.equals(v_XSQLType) )
+        else if ( XCQLType.Read.equals(v_XCQLType) )
         {
-            this.setCallMethod("queryXSQLData");
+            this.setCallMethod("queryXCQLData");
         }
-        else if ( XSQLType.Update.equals(v_XSQLType) 
-               || XSQLType.Delete.equals(v_XSQLType) )
+        else if ( XCQLType.Update.equals(v_XCQLType) 
+               || XCQLType.Delete.equals(v_XCQLType) )
         {
-            this.setCallMethod("executeUpdatePrepared");
+            this.setCallMethod("executeUpdate");
             
             if ( !Help.isNull(this.getCallParams()) )
             {
@@ -383,7 +319,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
                         if ( MethodReflect.isExtendImplement(v_VClass ,List.class) )
                         {
                             // 批量更新
-                            this.setCallMethod("executeUpdatesPrepared");
+                            this.setCallMethod("executeUpdates");
                         }
                     }
                 }
@@ -402,42 +338,42 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
-     * 解释XSQL类型
+     * 解释XCQL类型
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
-     * @param i_XSQL  XSQL对象
+     * @param i_XCQL  XCQL对象
      * @return
      */
-    private XSQLType parserXSQLType(XSQL i_XSQL)
+    private XCQLType parserXCQLType(XCQL i_XCQL)
     {
-        int v_SQLType = i_XSQL.getContent().getSQLType();
+        int v_CQLType = i_XCQL.getContent().getCQLType();
         
-        if ( DBSQL.$DBSQL_TYPE_INSERT == v_SQLType )
+        if ( DBCQL.$DBCQL_TYPE_CREATE == v_CQLType )
         {
-            return XSQLType.Create;
+            return XCQLType.Create;
         }
-        else if ( DBSQL.$DBSQL_TYPE_SELECT == v_SQLType )
+        else if ( DBCQL.$DBCQL_TYPE_MATCH == v_CQLType )
         {
-            return XSQLType.Read;
+            return XCQLType.Read;
         }
-        else if ( DBSQL.$DBSQL_TYPE_UPDATE == v_SQLType )
+        else if ( DBCQL.$DBCQL_TYPE_SET == v_CQLType )
         {
-            return XSQLType.Update;
+            return XCQLType.Update;
         }
-        else if ( DBSQL.$DBSQL_TYPE_DELETE == v_SQLType )
+        else if ( DBCQL.$DBCQL_TYPE_DELETE == v_CQLType )
         {
-            return XSQLType.Delete;
+            return XCQLType.Delete;
         }
-        else if ( DBSQL.$DBSQL_TYPE_DDL == v_SQLType )
+        else if ( DBCQL.$DBCQL_TYPE_DDL == v_CQLType )
         {
-            return XSQLType.DDL;
+            return XCQLType.DDL;
         }
         else
         {
-            throw new RuntimeException("Unknown SQL type：" + v_SQLType);
+            throw new RuntimeException("Unknown CQL type：" + v_CQLType);
         }
     }
     
@@ -447,14 +383,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 元素的类型
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @return
      */
     public String getElementType()
     {
-        return ElementType.XSQL.getValue();
+        return ElementType.XCQL.getValue();
     }
    
     
@@ -465,14 +401,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @return
      */
     public String toXmlName()
     {
-        return ElementType.XSQL.getXmlName();
+        return ElementType.XCQL.getXmlName();
     }
     
     
@@ -501,7 +437,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @param io_Context        上下文类型的变量信息
@@ -524,7 +460,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-10
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @param io_Context        上下文类型的变量信息
@@ -536,39 +472,16 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      */
     public Return<Object> generateReturn(Map<String ,Object> io_Context ,Object io_ExecuteReturn)
     {
-        if ( io_ExecuteReturn instanceof XSQLData )
+        if ( io_ExecuteReturn instanceof XCQLData )
         {
             if ( this.returnOne )
             {
-                Object v_Datas = ((XSQLData) io_ExecuteReturn).getDatas();
+                Object v_Datas = ((XCQLData) io_ExecuteReturn).getDatas();
                 return new Return<Object>(true).setParamObj(this.generateReturnOne(v_Datas));
             }
             else
             {
-                return new Return<Object>(true).setParamObj(((XSQLData) io_ExecuteReturn).getDatas());
-            }
-        }
-        else if ( io_ExecuteReturn instanceof XSQLGroupResult )
-        {
-            XSQLGroupResult v_XSQLGRet = (XSQLGroupResult) io_ExecuteReturn;
-            if ( v_XSQLGRet.isSuccess() ) 
-            {
-                Object v_Datas = v_XSQLGRet.getReturns();
-                if ( !Help.isNull(this.returnXSGRID) )
-                {
-                    v_Datas = v_XSQLGRet.getReturns().get(this.returnXSGRID);
-                    
-                    if ( this.returnOne )
-                    {
-                        return new Return<Object>(true).setParamObj(this.generateReturnOne(v_Datas));
-                    }
-                }
-                
-                return new Return<Object>(true).setParamObj(v_Datas);
-            }
-            else
-            {
-                return new Return<Object>(false).setException(v_XSQLGRet.getException());
+                return new Return<Object>(true).setParamObj(((XCQLData) io_ExecuteReturn).getDatas());
             }
         }
         else
@@ -583,7 +496,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 只返回一个对象。即万里挑一
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-06-04
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @param i_Datas
@@ -694,7 +607,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @param io_Xml         XML内容的缓存区
@@ -709,7 +622,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      */
     public void toXmlContent(StringBuilder io_Xml ,int i_Level ,String i_Level1 ,String i_LevelN ,String i_SuperTreeID ,String i_TreeID)
     {
-        if ( this.type != null && !XSQLType.Auto.equals(this.type) )
+        if ( this.type != null && !XCQLType.Auto.equals(this.type) )
         {
             io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("type" ,this.type.getValue()));
         }
@@ -723,10 +636,6 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
             {
                 io_Xml.append(v_Param.toXml(i_Level + 1 ,i_TreeID));
             }
-        }
-        if ( !Help.isNull(this.returnXSGRID) )
-        {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("returnXSGRID" ,this.getReturnXSGRID()));
         }
         if ( this.returnOne )
         {
@@ -744,7 +653,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
@@ -819,7 +728,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @return
@@ -892,14 +801,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @return
      */
     public Object newMy()
     {
-        return new XSQLConfig();
+        return new XCQLConfig();
     }
     
     
@@ -912,13 +821,13 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      */
     public Object cloneMyOnly()
     {
-        XSQLConfig v_Clone = new XSQLConfig();
+        XCQLConfig v_Clone = new XCQLConfig();
         
         this.cloneMyOnly(v_Clone);
         v_Clone.setCallXID(this.getCallXID());
@@ -932,10 +841,8 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         }
         v_Clone.setTimeout(this.getTimeout());
         v_Clone.setContext(this.getContext());
-        v_Clone.type         = this.type;
-        v_Clone.returnXSGRID = this.returnXSGRID;
-        v_Clone.returnOne    = this.returnOne;
-        
+        v_Clone.type      = this.type;
+        v_Clone.returnOne = this.returnOne;
         
         return v_Clone;
     }
@@ -948,7 +855,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      * 
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @param io_Clone        克隆的复制品对象
@@ -962,10 +869,10 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone XSQLConfig xid is null.");
+            throw new NullPointerException("Clone XCQLConfig xid is null.");
         }
         
-        XSQLConfig v_Clone = (XSQLConfig) io_Clone;
+        XCQLConfig v_Clone = (XCQLConfig) io_Clone;
         ((ExecuteElement) this).clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
         v_Clone.setCallXID(this.getCallXID());
@@ -979,9 +886,8 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         }
         v_Clone.setTimeout(this.getTimeout());
         v_Clone.setContext(this.getContext());
-        v_Clone.type         = this.type;
-        v_Clone.returnXSGRID = this.returnXSGRID;
-        v_Clone.returnOne    = this.returnOne;
+        v_Clone.type      = this.type;
+        v_Clone.returnOne = this.returnOne;
     }
     
     
@@ -992,7 +898,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 建议：子类重写此方法
      *
      * @author      ZhengWei(HY)
-     * @createDate  2025-04-09
+     * @createDate  2025-11-20
      * @version     v1.0
      *
      * @return
@@ -1004,12 +910,12 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     {
         if ( Help.isNull(this.xid) )
         {
-            throw new NullPointerException("Clone XSQLConfig xid is null.");
+            throw new NullPointerException("Clone XCQLConfig xid is null.");
         }
         
         Map<String ,ExecuteElement> v_XIDObjects = new HashMap<String ,ExecuteElement>();
         Return<String>              v_Version    = parserXIDVersion(this.xid);
-        XSQLConfig                  v_Clone      = new XSQLConfig();
+        XCQLConfig                  v_Clone      = new XCQLConfig();
         
         if ( v_Version.booleanValue() )
         {

@@ -28,7 +28,7 @@ public class JUBase
      * @param i_ExecElement
      * @throws Exception
      */
-    protected void toJson(ExecuteElement i_ExecElement)
+    public static void toJson(ExecuteElement i_ExecElement)
     {
         try
         {
@@ -57,7 +57,7 @@ public class JUBase
      * @param i_ExecuteResult
      * @throws Exception
      */
-    protected void toJson(ExecuteResult i_ExecuteResult)
+    public static void toJson(ExecuteResult i_ExecuteResult)
     {
         try
         {

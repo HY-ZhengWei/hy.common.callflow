@@ -27,6 +27,8 @@ public enum ElementType
     WSPull(     "WSPULL"      ,"xwspull"    ,"点拉元素"),
                               
     XSQL(       "XSQL"        ,"xsql"       ,"XSQL元素"),
+    
+    XCQL(       "XCQL"        ,"xcql"       ,"图谱元素"),
                               
     Command(    "COMMAND"     ,"xcommand"   ,"命令元素"),
                               

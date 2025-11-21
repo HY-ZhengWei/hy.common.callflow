@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：XCQL图谱元素 -->
+    <xconfig>
+    
+        <xcql id="XCQL_CF043_删除所有数据">
+            <comment>删除部分数据</comment>
+            <callXID>:XCQL_Delete_001_All</callXID>          <!-- XCQL对象的ID -->
+        </xcql>
+        
+        
+        <xcql id="XCQL_CF043_删除部分数据">
+            <comment>删除部分数据</comment>
+            <callXID>:XCQL_Delete_001_Where</callXID>        <!-- XCQL对象的ID -->
+            <callParam>
+                <value>:DelWhere</value>                     <!-- 数据的变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_删除所有数据" />
+                </succeed>
+            </route>
+        </xcql>
+        
+    
+        <xnode id="XCQL_CF043_返显查询条件Map为参的结果">
+            <comment>打印输出显示查询结果</comment>
+            <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callMethod>showLogObject</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <value>:ReturnWheresMap</value>              <!-- 定义执行方法参数 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_删除部分数据" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xcql id="XCQL_CF043_查询条件Map为参">
+            <comment>查询某节点内所有数（返回对象结构）</comment>
+            <callXID>:XCQL_Query_003_Where</callXID>         <!-- XCQL对象的ID -->
+            <callParam>
+                <value>:WheresMap</value>                    <!-- 数据的变量名称 -->
+            </callParam>
+            <returnID>ReturnWheresMap</returnID>             <!-- 返回结果的变量名称 -->
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_返显查询条件Map为参的结果" />
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xcql id="XCQL_CF043_删除节点中的属性">
+            <comment>删除节点中的属性</comment>
+            <callXID>:XCQL_Remove_001_Where</callXID>        <!-- XCQL对象的ID -->
+            <callParam>
+                <value>:DelObject</value>                    <!-- 数据的变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_查询条件Map为参" />
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xnode id="XCQL_CF043_返显查询条件对象为参的结果">
+            <comment>打印输出显示查询结果</comment>
+            <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callMethod>showLogObject</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <value>:ReturnWheresObject</value>           <!-- 定义执行方法参数 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_删除节点中的属性" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xcql id="XCQL_CF043_查询条件对象为参">
+            <comment>查询某节点内所有数（返回对象结构）</comment>
+            <callXID>:XCQL_Query_003_Where</callXID>         <!-- XCQL对象的ID -->
+            <callParam>
+                <value>:WheresObject</value>                 <!-- 数据的变量名称 -->
+            </callParam>
+            <returnID>ReturnWheresObject</returnID>          <!-- 返回结果的变量名称 -->
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_返显查询条件对象为参的结果" />
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xcql id="XCQL_CF043_为节点添加属性">
+            <comment>为节点添加属性</comment>
+            <callXID>:XCQL_Set_001_Where</callXID>           <!-- XCQL对象的ID -->
+            <callParam>
+                <value>:SetObject</value>                    <!-- 数据的变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_查询条件对象为参" />
+                </succeed>
+            </route>
+        </xcql>
+        
+    
+        <xnode id="XCQL_CF043_返显对象结构">
+            <comment>打印输出显示查询结果</comment>
+            <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callMethod>showLogObject</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <value>:ReturnObject</value>                 <!-- 定义执行方法参数 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_为节点添加属性" />
+                </succeed>
+            </route>
+        </xnode>
+    
+    
+        <xcql id="XCQL_CF043_查询某节点所有_对象结构">
+            <comment>查询某节点内所有数（返回对象结构）</comment>
+            <callXID>:XCQL_Query_002_ReturnObject</callXID>  <!-- XCQL对象的ID -->
+            <returnID>ReturnObject</returnID>                <!-- 返回结果的变量名称 -->
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_返显对象结构" />
+                </succeed>
+            </route>
+        </xcql>
+        
+    
+        <xnode id="XCQL_CF043_返显列表与集合结构">
+            <comment>打印输出显示查询结果</comment>
+            <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callMethod>showLogListMap</callMethod>          <!-- 定义执行方法 -->
+            <callParam>
+                <value>:ReturnListMap</value>                <!-- 定义执行方法参数 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_查询某节点所有_对象结构" />
+                </succeed>
+            </route>
+        </xnode>
+    
+    
+        <xcql id="XCQL_CF043_查询所有数据_列表与集合结构">
+            <comment>查询所有数据（返回列表与集合）</comment>
+            <callXID>:XCQL_Query_001_ReturnListMap</callXID> <!-- XCQL对象的ID -->
+            <returnID>ReturnListMap</returnID>               <!-- 返回结果的变量名称 -->
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_返显列表与集合结构" />
+                </succeed>
+            </route>
+        </xcql>
+        
+    
+        <xcql id="XCQL_CF043_添加节点_批量数据">
+            <comment>批量写入节点数据</comment>
+            <callXID>:XCQL_Insert_001</callXID>              <!-- XCQL对象的ID -->
+            <callParam>
+                <valueClass>java.util.ArrayList</valueClass> <!-- 批量数据时，需要显示说明类型为List -->
+                <value>:DataList</value>                     <!-- 数据的变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_查询所有数据_列表与集合结构" />
+                </succeed>
+            </route>
+        </xcql>
+        
+    
+        <xcql id="XCQL_CF043_添加节点_Map参数">
+            <comment>写入一个节点（Map为参数）</comment>
+            <callXID>:XCQL_Insert_001</callXID>              <!-- XCQL对象的ID -->
+            <callParam>
+                <value>:DataMap</value>                      <!-- 数据的变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_添加节点_批量数据" />
+                </succeed>
+            </route>
+        </xcql>
+    
+        
+        <xcql id="XCQL_CF043_添加节点_对象参数">
+            <comment>写入一个节点（对象为参数）</comment>
+            <callXID>:XCQL_Insert_001</callXID>              <!-- XCQL对象的ID -->
+            <callParam>
+                <value>:DataObject</value>                   <!-- 数据的变量名称 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_添加节点_Map参数" />
+                </succeed>
+            </route>
+        </xcql>
+        
+    </xconfig>
+    
+</config>

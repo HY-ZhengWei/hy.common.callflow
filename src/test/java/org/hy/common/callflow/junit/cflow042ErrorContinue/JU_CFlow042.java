@@ -9,6 +9,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.execute.ExecuteResultNext;
 import org.hy.common.callflow.junit.JUBase;
+import org.hy.common.callflow.junit.cflow042ErrorContinue.program.ExecuteEvent;
 import org.hy.common.callflow.junit.cflow042ErrorContinue.program.Program;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
@@ -23,7 +24,7 @@ import org.junit.runners.MethodSorters;
 
 
 /**
- * 测试单元：编排引擎042：整个编排异常后尝试重做
+ * 测试单元：编排引擎042：编排续跑
  *
  * @author      ZhengWei(HY)
  * @createDate  2025-11-17
@@ -78,7 +79,7 @@ public class JU_CFlow042 extends JUBase
             return;
         }
         
-        ExecuteResult v_Result = CallFlow.execute(v_Node ,v_Context);
+        ExecuteResult v_Result = CallFlow.execute(v_Node ,v_Context ,new ExecuteEvent());
         if ( v_Result.isSuccess() )
         {
             System.out.println("Success");

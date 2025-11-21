@@ -1058,7 +1058,7 @@ public class CallFlow
             
             if ( Help.isNull(v_Nexts) )
             {
-                // 当没有异常处理时，应结束整个编排，退出结束整个编排
+                // 当没有异常处理时（即i_Event==null时），应结束整个编排，退出结束整个编排
                 CallFlow.putError(io_Context ,v_Result);
             }
             else

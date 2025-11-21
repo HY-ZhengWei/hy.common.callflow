@@ -36,6 +36,7 @@ import org.hy.common.callflow.node.CommandConfig;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.callflow.node.UnzipConfig;
 import org.hy.common.callflow.node.WaitConfig;
+import org.hy.common.callflow.node.XCQLConfig;
 import org.hy.common.callflow.node.XSQLConfig;
 import org.hy.common.callflow.node.ZipConfig;
 import org.hy.common.callflow.returns.ReturnConfig;
@@ -90,6 +91,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Node       .getXmlName() ,NodeConfig.class);
         getInstance().addImportHead(ElementType.Api        .getXmlName() ,APIConfig.class);
         getInstance().addImportHead(ElementType.XSQL       .getXmlName() ,XSQLConfig.class);
+        getInstance().addImportHead(ElementType.XCQL       .getXmlName() ,XCQLConfig.class);
         getInstance().addImportHead(ElementType.Zip        .getXmlName() ,ZipConfig.class);
         getInstance().addImportHead(ElementType.Unzip      .getXmlName() ,UnzipConfig.class);
         getInstance().addImportHead(ElementType.Command    .getXmlName() ,CommandConfig.class);

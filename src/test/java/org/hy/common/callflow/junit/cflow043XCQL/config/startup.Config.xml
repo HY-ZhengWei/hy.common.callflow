@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"         class="java.util.ArrayList" />
+    <import name="startupConfig"   class="java.util.ArrayList" />
+    <import name="item"            class="org.hy.common.app.Param" />
+    
+    
+    
+    <!-- 启动加载XML配置信息的列表 -->
+    <xconfig>
+        
+        <startupConfig id="StartupConfig">
+        
+            <item>
+                <value>/config/ms.sys.GraphDB.Config.xml</value>
+            </item>
+            
+            <!-- 加载图谱配置脚本目录中的所有配置文件 -->
+            <item>
+                <value>/cql/</value>
+            </item>
+            
+            <!-- 加载编排配置目录中的所有配置文件 -->
+            <item>
+                <value>/callflow/</value>
+            </item>
+
+        </startupConfig>
+        
+    </xconfig>
+    
+</config>

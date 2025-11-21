@@ -32,7 +32,7 @@
     
     
     
-    <!-- CFlow编排引擎配置：条件逻辑元素的三合一功能：重做 -->
+    <!-- CFlow编排引擎配置：编排续跑 -->
     <xconfig>
     
     
@@ -47,6 +47,7 @@
         </xreturn>
         
         
+        <!-- 
         <xreturn id="XCondition_CF042_ErrorContinue_完成_假值时">
             <comment>完成，假值时</comment>
             <retValue>
@@ -56,6 +57,7 @@
             }
             </retValue>
         </xreturn>
+        -->
         
         
         <xnode id="XNode_CF042_ErrorContinue_异常点位">
@@ -92,10 +94,12 @@
                     <next ref="XNode_CF042_ErrorContinue_异常点位" />
                     <comment>真时</comment>
                 </if>
+                <!-- 
                 <else>
                     <next ref="XCondition_CF042_ErrorContinue_完成_假值时" />
                     <comment>假时</comment>
                 </else>
+                -->
             </route>
         </xcondition>
         
