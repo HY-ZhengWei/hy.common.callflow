@@ -20,6 +20,7 @@ import org.hy.common.callflow.enums.XSQLType;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xcql.XCQL;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.XSQL;
 import org.hy.common.xml.XSQLData;
@@ -39,6 +40,7 @@ import org.hy.common.xml.plugins.XSQLGroupResult;
  *              v2.0  2025-06-04  添加：用于XSQL组的returnID返回ID
  *                                添加：用于查询类的returnOne
  *              v3.0  2025-09-26  迁移：静态检查
+ *              v4.0  2025-11-24  添加：分页查询的功能，能在XSQL元素内生成专的分页对象
  */
 public class XSQLConfig extends NodeConfig implements NodeConfigBase
 {
@@ -63,6 +65,12 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      * 当用于XSQL组时，须要与 returnXSGRID 属性配合使用，可以获取XSQL组中有 returnID 标记的首行记录
      */
     private boolean  returnOne;
+    
+    /** 是否支持分页查询 */
+    private boolean  paging;
+    
+    /** 分页查询的对象 */
+    private XSQL     xsqlPaging;
     
     
     
@@ -96,6 +104,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         super(i_RequestTotal ,i_SuccessTotal);
         this.type      = XSQLType.Auto;
         this.returnOne = false;
+        this.paging    = false;
     }
     
     
@@ -187,6 +196,27 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     {
         // 重写NodeConfig中方法的原因是：ElementType.XSQL.getValue() 中的首字母已有一个X了， 就没有必要重复出现
         return this.getElementType() + "_" + StringHelp.getUUID9n();
+    }
+    
+    
+    
+    /**
+     * 设置：执行对象的XID
+     * 
+     * @param i_CallXID 执行对象的XID
+     */
+    public void setCallXID(String i_CallXID)
+    {
+        synchronized (this)
+        {
+            if ( this.xsqlPaging != null && !Help.isNull(this.xsqlPaging.getXJavaID()) )
+            {
+                XCQL.removePaging(this.xsqlPaging.getXJavaID()); 
+            }
+            
+            super.setCallXID(i_CallXID);
+            this.xsqlPaging = null;
+        }
     }
 
 
@@ -510,7 +540,20 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
      */
     public Object generateObject(Map<String ,Object> io_Context ,Object io_ExecuteObject)
     {
-        this.initCallMethod(io_ExecuteObject);
+        synchronized (this) 
+        {
+            this.initCallMethod(io_ExecuteObject);
+            
+            if ( this.paging && this.xsqlPaging == null )
+            {
+                if ( io_ExecuteObject instanceof XSQL )
+                {
+                    XSQL v_XSQL     = (XSQL) io_ExecuteObject;
+                    this.xsqlPaging = XSQL.queryPaging(v_XSQL ,true);
+                    return this.xsqlPaging;
+                }
+            }
+        }
         return io_ExecuteObject;
     }
     
@@ -711,11 +754,15 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     {
         if ( this.type != null && !XSQLType.Auto.equals(this.type) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("type" ,this.type.getValue()));
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("type"    ,this.type.getValue()));
         }
         if ( !Help.isNull(this.getCallXID()) )
         {
             io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callXID" ,this.getCallXID()));
+        }
+        if ( this.paging )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("paging" ,this.paging));
         }
         if ( !Help.isNull(this.getCallParams()) )
         {
@@ -730,7 +777,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         }
         if ( this.returnOne )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("returnOne" ,this.returnOne));
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("returnOne"    ,this.returnOne));
         }
     }
     
@@ -935,6 +982,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         v_Clone.type         = this.type;
         v_Clone.returnXSGRID = this.returnXSGRID;
         v_Clone.returnOne    = this.returnOne;
+        v_Clone.paging       = this.paging;
         
         
         return v_Clone;
@@ -982,6 +1030,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         v_Clone.type         = this.type;
         v_Clone.returnXSGRID = this.returnXSGRID;
         v_Clone.returnOne    = this.returnOne;
+        v_Clone.paging       = this.paging;
     }
     
     
