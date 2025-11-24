@@ -108,6 +108,10 @@ public class JU_CFlow043 extends AppInitConfig
         v_SetObject.setPort(9999);
         v_SetObject.setUserName("ZhengWei");
         
+        Program v_WheresPaging = new Program();
+        v_WheresPaging.setPageIndex(1L);
+        v_WheresPaging.setPagePerCount(3L);
+        
         Program v_DelObject = new Program();
         v_DelObject.setDatabaseName("dataCenter");
         
@@ -121,6 +125,7 @@ public class JU_CFlow043 extends AppInitConfig
         v_Context.put("WheresObject" ,v_WheresObject);
         v_Context.put("WheresMap"    ,v_WheresMap);
         v_Context.put("SetObject"    ,v_SetObject);
+        v_Context.put("WheresPaging" ,v_WheresPaging);
         v_Context.put("DelObject"    ,v_DelObject);
         v_Context.put("DelWhere"     ,v_DelWhere);
         

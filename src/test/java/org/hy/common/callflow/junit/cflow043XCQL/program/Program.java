@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.StringHelp;
 import org.hy.common.XJavaID;
 
 
@@ -78,20 +79,28 @@ public class Program implements XJavaID
     /** 创建时间 */
     private Date    createTime;
     
+    /** 页码。有效下标从1开始 */
+    private Long    pageIndex;
+
+    /** 每页显示数量 */
+    private Long    pagePerCount;
     
     
-    public void showLogObject(List<Program> i_Datas)
+    
+    public void showLogObject(String i_Comment ,List<Program> i_Datas)
     {
-        System.out.println("\n\n");
+        System.out.println(i_Comment);
         Help.print(i_Datas);
+        System.out.println("\n\n");
     }
     
     
     
-    public void showLogListMap(List<Map<String ,Object>> i_Datas)
+    public void showLogListMap(String i_Comment ,List<Map<String ,Object>> i_Datas)
     {
-        System.out.println("\n\n");
+        System.out.println(i_Comment);
         Help.print(i_Datas);
+        System.out.println("\n\n");
     }
 
     
@@ -511,4 +520,112 @@ public class Program implements XJavaID
     {
         this.createTime = i_CreateTime;
     }
+    
+    
+    
+    /**
+     * 获取：开始索引
+     */
+    public Long getStartIndex()
+    {
+        if ( this.pageIndex == null || this.pagePerCount == null )
+        {
+            return null;
+        }
+        else
+        {
+            return this.getPagePerCount() * (this.getPageIndex() - 1);
+        }
+    }
+
+
+    
+    /**
+     * 获取：页码。有效下标从1开始
+     */
+    public Long getPageIndex()
+    {
+        return pageIndex;
+    }
+
+
+    
+    /**
+     * 设置：页码。有效下标从1开始
+     * 
+     * @param i_PageIndex 页码。有效下标从1开始
+     */
+    public void setPageIndex(Long i_PageIndex)
+    {
+        this.pageIndex = i_PageIndex;
+    }
+
+
+    
+    /**
+     * 获取：每页显示数量
+     */
+    public Long getPagePerCount()
+    {
+        if ( this.pagePerCount == null )
+        {
+            return null;
+        }
+        else if ( this.pagePerCount > 1000L )
+        {
+            return 1000L;
+        }
+        else if ( this.pagePerCount <= 0L )
+        {
+            return 10L;
+        }
+        else
+        {
+            return pagePerCount;
+        }
+    }
+
+
+    
+    /**
+     * 设置：每页显示数量
+     * 
+     * @param i_PagePerCount 每页显示数量
+     */
+    public void setPagePerCount(Long i_PagePerCount)
+    {
+        this.pagePerCount = i_PagePerCount;
+    }
+
+
+
+    @Override
+    public String toString()
+    {
+        StringBuilder v_Buffer = new StringBuilder();
+        
+        if ( !Help.isNull(this.id) )
+        {
+            v_Buffer.append(StringHelp.rpad(this.id ,6 ," ")).append("  ");
+        }
+        if ( !Help.isNull(this.databaseName) )
+        {
+            v_Buffer.append(StringHelp.rpad(this.databaseName ,16 ," ")).append("  ");
+        }
+        if ( !Help.isNull(this.port) )
+        {
+            v_Buffer.append(this.port).append("  ");
+        }
+        if ( !Help.isNull(this.createTime) )
+        {
+            v_Buffer.append(this.createTime.getFull()).append("  ");
+        }
+        if ( !Help.isNull(this.userName) )
+        {
+            v_Buffer.append(this.userName).append("  ");
+        }
+        
+        return v_Buffer.toString();
+    }
+    
 }

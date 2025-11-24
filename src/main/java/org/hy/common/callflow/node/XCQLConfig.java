@@ -50,6 +50,12 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
      */
     private boolean  returnOne;
     
+    /** 是否支持分页查询 */
+    private boolean  paging;
+    
+    /** 分页查询的对象 */
+    private XCQL     xcqlPaging;
+    
     
     
     /**
@@ -82,6 +88,7 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
         super(i_RequestTotal ,i_SuccessTotal);
         this.type      = XCQLType.Auto;
         this.returnOne = false;
+        this.paging    = false;
     }
     
     
@@ -174,6 +181,27 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
         // 重写NodeConfig中方法的原因是：ElementType.XCQL.getValue() 中的首字母已有一个X了， 就没有必要重复出现
         return this.getElementType() + "_" + StringHelp.getUUID9n();
     }
+    
+    
+    
+    /**
+     * 设置：执行对象的XID
+     * 
+     * @param i_CallXID 执行对象的XID
+     */
+    public void setCallXID(String i_CallXID)
+    {
+        synchronized (this)
+        {
+            if ( this.xcqlPaging != null && !Help.isNull(this.xcqlPaging.getXJavaID()) )
+            {
+                XCQL.removePaging(this.xcqlPaging.getXJavaID()); 
+            }
+            
+            super.setCallXID(i_CallXID);
+            this.xcqlPaging = null;
+        }
+    }
 
 
     
@@ -184,8 +212,8 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
     {
         return type;
     }
-
-
+    
+    
     
     /**
      * 设置：XCQL元素类型
@@ -446,7 +474,17 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
      */
     public Object generateObject(Map<String ,Object> io_Context ,Object io_ExecuteObject)
     {
-        this.initCallMethod(io_ExecuteObject);
+        synchronized (this) 
+        {
+            this.initCallMethod(io_ExecuteObject);
+            
+            if ( this.paging && this.xcqlPaging == null )
+            {
+                XCQL v_XCQL     = (XCQL) io_ExecuteObject;
+                this.xcqlPaging = XCQL.queryPaging(v_XCQL ,true);
+                return this.xcqlPaging;
+            }
+        }
         return io_ExecuteObject;
     }
     
@@ -624,11 +662,15 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
     {
         if ( this.type != null && !XCQLType.Auto.equals(this.type) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("type" ,this.type.getValue()));
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("type"    ,this.type.getValue()));
         }
         if ( !Help.isNull(this.getCallXID()) )
         {
             io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callXID" ,this.getCallXID()));
+        }
+        if ( this.paging )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("paging"  ,this.paging));
         }
         if ( !Help.isNull(this.getCallParams()) )
         {
@@ -843,6 +885,7 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
         v_Clone.setContext(this.getContext());
         v_Clone.type      = this.type;
         v_Clone.returnOne = this.returnOne;
+        v_Clone.paging    = this.paging;
         
         return v_Clone;
     }
@@ -888,6 +931,7 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
         v_Clone.setContext(this.getContext());
         v_Clone.type      = this.type;
         v_Clone.returnOne = this.returnOne;
+        v_Clone.paging    = this.paging;
     }
     
     

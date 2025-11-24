@@ -55,17 +55,56 @@
             </route>
         </xcql>
         
+        
+        <xnode id="XCQL_CF043_返显分页查询的结果">
+            <comment>打印输出显示查询结果</comment>
+            <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
+            <callMethod>showLogObject</callMethod>           <!-- 定义执行方法 -->
+            <callParam>
+                <valueClass>java.lang.String</valueClass>
+                <value>返显分页查询的结果</value>                 <!-- 定义执行方法参数：常量 -->
+            </callParam>
+            <callParam>
+                <value>:ReturnWheresPaging</value>           <!-- 定义执行方法参数：变量 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_删除部分数据" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xcql id="XCQL_CF043_分页查询">
+            <comment>分页查询（返回对象结构）</comment>
+            <callXID>:XCQL_Query_004_Paging</callXID>        <!-- XCQL对象的ID -->
+            <paging>true</paging>                            <!-- 启用分页 -->
+            <callParam>
+                <value>:WheresPaging</value>                 <!-- 数据的变量名称 -->
+            </callParam>
+            <returnID>ReturnWheresPaging</returnID>          <!-- 返回结果的变量名称 -->
+            <route>
+                <succeed>
+                    <next ref="XCQL_CF043_返显分页查询的结果" />
+                </succeed>
+            </route>
+        </xcql>
+        
     
         <xnode id="XCQL_CF043_返显查询条件Map为参的结果">
             <comment>打印输出显示查询结果</comment>
             <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
             <callMethod>showLogObject</callMethod>           <!-- 定义执行方法 -->
             <callParam>
-                <value>:ReturnWheresMap</value>              <!-- 定义执行方法参数 -->
+                <valueClass>java.lang.String</valueClass>
+                <value>返显查询条件Map为参的结果</value>          <!-- 定义执行方法参数：常量 -->
+            </callParam>
+            <callParam>
+                <value>:ReturnWheresMap</value>              <!-- 定义执行方法参数：变量 -->
             </callParam>
             <route>
                 <succeed>
-                    <next ref="XCQL_CF043_删除部分数据" />
+                    <next ref="XCQL_CF043_分页查询" />
                 </succeed>
             </route>
         </xnode>
@@ -105,7 +144,11 @@
             <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
             <callMethod>showLogObject</callMethod>           <!-- 定义执行方法 -->
             <callParam>
-                <value>:ReturnWheresObject</value>           <!-- 定义执行方法参数 -->
+                <valueClass>java.lang.String</valueClass>
+                <value>返显查询条件对象为参的结果</value>          <!-- 定义执行方法参数：常量 -->
+            </callParam>
+            <callParam>
+                <value>:ReturnWheresObject</value>           <!-- 定义执行方法参数：变量 -->
             </callParam>
             <route>
                 <succeed>
@@ -149,7 +192,11 @@
             <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
             <callMethod>showLogObject</callMethod>           <!-- 定义执行方法 -->
             <callParam>
-                <value>:ReturnObject</value>                 <!-- 定义执行方法参数 -->
+                <valueClass>java.lang.String</valueClass>
+                <value>返显对象结构</value>                     <!-- 定义执行方法参数：常量 -->
+            </callParam>
+            <callParam>
+                <value>:ReturnObject</value>                 <!-- 定义执行方法参数：变量 -->
             </callParam>
             <route>
                 <succeed>
@@ -176,7 +223,11 @@
             <callXID>:XProgram</callXID>                     <!-- 定义执行对象 -->
             <callMethod>showLogListMap</callMethod>          <!-- 定义执行方法 -->
             <callParam>
-                <value>:ReturnListMap</value>                <!-- 定义执行方法参数 -->
+                <valueClass>java.lang.String</valueClass>
+                <value>返显列表与集合结构</value>                 <!-- 定义执行方法参数：常量 -->
+            </callParam>
+            <callParam>
+                <value>:ReturnListMap</value>                <!-- 定义执行方法参数：变量 -->
             </callParam>
             <route>
                 <succeed>
