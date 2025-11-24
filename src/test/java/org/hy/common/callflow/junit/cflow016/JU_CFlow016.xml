@@ -15,6 +15,7 @@
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
