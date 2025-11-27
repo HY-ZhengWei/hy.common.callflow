@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig" class="java.util.ArrayList" />
+    <import name="refs"    class="java.util.ArrayList" />
+    <import name="ref"     class="org.hy.common.callflow.junit.cflow043XCQL.program.PeopleRef" />
+    
+    
+    
+    <!-- 数据：人物关系列表 -->
+    <xconfig>
+        
+        <refs id="PeopleRefs">
+            
+            <!-- 取经团队：人物 -->
+            <ref>
+                <name>孙悟空</name>
+                <comment>师父</comment>
+                <refName>唐僧</refName>
+            </ref>
+            
+            <ref>
+                <name>猪八戒</name>
+                <comment>师父</comment>
+                <refName>唐僧</refName>
+            </ref>
+            
+            <ref>
+                <name>沙悟净</name>
+                <comment>师父</comment>
+                <refName>唐僧</refName>
+            </ref>
+            
+            <ref>
+                <name>白龙马</name>
+                <comment>师父</comment>
+                <refName>唐僧</refName>
+            </ref>
+            
+            <ref>
+                <name>唐僧</name>
+                <comment>大徒弟（五行山拜师）</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>唐僧</name>
+                <comment>二徒弟（高老庄拜师）</comment>
+                <refName>猪八戒</refName>
+            </ref>
+            
+            <ref>
+                <name>唐僧</name>
+                <comment>三徒弟（流沙河拜师）</comment>
+                <refName>沙悟净</refName>
+            </ref>
+            
+            <ref>
+                <name>唐僧</name>
+                <comment>坐骑（误食唐僧白马后化身）</comment>
+                <refName>白龙马</refName>
+            </ref>
+            
+            
+            
+            <!-- 取经团队：后台支援团队 -->
+            <ref>
+                <name>如来佛祖</name>
+                <comment>五行山压服</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>如来佛祖</name>
+                <comment>授予真经</comment>
+                <refName>唐僧</refName>
+            </ref>
+            
+            <ref>
+                <name>如来佛祖</name>
+                <comment>取经任务</comment>
+                <refName>观音菩萨</refName>
+            </ref>
+            
+            <ref>
+                <name>观音菩萨</name>
+                <comment>寻找取经人</comment>
+                <refName>唐僧</refName>
+            </ref>
+            
+            <ref>
+                <name>观音菩萨</name>
+                <comment>点化</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>观音菩萨</name>
+                <comment>点化</comment>
+                <refName>猪八戒</refName>
+            </ref>
+            
+            <ref>
+                <name>观音菩萨</name>
+                <comment>点化</comment>
+                <refName>沙悟净</refName>
+            </ref>
+            
+            <ref>
+                <name>观音菩萨</name>
+                <comment>点化</comment>
+                <refName>白龙马</refName>
+            </ref>
+            
+            <ref>
+                <name>观音菩萨</name>
+                <comment>收服</comment>
+                <refName>红孩儿</refName>
+            </ref>
+            
+            <ref>
+                <name>唐太宗</name>
+                <comment>结拜兄弟；派取经任务</comment>
+                <refName>唐僧</refName>
+            </ref>
+            
+            <ref>
+                <name>菩提祖师</name>
+                <comment>启蒙师父</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>太上老君</name>
+                <comment>旧识（大闹天宫时相识）</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>太上老君</name>
+                <comment>童子</comment>
+                <refName>金角大王</refName>
+            </ref>
+            
+            <ref>
+                <name>太上老君</name>
+                <comment>童子</comment>
+                <refName>银角大王</refName>
+            </ref>
+            
+            <ref>
+                <name>太上老君</name>
+                <comment>坐骑</comment>
+                <refName>青牛精</refName>
+            </ref>
+            
+            
+            
+            <!-- 取经团队：阻碍团队 -->
+            <ref>
+                <name>红孩儿</name>
+                <comment>爸爸</comment>
+                <refName>牛魔王</refName>
+            </ref>
+            
+            <ref>
+                <name>红孩儿</name>
+                <comment>妈妈</comment>
+                <refName>铁扇公主</refName>
+            </ref>
+            
+            <ref>
+                <name>红孩儿</name>
+                <comment>被观音菩萨收服（做善财童子）</comment>
+                <refName>观音菩萨</refName>
+            </ref>
+            
+            <ref>
+                <name>红孩儿</name>
+                <comment>伤到</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>青牛精</name>
+                <comment>太上老君的坐骑</comment>
+                <refName>太上老君</refName>
+            </ref>
+            
+            <ref>
+                <name>青牛精</name>
+                <comment>偷老君金刚琢困住悟空</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>金角大王</name>
+                <comment>太上老君的童子</comment>
+                <refName>太上老君</refName>
+            </ref>
+            
+            <ref>
+                <name>金角大王</name>
+                <comment>紫金葫芦困住悟空</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>银角大王</name>
+                <comment>太上老君的童子</comment>
+                <refName>太上老君</refName>
+            </ref>
+            
+            <ref>
+                <name>银角大王</name>
+                <comment>紫金葫芦困住悟空</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>牛魔王</name>
+                <comment>悟空的 “旧结拜大哥”</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+            <ref>
+                <name>牛魔王</name>
+                <comment>妻子</comment>
+                <refName>铁扇公主</refName>
+            </ref>
+            
+            <ref>
+                <name>牛魔王</name>
+                <comment>儿子</comment>
+                <refName>红孩儿</refName>
+            </ref>
+            
+            <ref>
+                <name>铁扇公主</name>
+                <comment>儿子</comment>
+                <refName>红孩儿</refName>
+            </ref>
+            
+            <ref>
+                <name>铁扇公主</name>
+                <comment>丈夫</comment>
+                <refName>牛魔王</refName>
+            </ref>
+            
+            <ref>
+                <name>铁扇公主</name>
+                <comment>芭蕉扇吹走</comment>
+                <refName>孙悟空</refName>
+            </ref>
+            
+        </refs>
+        
+    </xconfig>
+    
+</config>

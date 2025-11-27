@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="cqls" class="java.util.ArrayList" />
+    <import name="cql"  class="org.hy.common.xcql.XCQL" />
+
+
+
+    <!-- 团队组织的相关CQL -->
+    <cqls>
+    
+        <cql id="XCQL_Group_Create"> 
+        
+            <dataSourceCQL ref="DSCQL_001" />
+        
+            <content>
+                <![CDATA[
+                CREATE (:`团队组织` {
+                        groupName : '#groupName'
+                       })
+                ]]>
+            </content>
+            
+        </cql>
+        
+    </cqls>
+    
+</config>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig" class="java.util.ArrayList" />
+    <import name="groups"  class="java.util.ArrayList" />
+    <import name="group"   class="org.hy.common.callflow.junit.cflow043XCQL.program.GroupInfo" />
+    
+    
+    
+    <!-- 数据：团队组织列表 -->
+    <xconfig>
+        
+        <groups id="Groups">
+        
+            <group>
+                <groupName>取经团队</groupName>
+            </group>
+            
+            <group>
+                <groupName>后台支援团队</groupName>
+            </group>
+            
+            <group>
+                <groupName>阻碍团队</groupName>
+            </group>
+            
+        </groups>
+        
+    </xconfig>
+    
+</config>

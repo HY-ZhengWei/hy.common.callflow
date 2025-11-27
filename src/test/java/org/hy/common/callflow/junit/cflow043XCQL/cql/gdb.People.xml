@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="cqls" class="java.util.ArrayList" />
+    <import name="cql"  class="org.hy.common.xcql.XCQL" />
+
+
+
+    <!-- 人物信息的相关CQL -->
+    <cqls>
+    
+        <cql id="XCQL_People_Create"> 
+        
+            <dataSourceCQL ref="DSCQL_001" />
+        
+            <content>
+                <![CDATA[
+                CREATE (:`人物` { 
+                        name      : '#name'
+                       ,nickName  : '#nickName'
+                       ,roleName  : '#roleName'
+                       ,groupName : '#groupName'
+                       })
+                ]]>
+            </content>
+            
+        </cql>
+        
+    </cqls>
+    
+</config>

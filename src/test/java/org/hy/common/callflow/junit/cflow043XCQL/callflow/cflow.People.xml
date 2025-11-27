@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：人物关系 -->
+    <xconfig>
+    
+        <xreturn id="XCFlow_People_Succeed">
+            <comment>执行完成</comment>
+            <retValue>
+            {
+                "retInt": 200,
+                "retText": "执行完成"
+            }
+            </retValue>
+        </xreturn>
+        
+        
+        <xcql id="XCFlow_People_初始化人物关系">
+            <comment>初始化人物关系"</comment>
+            <callXID>:XCQL_PeopleRef_Create</callXID>
+            <callParam>
+                <value>:ForPeopleRef</value>
+            </callParam>
+            <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XCFlow_People_人物关系</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>
+                    <next ref="XCFlow_People_Succeed" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xfor id="XCFlow_People_人物关系">
+            <comment>遍历人物关系集合</comment>
+            <end>:PeopleRefs</end>
+            <elementID>ForPeopleRef</elementID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_People_初始化人物关系" />
+                </succeed>
+            </route>
+        </xfor>
+        
+        
+        <xcql id="XCFlow_People_初始化人物团队关系">
+            <comment>初始化人物</comment>
+            <callXID>:XCQL_PeopleGroupRef_Create</callXID>
+            <callParam>
+                <value>:ForPeople</value>
+            </callParam>
+            <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XCFlow_People_遍历人物</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>
+                    <next ref="XCFlow_People_人物关系" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xcql id="XCFlow_People_初始化人物">
+            <comment>初始化人物</comment>
+            <callXID>:XCQL_People_Create</callXID>
+            <callParam>
+                <value>:ForPeople</value>
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_People_初始化人物团队关系" />
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xfor id="XCFlow_People_遍历人物">
+            <comment>遍历人物集合</comment>
+            <end>:Peoples</end>                            <!-- 集合对象的变量名称 -->
+            <elementID>ForPeople</elementID>               <!-- 每次循环元素的变量名称（可选的） -->
+            <route>
+                <succeed>
+                    <next ref="XCFlow_People_初始化人物" />
+                </succeed>
+            </route>
+        </xfor>
+        
+        
+        <xcql id="XCFlow_People_初始化团队">
+            <comment>初始化团队</comment>
+            <callXID>:XCQL_Group_Create</callXID>
+            <callParam>
+                <value>:ForGroup</value>
+            </callParam>
+            <route>
+                <succeed>
+                    <next>:XCFlow_People_遍历团队</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>
+                    <next ref="XCFlow_People_遍历人物" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xfor id="XCFlow_People_遍历团队">
+            <comment>遍历团队集合</comment>
+            <end>:Groups</end>
+            <elementID>ForGroup</elementID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_People_初始化团队" />
+                </succeed>
+            </route>
+        </xfor>
+        
+    </xconfig>
+    
+</config>

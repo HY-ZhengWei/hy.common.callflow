@@ -17,6 +17,11 @@
                 <value>/config/ms.sys.GraphDB.Config.xml</value>
             </item>
             
+            <!-- 加载数据脚本目录中的所有配置文件 -->
+            <item>
+                <value>/datas/</value>
+            </item>
+            
             <!-- 加载图谱配置脚本目录中的所有配置文件 -->
             <item>
                 <value>/cql/</value>

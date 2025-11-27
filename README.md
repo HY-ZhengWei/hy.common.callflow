@@ -39,6 +39,7 @@
     * [并发元素的举例](#并发元素的举例)
     * [接口元素的举例](#接口元素的举例)
     * [XSQL元素的举例](#XSQL元素的举例)
+    * [CQL图谱元素的举例](#CQL图谱元素的举例)
     * [定时元素的举例](#定时元素的举例)
     * [发布元素的举例](#发布元素的举例)
     * [订阅元素的举例](#订阅元素的举例)
@@ -369,6 +370,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -460,6 +462,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -599,6 +602,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -806,6 +810,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -932,6 +937,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -1059,6 +1065,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -1243,6 +1250,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -1388,6 +1396,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -1554,6 +1563,7 @@ __编排配置：分支逻辑__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -1746,6 +1756,7 @@ __编排配置：多逻辑组合__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -1968,6 +1979,8 @@ ExecuteResult       v_Result  = CallFlow.execute(v_For ,v_Context);
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow041ThreeInOne) [返回目录](#目录)
 
+[__视频说明__](https://www.bilibili.com/video/BV1m1UsBBEuW/)
+
 __编排图例演示__
 
 ![image](src/test/java/org/hy/common/callflow/junit/cflow041ThreeInOne/JU_CFlow041.png)
@@ -1992,6 +2005,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -2134,6 +2148,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -2217,6 +2232,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -2313,6 +2329,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -2459,6 +2476,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -2575,6 +2593,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -2708,6 +2727,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -2833,6 +2853,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -2964,6 +2985,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -3125,6 +3147,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -3298,6 +3321,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -3393,6 +3417,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -3576,6 +3601,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -3711,6 +3737,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -3817,6 +3844,276 @@ ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
 
 
 
+CQL图谱元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow043XCQL) [返回目录](#目录)
+
+[__视频说明__](https://www.bilibili.com/video/BV1wzUqBwEsM/)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow043XCQL/JU_CFlow043.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：人物关系 -->
+    <xconfig>
+    
+        <xreturn id="XCFlow_People_Succeed">
+            <comment>执行完成</comment>
+            <retValue>
+            {
+                "retInt": 200,
+                "retText": "执行完成"
+            }
+            </retValue>
+        </xreturn>
+        
+        
+        <xcql id="XCFlow_People_初始化人物关系">
+            <comment>初始化人物关系"</comment>
+            <callXID>:XCQL_PeopleRef_Create</callXID>
+            <callParam>
+                <value>:ForPeopleRef</value>
+            </callParam>
+            <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XCFlow_People_人物关系</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>
+                    <next ref="XCFlow_People_Succeed" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xfor id="XCFlow_People_人物关系">
+            <comment>遍历人物关系集合</comment>
+            <end>:PeopleRefs</end>
+            <elementID>ForPeopleRef</elementID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_People_初始化人物关系" />
+                </succeed>
+            </route>
+        </xfor>
+        
+        
+        <xcql id="XCFlow_People_初始化人物团队关系">
+            <comment>初始化人物</comment>
+            <callXID>:XCQL_PeopleGroupRef_Create</callXID>
+            <callParam>
+                <value>:ForPeople</value>
+            </callParam>
+            <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XCFlow_People_遍历人物</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>
+                    <next ref="XCFlow_People_人物关系" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xcql id="XCFlow_People_初始化人物">
+            <comment>初始化人物</comment>
+            <callXID>:XCQL_People_Create</callXID>
+            <callParam>
+                <value>:ForPeople</value>
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_People_初始化人物团队关系" />
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xfor id="XCFlow_People_遍历人物">
+            <comment>遍历人物集合</comment>
+            <end>:Peoples</end>                            <!-- 集合对象的变量名称 -->
+            <elementID>ForPeople</elementID>               <!-- 每次循环元素的变量名称（可选的） -->
+            <route>
+                <succeed>
+                    <next ref="XCFlow_People_初始化人物" />
+                </succeed>
+            </route>
+        </xfor>
+        
+        
+        <xcql id="XCFlow_People_初始化团队">
+            <comment>初始化团队</comment>
+            <callXID>:XCQL_Group_Create</callXID>
+            <callParam>
+                <value>:ForGroup</value>
+            </callParam>
+            <route>
+                <succeed>
+                    <next>:XCFlow_People_遍历团队</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>
+                    <next ref="XCFlow_People_遍历人物" />
+                    <comment>退出循环后的节点</comment>
+                </succeed>
+            </route>
+        </xcql>
+        
+        
+        <xfor id="XCFlow_People_遍历团队">
+            <comment>遍历团队集合</comment>
+            <end>:Groups</end>
+            <elementID>ForGroup</elementID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_People_初始化团队" />
+                </succeed>
+            </route>
+        </xfor>
+        
+    </xconfig>
+    
+</config>
+```
+
+__CQL语法模板配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="cqls" class="java.util.ArrayList" />
+    <import name="cql"  class="org.hy.common.xcql.XCQL" />
+
+
+
+    <cqls>
+    
+        <cql id="XCQL_People_Create"> 
+        
+            <dataSourceCQL ref="DSCQL_001" />
+        
+            <content>
+                <![CDATA[
+                CREATE (:`人物` { 
+                        name      : '#name'
+                       ,nickName  : '#nickName'
+                       ,roleName  : '#roleName'
+                       ,groupName : '#groupName'
+                       })
+                ]]>
+            </content>
+            
+        </cql>
+
+
+        <cql id="XCQL_PeopleRef_Create"> 
+        
+            <dataSourceCQL ref="DSCQL_001" />
+        
+            <content>
+                <![CDATA[
+                MATCH  (F:`人物`),(T:`人物`)
+                WHERE  F.name = '#refName'
+                  AND  T.name = '#name'
+               CREATE  (F)-[:`人物关系` {
+                        name    : F.name
+                       ,nameRef : T.name
+                       ,comment : '#comment'
+                       }]->(T)
+                ]]>
+            </content>
+            
+        </cql>
+        
+        
+        <cql id="XCQL_PeopleRef_Query_ByID"> 
+            
+            <dataSourceCQL ref="DSCQL_001" />
+            
+            <content>
+                <![CDATA[
+                MATCH  P=(F)-[R:`人物关系`]->(T) 
+                WHERE  T.name = '#name' 
+               RETURN  R.name
+                      ,R.nameRef
+                      ,R.comment
+                ]]>
+            </content>
+            
+            <result>
+                <row>org.hy.common.callflow.junit.cflow043XCQL.program.PeopleRef</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+            
+        </cql>
+        
+    </cqls>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+ForConfig           v_CFlow   = (ForConfig) XJava.getObject("XCFlow_People_遍历团队");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
+```
+
+
+
 
 定时元素的举例
 ------
@@ -3847,6 +4144,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -3934,6 +4232,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -4046,6 +4345,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -4170,6 +4470,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -4298,6 +4599,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -4453,6 +4755,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -4688,6 +4991,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -4786,6 +5090,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -4888,6 +5193,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -5085,6 +5391,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -5295,6 +5602,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -5451,6 +5759,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
@@ -5580,6 +5889,7 @@ __编排配置__
     <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
     <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
     <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
     <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
     <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
     <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />

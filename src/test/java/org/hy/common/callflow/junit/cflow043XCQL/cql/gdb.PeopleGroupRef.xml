@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="cqls" class="java.util.ArrayList" />
+    <import name="cql"  class="org.hy.common.xcql.XCQL" />
+
+
+
+    <!-- 人物团队关系的相关CQL -->
+    <cqls>
+    
+        <cql id="XCQL_PeopleGroupRef_Create"> 
+        
+            <dataSourceCQL ref="DSCQL_001" />
+        
+            <content>
+                <![CDATA[
+                MATCH  (F:`团队组织`),(T:`人物`)
+                WHERE  F.groupName = T.groupName
+                  AND  T.name      = '#name'
+               CREATE  (F)-[:`人物团队关系` {
+                        groupName : F.T.name
+                       ,name      : T.name
+                       }]->(T)
+                ]]>
+            </content>
+            
+        </cql>
+        
+        
+                <cql id="XCQL_PeopleGroupRef_Create"> 
+        
+            <dataSourceCQL ref="DSCQL_001" />
+        
+            <content>
+                <![CDATA[
+                MATCH  (F:`团队组织`),(T:`人物`)
+                WHERE  F.groupName = T.groupName
+                  AND  T.name      = '#name'
+               CREATE  (F)-[:`人物团队关系` {
+                        groupName : F.T.name
+                       ,name      : T.name
+                       }]->(T)
+                ]]>
+            </content>
+            
+        </cql>
+        
+    </cqls>
+    
+</config>

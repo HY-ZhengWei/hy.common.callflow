@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="cqls" class="java.util.ArrayList" />
+    <import name="cql"  class="org.hy.common.xcql.XCQL" />
+
+
+
+    <!-- 人物关系的相关CQL -->
+    <cqls>
+    
+        <cql id="XCQL_PeopleRef_Create"> 
+        
+            <dataSourceCQL ref="DSCQL_001" />
+        
+            <content>
+                <![CDATA[
+                MATCH  (F:`人物`),(T:`人物`)
+                WHERE  F.name = '#refName'
+                  AND  T.name = '#name'
+               CREATE  (F)-[:`人物关系` {
+                        name    : F.name
+                       ,nameRef : T.name
+                       ,comment : '#comment'
+                       }]->(T)
+                ]]>
+            </content>
+            
+        </cql>
+        
+        
+        
+        <cql id="XCQL_PeopleRef_Query_ByID"> 
+            
+            <dataSourceCQL ref="DSCQL_001" />
+            
+            <content>
+                <![CDATA[
+                MATCH  P=(F)-[R:`人物关系`]->(T) 
+                WHERE  T.name = '#name' 
+               RETURN  R.name
+                      ,R.nameRef
+                      ,R.comment
+                ]]>
+            </content>
+            
+            <result>
+                <row>org.hy.common.callflow.junit.cflow043XCQL.program.PeopleRef</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+            
+        </cql>
+        
+    </cqls>
+    
+</config>

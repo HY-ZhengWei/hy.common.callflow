@@ -10,6 +10,7 @@ import org.hy.common.Return;
 import org.hy.common.app.Param;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.junit.JUBase;
 import org.hy.common.callflow.junit.cflow043XCQL.program.Program;
 import org.hy.common.callflow.node.XCQLConfig;
@@ -158,6 +159,35 @@ public class JU_CFlow043 extends AppInitConfig
         System.out.println(CallFlow.getHelpExport().export(v_XCQL));
         
         JUBase.toJson(v_XCQL);
+    }
+    
+    
+    
+    @Test
+    public void test_人物关系()
+    {
+        // 获取编排中的首个元素
+        ForConfig           v_CFlow   = (ForConfig) XJava.getObject("XCFlow_People_遍历团队");
+        Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        
+        // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
+        Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_CFlow);
+        if ( !v_CheckRet.get() )
+        {
+            System.out.println(v_CheckRet.getParamStr());  // 打印不合格的原因
+            return;
+        }
+        
+        ExecuteResult v_Result = CallFlow.execute(v_CFlow ,v_Context);
+        if ( v_Result.isSuccess() )
+        {
+            System.out.println("Success");
+        }
+        else
+        {
+            System.out.println("Error XID = " + v_Result.getExecuteXID());
+            v_Result.getException().printStackTrace();
+        }
     }
     
 }

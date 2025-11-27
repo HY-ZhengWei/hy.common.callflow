@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig" class="java.util.ArrayList" />
+    <import name="peoples" class="java.util.ArrayList" />
+    <import name="people"  class="org.hy.common.callflow.junit.cflow043XCQL.program.PeopleInfo" />
+    
+    
+    
+    <!-- 数据：人物列表 -->
+    <xconfig>
+        
+        <peoples id="Peoples">
+        
+            <!-- 取经团队：人物 -->
+            <people>
+                <name>唐僧</name>
+                <nickName>金蝉子转世、取经主持人</nickName>
+                <roleName>精神领袖</roleName>
+                <groupName>取经团队</groupName>
+            </people>
+            
+            <people>
+                <name>孙悟空</name>
+                <nickName>石猴、齐天大圣、孙行者</nickName>
+                <roleName>战斗力担当</roleName>
+                <groupName>取经团队</groupName>
+            </people>
+            
+            <people>
+                <name>猪八戒</name>
+                <nickName>天蓬元帅转世、猪悟能</nickName>
+                <roleName>搞笑担当</roleName>
+                <groupName>取经团队</groupName>
+            </people>
+            
+            <people>
+                <name>沙悟净</name>
+                <nickName>卷帘大将转世、沙和尚</nickName>
+                <roleName>后勤担当</roleName>
+                <groupName>取经团队</groupName>
+            </people>
+            
+            
+            
+            <!-- 后台支援团队：人物 -->
+            <people>
+                <name>如来佛祖</name>
+                <nickName>西方极乐世界领袖</nickName>
+                <roleName>终极 BOSS（任务总策划）</roleName>
+                <groupName>后台支援团队</groupName>
+            </people>
+            
+            <people>
+                <name>观音菩萨</name>
+                <nickName>南海观世音</nickName>
+                <roleName>任务协调官（最常出手帮忙）</roleName>
+                <groupName>后台支援团队</groupName>
+            </people>
+            
+            <people>
+                <name>唐太宗</name>
+                <nickName>大唐皇帝</nickName>
+                <roleName>任务委托者（推动取经启动）</roleName>
+                <groupName>后台支援团队</groupName>
+            </people>
+            
+            <people>
+                <name>菩提祖师</name>
+                <nickName>悟空的启蒙师父</nickName>
+                <roleName>技能传授者（悟空本领来源）</roleName>
+                <groupName>后台支援团队</groupName>
+            </people>
+            
+            <people>
+                <name>太上老君</name>
+                <nickName>太上老君</nickName>
+                <roleName>应急救援队（解决棘手妖怪）</roleName>
+                <groupName>后台支援团队</groupName>
+            </people>
+            
+            
+            
+            <!-- 阻碍团队 -->
+            <people>
+                <name>红孩儿</name>
+                <nickName>牛魔王与铁扇公主的儿子</nickName>
+                <roleName>归顺神仙体系</roleName>
+                <groupName>阻碍团队</groupName>
+            </people>
+            
+            <people>
+                <name>青牛精</name>
+                <nickName>太上老君的坐骑</nickName>
+                <roleName>回到神仙身边</roleName>
+                <groupName>阻碍团队</groupName>
+            </people>
+            
+            <people>
+                <name>金角大王</name>
+                <nickName>太上老君的童子</nickName>
+                <roleName>回到神仙身边</roleName>
+                <groupName>阻碍团队</groupName>
+            </people>
+            
+            <people>
+                <name>银角大王</name>
+                <nickName>太上老君的童子</nickName>
+                <roleName>回到神仙身边</roleName>
+                <groupName>阻碍团队</groupName>
+            </people>
+            
+            <people>
+                <name>牛魔王</name>
+                <nickName>悟空的 “旧结拜大哥”</nickName>
+                <roleName>被哪吒等神仙收服</roleName>
+                <groupName>阻碍团队</groupName>
+            </people>
+            
+            <people>
+                <name>铁扇公主</name>
+                <nickName>牛魔王的妻子、红孩儿的母亲</nickName>
+                <roleName>继续守火焰山</roleName>
+                <groupName>阻碍团队</groupName>
+            </people>
+        </peoples>
+        
+    </xconfig>
+    
+</config>
