@@ -28,25 +28,6 @@
             
         </cql>
         
-        
-                <cql id="XCQL_PeopleGroupRef_Create"> 
-        
-            <dataSourceCQL ref="DSCQL_001" />
-        
-            <content>
-                <![CDATA[
-                MATCH  (F:`团队组织`),(T:`人物`)
-                WHERE  F.groupName = T.groupName
-                  AND  T.name      = '#name'
-               CREATE  (F)-[:`人物团队关系` {
-                        groupName : F.T.name
-                       ,name      : T.name
-                       }]->(T)
-                ]]>
-            </content>
-            
-        </cql>
-        
     </cqls>
     
 </config>
