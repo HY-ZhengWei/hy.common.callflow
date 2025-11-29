@@ -38,8 +38,8 @@
     * [递归的举例](#递归的举例)
     * [并发元素的举例](#并发元素的举例)
     * [接口元素的举例](#接口元素的举例)
-    * [XSQL元素的举例](#XSQL元素的举例)
-    * [CQL图谱元素的举例](#CQL图谱元素的举例)
+    * [库元素的举例](#库元素的举例)
+    * [图谱元素的举例](#图谱元素的举例)
     * [定时元素的举例](#定时元素的举例)
     * [发布元素的举例](#发布元素的举例)
     * [订阅元素的举例](#订阅元素的举例)
@@ -110,7 +110,7 @@
         
         2.7.  FTP文传元素，上传下载文件和目录。如果是目录将上传或下载它中所有文件。
         
-        2.8.  XSQL元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
+        2.8.  SQL库元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
         
         2.9.  CQL图谱元素，衍生于执行元素， 图数据库的查询、插入、更新、删除、DDL、DML等操作。
         
@@ -3708,7 +3708,7 @@ ExecuteResult       v_Result  = CallFlow.execute(v_API ,v_Context);
 
 
 
-XSQL元素的举例
+库元素的举例
 ------
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow020) [返回目录](#目录)
@@ -3844,7 +3844,7 @@ ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
 
 
 
-CQL图谱元素的举例
+图谱元素的举例
 ------
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow043XCQL) [返回目录](#目录)
