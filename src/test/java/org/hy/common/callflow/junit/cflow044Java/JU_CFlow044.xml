@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：爪哇元素 -->
+    <xconfig>
+    
+        <xreturn id="XNode_CF044_显示结果">
+            <comment>显示结果</comment>
+            <retValue>
+            {
+                "retInt": 200,
+                "retText": "执行结果为：:DynamicData.name"
+            }
+            </retValue>
+        </xreturn>    
+        
+    
+        <xnode id="XNode_CF044_实例赋值">
+            <comment>对创建出来的实例赋值</comment>
+            <callXID>:DynamicData</callXID>
+            <callMethod>setName</callMethod>
+            <callParam>
+                <valueClass>java.lang.String</valueClass>   <!-- 定义入参类型 -->
+                <value>:Name</value>                        <!-- 定义入参变量名称 -->
+                <valueDefault>XJava</valueDefault>          <!-- 定义入参默认值 -->
+            </callParam>
+            <route>
+                <succeed>
+                    <next ref="XNode_CF044_显示结果" />
+                </succeed>
+            </route>
+        </xnode>
+    
+    
+        <xnode id="XNode_CF044_创建实例">
+            <comment>在运行时，编译源码后创建它的实例</comment>
+            <callXID>:DynamicClass</callXID>
+            <callMethod>newInstance</callMethod>            <!-- 爪哇元素返回结果的预设方法 -->
+            <returnID>DynamicData</returnID>
+            <route>
+                <succeed>
+                    <next ref="XNode_CF044_实例赋值" />
+                </succeed>
+            </route>
+        </xnode>
+    
+        
+        <xjava id="XJava_CF044_定义对象">
+            <comment>在运行时，编译源码，动态定义对象</comment>
+            <java type="textarea">                          <!-- Java代码 -->
+            package org.hy.common.callflow.junit.cflow044Java;
+                
+            import org.hy.common.Date;
+            
+            public class DynamicInfo
+            {
+                private String name;
+                
+                public void setName(String i_Name)
+                {
+                    this.name = i_Name;
+                }
+                
+                public String getName()
+                {
+                    return this.name;
+                }
+            
+                @Override
+                public String toString()
+                {
+                    return Date.getNowTime().getFull();
+                }
+            }
+            </java>
+            <returnID>DynamicClass</returnID>               <!-- 定义返回结果的变量名称。名称相同时会覆盖 -->
+            <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF044_循环定义</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+                <succeed>
+                    <next ref="XNode_CF044_创建实例" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xjava>
+        
+        
+        <xfor id="XFor_CF044_循环定义">
+            <comment>循环：1到3</comment>
+            <start>1</start>                                <!-- 循环开始值 -->
+            <end>3</end>                                    <!-- 循环结束值 -->
+            <step>1</step>                                  <!-- 步长，可选项，默认为1 -->
+            <indexID>ForIndex</indexID>                     <!-- 序号变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XJava_CF044_定义对象" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+        </xfor>
+        
+    </xconfig>
+    
+</config>
