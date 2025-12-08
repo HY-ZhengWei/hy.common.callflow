@@ -176,6 +176,8 @@ public class CacheJavaFileManager extends ForwardingJavaFileManager<JavaFileMana
             
             v_ClassLoader = new CacheClassLoader(i_ClassName);
             $ClassLoaders.put(i_ClassName ,v_ClassLoader);
+            
+            CacheClassLoader.getInstanceof();
         }
         
         // 5. 获取编译后的字节码，通过自定义类加载器加载

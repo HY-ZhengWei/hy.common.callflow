@@ -312,12 +312,20 @@ public class JavaConfig extends ExecuteElement implements Cloneable
                 return v_Result;
             }
             
-            String   v_ClassName = v_Java.getClassNameFull();
-            Class<?> v_Class     = null;
+            String v_ClassName = v_Java.getClassNameFull();
             if ( !this.reload )
             {
-                v_Class = Help.forName(v_ClassName);
-                if ( v_Class != null )
+                try
+                {
+                    // 用了自定义的类加载器，此处是一个关键判定点
+                    v_Java.setClazz(Help.forName(v_ClassName));
+                }
+                catch (Exception exce)
+                {
+                    // 这里的异常可以忽略。就是判定类是否加载成功过后，未加载过时，首次一次会报类不存在的。
+                    // Nothing.
+                }
+                if ( v_Java.getClazz() != null )
                 {
                     // 不再重复解析源码、不再重复加载类
                     v_Result.setResult(v_Java);
@@ -344,8 +352,8 @@ public class JavaConfig extends ExecuteElement implements Cloneable
                 return v_Result;
             }
             
-            v_Class = v_CacheJavaManager.loadClass(v_ClassName);
-            if ( v_Class == null )
+            v_Java.setClazz(v_CacheJavaManager.loadClass(v_ClassName));
+            if ( v_Java.getClazz() == null )
             {
                 v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] 类[" + v_ClassName + "]加载失败."));
                 this.refreshStatus(io_Context ,v_Result.getStatus());

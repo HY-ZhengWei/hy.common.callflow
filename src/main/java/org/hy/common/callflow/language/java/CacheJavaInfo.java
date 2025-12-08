@@ -1,5 +1,7 @@
 package org.hy.common.callflow.language.java;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.hy.common.Help;
 
 
@@ -17,16 +19,74 @@ public class CacheJavaInfo
 {
     
     /** 包路径 */
-    private String packageName;
+    private String   packageName;
     
     /** 类名称（仅名类名称，不包括包路径） */
-    private String className;
+    private String   className;
     
     /** Java源码 */
-    private String sourceCode;
+    private String   sourceCode;
+    
+    /** 编译源码后的类元信息 */
+    private Class<?> clazz;
     
     
     
+    /**
+     * 创建类（从源码编译的动态类）的实现
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2025-12-08
+     * @version     v1.0
+     *
+     * @return
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     */
+    public Object newInstance() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException
+    {
+        // 注：通过下面代码无法反射出来，因为 “类加载器” 不同
+        // Help.forName(this.getClassNameFull())
+        
+        if ( this.clazz != null )
+        {
+            return this.clazz.getDeclaredConstructor().newInstance();
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    
+    
+    /**
+     * 获取：编译源码后的类元信息
+     */
+    public Class<?> getClazz()
+    {
+        return clazz;
+    }
+
+
+    
+    /**
+     * 设置：编译源码后的类元信息
+     * 
+     * @param i_Clazz 编译源码后的类元信息
+     */
+    public void setClazz(Class<?> i_Clazz)
+    {
+        this.clazz = i_Clazz;
+    }
+
+
+
     /**
      * 获取类名称的全路径
      * 
