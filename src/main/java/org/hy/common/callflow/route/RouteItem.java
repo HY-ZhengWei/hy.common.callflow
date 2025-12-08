@@ -21,6 +21,7 @@ import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ftp.FtpConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.language.GroovyConfig;
+import org.hy.common.callflow.language.JavaConfig;
 import org.hy.common.callflow.language.PythonConfig;
 import org.hy.common.callflow.language.ShellConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
@@ -768,6 +769,12 @@ public class RouteItem implements IToXml ,CloneableCallFlow ,XJavaID
             {
                 JOBConfig v_CloneReturn = new JOBConfig();
                 ((JOBConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
+                v_Clone.next = v_CloneReturn;
+            }
+            else if ( this.next instanceof JavaConfig )
+            {
+                JavaConfig v_CloneReturn = new JavaConfig();
+                ((JavaConfig) this.next).clone(v_CloneReturn ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
                 v_Clone.next = v_CloneReturn;
             }
             else if ( this.next instanceof PythonConfig )

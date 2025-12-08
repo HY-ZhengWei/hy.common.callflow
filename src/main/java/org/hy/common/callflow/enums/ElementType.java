@@ -60,13 +60,17 @@ public enum ElementType
                               
     CacheSet(   "CACHESET"    ,"xcs"        ,"缓存写元素"),
     
+    Java(       "JAVA"        ,"xjava"      ,"爪哇元素"),
+    
     Python(     "PYTHON"      ,"xpython"    ,"蟒蛇元素"),
     
     Groovy(     "GROOVY"      ,"xgroovy"    ,"酷语元素"),
     
     Shell(      "SHELL"       ,"xshell"     ,"脚本元素"),
     
-    Ftp(        "FTP"        ,"xftp"        ,"文传元素"),
+    Native(     "Native"      ,"xnative"    ,"实时元素"),
+    
+    Ftp(        "FTP"         ,"xftp"       ,"文传元素"),
                               
     SelfLoop(   "SELFLOOP"    ,""           ,"自循环"),
                               

@@ -26,6 +26,7 @@ import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.ftp.FtpConfig;
 import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.callflow.language.GroovyConfig;
+import org.hy.common.callflow.language.JavaConfig;
 import org.hy.common.callflow.language.PythonConfig;
 import org.hy.common.callflow.language.ShellConfig;
 import org.hy.common.callflow.nesting.MTConfig;
@@ -95,6 +96,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Zip        .getXmlName() ,ZipConfig.class);
         getInstance().addImportHead(ElementType.Unzip      .getXmlName() ,UnzipConfig.class);
         getInstance().addImportHead(ElementType.Command    .getXmlName() ,CommandConfig.class);
+        getInstance().addImportHead(ElementType.Java       .getXmlName() ,JavaConfig.class);
         getInstance().addImportHead(ElementType.Python     .getXmlName() ,PythonConfig.class);
         getInstance().addImportHead(ElementType.Groovy     .getXmlName() ,GroovyConfig.class);
         getInstance().addImportHead(ElementType.Shell      .getXmlName() ,ShellConfig.class);

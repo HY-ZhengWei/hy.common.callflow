@@ -36,7 +36,6 @@
     <!-- CFlow编排引擎配置：编排续跑 -->
     <xconfig>
     
-    
         <xreturn id="XCondition_CF042_ErrorContinue_完成_真值时">
             <comment>完成，真值时</comment>
             <retValue>
