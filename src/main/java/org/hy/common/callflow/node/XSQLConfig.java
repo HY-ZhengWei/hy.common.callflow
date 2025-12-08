@@ -321,6 +321,30 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
+    
+    
+    
+    /**
+     * 获取：是否支持分页查询
+     */
+    public boolean isPaging()
+    {
+        return paging;
+    }
+
+
+    
+    /**
+     * 设置：是否支持分页查询
+     * 
+     * @param i_Paging 是否支持分页查询
+     */
+    public void setPaging(boolean i_Paging)
+    {
+        this.paging = i_Paging;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
 
 
 

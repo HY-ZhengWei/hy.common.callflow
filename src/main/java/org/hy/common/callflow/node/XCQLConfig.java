@@ -237,6 +237,30 @@ public class XCQLConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 获取：是否支持分页查询
+     */
+    public boolean isPaging()
+    {
+        return paging;
+    }
+
+
+    
+    /**
+     * 设置：是否支持分页查询
+     * 
+     * @param i_Paging 是否支持分页查询
+     */
+    public void setPaging(boolean i_Paging)
+    {
+        this.paging = i_Paging;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
+    /**
      * 获取：表示只取查询结果集中的首行记录。即只返回一个对象。
      * 
      * 只用于方法。
