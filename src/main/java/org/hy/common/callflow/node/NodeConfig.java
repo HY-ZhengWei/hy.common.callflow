@@ -51,6 +51,7 @@ import org.hy.common.xml.plugins.XSQLGroup;
  *              v5.1  2025-09-26  迁移：静态检查
  *              v6.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  *              v7.0  2025-11-18  添加：编排续跑
+ *              v8.0  2025-12-08  添加：在XJava对象池中未询找到对象实例时，可尝试从上下文中获取
  */
 public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
@@ -289,6 +290,11 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         
         // 获取执行对象
         Object v_CallObject = XJava.getObject(this.callXID);
+        if ( v_CallObject == null )
+        {
+            // 在XJava对象池中未询找到对象实例时，可尝试从上下文中获取。以XJava对象池为优先
+            v_CallObject = io_Context.get(this.callXID);
+        }
         v_CallObject = this.generateObject(io_Context ,v_CallObject);
         if ( v_CallObject == null )
         {
@@ -664,6 +670,11 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         
         // 获取执行对象
         Object v_CallObject = XJava.getObject(this.callXID);
+        if ( v_CallObject == null )
+        {
+            // 在XJava对象池中未询找到对象实例时，可尝试从上下文中获取。以XJava对象池为优先
+            v_CallObject = io_Context.get(this.callXID);
+        }
         if ( v_CallObject == null )
         {
             NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s CallXID[" + this.getCallXID() + "] is not find.");
@@ -1237,9 +1248,19 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         if ( !Help.isNull(this.callXID) )
         {
             v_Builder.append(this.callXID);
+            Object v_CallObject = XJava.getObject(this.callXID);
             if ( XJava.getObject(this.callXID) == null )
             {
-                v_Builder.append(" is NULL");
+                if ( v_CallObject == null )
+                {
+                    // 在XJava对象池中未询找到对象实例时，可尝试从上下文中获取。以XJava对象池为优先
+                    v_CallObject = i_Context.get(this.callXID);
+                }
+                
+                if ( v_CallObject == null )
+                {
+                    v_Builder.append(" is NULL");
+                }
             }
         }
         else
