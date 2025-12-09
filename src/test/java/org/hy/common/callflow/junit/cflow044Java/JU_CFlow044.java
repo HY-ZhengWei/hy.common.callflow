@@ -9,12 +9,12 @@ import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.forloop.ForConfig;
+import org.hy.common.callflow.junit.JUBase;
 import org.hy.common.callflow.junit.cflow042ErrorContinue.program.ExecuteEvent;
 import org.hy.common.callflow.junit.cflow043XCQL.program.Program;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
 import org.hy.common.xml.annotation.Xjava;
-import org.hy.common.xml.plugins.AppInitConfig;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -32,7 +32,7 @@ import org.junit.runners.MethodSorters;
  */
 @Xjava(value=XType.XML)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) 
-public class JU_CFlow044 extends AppInitConfig
+public class JU_CFlow044 extends JUBase
 {
     
     private static boolean $isInit = false;
@@ -92,6 +92,11 @@ public class JU_CFlow044 extends AppInitConfig
         ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
         System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
         System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
+        
+        // 导出
+        System.out.println(CallFlow.getHelpExport().export(v_For));
+        
+        toJson(v_For);
         
         try
         {

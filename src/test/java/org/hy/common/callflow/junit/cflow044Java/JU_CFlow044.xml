@@ -76,11 +76,12 @@
                 </succeed>
             </route>
         </xnode>
-    
+        
         
         <xjava id="XJava_CF044_定义对象">
             <comment>在运行时，编译源码，动态定义对象</comment>
             <java type="textarea">                          <!-- Java代码 -->
+            <![CDATA[
             package org.hy.common.callflow.junit.cflow044Java;
                 
             import org.hy.common.Date;
@@ -105,6 +106,7 @@
                     return Date.getNowTime().getFull();
                 }
             }
+            ]]>
             </java>
             <returnID>DynamicClass</returnID>               <!-- 定义返回结果的变量名称。名称相同时会覆盖 -->
             <route>
