@@ -13,6 +13,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.TablePartitionLink;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
+import org.hy.common.callflow.enums.ContinueType;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.enums.RouteType;
@@ -21,6 +22,7 @@ import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.language.java.CacheJavaFileManager;
 import org.hy.common.callflow.language.java.CacheJavaInfo;
+import org.hy.common.callflow.mock.MockConfig;
 import org.hy.common.db.DBSQL;
 
 
@@ -66,7 +68,8 @@ public class JavaConfig extends ExecuteElement implements Cloneable
     public JavaConfig(long i_RequestTotal ,long i_SuccessTotal)
     {
         super(i_RequestTotal ,i_SuccessTotal);
-        this.reload = false;
+        this.continueType = ContinueType.Active;
+        this.reload       = false;
     }
     
     
@@ -265,6 +268,31 @@ public class JavaConfig extends ExecuteElement implements Cloneable
     
     
     /**
+     * 设置：编排续跑的类型
+     * 
+     * @param i_ContinueType 编排续跑的类型
+     */
+    @Override
+    public void setContinueType(ContinueType i_ContinueType)
+    {
+        throw new RuntimeException("Not allowed to call setContinueType().");
+    }
+    
+    
+    
+    /**
+     * 设置：模拟元素
+     * 
+     * @param i_Mock 模拟元素
+     */
+    public void setMock(MockConfig i_Mock)
+    {
+        throw new RuntimeException("Not allowed to call " + this.getClass().getSimpleName() + ".setMock().");
+    }
+    
+    
+    
+    /**
      * 执行
      * 
      * @author      ZhengWei(HY)
@@ -296,11 +324,7 @@ public class JavaConfig extends ExecuteElement implements Cloneable
             return v_Result;
         }
         
-        // Mock模拟
-        if ( super.mock(io_Context ,v_BeginTime ,v_Result ,null ,HashMap.class.getName()) )
-        {
-            return v_Result;
-        }
+        // 不允许有Mock模拟
         
         try
         {
@@ -459,24 +483,6 @@ public class JavaConfig extends ExecuteElement implements Cloneable
                 this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
                 
                 v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
-            }
-            
-            // 模拟数据
-            if ( !Help.isNull(this.mock.getSucceeds()) 
-              || !Help.isNull(this.mock.getExceptions()) )
-            {
-                v_Xml.append(v_NewSpace).append(IToXml.toBegin("mock"));
-                if ( this.mock.isValid() )
-                {
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid" ,"true"));
-                }
-                if ( !Help.isNull(this.mock.getDataClass()) )
-                {
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("dataClass" ,this.mock.getDataClass()));
-                }
-                this.toXmlMockItems(v_Xml ,this.mock.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
-                this.toXmlMockItems(v_Xml ,this.mock.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
-                v_Xml.append(v_NewSpace).append(IToXml.toEnd("mock"));
             }
             
             this.toXmlExecute(v_Xml ,v_NewSpace);

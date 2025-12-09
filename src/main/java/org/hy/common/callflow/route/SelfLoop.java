@@ -336,7 +336,7 @@ public class SelfLoop extends ExecuteElement
      */
     public void setMock(MockConfig i_Mock)
     {
-        throw new RuntimeException("Not allowed to call SelfLoop.setMock().");
+        throw new RuntimeException("Not allowed to call " + this.getClass().getSimpleName() + ".setMock().");
     }
 
     

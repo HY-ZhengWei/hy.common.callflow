@@ -412,7 +412,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
      */
     public void setMock(MockConfig i_Mock)
     {
-        throw new RuntimeException("Not allowed to call ForConfig.setMock().");
+        throw new RuntimeException("Not allowed to call " + this.getClass().getSimpleName() + ".setMock().");
     }
 
 
@@ -1064,24 +1064,6 @@ public class ForConfig extends ExecuteElement implements Cloneable
                 this.toXmlRouteItems(v_Xml ,this.route.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
                 
                 v_Xml.append(v_NewSpace).append(IToXml.toEnd("route"));
-            }
-            
-            // 模拟数据
-            if ( !Help.isNull(this.mock.getSucceeds()) 
-              || !Help.isNull(this.mock.getExceptions()) )
-            {
-                v_Xml.append(v_NewSpace).append(IToXml.toBegin("mock"));
-                if ( this.mock.isValid() )
-                {
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid" ,"true"));
-                }
-                if ( !Help.isNull(this.mock.getDataClass()) )
-                {
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("dataClass" ,this.mock.getDataClass()));
-                }
-                this.toXmlMockItems(v_Xml ,this.mock.getSucceeds()   ,RouteType.Succeed.getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
-                this.toXmlMockItems(v_Xml ,this.mock.getExceptions() ,RouteType.Error  .getXmlName() ,i_Level ,v_TreeID ,i_ExportType);
-                v_Xml.append(v_NewSpace).append(IToXml.toEnd("mock"));
             }
             
             this.toXmlExecute(v_Xml ,v_NewSpace);
