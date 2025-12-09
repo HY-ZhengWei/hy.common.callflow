@@ -109,6 +109,7 @@ import jep.SubInterpreter;
  *              v1.2  2025-09-26  迁移：静态检查
  *              v2.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  *              v3.0  2025-11-18  添加：编排续跑
+ *              v4.0  2025-12-09  添加：支持Python序列化文件*.pkl的加载
  */
 public class PythonConfig extends ExecuteElement implements Cloneable
 {
@@ -568,12 +569,71 @@ public class PythonConfig extends ExecuteElement implements Cloneable
                 v_Jep.exec("sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='" + this.charEncoding + "')");
             }
             
-            // 运行Python脚本
+            // 运行Python脚本 或 Python序列化文件*.pkl的加载
             if ( !Help.isNull(v_Scripts) )
             {
                 for (String v_Item : v_Scripts)
                 {
-                    v_Jep.runScript(v_Item);
+                    if ( v_Item.toLowerCase().endsWith(".pkl") )
+                    {
+                        // 支持格式：方法名称 PKL路径       中间有一个空格
+                        String [] v_PKLArr = v_Item.split(" ");
+                        if ( v_PKLArr.length != 2 )
+                        {
+                            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s PKL格式[" + v_Item + "]不正确."));
+                            this.refreshStatus(io_Context ,v_Result.getStatus());
+                            return v_Result;
+                        }
+                        
+                        String v_PKLDefName = v_PKLArr[0];  // 加载PKL的方法名称
+                        String v_PKLPath    = v_PKLArr[1];  // 加载PKL的路径
+                        Object v_LoadPKL    = v_Jep.invoke(v_PKLDefName ,v_PKLPath);
+                        if ( v_LoadPKL instanceof Boolean ) 
+                        {
+                            // 返回真表示成功
+                            if ( !((Boolean) v_LoadPKL) )
+                            {
+                                v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s PKL false = " + v_PKLDefName + "(" + v_PKLPath + ") 未成功."));
+                                this.refreshStatus(io_Context ,v_Result.getStatus());
+                                return v_Result;
+                            }
+                        }
+                        else if ( v_LoadPKL instanceof Integer )
+                        {
+                            // 返回大于0表示成功
+                            if ( (Integer) v_LoadPKL <= 0 )
+                            {
+                                v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s PKL " + (Integer) v_LoadPKL + " = " + v_PKLDefName + "(" + v_PKLPath + ") 未成功."));
+                                this.refreshStatus(io_Context ,v_Result.getStatus());
+                                return v_Result;
+                            }
+                        }
+                        else if ( v_LoadPKL instanceof String )
+                        {
+                            // 返回空表示成功
+                            if ( !Help.isNull(v_LoadPKL.toString()) )
+                            {
+                                v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s PKL " + v_LoadPKL.toString() + " = " + v_PKLDefName + "(" + v_PKLPath + ") 未成功."));
+                                this.refreshStatus(io_Context ,v_Result.getStatus());
+                                return v_Result;
+                            }
+                        }
+                        else if ( v_LoadPKL instanceof Void )
+                        {
+                            // 没有返回类型，应当它加载PKL成功了
+                            // Nothing.
+                        }
+                        else
+                        {
+                            v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s PKL " + v_LoadPKL + " = " + v_PKLDefName + "(" + v_PKLPath + ") 未知类型，无法判定加载结果."));
+                            this.refreshStatus(io_Context ,v_Result.getStatus());
+                            return v_Result;
+                        }
+                    }
+                    else
+                    {
+                        v_Jep.runScript(v_Item);
+                    }
                 }
             }
             
