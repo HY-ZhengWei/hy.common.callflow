@@ -1,6 +1,9 @@
 package org.hy.common.callflow.language.java;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
@@ -64,6 +67,11 @@ public class CacheJavaFileObject extends SimpleJavaFileObject
     public CacheJavaFileObject(String i_ClassName ,String i_SourceCode ,Kind i_Kind) 
     {
         super(URI.create("bytes:///" + i_ClassName.replace('.', '/') + i_Kind.extension), i_Kind);
+        if ( i_Kind != Kind.CLASS ) 
+        {
+            throw new UnsupportedOperationException("仅CLASS类型支持该方法");
+        }
+        
         this.className  = i_ClassName;
         this.sourceCode = i_SourceCode;
     }
@@ -85,6 +93,11 @@ public class CacheJavaFileObject extends SimpleJavaFileObject
     @Override
     public CharSequence getCharContent(boolean i_IgnoreEncodingErrors) 
     {
+        if ( getKind() != Kind.SOURCE ) 
+        {
+            throw new UnsupportedOperationException("仅SOURCE类型支持该方法");
+        }
+        
         return this.sourceCode;
     }
     
@@ -104,9 +117,45 @@ public class CacheJavaFileObject extends SimpleJavaFileObject
     @Override
     public OutputStream openOutputStream() 
     {
+        if ( getKind() != Kind.CLASS ) 
+        {
+            throw new UnsupportedOperationException("仅CLASS类型支持该方法");
+        }
+        
         this.byteCode = new ByteArrayOutputStream();
         return byteCode;
     }
+    
+    
+
+    /**
+     * 编译器读取字节码时调用（之前缺失此方法导致异常）
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-12-09
+     * @version     v1.0
+     *
+     * @return
+     *
+     * @see javax.tools.SimpleJavaFileObject#openInputStream()
+     */
+    @Override
+    public InputStream openInputStream() throws IOException
+    {
+        if ( getKind() != Kind.CLASS )
+        {
+            throw new UnsupportedOperationException("仅CLASS类型支持openInputStream()");
+        }
+        
+        // 若输出流已写入，先刷新到字节数组
+        if ( this.byteCode != null && this.byteCode.size() > 0 )
+        {
+            return new ByteArrayInputStream(this.byteCode.toByteArray());
+        }
+        
+        return super.openInputStream();
+    }
+
     
     
     
@@ -124,8 +173,22 @@ public class CacheJavaFileObject extends SimpleJavaFileObject
         return this.byteCode == null ? new byte[0] : this.byteCode.toByteArray();
     }
 
-
     
+    
+    /**
+     * 设置：编译后的字节码
+     * 
+     * @param i_ByteCode 编译后的字节码
+     */
+    public CacheJavaFileObject setByteCode(byte[] i_ByteCode)
+    {
+        this.byteCode = new ByteArrayOutputStream();
+        this.byteCode.writeBytes(i_ByteCode);
+        return this;
+    }
+
+
+
     /**
      * 获取：类名称
      */

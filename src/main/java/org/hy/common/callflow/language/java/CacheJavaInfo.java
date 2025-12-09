@@ -174,4 +174,12 @@ public class CacheJavaInfo
         this.sourceCode = i_SourceCode;
     }
 
+
+
+    @Override
+    public String toString()
+    {
+        return Help.NVL(this.getClassNameFull());
+    }
+
 }

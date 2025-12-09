@@ -368,7 +368,7 @@ public class JavaConfig extends ExecuteElement implements Cloneable
                 return v_Result;
             }
             
-            boolean v_CompileSuccess = v_CacheJavaManager.compiler(v_Java.getClassNameFull() ,v_Java.getSourceCode());
+            boolean v_CompileSuccess = v_CacheJavaManager.compiler(v_ClassName ,v_Java.getSourceCode());
             if ( !v_CompileSuccess )
             {
                 v_Result.setException(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] 类[" + v_ClassName + "]编译失败."));

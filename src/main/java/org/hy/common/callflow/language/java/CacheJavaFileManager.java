@@ -2,10 +2,13 @@ package org.hy.common.callflow.language.java;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
@@ -130,7 +133,8 @@ public class CacheJavaFileManager extends ForwardingJavaFileManager<JavaFileMana
         CompilationTask v_CompilationTask = $JavaCompiler.getTask(null                                                                  
                                                               ,$CacheJavaFileManager
                                                               ,null
-                                                              ,Arrays.asList("-encoding", "UTF-8")
+                                                              ,Arrays.asList("-encoding" ,"UTF-8"
+                                                                            ,"-g:none")           // 关闭调试信息，减小字节码体积
                                                               ,null
                                                               ,$CacheJavaFileManager.getJavaFileObjects(i_ClassName ,i_SourceCode));
         
@@ -247,23 +251,135 @@ public class CacheJavaFileManager extends ForwardingJavaFileManager<JavaFileMana
     @Override
     public JavaFileObject getJavaFileForOutput(Location i_Location ,String i_ClassName ,Kind i_Kind ,FileObject i_Sibling) throws IOException
     {
-        synchronized ($ClassJavaFileObjects)
+        if ( i_Kind == Kind.CLASS) 
         {
-            String v_SourceCode = null;
-            if ( i_Sibling instanceof CacheJavaFileObject )
+            synchronized ($ClassJavaFileObjects)
             {
-                v_SourceCode = ((CacheJavaFileObject) i_Sibling).getSourceCode();
+                String v_SourceCode = null;
+                if ( i_Sibling instanceof CacheJavaFileObject )
+                {
+                    v_SourceCode = ((CacheJavaFileObject) i_Sibling).getSourceCode();
+                }
+                
+                CacheJavaFileObject v_JavaFileObject = new CacheJavaFileObject(i_ClassName ,v_SourceCode ,i_Kind);
+                $ClassJavaFileObjects.put(i_ClassName ,v_JavaFileObject);
+                
+                return v_JavaFileObject;
             }
-            
-            CacheJavaFileObject v_JavaFileObject = new CacheJavaFileObject(i_ClassName ,v_SourceCode ,i_Kind);
-            $ClassJavaFileObjects.put(i_ClassName ,v_JavaFileObject);
-            
-            return v_JavaFileObject;
         }
+        else
+        {
+            return super.getJavaFileForOutput(i_Location, i_ClassName, i_Kind, i_Sibling);
+        }
+    }
+    
+    
+    
+    /**
+     * 编译器查找类（如B找A）时，从内存MAP中读取字节码
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-12-09
+     * @version     v1.0
+     *
+     * @param i_Location
+     * @param i_ClassName
+     * @param i_Kind
+     * @return
+     * @throws IOException
+     *
+     * @see javax.tools.ForwardingJavaFileManager#getJavaFileForInput(javax.tools.JavaFileManager.Location, java.lang.String, javax.tools.JavaFileObject.Kind)
+     */
+    @Override
+    public JavaFileObject getJavaFileForInput(Location i_Location, String i_ClassName, Kind i_Kind) throws IOException 
+    {
+        if ( i_Kind == Kind.CLASS )
+        {
+            // 优先从内存MAP找已编译的类
+            CacheJavaFileObject v_JavaFileObject = $ClassJavaFileObjects.get(i_ClassName);
+            if ( v_JavaFileObject != null )
+            {
+                return v_JavaFileObject;
+            }
+        }
+        return super.getJavaFileForInput(i_Location ,i_ClassName ,i_Kind);
+    }
+    
+    
+    
+    /**
+     * 编译器扫描类路径时，暴露内存中的类
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-12-09
+     * @version     v1.0
+     *
+     * @param i_Location
+     * @param i_PackageName
+     * @param i_Kinds
+     * @param i_Recurse
+     * @return
+     * @throws IOException
+     *
+     * @see javax.tools.ForwardingJavaFileManager#list(javax.tools.JavaFileManager.Location, java.lang.String, java.util.Set, boolean)
+     */
+    @Override
+    public Iterable<JavaFileObject> list(Location i_Location, String i_PackageName, Set<Kind> i_Kinds, boolean i_Recurse) throws IOException 
+    {
+        Iterable<JavaFileObject> v_StandardFiles = super.list(i_Location, i_PackageName, i_Kinds, i_Recurse);
+        List<JavaFileObject>     v_AllFiles      = new ArrayList<>();
+        
+        v_StandardFiles.forEach(v_AllFiles::add);
+
+        // 如果是查找CLASS类型，补充内存中的类
+        if ( i_Kinds.contains(Kind.CLASS) )
+        {
+            String v_PackagePrefix = i_PackageName.isEmpty() ? "" : i_PackageName + ".";
+            // 遍历内存MAP，匹配包名的类加入列表
+            for (String v_ClassName : $ClassJavaFileObjects.keySet())
+            {
+                if ( v_ClassName.startsWith(v_PackagePrefix) )
+                {
+                    String v_RelativeClassName = v_ClassName.substring(v_PackagePrefix.length());
+                    if ( !i_Recurse && v_RelativeClassName.contains(".") )
+                    {
+                        continue; // 非递归时跳过子包
+                    }
+                    v_AllFiles.add(getJavaFileForInput(i_Location ,v_ClassName ,Kind.CLASS));
+                }
+            }
+        }
+        return v_AllFiles;
     }
 
     
     
+    /**
+     * 重写inferBinaryName，手动返回二进制名
+     *
+     * @author      ZhengWei(HY)
+     * @createDate  2025-12-09
+     * @version     v1.0
+     *
+     * @param i_Location
+     * @param i_File
+     * @return
+     *
+     * @see javax.tools.ForwardingJavaFileManager#inferBinaryName(javax.tools.JavaFileManager.Location, javax.tools.JavaFileObject)
+     */
+    @Override
+    public String inferBinaryName(Location i_Location ,JavaFileObject i_File)
+    {
+        if ( i_File instanceof CacheJavaFileObject )
+        {
+            return ((CacheJavaFileObject) i_File).getClassName();
+        }
+        
+        return super.inferBinaryName(i_Location ,i_File);
+    }
+
+
+
     /**
      * 获取类的字节码
      * 
