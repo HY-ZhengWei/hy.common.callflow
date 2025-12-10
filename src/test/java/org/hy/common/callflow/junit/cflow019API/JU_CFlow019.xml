@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    
+    
+    
+    <!-- CFlow编排引擎配置 -->
+    <xconfig>
+    
+        <xnode id="XNode_CF019_显示数据">
+            <comment>显示数据</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>show</callMethod>
+            <callParam>
+                <value>:ForElement</value>                  <!-- 定义入参变量名称 -->
+            </callParam>
+            <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF019_遍历数据</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xfor id="XFor_CF019_遍历数据">
+            <comment>遍历数据</comment>
+            <end>:ReturnData.data</end>                     <!-- 循环结束值 -->
+            <elementID>ForElement</elementID>               <!-- 每次循环元素的变量名称（可选的） -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XNode_CF019_显示数据" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+        </xfor>
+        
+    
+        <xapi id="XAPI_CF019_查询数据">
+            <comment>接口请求</comment>
+            <url>http://openapi/json/</url>                 <!-- 定义接口请求URL地址 -->
+            <succeedFlag>"code": 0</succeedFlag>
+            <returnClass>org.hy.common.callflow.junit.cflow019API.program.ReturnObject</returnClass>
+            <returnID>ReturnData</returnID>                 <!-- 定义接口返回结果变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XFor_CF019_遍历数据" />
+                </succeed>
+            </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟接口请求成功后返回结果</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>                                  <!-- Mock模拟成功时的模拟数据 -->
+                    {
+                        "code": 0,
+                        "data": [
+                            {
+                                "id": 10001,
+                                "planCode": "2025-12-11"
+                            },
+                            {
+                                "id": 20002,
+                                "planCode": "2025-12-12"
+                            }
+                        ]
+                    }
+                    </data>
+                </succeed>
+            </mock>
+        </xapi>
+        
+        
+        <xjava id="XJava_CF019_定义对象B">
+            <comment>在运行时，编译源码，动态定义对象</comment>
+            <java type="textarea">                          <!-- Java代码 -->
+            <![CDATA[
+            package org.hy.common.callflow.junit.cflow019API.program;
+
+            import org.hy.common.callflow.junit.cflow019API.program.ReturnItem;
+            import java.util.List;
+            import lombok.Data;
+            
+            /**
+             * API元素返回数据映射成的对象
+             *
+             * @author      ZhengWei(HY)
+             * @createDate  2025-12-09
+             * @version     v1.0
+             */
+            @Data
+            public class ReturnObject
+            {
+                /** 状态 */
+                private Integer          code;
+                
+                /** 二级数据 */
+                private List<ReturnItem> data;
+                
+                @Override
+                public String toString()
+                {
+                    return this.code + " , " + (this.data == null ? 0 : this.data.size());
+                }
+            }
+            ]]>
+            </java>
+            <route>
+                <succeed>
+                    <next ref="XAPI_CF019_查询数据" />
+                </succeed>
+            </route>
+        </xjava>
+        
+        
+        <xjava id="XJava_CF019_定义对象A">
+            <comment>在运行时，编译源码，动态定义对象</comment>
+            <java type="textarea">                          <!-- Java代码 -->
+            <![CDATA[
+            package org.hy.common.callflow.junit.cflow019API.program;
+            
+            import lombok.Data;
+            
+            /**
+             * 三级数据结构
+             *
+             * @author      ZhengWei(HY)
+             * @createDate  2025-12-09
+             * @version     v1.0
+             */
+            @Data
+            public class ReturnItem
+            {
+                /** 主键 */
+                private Integer id;
+                
+                /** 计划号 */
+                private String  planCode;
+                
+                @Override
+                public String toString()
+                {
+                    return this.id + " , " + this.planCode;
+                }
+            }
+            ]]>
+            </java>
+            <route>
+                <succeed>
+                    <next ref="XJava_CF019_定义对象B" />
+                </succeed>
+            </route>
+        </xjava>
+        
+    </xconfig>
+    
+</config>

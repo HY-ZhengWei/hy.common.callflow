@@ -14,5 +14,4 @@ package org.hy.common.callflow.junit.cflow044Java.program;
 public class Program
 {
     
-    
 }
