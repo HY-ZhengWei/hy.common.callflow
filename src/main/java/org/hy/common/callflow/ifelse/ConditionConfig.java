@@ -66,6 +66,7 @@ import org.hy.common.xml.log.Logger;
  *              v4.0  2025-10-15  添加：Switch分支
  *              v5.0  2025-11-06  添加：三合一的重做编排元素XID、重做时的等待时长、重做时的计数器最大值。建议人：王雨墨、王可
  *              v6.0  2025-11-18  添加：编排续跑
+ *              v6.1  2025-12-30  修正：条件项中是多个复合条件时，生成xml节点错误：发现人：邹昕翰
  */
 public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
 {
@@ -884,6 +885,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
      * @createDate  2025-02-24
      * @version     v1.0
      *              v2.0  2025-08-15  添加：导出类型
+     *              v3.0  2025-12-30  修正：条件项中是多个复合条件时，生成xml节点错误
      *
      * @param i_Level        层级。最小下标从0开始。
      *                           0表示每行前面有0个空格；
@@ -910,7 +912,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         StringBuilder v_Xml      = new StringBuilder();
         String        v_Level1   = "    ";
         String        v_LevelN   = i_Level <= 0 ? "" : StringHelp.lpad("" ,i_Level ,v_Level1);
-        String        v_XName    = ElementType.Condition.getXmlName();
+        String        v_XName    = i_Level >= 3 ? "condition" : ElementType.Condition.getXmlName();
         String        v_NewSpace = "\n" + v_LevelN + v_Level1;
         
         if ( !Help.isNull(this.getXJavaID()) )
