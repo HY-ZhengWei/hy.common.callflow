@@ -262,9 +262,12 @@ public class ExportXml
             throw new IllegalArgumentException("SavePath[" + i_SavePath + "] is not Directory.");
         }
         
-        if ( Help.isNull(io_ExecObject.getTreeIDs()) )
+        synchronized (this)
         {
-            CallFlow.getHelpExecute().calcTree(io_ExecObject);
+            if ( Help.isNull(io_ExecObject.getTreeIDs()) )
+            {
+                CallFlow.getHelpExecute().calcTree(io_ExecObject);
+            }
         }
         
         FileHelp v_FileHelp   = new FileHelp();
@@ -331,9 +334,12 @@ public class ExportXml
             throw new NullPointerException("ExecObject is null.");
         }
         
-        if ( Help.isNull(i_ExecObject.getTreeIDs()) )
+        synchronized ( this )
         {
-            CallFlow.getHelpExecute().calcTree(i_ExecObject);
+            if ( Help.isNull(i_ExecObject.getTreeIDs()) )
+            {
+                CallFlow.getHelpExecute().calcTree(i_ExecObject);
+            }
         }
         
         String v_Imports  = toXmlImportHeads();

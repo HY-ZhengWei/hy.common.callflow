@@ -47,6 +47,7 @@ import org.hy.common.xml.log.Logger;
  *              v3.0  2025-10-15  添加：Switch分支
  *              v4.0  2025-10-23  修正：循环元素自身也有可能结束循环。如，集合循环下，集合对象为空
  *              v5.0  2025-11-10  添加：编排预设变量，编排执行开始时间、累计时长
+ *              v6.0  2026-02-05  修正：执行时的高并发操作异常
  */
 public class CallFlow
 {
@@ -801,7 +802,12 @@ public class CallFlow
         }
         
         // 事件：启动前
-        String v_TreeID = i_ExecObject.getTreeIDs().iterator().next();
+        String v_TreeID = null;
+        synchronized ( i_ExecObject )
+        {
+            // 2026-02-05 执行时的高并发操作异常
+            v_TreeID = i_ExecObject.getTreeIDs().iterator().next();
+        }
         if ( i_Event != null && !i_Event.start(i_ExecObject ,v_Context) )
         {
             return CallFlow.putError(v_Context ,(new ExecuteResult(CallFlow.getNestingLevel(v_Context) ,v_TreeID ,i_ExecObject.getXJavaID() ,"" ,null)).setCancel());
