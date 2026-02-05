@@ -17,6 +17,7 @@ import org.hy.common.xml.XJava;
  * @author      ZhengWei(HY)
  * @createDate  2025-02-27
  * @version     v1.0
+ *              v2.0  2026-02-05  修改：计算树ID方法calcTree添加同步锁
  */
 public class ExecuteTreeHelp
 {
@@ -50,7 +51,7 @@ public class ExecuteTreeHelp
      *
      * @param i_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      */
-    public void removeMySelf(ExecuteElement i_ExecObject)
+    public synchronized void removeMySelf(ExecuteElement i_ExecObject)
     {
         if ( i_ExecObject == null )
         {
@@ -105,7 +106,7 @@ public class ExecuteTreeHelp
      *
      * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      */
-    public void clearTree(ExecuteElement io_ExecObject)
+    public synchronized void clearTree(ExecuteElement io_ExecObject)
     {
         if ( io_ExecObject == null )
         {
@@ -157,7 +158,7 @@ public class ExecuteTreeHelp
      *
      * @param io_ExecObject  执行对象（执行、条件逻辑、等待、计算、循环、嵌套、返回和并发元素等等）
      */
-    public void calcTree(IExecute io_ExecObject)
+    public synchronized void calcTree(IExecute io_ExecObject)
     {
         if ( io_ExecObject == null )
         {
