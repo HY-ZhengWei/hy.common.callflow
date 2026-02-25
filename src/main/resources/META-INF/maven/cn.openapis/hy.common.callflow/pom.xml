@@ -6,7 +6,7 @@
 
     <groupId>org</groupId>
     <artifactId>hy.common.callflow</artifactId>
-    <version>1.7.8</version>
+    <version>1.7.9</version>
     <packaging>jar</packaging>
 
     <name>org.hy.common.callflow</name>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org</groupId>
             <artifactId>hy.common.mqtt</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.6</version>
             <scope>provided</scope>
         </dependency>
         
