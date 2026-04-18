@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xconfig"    class="java.util.ArrayList" />
+    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
+    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
+    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
+    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
+    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
+    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
+    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
+    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
+    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
+    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
+    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
+    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
+    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
+    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
+    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
+    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
+    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
+    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
+    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
+    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
+    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
+    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
+    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
+    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
+    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
+    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
+    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
+    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+
+
+
+    <!-- CFlow编排引擎配置：API接口：压力测试 -->
+    <xconfig>
+    
+        <xreturn id="XCFlow_CF045_LoadRunner_Finish">
+            <comment>压力测试完成</comment>
+            <retValue>
+            {
+                "retInt": 200,
+                "retText": "测试结果 :TotalCounter 次，成功 :Total.SucceedCounter 次，异常： :Total.ErrorCounter 次。"
+            }
+            </retValue>
+        </xreturn>
+        
+        
+        <xgroovy id="XCFlow_CF045_LoadRunner_FinishTotal">
+            <comment>压力测试的数据统计</comment>
+            <in>
+            {
+                "v_TotalCounter": ":ForIndex",
+                "v_ErrorCounter": ":Total.ErrorCounter"
+            }
+            </in>
+            <groovy type="textarea">
+            <![CDATA[
+                v_ErrorCounter   = Help.NVL(v_ErrorCounter ,0)
+                v_SucceedCounter = v_TotalCounter * 2 - v_ErrorCounter
+            ]]>
+            </groovy>
+            <out>
+            {
+                "v_TotalCounter":   "TotalCounter",
+                "v_ErrorCounter":   "ErrorCounter",
+                "v_SucceedCounter": "SucceedCounter"
+            }
+            </out>
+            <returnID>Total</returnID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_CF045_LoadRunner_Finish" />
+                </succeed>
+            </route>
+        </xgroovy>
+        
+    
+        <xgroovy id="XCFlow_CF045_LoadRunner_ErrorCounter">
+            <comment>异常计数器</comment>
+            <in>
+            {
+                "v_ErrorCounter": ":Total.ErrorCounter"
+            }
+            </in>
+            <groovy type="textarea">
+            <![CDATA[
+                v_ErrorCounter = Help.NVL(v_ErrorCounter ,0) + 1
+            ]]>
+            </groovy>
+            <out>
+            {
+                "v_ErrorCounter": "ErrorCounter"
+            }
+            </out>
+            <returnID>Total</returnID>
+            <route>
+                <succeed>
+                    <next>:XCFlow_CF045_LoadRunner_For</next>
+                </succeed>
+                <succeed>                                   
+                    <next ref="XCFlow_CF045_LoadRunner_FinishTotal" />
+                </succeed>
+            </route>
+        </xgroovy>
+        
+        
+        <xapi id="XCFlow_CF045_LoadRunner_C">
+            <comment>测试的对象</comment>
+            <url>http://iotapi.lpslab.cn/msOpenApis/gateway/api</url>     <!-- 定义接口请求URL地址 -->
+            <head>                                                        <!-- 定义接口请求头 -->
+                {
+                    "appXID": "XIoT_SandCasting",
+                    "routeXID": "XRoute_IoT04",
+                    "operationXIDs": "cflow.control",
+                    "token": ""
+                }
+            </head>
+            <body>                                                        <!-- 定义接口请求体 -->
+                {
+                    "deviceXID": "XPLC_RiserRobot",
+                    "cflowXID": "XCFlow_RiserRobot_State_GetState",
+                    "userID": "ZhengWei"
+                }
+            </body>
+            <showLog>false</showLog>
+            <succeedFlag>"code":"200"</succeedFlag>
+            <route>
+                <succeed>
+                    <next>:XCFlow_CF045_LoadRunner_For</next>
+                </succeed>
+                <succeed>                                   
+                    <next ref="XCFlow_CF045_LoadRunner_FinishTotal" />
+                </succeed>
+                <error>
+                    <next ref="XCFlow_CF045_LoadRunner_ErrorCounter" />
+                </error>
+            </route>
+        </xapi>
+        
+        
+        <xgroovy id="XCFlow_CF045_LoadRunner_ErrorCounter_B">
+            <comment>异常计数器</comment>
+            <in>
+            {
+                "v_ErrorCounter": ":Total.ErrorCounter"
+            }
+            </in>
+            <groovy type="textarea">
+            <![CDATA[
+                v_ErrorCounter = Help.NVL(v_ErrorCounter ,0) + 1
+            ]]>
+            </groovy>
+            <out>
+            {
+                "v_ErrorCounter": "ErrorCounter"
+            }
+            </out>
+            <returnID>Total</returnID>
+            <route>
+                <succeed>                                   
+                    <next ref="XCFlow_CF045_LoadRunner_C" />
+                </succeed>
+            </route>
+        </xgroovy>
+        
+
+        <xapi id="XCFlow_CF045_LoadRunner_B">
+            <comment>测试的对象</comment>
+            <url>http://iotapi.lpslab.cn/msOpenApis/gateway/api</url>     <!-- 定义接口请求URL地址 -->
+            <head>                                                        <!-- 定义接口请求头 -->
+                {
+                    "appXID": "XIoT_SandCasting",
+                    "routeXID": "XRoute_IoT12",
+                    "operationXIDs": "cflow.control",
+                    "token": ""
+                }
+            </head>
+            <body>                                                        <!-- 定义接口请求体 -->
+                {
+                    "deviceXID": "XPLC_MuMo_Robot",
+                    "cflowXID": "XCFlow_MuMoRobotStates_GetState",
+                    "userID": "ZhengWei"
+                }
+            </body>
+            <showLog>false</showLog>
+            <succeedFlag>"code":"200"</succeedFlag>
+            <route>
+                <succeed>                                   
+                    <next ref="XCFlow_CF045_LoadRunner_C" />
+                </succeed>
+                <error>
+                    <next ref="XCFlow_CF045_LoadRunner_ErrorCounter_B" />
+                </error>
+            </route>
+        </xapi>
+        
+        
+        <xgroovy id="XCFlow_CF045_LoadRunner_ErrorCounter_A">
+            <comment>异常计数器</comment>
+            <in>
+            {
+                "v_ErrorCounter": ":Total.ErrorCounter"
+            }
+            </in>
+            <groovy type="textarea">
+            <![CDATA[
+                v_ErrorCounter = Help.NVL(v_ErrorCounter ,0) + 1
+            ]]>
+            </groovy>
+            <out>
+            {
+                "v_ErrorCounter": "ErrorCounter"
+            }
+            </out>
+            <returnID>Total</returnID>
+            <route>
+                <succeed>                                   
+                    <next ref="XCFlow_CF045_LoadRunner_B" />
+                </succeed>
+            </route>
+        </xgroovy>
+        
+
+        <xapi id="XCFlow_CF045_LoadRunner_A">
+            <comment>测试的对象</comment>
+            <url>http://iotapi.lpslab.cn/msOpenApis/gateway/api</url>     <!-- 定义接口请求URL地址 -->
+            <head>                                                        <!-- 定义接口请求头 -->
+                {
+                    "appXID": "XIoT_SandCasting",
+                    "routeXID": "XRoute_IoT15",
+                    "operationXIDs": "cflow.control",
+                    "token": ""
+                }
+            </head>
+            <body>                                                        <!-- 定义接口请求体 -->
+                {
+                    "deviceXID": "XPLC_MouldingLine",
+                    "cflowXID": "XCFlow_MouldingLine_1_GetState",
+                    "userID": "ZhengWei"
+                }
+            </body>
+            <showLog>false</showLog>
+            <succeedFlag>"code":"200"</succeedFlag>
+            <route>
+                <succeed>                                   
+                    <next ref="XCFlow_CF045_LoadRunner_B" />
+                </succeed>
+                <error>
+                    <next ref="XCFlow_CF045_LoadRunner_ErrorCounter_A" />
+                </error>
+            </route>
+        </xapi>
+        
+        
+        <xfor id="XCFlow_CF045_LoadRunner_For">
+            <comment>循环：10W次</comment>
+            <start>1</start>
+            <end>:LoadRunnerCounter</end>
+            <step>1</step>
+            <indexID>ForIndex</indexID>
+            <route>
+                <succeed>
+                    <next ref="XCFlow_CF045_LoadRunner_A" />
+                </succeed>
+            </route>
+        </xfor>
+
+    </xconfig>
+
+</config>
