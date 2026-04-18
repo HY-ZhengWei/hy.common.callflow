@@ -47,12 +47,13 @@ public class XJavaSpringBoot
      *
      * @return
      */
-    public static Object createAnnotationConfigServletWebServerApplicationContext()
+    public static Class<?> getAnnotationConfigServletWebServerApplicationContext()
     {
-        Object     v_Ret     = null;
-        JavaConfig v_JConfig = new JavaConfig();
+        Class<?>   v_Ret               = null;
+        JavaConfig v_JConfig           = new JavaConfig();
+        int        v_SpringBootVersion = XJavaSpringBootLoadingText.getVersion();
         v_JConfig.setXid("XJavaSpringBoot");
-        v_JConfig.setJava(XJavaSpringBootLoadingText.getJava(3));
+        v_JConfig.setJava(XJavaSpringBootLoadingText.getJava(v_SpringBootVersion));
         v_JConfig.setReturnID("XAnnotationConfigServletWebServerApplicationContext");
         
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_JConfig);
@@ -83,14 +84,7 @@ public class XJavaSpringBoot
             CacheJavaInfo v_CacheJavaInfo = (CacheJavaInfo) v_Context.get("XAnnotationConfigServletWebServerApplicationContext");
             if ( v_CacheJavaInfo != null )
             {
-                try
-                {
-                    v_Ret = v_CacheJavaInfo.newInstance();
-                }
-                catch (Exception exe)
-                {
-                    $Logger.error(exe);
-                }
+                v_Ret = v_CacheJavaInfo.getClazz();
             }
         }
         

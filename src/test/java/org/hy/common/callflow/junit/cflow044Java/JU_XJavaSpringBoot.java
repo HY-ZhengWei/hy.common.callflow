@@ -1,6 +1,7 @@
 package org.hy.common.callflow.junit.cflow044Java;
 
 import org.hy.common.callflow.language.java.xml.XJavaSpringBoot;
+import org.hy.common.xml.plugins.XJavaSpringBootLoadingText;
 import org.junit.Test;
 
 
@@ -21,8 +22,10 @@ public class JU_XJavaSpringBoot
     {
         try
         {
-            Object v_ACSWSAC = XJavaSpringBoot.createAnnotationConfigServletWebServerApplicationContext();
-            System.out.println(v_ACSWSAC.getClass());
+            Class<?> v_ACSWSAC = XJavaSpringBoot.getAnnotationConfigServletWebServerApplicationContext();
+            System.out.println("本类名称       ：" + v_ACSWSAC.getName());
+            System.out.println("SpringBoot类名：" + v_ACSWSAC.getSuperclass().getName());
+            System.out.println("SpringBoot版本：" + XJavaSpringBootLoadingText.getVersion());
         }
         catch (Throwable exce)
         {
