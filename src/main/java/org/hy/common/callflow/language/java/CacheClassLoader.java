@@ -72,28 +72,82 @@ public class CacheClassLoader extends SecureClassLoader
     public synchronized static String buildClassPath()
     {
         StringBuilder v_CP = new StringBuilder();
+        
+        if ( $SystemClassLoader == null )
+        {
+            $SystemClassLoader = Thread.currentThread().getContextClassLoader();
+        }
+        
+        // 1. 兼容 Tomcat 类加载器
         try
         {
-            if ( $SystemClassLoader == null )
+            Class<?> v_TomcatClass = Help.forName("org.apache.catalina.webresources.StandardRoot");
+            URL []   v_Urls        = (URL []) v_TomcatClass.getMethod("getURLs").invoke($SystemClassLoader);
+            for (URL v_Url : v_Urls)
             {
-                $SystemClassLoader = Thread.currentThread().getContextClassLoader();
-            }
-            
-            // 获取 Spring 类加载器中的所有 URL
-            if ( $SystemClassLoader instanceof URLClassLoader )
-            {
-                URL [] urls = ((URLClassLoader) $SystemClassLoader).getURLs();
-                for (URL v_Url : urls)
+                String v_Path     = v_Url.getPath();
+                int    v_LibIndex = v_Path.indexOf("WEB-INF\\lib\\");
+                if ( v_LibIndex > 0 )
                 {
-                    v_CP.append(v_Url.getPath()).append(System.getProperty("path.separator"));
+                    v_Path = v_Path.substring(0 ,v_LibIndex + 12) + "*";
+                }
+                else
+                {
+                    v_LibIndex = v_Path.indexOf("WEB-INF/lib/");
+                    if ( v_LibIndex > 0 )
+                    {
+                        v_Path = v_Path.substring(0 ,v_LibIndex + 12) + "*";
+                    }
+                }
+                
+                // 防止重复添加
+                if ( v_CP.toString().indexOf(v_Path) < 0 )
+                {
+                    v_CP.append(v_Path).append(System.getProperty("path.separator"));
                 }
             }
-            // 追加 JDK 依赖
-            v_CP.append(System.getProperty("java.class.path"));
+        }
+        catch (Exception ignored)
+        {
+            
+        }
+        
+        // 2. 降级：URLClassLoader
+        try
+        {
+            if ( $SystemClassLoader instanceof URLClassLoader v_URLClassLoader )
+            {
+                for (URL v_Url : v_URLClassLoader.getURLs())
+                {
+                    String v_Path     = v_Url.getPath();
+                    int    v_LibIndex = v_Path.indexOf("WEB-INF\\lib\\");
+                    if ( v_LibIndex > 0 )
+                    {
+                        v_Path = v_Path.substring(0 ,v_LibIndex + 12) + "*";
+                    }
+                    else
+                    {
+                        v_LibIndex = v_Path.indexOf("WEB-INF/lib/");
+                        if ( v_LibIndex > 0 )
+                        {
+                            v_Path = v_Path.substring(0 ,v_LibIndex + 12) + "*";
+                        }
+                    }
+                    
+                    // 防止重复添加
+                    if ( v_CP.toString().indexOf(v_Path) < 0 )
+                    {
+                        v_CP.append(v_Path).append(System.getProperty("path.separator"));
+                    }
+                }
+            }
         }
         catch (Exception ignored)
         {
         }
+        
+        // 3. 追加系统路径
+        v_CP.append(System.getProperty("java.class.path"));
         
         return v_CP.toString();
     }
