@@ -3,7 +3,6 @@ package org.hy.common.callflow.language.java;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +121,12 @@ public class CacheJavaFileManager extends ForwardingJavaFileManager<JavaFileMana
         {
             return false;
         }
+        
+        List<String> v_Options = new ArrayList<>();
+        v_Options.add("-encoding");
+        v_Options.add("UTF-8");
+        v_Options.add("-classpath");
+        v_Options.add(CacheClassLoader.buildClassPath());
                 
         // 3. 创建编译任务（可选：如编码、类路径）
         //   参数01：输出流（null使用系统默认）
@@ -133,8 +138,7 @@ public class CacheJavaFileManager extends ForwardingJavaFileManager<JavaFileMana
         CompilationTask v_CompilationTask = $JavaCompiler.getTask(null                                                                  
                                                               ,$CacheJavaFileManager
                                                               ,null
-                                                              ,Arrays.asList("-encoding" ,"UTF-8"
-                                                                            ,"-g:none")           // 关闭调试信息，减小字节码体积
+                                                              ,v_Options           // 关闭调试信息，减小字节码体积
                                                               ,null
                                                               ,$CacheJavaFileManager.getJavaFileObjects(i_ClassName ,i_SourceCode));
         

@@ -1,5 +1,7 @@
 package org.hy.common.callflow.language.java;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.SecureClassLoader;
 
 import org.hy.common.Help;
@@ -45,12 +47,55 @@ public class CacheClassLoader extends SecureClassLoader
         if ( $CacheClassLoader == null )
         {
             $CacheClassLoader  = new CacheClassLoader();
-            $SystemClassLoader = Thread.currentThread().getContextClassLoader();
+            if ( $SystemClassLoader == null )
+            {
+                $SystemClassLoader = Thread.currentThread().getContextClassLoader();
+            }
             
             // 取代系统上下文类加载器
             Thread.currentThread().setContextClassLoader($CacheClassLoader);
         }
         return $CacheClassLoader;
+    }
+    
+    
+    
+    /**
+     * 构建完整 classpath，包含项目所有 jar 和类路径
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-04-18
+     * @version     v1.0
+     *
+     * @return
+     */
+    public synchronized static String buildClassPath()
+    {
+        StringBuilder v_CP = new StringBuilder();
+        try
+        {
+            if ( $SystemClassLoader == null )
+            {
+                $SystemClassLoader = Thread.currentThread().getContextClassLoader();
+            }
+            
+            // 获取 Spring 类加载器中的所有 URL
+            if ( $SystemClassLoader instanceof URLClassLoader )
+            {
+                URL [] urls = ((URLClassLoader) $SystemClassLoader).getURLs();
+                for (URL v_Url : urls)
+                {
+                    v_CP.append(v_Url.getPath()).append(System.getProperty("path.separator"));
+                }
+            }
+            // 追加 JDK 依赖
+            v_CP.append(System.getProperty("java.class.path"));
+        }
+        catch (Exception ignored)
+        {
+        }
+        
+        return v_CP.toString();
     }
     
     
