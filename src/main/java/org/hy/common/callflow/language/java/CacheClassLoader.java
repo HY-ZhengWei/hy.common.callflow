@@ -5,6 +5,7 @@ import java.net.URLClassLoader;
 import java.security.SecureClassLoader;
 
 import org.hy.common.Help;
+import org.hy.common.xml.log.Logger;
 
 
 
@@ -20,16 +21,44 @@ import org.hy.common.Help;
 public class CacheClassLoader extends SecureClassLoader 
 {
     
+    private static final Logger     $Logger            = new Logger(CacheClassLoader.class);
+    
     /** 为取代系统默认类加载器，而定义一个顶级的可公用的加载器单例 */
     private static CacheClassLoader $CacheClassLoader  = null;
     
     /** 运行时环境原本的类加载器 */
-    private static ClassLoader      $SystemClassLoader = null;
+    public  static ClassLoader      $SystemClassLoader = null;
     
     
     
     /** 类名称 */
     private final String className;
+    
+    
+    
+    /**
+     * 找类是否存在
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-04-19
+     * @version     v1.0
+     *
+     * @param i_ClassName  类的全路径名称
+     * @return
+     */
+    public static Class<?> forName(String i_ClassName)
+    {
+        try
+        {
+            return CacheClassLoader.getInstanceof().findClass(i_ClassName);
+        }
+        catch (ClassNotFoundException exce)
+        {
+            $Logger.error(exce);
+        }
+        
+        return null;
+    }
     
     
     
@@ -73,6 +102,8 @@ public class CacheClassLoader extends SecureClassLoader
     {
         StringBuilder v_CP = new StringBuilder();
         
+        v_CP.append(".").append(System.getProperty("path.separator"));
+        
         if ( $SystemClassLoader == null )
         {
             $SystemClassLoader = Thread.currentThread().getContextClassLoader();
@@ -85,18 +116,21 @@ public class CacheClassLoader extends SecureClassLoader
             URL []   v_Urls        = (URL []) v_TomcatClass.getMethod("getURLs").invoke($SystemClassLoader);
             for (URL v_Url : v_Urls)
             {
-                String v_Path     = v_Url.getPath();
-                int    v_LibIndex = v_Path.indexOf("WEB-INF\\lib\\");
+                String  v_Path     = v_Url.getPath();
+                int     v_LibIndex = v_Path.indexOf("WEB-INF/lib/");
+                boolean v_IsLib    = false;
                 if ( v_LibIndex > 0 )
                 {
-                    v_Path = v_Path.substring(0 ,v_LibIndex + 12) + "*";
+                    v_Path  = v_Path.substring(0 ,v_LibIndex + 12);
+                    v_IsLib = true;
                 }
                 else
                 {
-                    v_LibIndex = v_Path.indexOf("WEB-INF/lib/");
+                    v_LibIndex = v_Path.indexOf("WEB-INF\\lib\\");
                     if ( v_LibIndex > 0 )
                     {
-                        v_Path = v_Path.substring(0 ,v_LibIndex + 12) + "*";
+                        v_Path  = v_Path.substring(0 ,v_LibIndex + 12);
+                        v_IsLib = true;
                     }
                 }
                 
@@ -104,12 +138,16 @@ public class CacheClassLoader extends SecureClassLoader
                 if ( v_CP.toString().indexOf(v_Path) < 0 )
                 {
                     v_CP.append(v_Path).append(System.getProperty("path.separator"));
+                    if ( v_IsLib )
+                    {
+                        v_CP.append(v_Path).append("*").append(System.getProperty("path.separator"));
+                    }
                 }
             }
         }
         catch (Exception ignored)
         {
-            
+            // Nothing.
         }
         
         // 2. 降级：URLClassLoader
@@ -119,18 +157,21 @@ public class CacheClassLoader extends SecureClassLoader
             {
                 for (URL v_Url : v_URLClassLoader.getURLs())
                 {
-                    String v_Path     = v_Url.getPath();
-                    int    v_LibIndex = v_Path.indexOf("WEB-INF\\lib\\");
+                    String  v_Path     = v_Url.getPath();
+                    int     v_LibIndex = v_Path.indexOf("WEB-INF/lib/");
+                    boolean v_IsLib    = false;
                     if ( v_LibIndex > 0 )
                     {
-                        v_Path = v_Path.substring(0 ,v_LibIndex + 12) + "*";
+                        v_Path  = v_Path.substring(0 ,v_LibIndex + 12);
+                        v_IsLib = true;
                     }
                     else
                     {
-                        v_LibIndex = v_Path.indexOf("WEB-INF/lib/");
+                        v_LibIndex = v_Path.indexOf("WEB-INF\\lib\\");
                         if ( v_LibIndex > 0 )
                         {
-                            v_Path = v_Path.substring(0 ,v_LibIndex + 12) + "*";
+                            v_Path  = v_Path.substring(0 ,v_LibIndex + 12);
+                            v_IsLib = true;
                         }
                     }
                     
@@ -138,12 +179,17 @@ public class CacheClassLoader extends SecureClassLoader
                     if ( v_CP.toString().indexOf(v_Path) < 0 )
                     {
                         v_CP.append(v_Path).append(System.getProperty("path.separator"));
+                        if ( v_IsLib )
+                        {
+                            v_CP.append(v_Path).append("*").append(System.getProperty("path.separator"));
+                        }
                     }
                 }
             }
         }
         catch (Exception ignored)
         {
+            // Nothing.
         }
         
         // 3. 追加系统路径
@@ -217,12 +263,37 @@ public class CacheClassLoader extends SecureClassLoader
         CacheJavaFileObject v_CacheJavaFile = CacheJavaFileManager.getInstanceof().get(i_ClassName);
         if ( v_CacheJavaFile == null )
         {
-            Class<?> v_Class = super.findClass(i_ClassName);
+            Class<?> v_Class = null;
+            try
+            {
+                v_Class = super.findClass(i_ClassName);
+            }
+            catch (Exception ignored)
+            {
+                // Nothing
+            }
+            
             if ( v_Class == null )
             {
                 if ( $SystemClassLoader != null )
                 {
-                    v_Class = $SystemClassLoader.loadClass(i_ClassName);
+                    try
+                    {
+                        v_Class = $SystemClassLoader.loadClass(i_ClassName);
+                    }
+                    catch (Exception ignored)
+                    {
+                        // Nothing
+                    }
+                }
+            }
+            
+            if ( v_Class == null )
+            {
+                if ( $CacheClassLoader != null )
+                {
+                    // 最后一次不捕获异常，它才有机会向上传递
+                    v_Class = $CacheClassLoader.loadClass(i_ClassName);
                 }
             }
             return v_Class;

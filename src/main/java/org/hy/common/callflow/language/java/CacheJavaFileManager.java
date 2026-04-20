@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.tools.FileObject;
@@ -125,8 +126,13 @@ public class CacheJavaFileManager extends ForwardingJavaFileManager<JavaFileMana
         List<String> v_Options = new ArrayList<>();
         v_Options.add("-encoding");
         v_Options.add("UTF-8");
-        v_Options.add("-classpath");
-        v_Options.add(CacheClassLoader.buildClassPath());
+        v_Options.add("-proc:none");                     // 禁用注解处理器 → 解决冲突错误
+        v_Options.add("--release=17");
+        // v_Options.add("-Djdk.module.path=");
+        // v_Options.add("-Xlint:-module");
+        // v_Options.add("--add-modules=ALL-SYSTEM");
+        // v_Options.add("-classpath");
+        // v_Options.add(CacheClassLoader.buildClassPath());
                 
         // 3. 创建编译任务（可选：如编码、类路径）
         //   参数01：输出流（null使用系统默认）
@@ -381,9 +387,61 @@ public class CacheJavaFileManager extends ForwardingJavaFileManager<JavaFileMana
         
         return super.inferBinaryName(i_Location ,i_File);
     }
-
-
-
+    
+    
+    
+    @Override
+    public ClassLoader getClassLoader(Location location)
+    {
+        synchronized (this)
+        {
+            // 关键：强制返回 SpringBoot + Tomcat 的类加载器
+            if ( CacheClassLoader.$SystemClassLoader == null )
+            {
+                CacheClassLoader.$SystemClassLoader = Thread.currentThread().getContextClassLoader();
+            }
+            return CacheClassLoader.$SystemClassLoader;
+        }
+    }
+    
+    
+    
+    @Override
+    public boolean hasLocation(Location i_Location) 
+    {
+        boolean v_HasLocation = super.hasLocation(i_Location);
+        if ( !v_HasLocation )
+        {
+            if ( "ANNOTATION_PROCESSOR_MODULE_PATH".equals(i_Location.getName()) 
+              || "ANNOTATION_PROCESSOR_PATH".equals(i_Location.getName())
+              || "SOURCE_PATH".equals(i_Location.getName()) )
+            {
+                return false;
+            }
+            if ( "PATCH_MODULE_PATH".equals(i_Location.getName()) 
+              || "MODULE_SOURCE_PATH".equals(i_Location.getName())
+              || "SOURCE_OUTPUT".equals(i_Location.getName())
+              || "CLASS_OUTPUT".equals(i_Location.getName()) )
+           {
+                return true;
+           }
+            System.out.println(i_Location.getName() + " = " + i_Location.toString());
+        }
+        
+        return v_HasLocation;
+    }
+    
+    
+    
+    @Override
+    public <S> ServiceLoader<S> getServiceLoader(Location location, Class<S> service) throws IOException 
+    {
+        // 直接返回空，永不执行父类代码
+        return ServiceLoader.load(service, getClassLoader(location));
+    }
+    
+    
+    
     /**
      * 获取类的字节码
      * 
