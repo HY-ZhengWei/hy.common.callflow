@@ -41,6 +41,7 @@ import org.hy.common.xml.plugins.XSQLGroupResult;
  *                                添加：用于查询类的returnOne
  *              v3.0  2025-09-26  迁移：静态检查
  *              v4.0  2025-11-24  添加：分页查询的功能，能在XSQL元素内生成专的分页对象
+ *              v5.0  2026-04-23  添加：预解析模式和普通文本模式
  */
 public class XSQLConfig extends NodeConfig implements NodeConfigBase
 {
@@ -71,6 +72,9 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     
     /** 分页查询的对象 */
     private XSQL     xsqlPaging;
+    
+    /** 使用预解析模式。默认值：true */
+    private boolean  prepared;
     
     
     
@@ -105,6 +109,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         this.type      = XSQLType.Auto;
         this.returnOne = false;
         this.paging    = false;
+        this.prepared  = true;
     }
     
     
@@ -349,6 +354,30 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
 
 
     /**
+     * 获取：使用预解析模式。默认值：true
+     */
+    public boolean isPrepared()
+    {
+        return prepared;
+    }
+
+
+    
+    /**
+     * 设置：使用预解析模式。默认值：true
+     * 
+     * @param i_Prepared 使用预解析模式。默认值：true
+     */
+    public void setPrepared(boolean i_Prepared)
+    {
+        this.prepared = i_Prepared;
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
+    /**
      * 按XSQL元素类型初始化执行方法名称
      * 
      * @author      ZhengWei(HY)
@@ -392,7 +421,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         }
         else if ( XSQLType.Create.equals(v_XSQLType) )
         {
-            this.setCallMethod("executeInsertPrepared");
+            if ( this.prepared )
+            {
+                this.setCallMethod("executeInsertPrepared");
+            }
+            else
+            {
+                this.setCallMethod("executeInsert");
+            }
             
             if ( !Help.isNull(this.getCallParams()) )
             {
@@ -406,7 +442,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
                         if ( MethodReflect.isExtendImplement(v_VClass ,List.class) )
                         {
                             // 批量写
-                            this.setCallMethod("executeInsertsPrepared");
+                            if ( this.prepared )
+                            {
+                                this.setCallMethod("executeInsertsPrepared");
+                            }
+                            else
+                            {
+                                this.setCallMethod("executeInserts");
+                            }
                         }
                     }
                 }
@@ -423,7 +466,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         else if ( XSQLType.Update.equals(v_XSQLType) 
                || XSQLType.Delete.equals(v_XSQLType) )
         {
-            this.setCallMethod("executeUpdatePrepared");
+            if ( this.prepared )
+            {
+                this.setCallMethod("executeUpdatePrepared");
+            }
+            else
+            {
+                this.setCallMethod("executeUpdate");
+            }
             
             if ( !Help.isNull(this.getCallParams()) )
             {
@@ -437,7 +487,14 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
                         if ( MethodReflect.isExtendImplement(v_VClass ,List.class) )
                         {
                             // 批量更新
-                            this.setCallMethod("executeUpdatesPrepared");
+                            if ( this.prepared )
+                            {
+                                this.setCallMethod("executeUpdatesPrepared");
+                            }
+                            else
+                            {
+                                this.setCallMethod("executeUpdates");
+                            }
                         }
                     }
                 }
@@ -778,15 +835,19 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
     {
         if ( this.type != null && !XSQLType.Auto.equals(this.type) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("type"    ,this.type.getValue()));
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("type"     ,this.type.getValue()));
         }
         if ( !Help.isNull(this.getCallXID()) )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callXID" ,this.getCallXID()));
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("callXID"  ,this.getCallXID()));
         }
         if ( this.paging )
         {
-            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("paging" ,this.paging));
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("paging"   ,this.paging));
+        }
+        if ( !this.prepared )
+        {
+            io_Xml.append("\n").append(i_LevelN).append(i_Level1).append(IToXml.toValue("prepared" ,this.prepared));
         }
         if ( !Help.isNull(this.getCallParams()) )
         {
@@ -1007,7 +1068,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         v_Clone.returnXSGRID = this.returnXSGRID;
         v_Clone.returnOne    = this.returnOne;
         v_Clone.paging       = this.paging;
-        
+        v_Clone.prepared     = this.prepared;
         
         return v_Clone;
     }
@@ -1055,6 +1116,7 @@ public class XSQLConfig extends NodeConfig implements NodeConfigBase
         v_Clone.returnXSGRID = this.returnXSGRID;
         v_Clone.returnOne    = this.returnOne;
         v_Clone.paging       = this.paging;
+        v_Clone.prepared     = this.prepared;
     }
     
     
