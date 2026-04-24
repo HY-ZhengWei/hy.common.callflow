@@ -878,10 +878,15 @@ public class ValueHelp
                     {
                         // Nothing.
                     }
+                    else if ( MethodReflect.isExtendImplement(v_Value ,List.class) )
+                    {
+                        XJSON v_XJson = new XJSON();
+                        v_Value = v_XJson.toJsonTextByChilds(v_Value ,ValueHelp.class.getSimpleName());
+                    }
                     else
                     {
                         XJSON v_XJson = new XJSON();
-                        v_Value = v_XJson.toJson(v_Value).toJSONString();
+                        v_Value = v_XJson.toJsonText(v_Value);
                     }
                     
                     v_Context.put(v_Placeholder ,v_Value);
@@ -895,10 +900,15 @@ public class ValueHelp
                     {
                         // Nothing.
                     }
+                    else if ( MethodReflect.isExtendImplement(v_Value ,List.class) )
+                    {
+                        XJSON v_XJson = new XJSON();
+                        v_Value = v_XJson.toJsonTextByChilds(v_Value ,ValueHelp.class.getSimpleName());
+                    }
                     else
                     {
                         XJSON v_XJson = new XJSON();
-                        v_Value = v_XJson.toJson(v_Value).toJSONString();
+                        v_Value = v_XJson.toJsonText(v_Value);
                     }
                     
                     v_Context.put(DBSQL.$Placeholder + v_Placeholder ,v_Value);
