@@ -45,6 +45,7 @@ import org.hy.common.xml.log.Logger;
  *              v2.0  2025-06-05  添加：上下文中支持多层组的占位符。如内层占位符当作外层占位符的参数。如：Factory.users.$get({:School.users.$get(A).ref}).name
  *              v3.0  2025-10-17  添加：占位符的嵌套获取对象，如：:{:xxx}.uuu，:xxx是一个占位符，它的值是另一个占位符。
  *              v3.1  2025-10-18  添加：整合replaceByContext与getValue两方法。即支持单个占位符的解析，也支持多个占位符组合的解析
+ *              v3.2  2026-04-24  添加：replaceByContext方法对非基础类型的对象实现，均转成Json字符串后填充
  */
 public class ValueHelp
 {
@@ -750,6 +751,7 @@ public class ValueHelp
      *              v2.0  2025-06-17  添加：支持多层的占位符。如内层占位符当作外层占位符的参数
      *                                     举例：Factory.users.$get({:School.users.$get(A).ref}).name
      *                                     详见：JU_ValueHelp
+     *              v3.0  2026-04-23  添加：对非基础类型的对象实现，均转成Json字符串后填充
      *
      * @param i_Value    文本字符
      * @param i_Context  上下文内容
@@ -776,12 +778,36 @@ public class ValueHelp
             // 格式为  {:占位符}
             if ( v_Placeholder.startsWith("{") )
             {
-                v_Context.put(v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder.substring(2 ,v_Placeholder.length() - 1)));
+                Object v_Value = MethodReflect.getMapValue(i_Context ,v_Placeholder.substring(2 ,v_Placeholder.length() - 1));
+                if ( v_Value == null
+                  || Help.isBasicDataType(v_Value.getClass()) )
+                {
+                    // Nothing.
+                }
+                else
+                {
+                    XJSON v_XJson = new XJSON();
+                    v_Value = v_XJson.toJson(v_Value).toJSONString();
+                }
+                
+                v_Context.put(v_Placeholder ,v_Value);
             }
             // 格式为  :占位符
             else
             {
-                v_Context.put(DBSQL.$Placeholder + v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder));
+                Object v_Value = MethodReflect.getMapValue(i_Context ,v_Placeholder);
+                if ( v_Value == null
+                  || Help.isBasicDataType(v_Value.getClass()) )
+                {
+                    // Nothing.
+                }
+                else
+                {
+                    XJSON v_XJson = new XJSON();
+                    v_Value = v_XJson.toJson(v_Value).toJSONString();
+                }
+                
+                v_Context.put(DBSQL.$Placeholder + v_Placeholder ,v_Value);
             }
         }
         
@@ -818,6 +844,7 @@ public class ValueHelp
      *              v2.0  2025-06-17  添加：支持多层的占位符。如内层占位符当作外层占位符的参数
      *                                     举例：Factory.users.$get({:School.users.$get(A).ref}).name
      *                                     详见：JU_ValueHelp
+     *              v3.0  2026-04-23  添加：对非基础类型的对象实现，均转成Json字符串后填充
      *
      * @param i_Value         文本字符
      * @param i_Placeholders  占位符
@@ -834,12 +861,36 @@ public class ValueHelp
                 // 格式为  {:占位符}
                 if ( v_Placeholder.startsWith("{") )
                 {
-                    v_Context.put(v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder.substring(2 ,v_Placeholder.length() - 1)));
+                    Object v_Value = MethodReflect.getMapValue(i_Context ,v_Placeholder.substring(2 ,v_Placeholder.length() - 1));
+                    if ( v_Value == null
+                      || Help.isBasicDataType(v_Value.getClass()) )
+                    {
+                        // Nothing.
+                    }
+                    else
+                    {
+                        XJSON v_XJson = new XJSON();
+                        v_Value = v_XJson.toJson(v_Value).toJSONString();
+                    }
+                    
+                    v_Context.put(v_Placeholder ,v_Value);
                 }
                 // 格式为  :占位符
                 else
                 {
-                    v_Context.put(DBSQL.$Placeholder + v_Placeholder ,MethodReflect.getMapValue(i_Context ,v_Placeholder));
+                    Object v_Value = MethodReflect.getMapValue(i_Context ,v_Placeholder);
+                    if ( v_Value == null
+                      || Help.isBasicDataType(v_Value.getClass()) )
+                    {
+                        // Nothing.
+                    }
+                    else
+                    {
+                        XJSON v_XJson = new XJSON();
+                        v_Value = v_XJson.toJson(v_Value).toJSONString();
+                    }
+                    
+                    v_Context.put(DBSQL.$Placeholder + v_Placeholder ,v_Value);
                 }
             }
             
