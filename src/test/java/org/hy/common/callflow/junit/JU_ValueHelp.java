@@ -1,6 +1,8 @@
 package org.hy.common.callflow.junit;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Date;
@@ -35,6 +37,20 @@ public class JU_ValueHelp
     private String                        comment    = null;
     
     private Map<String ,JU_ValueHelpUser> users;
+    
+    
+    
+    @Test
+    public void test_getYYYZZZ()
+    {
+        List<Object> v_Datas = new ArrayList<Object>();
+        JU_ValueHelp v_Data  = new JU_ValueHelp().setName("Name123ABC");
+        
+        System.out.println(ValueHelp.getYYYZZZ(v_Datas ,"size"));
+        System.out.println(ValueHelp.getYYYZZZ(v_Datas ,"isEmpty"));
+        System.out.println(ValueHelp.getYYYZZZ(v_Data  ,"name"));
+        System.out.println(ValueHelp.getYYYZZZ(v_Data  ,"getName"));
+    }
     
     
     

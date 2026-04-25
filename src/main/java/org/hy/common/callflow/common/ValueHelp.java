@@ -47,6 +47,7 @@ import org.hy.common.xml.log.Logger;
  *              v3.0  2025-10-17  添加：占位符的嵌套获取对象，如：:{:xxx}.uuu，:xxx是一个占位符，它的值是另一个占位符。
  *              v3.1  2025-10-18  添加：整合replaceByContext与getValue两方法。即支持单个占位符的解析，也支持多个占位符组合的解析
  *              v3.2  2026-04-24  添加：replaceByContext方法对非基础类型的对象实现，均转成Json字符串后填充
+ *              v3.3  2026-04-25  修正：支持List、Map、Set三种集合等常用方法的反映，及区分get、is两方法
  */
 public class ValueHelp
 {
@@ -654,7 +655,8 @@ public class ValueHelp
             }
             else
             {
-                MethodReflect v_MR = new MethodReflect(i_Object ,i_YYYZZZ ,true ,MethodReflect.$NormType_Getter);
+                boolean       v_IsNorm = !StringHelp.isStartsWith(i_YYYZZZ ,"get" ,"is" ,"size" ,"length" ,"clear" ,"keySet" ,"values" ,"entrySet" ,"iterator" ,"toArray" ,"listIterator" ,"spliterator");
+                MethodReflect v_MR     = new MethodReflect(i_Object ,i_YYYZZZ ,v_IsNorm ,MethodReflect.$NormType_Getter);
                 return v_MR.invokeForInstance(i_Object);
             }
         }
