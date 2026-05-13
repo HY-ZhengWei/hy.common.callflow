@@ -6,7 +6,7 @@
 
     <groupId>cn.openapis</groupId>
     <artifactId>hy.common.callflow</artifactId>
-    <version>1.9.6</version>
+    <version>1.9.7</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.callflow</name>
@@ -55,14 +55,14 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.base</artifactId>
-            <version>1.0.207</version>
+            <version>1.0.208</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.file</artifactId>
-            <version>1.5.9</version>
+            <version>1.6.0</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -103,7 +103,7 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.xjava</artifactId>
-            <version>4.8.8</version>
+            <version>4.9.0</version>
             <scope>provided</scope>
         </dependency>
         

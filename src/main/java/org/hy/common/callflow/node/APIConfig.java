@@ -31,6 +31,8 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  *              v2.0  2025-06-09  添加：param、body和head三种已解释完成的占位符，使它们支持面向对象的占位符。
  *              v3.0  2025-09-26  迁移：静态检查
+ *              v4.0  2026-05-11  添加：是否自动填充问号(?)
+ *              v4.1  2026-05-13  添加：支持PUT方式
  */
 public class APIConfig extends NodeConfig implements NodeConfigBase
 {
@@ -302,7 +304,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
-     * 获取：请求类型。1:get方式(默认值)  2:post方式
+     * 获取：请求类型。1:get方式(默认值)  2:post方式  3:put方式
      */
     public String getRequestType()
     {
@@ -314,6 +316,10 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         {
             return "POST";
         }
+        else if ( this.callObject.getRequestType() == XHttp.$Request_Type_Put )
+        {
+            return "PUT";
+        }
         else
         {
             return "" + this.callObject.getRequestType();
@@ -323,9 +329,9 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
-     * 设置：请求类型。1:get方式(默认值)  2:post方式
+     * 设置：请求类型。1:get方式(默认值)  2:post方式  3:put方式
      * 
-     * @param i_RequestType 请求类型。1:get方式(默认值)  2:post方式
+     * @param i_RequestType 请求类型。1:get方式(默认值)  2:post方式  3:put方式
      */
     public void setRequestType(String i_RequestType)
     {
@@ -338,6 +344,10 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
             if ( i_RequestType.trim().equalsIgnoreCase("POST") )
             {
                 this.callObject.setRequestType(XHttp.$Request_Type_Post);
+            }
+            else if ( i_RequestType.trim().equalsIgnoreCase("PUT") )
+            {
+                this.callObject.setRequestType(XHttp.$Request_Type_Put);
             }
             else
             {
@@ -459,6 +469,30 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         this.param = i_Param;
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 获取：是否自动填充问号(?) 。默认:false，与XHttp向反，原因是首次在使用APIConfig对象时定义为false，就必须延续下来了。
+     * 当生成访问URL时，是否生成如 http://ip:port/xx?yy=zz 中的问号
+     */
+    public boolean isHaveQuestionMark()
+    {
+        return this.callObject.isHaveQuestionMark();
+    }
+
+
+    
+    /**
+     * 设置：是否自动填充问号(?) 。默认:false，与XHttp向反，原因是首次在使用APIConfig对象时定义为false，就必须延续下来了。
+     * 当生成访问URL时，是否生成如 http://ip:port/xx?yy=zz 中的问号
+     * 
+     * @param haveQuestionMark
+     */
+    public void setHaveQuestionMark(boolean haveQuestionMark)
+    {
+        this.callObject.setHaveQuestionMark(haveQuestionMark);
     }
 
 
@@ -870,7 +904,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
                 }
                 else
                 {
-                    APIException v_Exce = new APIException(v_XHttpRet.getParamObj() == null ? "" : v_XHttpRet.getParamObj().toString() ,v_XHttpRet.getParamStr() ,v_ReturnValue);
+                    APIException v_Exce = new APIException(v_XHttpRet.getParamObj() == null ? "" : v_XHttpRet.getParamObj().toString() ,v_XHttpRet.getParamStr() + " 未包含成功标示[" + this.succeedFlag + "]" ,v_ReturnValue);
                     return new Return<Object>(false).setException(v_Exce);
                 }
             }
@@ -914,6 +948,10 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         if ( !Help.isNull(this.url) )
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("url" ,this.url));
+        }
+        if ( this.isHaveQuestionMark() )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("haveQuestionMark" ,this.isHaveQuestionMark()));
         }
         if ( !Help.isNull(this.param) )
         {
@@ -979,7 +1017,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      */
     public String toString(Map<String ,Object> i_Context)
     {
-        return this.callObject.toString();
+        return this.callObject.toString() + (Help.isNull(this.succeedFlag) ? "" : " 结果是否包含[" + this.succeedFlag + "]");
     }
     
     
@@ -998,7 +1036,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     @Override
     public String toString()
     {
-        return this.callObject.toString();
+        return this.callObject.toString() + (Help.isNull(this.succeedFlag) ? "" : " 结果是否包含[" + this.succeedFlag + "]");
     }
     
     
