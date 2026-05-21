@@ -2,34 +2,7 @@
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -56,14 +29,19 @@
         <xpublish id="XPublish_CF022_1">
             <comment>MQTT发布消息</comment>
             <publishType>MQTT</publishType>                 <!-- 发布消息的类型。（可以不用显式定义。默认为MQTT） -->
-            <publishURL>http://127.0.0.1</publishURL>       <!-- 发布微服务地址 -->
-            <publishXID>XPublish</publishXID>               <!-- 数据发布XID。配置在上面的微服务中 -->
-            <message>:Message</message>                     <!-- 定义发布消息的变量名称 -->
+            <publishURL>https://127.0.0.1</publishURL>      <!-- 发布微服务地址 -->
+            <publishXID>:GRet.XPublish</publishXID>         <!-- 数据发布XID。配置在上面的微服务中 -->
+            <message>:ForIndex</message>                    <!-- 定义发布消息的变量名称 -->
             <userID>:UserID</userID>                        <!-- 用户ID的变量名称 -->
+            
             <route>
+                <succeed>                                   <!-- For循环结束点（再次循环点） -->
+                    <next>:XFor_CF022</next>
+                    <comment>循环的下一步</comment>
+                </succeed>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
                     <next ref="XNode_CF022_1_1" />
-                    <comment>成功时</comment>
+                    <comment>退出循环后的节点</comment>
                 </succeed>
                 <error>                                     <!-- 异常时，关联后置节点 -->
                     <next ref="XNode_CF022_1_2" />
@@ -71,6 +49,47 @@
                 </error>
             </route>
         </xpublish>
+        
+        
+        <xgroovy id="XGroovy_CF022_生成XPublish">
+            <comment>生成XPublish</comment>
+            <in>
+            {
+                "v_Index": ":ForIndex"
+            }
+            </in>
+            <groovy type="textarea">
+            <![CDATA[
+                v_XPublish = "XPublish_Thermal_LPS" + v_Index
+            ]]>
+            </groovy>
+            <out>
+            {
+                "v_XPublish": "XPublish"
+            }
+            </out>
+            <returnID>GRet</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XPublish_CF022_1" />
+                </succeed>
+            </route>
+        </xgroovy>
+        
+        
+        <xfor id="XFor_CF022">
+            <comment>循环：千部设备</comment>
+            <start>13011</start>                                <!-- 循环开始值 -->
+            <end>13600</end>                                    <!-- 循环结束值 -->
+            <step>1</step>                                  <!-- 步长，可选项，默认为1 -->
+            <indexID>ForIndex</indexID>                     <!-- 序号变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XGroovy_CF022_生成XPublish" />
+                    <comment>For循环</comment>
+                </succeed>
+            </route>
+        </xfor>
         
     </xconfig>
     

@@ -2,35 +2,7 @@
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -58,7 +30,7 @@
                 <valueClass>java.lang.String</valueClass>   <!-- 定义变量类型 -->
                 <valueXIDA>T</valueXIDA>                    <!-- 默认值 -->
                 <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
-                <valueXIDB>:IfElse</valueXIDB>              <!-- 变量 -->
+                <valueXIDB>:IfElse.name</valueXIDB>         <!-- 变量 -->
             </conditionItem>
             <route>
                 <if>                                        <!-- 真时的路由 -->
@@ -70,13 +42,40 @@
                     <comment>假时</comment>
                 </else>
             </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>-1</data>                         <!-- Mock模拟结果为：假 -->
+                </succeed>
+            </mock>
         </xcondition>
+        
+        
+        <xapi id="XCFlow_LLMGate_Weather">
+            <comment>天气查询</comment>
+            <url>https://restapi.amap.com/v3/weather/weatherInfo?</url>
+            <param><![CDATA[key=a75b4788b5ceffd2761ba2fdd1b9b151&city=610400]]></param>
+            <body>
+            {
+                "name": :IfElse.name
+            }
+            </body>
+            <succeedFlag>"OK"</succeedFlag>
+            <returnID>RetWeather</returnID>
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XCondition_CF002_1_1" />
+                    <comment>成功时</comment>
+                </succeed>
+            </route>
+        </xapi>
         
         
         <xnode id="XNode_CF002_1">
             <comment>第一个环节，有一个参数，有返回结果</comment>
             <callXID>:XProgram</callXID>
-            <callMethod>method_First</callMethod>
+            <callMethod>method_RetaMap</callMethod>
             <callParam>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义入参类型 -->
                 <value>:NumParam</value>                    <!-- 定义入参变量名称 -->
@@ -85,10 +84,24 @@
             <returnID>IfElse</returnID>                     <!-- 定义返回结果的变量名称 -->
             <route>
                 <succeed>                                   <!-- 成功时，关联后置节点 -->
-                    <next ref="XCondition_CF002_1_1" />
+                    <next ref="XCFlow_LLMGate_Weather" />
                     <comment>成功时</comment>
                 </succeed>
             </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <dataClass>java.util.HashMap</dataClass>
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟成功结果</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>
+                    {
+                        "name": "T",
+                        "value": "123"
+                    }
+                    </data>                          <!-- Mock模拟成功时的模拟数据 -->
+                </succeed>
+            </mock>
         </xnode>
         
     </xconfig>

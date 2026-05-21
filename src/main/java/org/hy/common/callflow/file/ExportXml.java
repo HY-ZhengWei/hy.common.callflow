@@ -130,6 +130,22 @@ public class ExportXml
     
     
     /**
+     * XML引用类的头信息。key为引用名称，value为引用元类
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-05-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public static Map<String ,String> getImportHeads()
+    {
+        return $ImportHeads;
+    }
+    
+    
+    
+    /**
      * 添加Xml内容中的import头信息
      * 
      * @author      ZhengWei(HY)
@@ -155,7 +171,8 @@ public class ExportXml
      *
      * @return
      */
-    public String toXmlImportHeads()
+    @Deprecated
+    public String toXmlImportHeads_Old()
     {
         StringBuilder v_Imports = new StringBuilder();
         int           v_Max     = 0;
@@ -175,6 +192,22 @@ public class ExportXml
         }
         
         return v_Imports.toString();
+    }
+    
+    
+    
+    /**
+     * 生成所有引用类的Xml头信息
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-05-21
+     * @version     v1.0
+     *
+     * @return
+     */
+    public String toXmlImportHeads()
+    {
+        return "    <import name=\"xcallFlow\" class=\"org.hy.common.callflow.common.CallFlowImports\" />\n";
     }
     
     

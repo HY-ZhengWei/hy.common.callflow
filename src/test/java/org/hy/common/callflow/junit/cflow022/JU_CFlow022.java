@@ -9,6 +9,7 @@ import org.hy.common.Return;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.event.PublishConfig;
 import org.hy.common.callflow.execute.ExecuteResult;
+import org.hy.common.callflow.forloop.ForConfig;
 import org.hy.common.callflow.junit.JUBase;
 import org.hy.common.callflow.junit.cflow022.program.Program;
 import org.hy.common.xml.XJava;
@@ -64,11 +65,11 @@ public class JU_CFlow022 extends JUBase
         XJava.putObject("XProgram" ,new Program());
         
         // 获取编排中的首个元素
-        PublishConfig       v_Publish = (PublishConfig) XJava.getObject("XPublish_CF022_1");
+        ForConfig       v_Publish = (ForConfig) XJava.getObject("XFor_CF022");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
         v_Context.put("Message" ,"Who am I?"); // 发布的消息内容
-        v_Context.put("UserID"  ,"ZhengWei");  // 发布者
+        v_Context.put("UserID"  ,"TangYuJun");  // 发布者
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_Publish);

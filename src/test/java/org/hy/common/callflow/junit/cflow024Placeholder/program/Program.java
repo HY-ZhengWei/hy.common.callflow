@@ -48,6 +48,23 @@ public class Program
     }
     
     
+    
+    public Program method_Info(Map<String ,Object> i_Context)
+    {
+        System.out.println(Date.getNowTime().getFullMilli() + " call method_Info.");
+        Help.print(i_Context);
+        
+        Program v_Ret = new Program();
+        v_Ret.setValueString("XCFlow_MouldingLine_1_GetState");
+        v_Ret.setValueInteger(123456);
+        
+        v_Ret.setMyself(new Program());
+        v_Ret.getMyself().setValueString("XPLC_MouldingLine");
+        
+        return v_Ret;
+    }
+    
+    
     /**
      * 获取：字符类型
      */

@@ -122,4 +122,36 @@ public class JU_CFlow035 extends AppInitConfig
         System.out.println(CallFlow.getHelpExport().export(v_Groovy));
     }
     
+    
+    
+    @Test
+    public void testGroovyUUID()
+    {
+        // 获取编排中的首个元素
+        GroovyConfig        v_Groovy  = (GroovyConfig) XJava.getObject("生成UUID");
+        Map<String ,Object> v_Context = new HashMap<String ,Object>();
+        ExecuteResult       v_Result  = CallFlow.execute(v_Groovy ,v_Context);
+        if ( v_Result.isSuccess() )
+        {
+            System.out.println("Success");
+        }
+        else
+        {
+            System.out.println("Error XID = " + v_Result.getExecuteXID());
+            System.out.println("Error Msg = " + v_Result.getException().getMessage());
+            if ( v_Result.getException() instanceof TimeoutException )
+            {
+                System.out.println("is TimeoutException");
+            }
+            v_Result.getException().printStackTrace();
+        }
+        
+        System.out.println("返回结果：" + v_Result.getResult());
+        
+        // 打印执行路径
+        ExecuteResult v_FirstResult = CallFlow.getFirstResult(v_Context);
+        System.out.println(CallFlow.getHelpLog().logs(v_FirstResult));
+        System.out.println("整体用时：" + Date.toTimeLenNano(v_Result.getEndTime() - v_Result.getBeginTime()) + "\n");
+    }
+    
 }

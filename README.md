@@ -367,35 +367,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -460,35 +432,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -601,35 +545,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -810,35 +726,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    ‘<import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -938,35 +826,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -1067,35 +927,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -1253,35 +1085,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -1400,35 +1204,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -1568,35 +1344,7 @@ __编排配置：分支逻辑__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -1762,35 +1510,7 @@ __编排配置：多逻辑组合__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -2012,35 +1732,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -2156,35 +1848,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -2241,35 +1905,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -2339,35 +1975,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -2487,35 +2095,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -2605,35 +2185,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -2740,35 +2292,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -2867,35 +2391,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -3000,35 +2496,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -3163,35 +2631,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -3338,35 +2778,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -3435,35 +2847,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -3620,35 +3004,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -3757,35 +3113,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -3896,35 +3224,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -4166,35 +3466,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -4255,35 +3527,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -4369,35 +3613,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -4495,35 +3711,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -4625,35 +3813,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -4782,35 +3942,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -5019,35 +4151,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -5119,35 +4223,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -5223,35 +4299,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -5422,35 +4470,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -5634,36 +4654,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -5792,36 +4783,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     
@@ -5923,35 +4885,7 @@ __编排配置__
 
 <config>
 
-    <import name="xconfig"    class="java.util.ArrayList" />
-    <import name="xmt"        class="org.hy.common.callflow.nesting.MTConfig" />
-    <import name="xnesting"   class="org.hy.common.callflow.nesting.NestingConfig" />
-    <import name="xfor"       class="org.hy.common.callflow.forloop.ForConfig" />
-    <import name="xcondition" class="org.hy.common.callflow.ifelse.ConditionConfig" />
-    <import name="xreturn"    class="org.hy.common.callflow.returns.ReturnConfig" />
-    <import name="xcg"        class="org.hy.common.callflow.cache.CacheGetConfig" />
-    <import name="xcs"        class="org.hy.common.callflow.cache.CacheSetConfig" />
-    <import name="xcalculate" class="org.hy.common.callflow.node.CalculateConfig" />
-    <import name="xwait"      class="org.hy.common.callflow.node.WaitConfig" />
-    <import name="xnode"      class="org.hy.common.callflow.node.NodeConfig" />
-    <import name="xapi"       class="org.hy.common.callflow.node.APIConfig" />
-    <import name="xsql"       class="org.hy.common.callflow.node.XSQLConfig" />
-    <import name="xcql"       class="org.hy.common.callflow.node.XCQLConfig" />
-    <import name="xzip"       class="org.hy.common.callflow.node.ZipConfig" />
-    <import name="xunzip"     class="org.hy.common.callflow.node.UnzipConfig" />
-    <import name="xcommand"   class="org.hy.common.callflow.node.CommandConfig" />
-    <import name="xjava"      class="org.hy.common.callflow.language.JavaConfig" />
-    <import name="xpython"    class="org.hy.common.callflow.language.PythonConfig" />
-    <import name="xgroovy"    class="org.hy.common.callflow.language.GroovyConfig" />
-    <import name="xshell"     class="org.hy.common.callflow.language.ShellConfig" />
-    <import name="xenf"       class="org.hy.common.callflow.safe.EncryptFileConfig" />
-    <import name="xdef"       class="org.hy.common.callflow.safe.DecryptFileConfig" />
-    <import name="xftp"       class="org.hy.common.callflow.ftp.FtpConfig" />
-    <import name="xpublish"   class="org.hy.common.callflow.event.PublishConfig" />
-    <import name="xsubscribe" class="org.hy.common.callflow.event.SubscribeConfig" />
-    <import name="xwspush"    class="org.hy.common.callflow.event.WSPushConfig" />
-    <import name="xwspull"    class="org.hy.common.callflow.event.WSPullConfig" />
-    <import name="xjob"       class="org.hy.common.callflow.event.JOBConfig" />
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
     
     
     

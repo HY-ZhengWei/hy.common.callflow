@@ -68,7 +68,8 @@ public class JU_CFlow002 extends JUBase
         Map<String ,Object> v_Context   = new HashMap<String ,Object>();
         
         // 传值 9 或 传值 -1 或 不传值
-        v_Context.put("NumParam" ,9);
+        v_Context.put("NumParam"    ,9);
+        v_Context.put("MockSucceed" ,true);
         
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_FirstNode);
