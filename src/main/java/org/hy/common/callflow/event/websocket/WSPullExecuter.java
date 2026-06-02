@@ -46,6 +46,32 @@ public interface WSPullExecuter
     
     
     /**
+     * 发消息（文本消息）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-06-01
+     * @version     v1.0
+     *
+     * @param i_Text  文本消息
+     * @return  是否发送成功
+     */
+    public boolean sendText(String i_Text);
+    
+    
+    
+    /**
+     * 关闭会话释放资源
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-06-02
+     * @version     v1.0
+     *
+     */
+    public void close();
+    
+    
+    
+    /**
      * 执行点拉元素中配置的在收到消息时触发的编排
      * 
      * @author      ZhengWei(HY)

@@ -35,6 +35,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-08-30
  * @version     v1.0
  *              v2.0  2025-09-26  迁移：静态检查
+ *              v3.0  2026-06-02  添加：用点拉创建的会话发消息
  */
 public class WSPullConfig extends NodeConfig implements NodeConfigBase
 {
@@ -62,6 +63,9 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
      * 优点：提高可移植性。
      */
     private String                        returnClass;
+    
+    /** 点拉元素的执行者（用于发消息） */
+    private WSPullExecuter                wsPullExecuter;
     
     
     
@@ -477,10 +481,15 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
      * @param io_Context  上下文类型的变量信息
      * @return
      */
-    public boolean pullMessages(Map<String ,Object> io_Context)
+    public synchronized boolean pullMessages(Map<String ,Object> io_Context)
     {
-        WSPullExecuter v_Executer = this.newWSPullExecuter();
-        if ( v_Executer == null )
+        if ( this.wsPullExecuter != null )
+        {
+            this.wsPullExecuter.close();
+        }
+        
+        this.wsPullExecuter = this.newWSPullExecuter();
+        if ( this.wsPullExecuter == null )
         {
             throw new RuntimeException("WSPullExecuter is not find.");
         }
@@ -491,11 +500,35 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
         
         try
         {
-            return v_Executer.init(new WSPullData(this ,io_Context ,this.wsURLPlaceholders));
+            return this.wsPullExecuter.init(new WSPullData(this ,io_Context ,this.wsURLPlaceholders));
         }
         catch (Exception exce)
         {
             throw new RuntimeException(exce);
+        }
+    }
+    
+    
+    
+    /**
+     * 用 pullMessages() 方法已连接成功的会话发消息（文本消息）
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-06-01
+     * @version     v1.0
+     *
+     * @param i_Text  文本消息
+     * @return  是否发送成功
+     */
+    public boolean sendText(String i_Text)
+    {
+        if ( this.wsPullExecuter == null )
+        {
+            return false;
+        }
+        else
+        {
+            return this.wsPullExecuter.sendText(i_Text);
         }
     }
     
