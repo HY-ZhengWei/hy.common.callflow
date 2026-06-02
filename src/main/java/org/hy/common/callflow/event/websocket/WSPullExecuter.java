@@ -23,6 +23,7 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-08-30
  * @version     v1.0
+ *              v2.0  2026-06-02  添加：上下文返回的我是谁（点拉元素），方便后续元素用“我”来发消息
  */
 public interface WSPullExecuter
 {
@@ -114,6 +115,10 @@ public interface WSPullExecuter
                 Object v_MsgObject = v_XJson.toJava(i_Message ,i_WSPullData.getReturnClass() == null ? HashMap.class : i_WSPullData.getReturnClass());
                 v_Context.put(i_WSPullData.getReturnID() ,v_MsgObject);
             }
+        }
+        if ( !Help.isNull(i_WSPullData.getWhoami()) )
+        {
+            v_Context.put(i_WSPullData.getWhoami() ,XJava.getObject(i_WSPullData.getXid()));
         }
         
         ExecuteResult v_Result = CallFlow.execute(v_CallFlow ,v_Context);

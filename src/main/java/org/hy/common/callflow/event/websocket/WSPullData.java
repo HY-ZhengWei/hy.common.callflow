@@ -19,6 +19,7 @@ import org.hy.common.callflow.event.WSPullConfig;
  * @author      ZhengWei(HY)
  * @createDate  2025-08-30
  * @version     v1.0
+ *              v2.0  2026-06-02  添加：上下文返回的我是谁（点拉元素），方便后续元素用“我”来发消息
  */
 public class WSPullData
 {
@@ -37,6 +38,9 @@ public class WSPullData
     
     /** 消息体的格式类型 */
     private WSContentType       contentType;
+    
+    /** 在返回上下文中的定义我是谁的变量ID。可方便后续元素用“我”来发消息 */          
+    private String              whoami;
     
     /** 为返回值定义的变量ID */          
     private String              returnID;
@@ -86,6 +90,7 @@ public class WSPullData
         this.setWsURL(ValueHelp.replaceByContext(i_Config.getWsURL() ,i_WSURLPlaceholders ,this.executeContext));
         this.setXid(        i_Config.getXid());
         this.setCallFlowXID(i_Config.gatCallFlowXID());
+        this.setWhoami(     i_Config.getWhoami());
         this.setReturnID(   i_Config.getReturnID());
         this.setReturnClass(i_Config.gatReturnClass());
     }
@@ -196,6 +201,26 @@ public class WSPullData
     }
     
     
+    /**
+     * 获取：在返回上下文中的定义我是谁的变量ID。可方便后续元素用“我”来发消息
+     */
+    public String getWhoami()
+    {
+        return whoami;
+    }
+
+    
+    /**
+     * 设置：在返回上下文中的定义我是谁的变量ID。可方便后续元素用“我”来发消息
+     * 
+     * @param i_Whoami 在返回上下文中的定义我是谁的变量ID。可方便后续元素用“我”来发消息
+     */
+    private void setWhoami(String i_Whoami)
+    {
+        this.whoami = i_Whoami;
+    }
+
+
     /**
      * 获取：为返回值定义的变量ID
      */
