@@ -26,6 +26,7 @@ import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.callflow.language.shell.ShellFile;
 import org.hy.common.callflow.language.shell.ShellResult;
+import org.hy.common.callflow.mock.MockConfig;
 import org.hy.common.db.DBSQL;
 import org.hy.common.xml.log.Logger;
 
@@ -1355,7 +1356,11 @@ public class ShellConfig extends ExecuteElement implements Cloneable
                 v_Xml.append(v_NewSpace).append(IToXml.toBegin("mock"));
                 if ( this.mock.isValid() )
                 {
-                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid" ,"true"));
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("valid"     ,"true"));
+                }
+                if ( !Help.isNull(this.mock.getWaitTime()) && !MockConfig.$DefWaitTime.equals(this.mock.getWaitTime()) )
+                {
+                    v_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toValue("waitTime"  ,this.mock.getWaitTime()));
                 }
                 if ( !Help.isNull(this.mock.getDataClass()) )
                 {

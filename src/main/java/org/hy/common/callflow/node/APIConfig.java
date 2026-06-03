@@ -8,6 +8,7 @@ import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.TablePartitionLink;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.execute.ExecuteElement;
@@ -33,11 +34,15 @@ import org.hy.common.xml.log.Logger;
  *              v3.0  2025-09-26  迁移：静态检查
  *              v4.0  2026-05-11  添加：是否自动填充问号(?)
  *              v4.1  2026-05-13  添加：支持PUT方式
+ *              v5.0  2026-06-03  添加：接口请求头中添加 编排执行实例ID。方便检索同一编排发起的全部接口请求。
  */
 public class APIConfig extends NodeConfig implements NodeConfigBase
 {
     
     private static final Logger $Logger = new Logger(APIConfig.class ,true);
+    
+    /** 接口请求头中添加 编排执行实例ID */
+    public  static final String $Head_CFlowID = "CFlowID";
     
     
 
@@ -779,6 +784,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
      * @return
      * @throws Exception 
      */
+    @SuppressWarnings("unchecked")
     public Object [] generateParams(Map<String ,Object> io_Context ,Object [] io_Params)
     {
         StringBuilder v_Log = new StringBuilder();
@@ -818,12 +824,24 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
             
             try
             {
-                io_Params[2] = ValueHelp.getValue(v_Head ,Map.class ,null ,io_Context);
+                Map<String ,String> v_HeadMap = (Map<String ,String>) ValueHelp.getValue(v_Head ,Map.class ,null ,io_Context);
+                if ( v_HeadMap == null )
+                {
+                    v_HeadMap = new HashMap<String ,String>();
+                }
+                v_HeadMap.put($Head_CFlowID ,CallFlow.getWorkID(io_Context));
+                io_Params[2] = v_HeadMap;
             }
             catch (Exception exce)
             {
                 throw new RuntimeException(exce);
             }
+        }
+        else
+        {
+            Map<String ,String> v_HeadMap = new HashMap<String ,String>();
+            v_HeadMap.put($Head_CFlowID ,CallFlow.getWorkID(io_Context));
+            io_Params[2] = v_HeadMap;
         }
         
         if ( this.showLog )

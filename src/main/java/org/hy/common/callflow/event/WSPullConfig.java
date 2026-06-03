@@ -9,6 +9,7 @@ import org.hy.common.PartitionMap;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.TablePartitionLink;
+import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.common.FindClass;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ElementType;
@@ -36,6 +37,7 @@ import org.hy.common.xml.log.Logger;
  * @version     v1.0
  *              v2.0  2025-09-26  迁移：静态检查
  *              v3.0  2026-06-02  添加：用点拉创建的会话发消息
+ *                                添加：上下文返回的我是谁（点拉元素），方便后续元素用“我”来发消息
  */
 public class WSPullConfig extends NodeConfig implements NodeConfigBase
 {
@@ -66,6 +68,9 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
     
     /** 点拉元素的执行者（用于发消息） */
     private WSPullExecuter                wsPullExecuter;
+    
+    /** 在返回上下文中的定义我是谁的变量ID。可方便后续元素用“我”来发消息 */          
+    private String                        whoami;
     
     
     
@@ -363,6 +368,34 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 获取：在返回上下文中的定义我是谁的变量ID。可方便后续元素用“我”来发消息
+     */
+    public String getWhoami()
+    {
+        return whoami;
+    }
+
+
+    
+    /**
+     * 设置：在返回上下文中的定义我是谁的变量ID。可方便后续元素用“我”来发消息
+     * 
+     * @param i_Whoami 在返回上下文中的定义我是谁的变量ID。可方便后续元素用“我”来发消息
+     */
+    public void setWhoami(String i_Whoami)
+    {
+        if ( CallFlow.isSystemXID(i_Whoami) )
+        {
+            throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s Whoami[" + i_Whoami + "] is SystemXID.");
+        }
+        
+        this.whoami = ValueHelp.standardValueID(i_Whoami);
+        this.keyChange();
+    }
+    
+    
+    
+    /**
      * 设置XJava池中对象的ID标识。此方法不用用户调用设置值，是自动的。
      * 
      * 自己反射调用自己的实例中的方法
@@ -569,6 +602,10 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("contentType" ,this.getContentType()));
         }
+        if ( !Help.isNull(this.whoami) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("whoami" ,this.whoami));
+        }
         if ( !Help.isNull(this.returnClass) )
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("returnClass" ,this.returnClass));
@@ -700,6 +737,7 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
         v_Clone.wsURL       = this.wsURL;
         v_Clone.callFlowXID = this.callFlowXID;
         v_Clone.contentType = this.contentType;
+        v_Clone.whoami      = this.whoami;
         v_Clone.returnClass = this.returnClass;
         v_Clone.callMethod  = this.callMethod; 
         v_Clone.timeout     = this.timeout;
@@ -741,6 +779,7 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
         v_Clone.wsURL       = this.wsURL;
         v_Clone.callFlowXID = this.callFlowXID;
         v_Clone.contentType = this.contentType;
+        v_Clone.whoami      = this.whoami;
         v_Clone.returnClass = this.returnClass;
         v_Clone.callMethod  = this.callMethod; 
         v_Clone.timeout     = this.timeout;

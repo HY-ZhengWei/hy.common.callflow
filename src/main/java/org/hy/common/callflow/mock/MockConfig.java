@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.StringHelp;
+import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.xml.XJSON;
 import org.hy.common.xml.log.Logger;
 
@@ -19,11 +20,15 @@ import org.hy.common.xml.log.Logger;
  * @author      ZhengWei(HY)
  * @createDate  2025-11-06
  * @version     v1.0
+ *              v2.0  2026-06-03  添加：模拟执行用时的等待时长（单位：毫秒）。合作解决人：李浩 
  */
 public class MockConfig
 {
     
     private static final Logger $Logger = new Logger(MockConfig.class);
+    
+    /** 模拟执行用时的等待时长（单位：毫秒）*/
+    public static final String $DefWaitTime = "5000";
     
     
     
@@ -35,6 +40,9 @@ public class MockConfig
      *   其二，防止正式环境（必须设置为false）下的恶意攻击 
      */
     private boolean        valid;
+    
+    /** 模拟执行用时的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    private String         waitTime;
     
     /** 
      * 模拟数据类型
@@ -57,7 +65,8 @@ public class MockConfig
     
     public MockConfig()
     {
-        this.valid = false;
+        this.valid    = false;
+        this.waitTime = $DefWaitTime;
     }
     
     
@@ -83,6 +92,21 @@ public class MockConfig
         if ( !this.valid )
         {
             return null;
+        }
+        
+        Long v_WaitTime = null;
+        if ( Help.isNumber(this.waitTime) )
+        {
+            v_WaitTime = Long.valueOf(this.waitTime);
+        }
+        else
+        {
+            v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,0L ,i_Context);
+        }
+        
+        if ( v_WaitTime > 0 )
+        {
+            Thread.sleep(v_WaitTime ,0);
         }
         
         Object v_Data = this.mock(i_Context);
@@ -275,6 +299,49 @@ public class MockConfig
     public void setValid(boolean i_Valid)
     {
         this.valid = i_Valid;
+    }
+    
+    
+    
+    /**
+     * 获取：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public String getWaitTime()
+    {
+        return waitTime;
+    }
+
+
+    
+    /**
+     * 设置：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_WaitTime 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public void setWaitTime(String i_WaitTime)
+    {
+        if ( Help.isNull(i_WaitTime) )
+        {
+            NullPointerException v_Exce = new NullPointerException("WaitTime is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_WaitTime) )
+        {
+            Long v_WaitTime = Long.valueOf(i_WaitTime);
+            if ( v_WaitTime < 0L )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("WaitTime Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.waitTime = i_WaitTime.trim();
+        }
+        else
+        {
+            this.waitTime = ValueHelp.standardRefID(i_WaitTime);
+        }
     }
     
     

@@ -88,9 +88,9 @@ public class ExecuteResultLogHelp
         int v_MaxResultTreeIDLen  = 0;
         int v_MaxExecuteXIDLen    = 0;
         
-        v_MaxExecuteTreeIDLen = Help.max(i_Result.getExecuteTreeID().length() ,v_MaxExecuteTreeIDLen);
-        v_MaxResultTreeIDLen  = Help.max(i_Result.getTreeID().length()        ,v_MaxResultTreeIDLen);
-        v_MaxExecuteXIDLen    = Help.max(i_Result.getExecuteXID().length()    ,v_MaxExecuteXIDLen);
+        v_MaxExecuteTreeIDLen = Help.max(i_Result.getExecuteTreeID().length()    ,v_MaxExecuteTreeIDLen);
+        v_MaxResultTreeIDLen  = Help.max(Help.NVL(i_Result.getTreeID()).length() ,v_MaxResultTreeIDLen);
+        v_MaxExecuteXIDLen    = Help.max(i_Result.getExecuteXID().length()       ,v_MaxExecuteXIDLen);
         
         if ( !Help.isNull(i_Result.getNexts()) )
         {
