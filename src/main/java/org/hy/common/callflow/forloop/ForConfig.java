@@ -53,6 +53,7 @@ import org.hy.common.xml.log.Logger;
  *              v5.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  *              v5.1  2025-10-23  修正：循环元素自身也有可能结束循环。如，集合循环下，集合对象为空
  *              v6.0  2025-11-18  添加：编排续跑（主动重做）
+ *              v7.0  2026-06-04  添加：第二次循环时，判定是否是新的集合。新集合可能是后面的节点跳出For循环后，重新开始了新的For循环。合作解决人：王力
  */
 public class ForConfig extends ExecuteElement implements Cloneable
 {
@@ -453,13 +454,15 @@ public class ForConfig extends ExecuteElement implements Cloneable
         
         try
         {
-            String  v_WorkID     = CallFlow.getWorkID(io_Context);
-            String  v_Prefix     = v_WorkID + "@" + this.getXid() + "@For@";
-            String  v_IndexID    = v_Prefix + "index";
-            String  v_IteratorID = v_Prefix + "iterator";
-            Integer v_OldIndex   = (Integer) io_Context.get(v_IndexID);
-            int     v_Index      = 0;
-            Object  v_Element    = null;
+            String  v_WorkID      = CallFlow.getWorkID(io_Context);
+            String  v_Prefix      = v_WorkID + "@" + this.getXid() + "@For@";
+            String  v_IndexID     = v_Prefix + "index";
+            String  v_IteratorID  = v_Prefix + "iterator";
+            String  v_ListID      = v_Prefix + "listID";
+            Integer v_ListHashOld = (Integer) io_Context.get(v_ListID);
+            Integer v_OldIndex    = (Integer) io_Context.get(v_IndexID);
+            int     v_Index       = 0;
+            Object  v_Element     = null;
             
             // 集合循环
             if ( Help.isNull(this.start) )
@@ -482,6 +485,25 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     v_Result.setException(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
                     this.refreshStatus(io_Context ,v_Result.getStatus());
                     return v_Result;
+                }
+                
+                if ( v_ListHashOld != null )
+                {
+                    // 第二次循环时，判定是否还是原来是集合
+                    if ( v_ListHashOld.equals(v_End.hashCode()) )
+                    {
+                        // Nothing.
+                    }
+                    // 第二次循环时，以经是新的集合：可能是后面的节点跳出For循环后，重新开始了新的For循环
+                    else
+                    {
+                        v_OldIndex = null;
+                        io_Context.put(v_ListID ,v_End.hashCode());
+                    }
+                }
+                else
+                {
+                    io_Context.put(v_ListID ,v_End.hashCode());
                 }
                 
                 // 集合循环： for (end)
@@ -748,12 +770,14 @@ public class ForConfig extends ExecuteElement implements Cloneable
      */
     public boolean hasNext(Map<String ,Object> io_Context)
     {
-        String  v_WorkID     = CallFlow.getWorkID(io_Context);
-        String  v_Prefix     = v_WorkID + "@" + this.getXid() + "@For@";
-        String  v_IndexID    = v_Prefix + "index";
-        String  v_IteratorID = v_Prefix + "iterator";
-        Integer v_OldIndex   = (Integer) io_Context.get(v_IndexID);
-        int     v_Index      = 0;
+        String  v_WorkID      = CallFlow.getWorkID(io_Context);
+        String  v_Prefix      = v_WorkID + "@" + this.getXid() + "@For@";
+        String  v_IndexID     = v_Prefix + "index";
+        String  v_IteratorID  = v_Prefix + "iterator";
+        String  v_ListID      = v_Prefix + "listID";
+        Integer v_ListHashOld = (Integer) io_Context.get(v_ListID);
+        Integer v_OldIndex    = (Integer) io_Context.get(v_IndexID);
+        int     v_Index       = 0;
         
         // 集合循环
         if ( Help.isNull(this.start) )
@@ -773,6 +797,25 @@ public class ForConfig extends ExecuteElement implements Cloneable
             {
                 $Logger.error(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
                 return false;
+            }
+            
+            if ( v_ListHashOld != null )
+            {
+                // 第二次循环时，判定是否还是原来是集合
+                if ( v_ListHashOld.equals(v_End.hashCode()) )
+                {
+                    // Nothing.
+                }
+                // 第二次循环时，以经是新的集合：可能是后面的节点跳出For循环后，重新开始了新的For循环
+                else
+                {
+                    v_OldIndex = null;
+                    io_Context.put(v_ListID ,v_End.hashCode());
+                }
+            }
+            else
+            {
+                io_Context.put(v_ListID ,v_End.hashCode());
             }
             
             // 集合循环： for (end)
