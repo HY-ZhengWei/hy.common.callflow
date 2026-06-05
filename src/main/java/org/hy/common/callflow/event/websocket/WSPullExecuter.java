@@ -105,7 +105,12 @@ public interface WSPullExecuter
         // 处理收到消息
         if ( !Help.isNull(i_WSPullData.getReturnID()) )
         {
-            if ( i_WSPullData.getContentType() == null || WSContentType.Text.equals(i_WSPullData.getContentType()) )
+            Class<?> v_ReturnClass = i_WSPullData.getReturnClass();
+            if ( String.class.equals(v_ReturnClass) )
+            {
+                v_Context.put(i_WSPullData.getReturnID() ,i_Message);
+            }
+            else if ( i_WSPullData.getContentType() == null || WSContentType.Text.equals(i_WSPullData.getContentType()) )
             {
                 v_Context.put(i_WSPullData.getReturnID() ,i_Message);
             }

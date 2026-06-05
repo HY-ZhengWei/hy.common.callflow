@@ -778,7 +778,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         else
         {
             String v_SuperTreeID = $TreeID.getSuperTreeID(i_TreeID);
-            if ( this.treeIDs.getReverse(v_SuperTreeID) != null )
+            if ( !Help.isNull(this.treeIDs.getReverse(v_SuperTreeID)) && !Help.isNull(v_SuperTreeID) )
             {
                 throw new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s SuperTreeID[" + v_SuperTreeID + "] is exists for TreeID[" + i_TreeID + "].");
             }
@@ -1763,6 +1763,11 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
                                  ,String         i_SuperTreeID
                                  ,ExportType     i_ExportType)
     {
+        if ( ExportType.UI.equals(i_ExportType) )
+        {
+            return;
+        }
+        
         if ( !Help.isNull(i_MockItems) )
         {
             String v_Level1   = "    ";
@@ -1771,15 +1776,14 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
             
             for (MockItem v_MockItem : i_MockItems)
             {
-                if ( ExportType.UI.equals(i_ExportType) )
+                if ( Help.isNull(v_MockItem.getXJavaID()) )
                 {
-                    io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBeginThis(i_XmlName ,v_MockItem.getXJavaID()));
+                    io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBegin(i_XmlName));
                 }
                 else
                 {
                     io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toBeginID(i_XmlName ,v_MockItem.getXJavaID()));
                 }
-                
                 io_Xml.append(v_MockItem.toXml(i_Level + 1 ,i_SuperTreeID ,i_ExportType));
                 io_Xml.append(v_NewSpace).append(v_Level1).append(IToXml.toEnd(i_XmlName));
             }

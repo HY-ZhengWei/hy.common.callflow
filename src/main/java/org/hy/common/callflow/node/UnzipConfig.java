@@ -267,6 +267,21 @@ public class UnzipConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
+     * 设置：全局惟一标识ID
+     * 
+     * 自己反射调用自己的实例中的方法
+     * 
+     * @param i_Xid 全局惟一标识ID
+     */
+    public void setXid(String i_Xid)
+    {
+        super.setXid(i_Xid);
+        this.setCallXID(this.getXid());
+    }
+    
+    
+    
+    /**
      * 元素的类型
      * 
      * @author      ZhengWei(HY)
