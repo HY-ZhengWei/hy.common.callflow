@@ -38,6 +38,7 @@ import org.hy.common.xml.log.Logger;
  *              v2.0  2025-09-26  迁移：静态检查
  *              v3.0  2026-06-02  添加：用点拉创建的会话发消息
  *                                添加：上下文返回的我是谁（点拉元素），方便后续元素用“我”来发消息
+ *              v3.1  2026-06-07  添加：关闭会话释放资源
  */
 public class WSPullConfig extends NodeConfig implements NodeConfigBase
 {
@@ -577,6 +578,24 @@ public class WSPullConfig extends NodeConfig implements NodeConfigBase
         else
         {
             return this.wsPullExecuter.sendText(i_Text);
+        }
+    }
+    
+    
+    
+    /**
+     * 关闭会话释放资源
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-06-07
+     * @version     v1.0
+     *
+     */
+    public void close()
+    {
+        if ( this.wsPullExecuter != null )
+        {
+            this.wsPullExecuter.close();
         }
     }
     
