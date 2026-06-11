@@ -25,6 +25,41 @@
         </xreturn>
         
         
+        <xapi id="XAPI_CF038_查询数据">
+            <comment>接口请求</comment>
+            <url>http://openapi/json/</url>                 <!-- 定义接口请求URL地址 -->
+            <succeedFlag>"code": 0</succeedFlag>
+            <returnID>ReturnData</returnID>                 <!-- 定义接口返回结果变量名称 -->
+            <route>
+                <succeed>                                   <!-- 成功时，关联后置节点 -->
+                    <next ref="XReturn_CF038_01" />
+                </succeed>
+            </route>
+            <mock>
+                <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟接口请求成功后返回结果</comment>
+                    <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <data>                                  <!-- Mock模拟成功时的模拟数据 -->
+                    {
+                        "code": 0,
+                        "data": [
+                            {
+                                "id": 10001,
+                                "planCode": "2025-12-11"
+                            },
+                            {
+                                "id": 20002,
+                                "planCode": "2025-12-12"
+                            }
+                        ]
+                    }
+                    </data>
+                </succeed>
+            </mock>
+        </xapi>
+        
+        
         <xreturn id="XReturn_CF038_02">
             <comment>分支结果02</comment>
             <retValue>
@@ -113,7 +148,7 @@
             </conditionItem>
             <route>
                 <if>                                        <!-- 真时的分支路由01 -->
-                    <next ref="XReturn_CF038_01" />
+                    <next ref="XAPI_CF038_查询数据" />
                     <comment>分支路由01</comment>
                 </if>
                 <if>                                        <!-- 真时的分支路由02 -->

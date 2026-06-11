@@ -28,7 +28,7 @@ public class MockConfig
     private static final Logger $Logger = new Logger(MockConfig.class);
     
     /** 模拟执行用时的等待时长（单位：毫秒）*/
-    public static final String $DefWaitTime = "5000";
+    public static final String $DefWaitTime = "1000";
     
     
     

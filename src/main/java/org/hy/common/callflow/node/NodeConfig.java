@@ -53,6 +53,7 @@ import org.hy.common.xml.plugins.XSQLGroup;
  *              v6.0  2025-10-20  修正：先handleContext()解析上下文内容。如在toString()之后解析，可用无法在toString()中获取上下文中的内容。
  *              v7.0  2025-11-18  添加：编排续跑
  *              v8.0  2025-12-08  添加：在XJava对象池中未询找到对象实例时，可尝试从上下文中获取
+ *              v9.0  2026-06-11  添加：执行成功后的等待时长（单位：毫秒）
  */
 public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Cloneable
 {
@@ -82,6 +83,9 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
     /** 执行方法返回False或null时表示出现异常。默认为：false */
     protected boolean                       retFalseIsError;
     
+    /** 执行成功后的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    protected String                        waitTimeAfter;
+    
     
     
     public NodeConfig()
@@ -105,6 +109,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         super(i_RequestTotal ,i_SuccessTotal);
         this.isInit          = false;
         this.timeout         = "0";
+        this.waitTimeAfter   = "0";
         this.retFalseIsError = false;
     }
     
@@ -375,7 +380,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                     if ( v_ExceRet.getParamObj() == null )
                     {
                         // Add 2025-09-25 执行方法返回null时表示出现异常
-                        throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s execute logic[NULL] error.");
+                        throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s execute return[NULL] error.");
                     }
                     else if ( v_ExceRet.getParamObj() instanceof Boolean )
                     {
@@ -387,7 +392,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
                         else
                         {
                             // Add 2025-09-25 执行方法返回False时表示出现异常
-                            throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s execute logic[False] error.");
+                            throw new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s execute return[False] error.");
                         }
                     }
                     else
@@ -403,6 +408,22 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             else
             {
                 throw v_ExceRet.getException();
+            }
+            
+            // 执行成功后的等待时长
+            Long v_WaitTimeAfter = null;
+            if ( Help.isNumber(this.waitTimeAfter) )
+            {
+                v_WaitTimeAfter = Long.valueOf(this.waitTimeAfter);
+            }
+            else
+            {
+                v_WaitTimeAfter = (Long) ValueHelp.getValue(this.waitTimeAfter ,Long.class ,0L ,io_Context);
+            }
+            
+            if ( v_WaitTimeAfter > 0 )
+            {
+                Thread.sleep(v_WaitTimeAfter ,0);
             }
             
             this.refreshReturn(io_Context ,v_Result.getResult());
@@ -1036,6 +1057,49 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
+    
+    
+    /**
+     * 获取：执行成功后的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public String getWaitTimeAfter()
+    {
+        return waitTimeAfter;
+    }
+
+    
+    /**
+     * 设置：执行成功后的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 
+     * @param i_WaitTimeAfter 执行成功后的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     */
+    public void setWaitTimeAfter(String i_WaitTimeAfter)
+    {
+        if ( Help.isNull(i_WaitTimeAfter) )
+        {
+            NullPointerException v_Exce = new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTimeAfter is null.");
+            $Logger.error(v_Exce);
+            throw v_Exce;
+        }
+        
+        if ( Help.isNumber(i_WaitTimeAfter) )
+        {
+            Long v_WaitTime = Long.valueOf(i_WaitTimeAfter);
+            if ( v_WaitTime < 0L )
+            {
+                IllegalArgumentException v_Exce = new IllegalArgumentException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s WaitTimeAfter Less than zero.");
+                $Logger.error(v_Exce);
+                throw v_Exce;
+            }
+            this.waitTimeAfter = i_WaitTimeAfter.trim();
+        }
+        else
+        {
+            this.waitTimeAfter = ValueHelp.standardRefID(i_WaitTimeAfter);
+        }
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
 
 
     /**
@@ -1168,6 +1232,10 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
             if ( !Help.isNull(this.statusID) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("statusID" ,this.statusID));
+            }
+            if ( !Help.isNull(this.waitTimeAfter) && !"0".equals(this.waitTimeAfter) )
+            {
+                v_Xml.append(v_NewSpace).append(IToXml.toValue("waitTimeAfter" ,this.waitTimeAfter));
             }
             if ( !Help.isNull(this.route.getSucceeds()) 
               || !Help.isNull(this.route.getExceptions()) )
@@ -1408,6 +1476,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         v_Clone.callXID         = this.callXID;
         v_Clone.callMethod      = this.callMethod; 
         v_Clone.timeout         = this.timeout;
+        v_Clone.waitTimeAfter   = this.waitTimeAfter;
         v_Clone.retFalseIsError = this.retFalseIsError;
         
         if ( !Help.isNull(this.callParams) )
@@ -1453,6 +1522,7 @@ public class NodeConfig extends ExecuteElement implements NodeConfigBase ,Clonea
         v_Clone.callXID         = this.callXID;
         v_Clone.callMethod      = this.callMethod; 
         v_Clone.timeout         = this.timeout;
+        v_Clone.waitTimeAfter   = this.waitTimeAfter;
         v_Clone.retFalseIsError = this.retFalseIsError;
         
         if ( !Help.isNull(this.callParams) )

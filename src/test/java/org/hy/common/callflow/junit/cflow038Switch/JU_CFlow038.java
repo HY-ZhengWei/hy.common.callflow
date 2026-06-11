@@ -65,6 +65,8 @@ public class JU_CFlow038 extends JUBase
         ForConfig           v_For     = (ForConfig) XJava.getObject("XFox_CF038_遍历数据");
         Map<String ,Object> v_Context = new HashMap<String ,Object>();
         
+        v_Context.put("MockSucceed" ,true);
+        
         // 执行前的静态检查（关键属性未变时，check方法内部为快速检查）
         Return<Object> v_CheckRet = CallFlow.getHelpCheck().check(v_For);
         if ( !v_CheckRet.get() )
