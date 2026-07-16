@@ -13,6 +13,7 @@ import org.hy.common.StringHelp;
 import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.cache.CacheGetConfig;
 import org.hy.common.callflow.cache.CacheSetConfig;
+import org.hy.common.callflow.common.CallFlowImports;
 import org.hy.common.callflow.enums.ElementType;
 import org.hy.common.callflow.enums.ExportType;
 import org.hy.common.callflow.enums.RouteType;
@@ -29,6 +30,7 @@ import org.hy.common.callflow.language.GroovyConfig;
 import org.hy.common.callflow.language.JavaConfig;
 import org.hy.common.callflow.language.PythonConfig;
 import org.hy.common.callflow.language.ShellConfig;
+import org.hy.common.callflow.minio.MinioConfig;
 import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
 import org.hy.common.callflow.node.APIConfig;
@@ -48,6 +50,7 @@ import org.hy.common.callflow.safe.EncryptFileConfig;
 import org.hy.common.file.FileHelp;
 import org.hy.common.license.Hash;
 import org.hy.common.license.IHash;
+import org.hy.common.xml.XJavaImport.Import;
 
 
 
@@ -103,6 +106,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.EncryptFile.getXmlName() ,EncryptFileConfig.class);
         getInstance().addImportHead(ElementType.DecryptFile.getXmlName() ,DecryptFileConfig.class);
         getInstance().addImportHead(ElementType.Ftp        .getXmlName() ,FtpConfig.class);
+        getInstance().addImportHead(ElementType.Minio      .getXmlName() ,MinioConfig.class);
         getInstance().addImportHead(ElementType.Publish    .getXmlName() ,PublishConfig.class);
         getInstance().addImportHead(ElementType.Subscribe  .getXmlName() ,SubscribeConfig.class);
         getInstance().addImportHead(ElementType.WSPush     .getXmlName() ,WSPushConfig.class);
@@ -158,6 +162,7 @@ public class ExportXml
     public void addImportHead(String i_XmlImportName ,Class<?> i_XmlClass)
     {
         $ImportHeads.put(i_XmlImportName ,i_XmlClass.getName());
+        CallFlowImports.$Imports.add(new Import(i_XmlImportName ,i_XmlClass.getName()));
     }
     
     

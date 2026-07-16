@@ -68,9 +68,11 @@ public enum ElementType
     
     Shell(      "SHELL"       ,"xshell"     ,"脚本元素"),
     
-    Native(     "Native"      ,"xnative"    ,"实时元素"),
+    Native(     "Native"      ,"xnative"    ,"原生元素"),
     
     Ftp(        "FTP"         ,"xftp"       ,"文传元素"),
+    
+    Minio(      "MINIO"       ,"xminio"     ,"存对元素"),
                               
     SelfLoop(   "SELFLOOP"    ,""           ,"自循环"),
                               

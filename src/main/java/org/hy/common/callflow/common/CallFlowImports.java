@@ -2,7 +2,6 @@ package org.hy.common.callflow.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.hy.common.callflow.file.ExportXml;
 import org.hy.common.xml.XJavaImport;
@@ -27,10 +26,7 @@ public class CallFlowImports implements XJavaImport
     
     static 
     {
-        for (Map.Entry<String, String> v_Item : ExportXml.getImportHeads().entrySet())
-        {
-            $Imports.add(new Import(v_Item.getKey() ,v_Item.getValue()));
-        }
+        ExportXml.getInstance();
     }
     
     

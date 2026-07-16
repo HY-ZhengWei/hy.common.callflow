@@ -52,6 +52,7 @@
     * [酷语元素的举例](#酷语元素的举例)
     * [脚本元素的举例](#脚本元素的举例)
     * [文传元素的举例](#文传元素的举例)
+    * [存对元素的举例](#存对元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -94,7 +95,7 @@
         
         1.9.  定时元素，定时的周期性的驱动编排执行。
         
-    2. 15种高级元素。
+    2. 16种高级元素。
         
         2.1.  CG缓存读元素，读取Redis远程缓存或XJava本地缓存，反序列化转对象，支持库、表、行关系。
         
@@ -112,19 +113,21 @@
         
         2.8.  FTP文传元素，上传下载文件和目录。如果是目录将上传或下载它中所有文件。
         
-        2.9.  SQL库元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
+        2.9.  Minio存对元素，上传下载文件和目录、分享文件。如果是目录将上传或下载它中所有文件。
         
-        2.10. CQL图谱元素，衍生于执行元素， 图数据库的查询、插入、更新、删除、DDL、DML等操作。
+        2.10. SQL库元素，衍生于执行元素，数据库CRUD、DDL、DML、XSQL组等操作。
         
-        2.11. API接口元素，衍生于执行元素，用于API接口请求访问。
+        2.11. CQL图谱元素，衍生于执行元素， 图数据库的查询、插入、更新、删除、DDL、DML等操作。
         
-        2.12. ZIP压缩元素，衍生于执行元素，文件、文件流、多个文件或目录压缩成一个压缩包。
+        2.12. API接口元素，衍生于执行元素，用于API接口请求访问。
         
-        2.13. DEC解压元素，衍生于执行元素，压缩包解压。
+        2.13. ZIP压缩元素，衍生于执行元素，文件、文件流、多个文件或目录压缩成一个压缩包。
         
-        2.14. ENF密文元素，衍生于执行元素，对文件或文件流的加密存储。密钥可由MD5自动生成。
+        2.14. DEC解压元素，衍生于执行元素，压缩包解压。
         
-        2.15. DEF解文元素，衍生于执行元素，对加密文件的解密。
+        2.15. ENF密文元素，衍生于执行元素，对文件或文件流的加密存储。密钥可由MD5自动生成。
+        
+        2.16. DEF解文元素，衍生于执行元素，对加密文件的解密。
         
     3. 8种拓展元素。
     
@@ -4866,6 +4869,150 @@ Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_Ftp ,v_Context);
+```
+
+
+
+
+
+存对元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow047Minio) [返回目录](#目录)
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow047Minio/JU_CFlow039.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xcallFlow"   class="org.hy.common.callflow.common.CallFlowImports" />
+    <import name="minioClient" class="io.minio.MinioClient" />
+    <import name="minioHelp"   class="org.hy.common.minio.MinioHelp" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：Minio存对元素 -->
+    <xconfig>
+    
+        <minioClient id="XMinioClient">
+            <builder>
+                <endpoint>
+                    <String>http://127.0.0.1:8888</String> <!-- Minio服务的地址 -->
+                </endpoint>
+                <credentials>
+                    <String>AccessKey</String>             <!-- Minio服务的AccessKey -->
+                    <String>SecretKey</String>             <!-- Minio服务的SecretKey -->
+                </credentials>
+                <region>us-west-1</region>
+            </builder>
+        </minioClient>
+        
+        
+        <minioHelp id="XMinioHelp">
+            <constructor>
+                <minio ref="XMinioClient" />               <!-- Minio客户端对象 -->
+                <String>cflow</String>                     <!-- 桶名称的前缀 -->
+            </constructor>
+        </minioHelp>
+        
+        
+        
+        <xminio id="XMinio_CF047_下载目录">
+            <comment>下载目录</comment>
+            <minioXID>:XMinioHelp</minioXID>               <!-- Minio辅助对象XID -->
+            <userID>:UserID</userID>
+            <downFile type="textarea">
+                Maven/ , D:/minioRoot/
+            </downFile>                                    <!-- 多个文件间用换行分隔，每行用英文逗号分隔远程下载文件和本地目录 -->
+                                                           <!-- 本地目录不存时，自动创建。目录必须以/结尾表示，否则表示文件 -->
+        </xminio>
+        
+    
+        <xminio id="XMinio_CF047_下载文件">
+            <comment>下载一个文件</comment>
+            <initXID>:XMinio_CF047_下载目录</initXID>        <!-- 用参考对象配置连接信息 -->
+            <downFile type="textarea">
+                Tools/Install_USB_Win11_11017_20_12302024_02062025.zip , D:/minioRoot/
+            </downFile>                                    <!-- 多个文件间用换行分隔，每行用英文逗号分隔远程下载文件和本地目录 -->
+                                                           <!-- 本地目录不存时，自动创建。目录必须以/结尾表示，否则表示文件 -->
+            <route>
+                <succeed>
+                    <next ref="XMinio_CF047_下载目录" />
+                </succeed>
+            </route>
+        </xminio>
+        
+    
+        <xminio id="XMinio_CF047_上传目录">
+            <comment>上传目录</comment>
+            <initXID>:XMinio_CF047_下载目录</initXID>        <!-- 用参考对象配置连接信息 -->
+            <upFile type="textarea">
+                D:/Maven/org/hy.common.callflow , Maven/
+            </upFile>                                      <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
+            <route>
+                <succeed>
+                    <next ref="XMinio_CF047_下载文件" />
+                </succeed>
+            </route>
+        </xminio>
+        
+        
+        <xminio id="XMinio_CF047_分享文件">
+            <comment>上传一个文件</comment>
+            <initXID>:XMinio_CF047_下载目录</initXID>          <!-- 用参考对象配置连接信息 -->
+            <shareFile type="textarea">
+                Tools/Install_USB_Win11_11017_20_12302024_02062025.zip , 2D
+                申公豹：人心中的成见是一座大山，任你怎么努力都休想搬运.mp4
+            </shareFile>                                     <!-- 多个文件间用换行分隔，每行用英文逗号分隔Minio分享文件和过期时长及时间类型（D天\H时\M分） -->
+                                                             <!-- 不明确给出过期时长，默认为1D，即一天 -->
+            <route>
+                <succeed>
+                    <next ref="XMinio_CF047_上传目录" />
+                </succeed>
+            </route>
+        </xminio>
+        
+    
+        <xminio id="XMinio_CF047_上传文件">
+            <comment>上传一个文件</comment>
+            <initXID>:XMinio_CF047_下载目录</initXID>          <!-- 用参考对象配置连接信息 -->
+            <upFile type="textarea">
+                D:/迅雷下载/Install_USB_Win11_11017_20_12302024_02062025.zip , Tools/
+                D:/迅雷下载/申公豹：人心中的成见是一座大山，任你怎么努力都休想搬运.mp4
+            </upFile>                                        <!-- 多个文件间用换行分隔，每行用英文逗号分隔本地上传文件和远程目录 -->
+            <route>
+                <succeed>
+                    <next ref="XMinio_CF047_分享文件" />
+                </succeed>
+            </route>
+        </xminio>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+MinioConfig         v_Minio   = (MinioConfig) XJava.getObject("XMinio_CF047_上传文件");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+v_Context.put("UserID" ,"60091");
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Minio ,v_Context);
 ```
 
 
