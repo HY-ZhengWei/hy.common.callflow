@@ -14,11 +14,11 @@
         <minioClient id="XMinioClient">
             <builder>
                 <endpoint>
-                    <String>http://10.0.2.13:8888</String> <!-- Minio服务的地址 -->
+                    <String>http://127.0.0.1:8888</String> <!-- Minio服务的地址 -->
                 </endpoint>
                 <credentials>
-                    <String>lps</String>                   <!-- Minio服务的AccessKey -->
-                    <String>sys!@#user</String>            <!-- Minio服务的SecretKey -->
+                    <String>AccessKey</String>             <!-- Minio服务的AccessKey -->
+                    <String>SecretKey</String>             <!-- Minio服务的SecretKey -->
                 </credentials>
                 <region>us-west-1</region>
             </builder>
@@ -28,7 +28,7 @@
         <minioHelp id="XMinioHelp">
             <constructor>
                 <minio ref="XMinioClient" />               <!-- Minio客户端对象 -->
-                <String>lps-ms</String>                    <!-- 桶名称的前缀 -->
+                <String>cflow</String>                     <!-- 桶名称的前缀 -->
             </constructor>
         </minioHelp>
         

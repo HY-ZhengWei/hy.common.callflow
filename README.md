@@ -4971,6 +4971,8 @@ __编排配置__
                 申公豹：人心中的成见是一座大山，任你怎么努力都休想搬运.mp4
             </shareFile>                                     <!-- 多个文件间用换行分隔，每行用英文逗号分隔Minio分享文件和过期时长及时间类型（D天\H时\M分） -->
                                                              <!-- 不明确给出过期时长，默认为1D，即一天 -->
+            <shareUrlReplace>http://127.0.0.1:8080</shareUrlReplace>
+            <shareUrlReplaceBy>https://www.openapis.cn</shareUrlReplaceBy>
             <route>
                 <succeed>
                     <next ref="XMinio_CF047_上传目录" />
