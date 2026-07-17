@@ -4906,8 +4906,8 @@ __编排配置__
                     <String>http://127.0.0.1:8888</String> <!-- Minio服务的地址 -->
                 </endpoint>
                 <credentials>
-                    <String>AccessKey</String>             <!-- Minio服务的AccessKey -->
-                    <String>SecretKey</String>             <!-- Minio服务的SecretKey -->
+                    <String encrypt="org.hy.common.StringHelp">AccessKey</String> <!-- Minio服务的AccessKey -->
+                    <String encrypt="org.hy.common.StringHelp">SecretKey</String> <!-- Minio服务的SecretKey -->
                 </credentials>
                 <region>us-west-1</region>
             </builder>
