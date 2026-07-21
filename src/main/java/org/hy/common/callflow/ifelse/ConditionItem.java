@@ -31,6 +31,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-12
  * @version     v1.0
  *              v2.0  2025-08-16  添加：按导出类型生成三种XML内容
+ *              v3.0  2026-07-21  修正：逻辑类型A值为NULL，B值没有配置时，日志表达式显示逻辑错误。
  */
 public class ConditionItem implements IfElse ,XJavaID
 {
@@ -574,14 +575,14 @@ public class ConditionItem implements IfElse ,XJavaID
                 {
                     v_Builder.append(this.comparer.getValue());
                     
-                    if ( Boolean.class.equals(v_VClass) )
-                    {
-                        v_Builder.append(" TRUE");
-                    }
-                    else if ( v_ValueA == null )
+                    if ( v_ValueA == null )
                     {
                         // 等于NULL
                         v_Builder.append(" NULL");
+                    }
+                    else if ( Boolean.class.equals(v_VClass) )
+                    {
+                        v_Builder.append(" TRUE");
                     }
                     else
                     {
@@ -592,14 +593,14 @@ public class ConditionItem implements IfElse ,XJavaID
                 {
                     v_Builder.append(this.comparer.getValue());
                     
-                    if ( Boolean.class.equals(v_VClass) )
-                    {
-                        v_Builder.append(" TRUE");
-                    }
-                    else if ( v_ValueA == null )
+                    if ( v_ValueA == null )
                     {
                         // 不等于NULL
                         v_Builder.append(" NULL");
+                    }
+                    else if ( Boolean.class.equals(v_VClass) )
+                    {
+                        v_Builder.append(" TRUE");
                     }
                     else
                     {
