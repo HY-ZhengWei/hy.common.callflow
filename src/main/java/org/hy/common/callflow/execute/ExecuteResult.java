@@ -24,6 +24,7 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-02-15
  * @version     v1.0
  *              v2.0  2025-11-18  添加：用户标记的编排续跑的类型
+ *              v3.0  2026-07-22  修正：执行链设置前一个执行者的问题：已有一个，前一个为空，暂不做报处理。发生于嵌套被定时任务触发执行时
  */
 public class ExecuteResult implements ITreeID
 {
@@ -302,6 +303,11 @@ public class ExecuteResult implements ITreeID
             {
                 if ( this.success || this.exception != null )
                 {
+                    if( i_Previous == null )
+                    {
+                        // 2026-07-22 Add 已有一个，前一个为空，暂不做报处理。发生于嵌套被定时任务触发执行时
+                        return this;
+                    }
                     IllegalArgumentException v_Exce = new IllegalArgumentException("The setPrevious method of A can only be called once.");
                     $Logger.error(v_Exce);
                     throw v_Exce;
