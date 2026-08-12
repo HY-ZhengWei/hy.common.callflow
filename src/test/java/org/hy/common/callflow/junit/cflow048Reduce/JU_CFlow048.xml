@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：Reduce归纳元素 -->
+    <xconfig>
+        
+        <xreduce id="XReduce_CF048_全部BList_归纳">
+            <idSuffix>B</idSuffix>
+            <bigType>2</bigType>
+            <returnID>RetAllB</returnID>
+        </xreduce>
+        
+    
+        <xreduce id="XReduce_CF048_全部B_归纳">
+            <idSuffix>B</idSuffix>
+            <returnID>RetAllB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_全部BList_归纳" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+    
+        <xreduce id="XReduce_CF048_全部A_归纳">
+            <idPrefix>Ret</idPrefix>
+            <idSuffix>A</idSuffix>     <!-- 要归纳的集合变量ID的后缀符合条件的要求。不要写占位符:冒号。区分大小写 -->
+            <returnID>RetAllA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_全部B_归纳" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+    
+        <xreduce id="XReduce_CF048_全部_归纳">
+            <idPrefix>Ret</idPrefix>   <!-- 要归纳的集合变量ID的前缀符合条件的要求。不要写占位符:冒号。区分大小写 -->
+            <bigType>1</bigType>       <!-- 归纳类型（1:Map；2:List；3:Set；4:Array；-1:自动识别） -->
+            <returnID>RetAll</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_全部A_归纳" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        
+        <xreduce id="XReduce_CF048_Array_归纳">
+            <ids>
+                :RetArrayA 
+               ,:RetArrayB
+               ,:RetC
+            </ids>
+            <returnID>RetABC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_全部_归纳" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        
+        <xnode id="XNode_CF048_Array_B">
+            <comment>获取数据B</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasArrayB</callMethod>
+            <returnID>RetArrayB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_Array_归纳" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xnode id="XNode_CF048_Array_A">
+            <comment>获取数据A</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasArrayA</callMethod>
+            <returnID>RetArrayA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Array_B" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xreduce id="XReduce_CF048_Set_归纳">
+            <ids>
+                :RetSetA 
+               ,:RetSetB
+               ,:RetC
+            </ids>
+            <returnID>RetABC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Array_A" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        
+        <xnode id="XNode_CF048_Set_B">
+            <comment>获取数据B</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasSetB</callMethod>
+            <returnID>RetSetB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_Set_归纳" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xnode id="XNode_CF048_Set_A">
+            <comment>获取数据A</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasSetA</callMethod>
+            <returnID>RetSetA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Set_B" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xreduce id="XReduce_CF048_List_归纳">
+            <ids>
+                :RetListA 
+               ,:RetListB
+               ,:RetC
+            </ids>
+            <returnID>RetABC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Set_A" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        
+        <xnode id="XNode_CF048_List_B">
+            <comment>获取数据B</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasListB</callMethod>
+            <returnID>RetListB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_List_归纳" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xnode id="XNode_CF048_List_A">
+            <comment>获取数据A</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasListA</callMethod>
+            <returnID>RetListA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_List_B" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    
+        <xreduce id="XReduce_CF048_Map_归纳">
+            <ids>                      <!-- 要归纳的集合变量ID。多个ID间用英文逗号分隔，将每变量ID前要用占位符:冒号。区分大小写 -->
+                :RetMapA 
+               ,:RetMapB
+               ,:RetC
+            </ids>
+            <returnID>RetABC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_List_A" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        
+        <xnode id="XNode_CF048_Map_C">
+            <comment>获取数据BA</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>dataObject</callMethod>
+            <returnID>RetC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_Map_归纳" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF048_Map_B">
+            <comment>获取数据BA</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasMapB</callMethod>
+            <returnID>RetMapB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Map_C" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        
+        <xnode id="XNode_CF048_Map_A">
+            <comment>获取数据A</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasMapA</callMethod>
+            <returnID>RetMapA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Map_B" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>

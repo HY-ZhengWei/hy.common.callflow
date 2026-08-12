@@ -73,6 +73,8 @@ public enum ElementType
     Ftp(        "FTP"         ,"xftp"       ,"文传元素"),
     
     Minio(      "MINIO"       ,"xminio"     ,"存对元素"),
+    
+    Reduce(     "REDUCE"      ,"xreduce"    ,"归纳元素"),
                               
     SelfLoop(   "SELFLOOP"    ,""           ,"自循环"),
                               

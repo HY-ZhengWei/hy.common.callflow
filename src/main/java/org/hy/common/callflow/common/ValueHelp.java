@@ -144,7 +144,7 @@ public class ValueHelp
     {
         if ( !Help.isNull(i_ValueID) )
         {
-            String v_ValueID = i_ValueID.trim();
+            String v_ValueID = StringHelp.replaceAll(i_ValueID ,StringHelp.$ReplaceControl ,StringHelp.$ReplaceNil) .trim();
             if ( v_ValueID.equals(DBSQL.$Placeholder) )
             {
                 throw new IllegalArgumentException("ValueID[" + i_ValueID + "] is error.");

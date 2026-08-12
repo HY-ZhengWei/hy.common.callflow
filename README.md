@@ -53,6 +53,7 @@
     * [脚本元素的举例](#脚本元素的举例)
     * [文传元素的举例](#文传元素的举例)
     * [存对元素的举例](#存对元素的举例)
+    * [归纳元素的举例](#归纳元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -69,7 +70,7 @@
     4. 自动化执行：只需输入数据，引擎自动执行流程并返回结果，实现“输入->执行->输出”的闭环。
     
     5. 嵌入式：编排引擎将直接嵌入业务服务中运行。
-    
+
 
 
 概要说明
@@ -129,7 +130,7 @@
         
         2.16. DEF解文元素，衍生于执行元素，对加密文件的解密。
         
-    3. 10种拓展元素。
+    3. 11种拓展元素。
     
         3.1.  IOTG读元素，衍生于执行元素，用于读取PLC数据。依赖于PLC微服务。
         
@@ -150,6 +151,8 @@
         3.9.  SMS短信元素，衍生于接口元素，向用户手机发送短信。依赖于msMessage微服务。
         
         3.10. WX微信元素，衍生于接口元素，向微信服务号的用户发送模板消息。依赖于msMessage、msToken微服务。
+        
+        3.11. MR归纳元素，衍生于执行元素，将多个小集合或对象归纳成一个大集合。
 
     4. 2种隐性路由。
 
@@ -5016,6 +5019,252 @@ MinioConfig         v_Minio   = (MinioConfig) XJava.getObject("XMinio_CF047_上�
 // 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
 Map<String ,Object> v_Context = new HashMap<String ,Object>();
 v_Context.put("UserID" ,"60091");
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_Minio ,v_Context);
+```
+
+
+
+
+存对元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow048Reduce) [返回目录](#目录)
+
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：Reduce归纳元素 -->
+    <xconfig>
+        
+        <xreduce id="XReduce_CF048_全部BList_归纳">
+            <idSuffix>B</idSuffix>
+            <bigType>2</bigType>
+            <returnID>RetAllB</returnID>
+        </xreduce>
+    
+        <xreduce id="XReduce_CF048_全部B_归纳">
+            <idSuffix>B</idSuffix>
+            <returnID>RetAllB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_全部BList_归纳" />
+                </succeed>
+            </route>
+        </xreduce>
+    
+        <xreduce id="XReduce_CF048_全部A_归纳">
+            <idPrefix>Ret</idPrefix>
+            <idSuffix>A</idSuffix>     <!-- 要归纳的集合变量ID的后缀符合条件的要求。不要写占位符:冒号。区分大小写 -->
+            <returnID>RetAllA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_全部B_归纳" />
+                </succeed>
+            </route>
+        </xreduce>
+    
+        <xreduce id="XReduce_CF048_全部_归纳">
+            <idPrefix>Ret</idPrefix>   <!-- 要归纳的集合变量ID的前缀符合条件的要求。不要写占位符:冒号。区分大小写 -->
+            <bigType>1</bigType>       <!-- 归纳类型（1:Map；2:List；3:Set；4:Array；-1:自动识别） -->
+            <returnID>RetAll</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_全部A_归纳" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        <xreduce id="XReduce_CF048_Array_归纳">
+            <ids>
+                :RetArrayA 
+               ,:RetArrayB
+               ,:RetC
+            </ids>
+            <returnID>RetABC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_全部_归纳" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        <xnode id="XNode_CF048_Array_B">
+            <comment>获取数据B</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasArrayB</callMethod>
+            <returnID>RetArrayB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_Array_归纳" />
+                </succeed>
+            </route>
+        </xnode>
+    
+        <xnode id="XNode_CF048_Array_A">
+            <comment>获取数据A</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasArrayA</callMethod>
+            <returnID>RetArrayA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Array_B" />
+                </succeed>
+            </route>
+        </xnode>
+    
+        <xreduce id="XReduce_CF048_Set_归纳">
+            <ids>
+                :RetSetA 
+               ,:RetSetB
+               ,:RetC
+            </ids>
+            <returnID>RetABC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Array_A" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        <xnode id="XNode_CF048_Set_B">
+            <comment>获取数据B</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasSetB</callMethod>
+            <returnID>RetSetB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_Set_归纳" />
+                </succeed>
+            </route>
+        </xnode>
+    
+        <xnode id="XNode_CF048_Set_A">
+            <comment>获取数据A</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasSetA</callMethod>
+            <returnID>RetSetA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Set_B" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        <xreduce id="XReduce_CF048_List_归纳">
+            <ids>
+                :RetListA 
+               ,:RetListB
+               ,:RetC
+            </ids>
+            <returnID>RetABC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Set_A" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        <xnode id="XNode_CF048_List_B">
+            <comment>获取数据B</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasListB</callMethod>
+            <returnID>RetListB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_List_归纳" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        <xnode id="XNode_CF048_List_A">
+            <comment>获取数据A</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasListA</callMethod>
+            <returnID>RetListA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_List_B" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        <xreduce id="XReduce_CF048_Map_归纳">
+            <ids>                      <!-- 要归纳的集合变量ID。多个ID间用英文逗号分隔，将每变量ID前要用占位符:冒号。区分大小写 -->
+                :RetMapA 
+               ,:RetMapB
+               ,:RetC
+            </ids>
+            <returnID>RetABC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_List_A" />
+                </succeed>
+            </route>
+        </xreduce>
+        
+        <xnode id="XNode_CF048_Map_C">
+            <comment>获取数据BA</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>dataObject</callMethod>
+            <returnID>RetC</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XReduce_CF048_Map_归纳" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        <xnode id="XNode_CF048_Map_B">
+            <comment>获取数据BA</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasMapB</callMethod>
+            <returnID>RetMapB</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Map_C" />
+                </succeed>
+            </route>
+        </xnode>
+        
+        <xnode id="XNode_CF048_Map_A">
+            <comment>获取数据A</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>datasMapA</callMethod>
+            <returnID>RetMapA</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XNode_CF048_Map_B" />
+                </succeed>
+            </route>
+        </xnode>
+        
+    </xconfig>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+NodeConfig         v_Node     = (NodeConfig) XJava.getObject("XNode_CF048_Map_A");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_Minio ,v_Context);

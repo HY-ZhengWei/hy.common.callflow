@@ -37,6 +37,7 @@ import org.hy.common.callflow.node.APIConfig;
 import org.hy.common.callflow.node.CalculateConfig;
 import org.hy.common.callflow.node.CommandConfig;
 import org.hy.common.callflow.node.NodeConfig;
+import org.hy.common.callflow.node.ReduceConfig;
 import org.hy.common.callflow.node.UnzipConfig;
 import org.hy.common.callflow.node.WaitConfig;
 import org.hy.common.callflow.node.XCQLConfig;
@@ -98,6 +99,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.XCQL       .getXmlName() ,XCQLConfig.class);
         getInstance().addImportHead(ElementType.Zip        .getXmlName() ,ZipConfig.class);
         getInstance().addImportHead(ElementType.Unzip      .getXmlName() ,UnzipConfig.class);
+        getInstance().addImportHead(ElementType.Reduce     .getXmlName() ,ReduceConfig.class);
         getInstance().addImportHead(ElementType.Command    .getXmlName() ,CommandConfig.class);
         getInstance().addImportHead(ElementType.Java       .getXmlName() ,JavaConfig.class);
         getInstance().addImportHead(ElementType.Python     .getXmlName() ,PythonConfig.class);
