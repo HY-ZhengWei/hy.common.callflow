@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="milvuses"      class="java.util.ArrayList" />
+    <import name="milvusConfig"  class="io.milvus.v2.client.ConnectConfig" />
+    <import name="milvusClient"  class="io.milvus.v2.client.MilvusClientV2" />
+    <import name="milvusHelp"    class="org.hy.common.milvus.MilvusHelp" />
+
+
+
+    <milvuses>
+    
+        <milvusConfig id="MilvusConfig">
+            <builder>
+                <uri>http://127.0.0.1:19530</uri>
+                <username encrypt="org.hy.common.StringHelp">root</username>
+                <password encrypt="org.hy.common.StringHelp">密码</password>
+                <dbName>Common</dbName>
+                <rpcDeadlineMs>15000</rpcDeadlineMs>
+            </builder>
+        </milvusConfig>
+        
+        
+        <milvusClient id="MilvusClient">
+            <constructor>
+                <milvusConfig ref="MilvusConfig" />
+            </constructor>
+        </milvusClient>
+        
+        
+        <milvusHelp id="Milvus">
+            <milvus ref="MilvusClient" />
+            <timeout>60000</timeout>      <!-- 超时时长 60 秒 -->
+        </milvusHelp>
+        
+    </milvuses>
+    
+</config>

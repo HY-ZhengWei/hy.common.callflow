@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xmilvuses" class="java.util.ArrayList" />
+    <import name="xmilvus"   class="org.hy.common.callflow.milvus.XMilvus" />
+
+
+
+    <xmilvuses>
+    
+        <xmilvus id="XMilvusDB_Create_BookInfo">
+            <comment>创建向量库集合：图书信息表</comment>
+            <milvus ref="Milvus" />
+            <type>Create</type>
+            <content>
+            {
+              "collection_name": "TBookInfo",
+              "description": "图书信息表",
+              "fields": [
+                {
+                  "name": "id",
+                  "data_type": 5,
+                  "description": "",
+                  "is_primary_key": true,
+                  "autoID": false,
+                  "is_partition_key": false,
+                  "nullable": false,
+                  "indexes": [
+                    {
+                      "index_name": "IDX_BookInfo_ID",
+                      "index_type": "AUTOINDEX",
+                      "indexParameterPairs": [
+                        {
+                          "key": "index_type",
+                          "value": "AUTOINDEX"
+                        },
+                        {
+                          "key": "mmap.enabled",
+                          "value": "false"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "bookName",
+                  "data_type": 21,
+                  "description": "图书名称",
+                  "is_primary_key": false,
+                  "is_partition_key": false,
+                  "nullable": false,
+                  "max_length": 200,
+                  "enable_analyzer": true,
+                  "analyzer_params": {
+                    "type": "chinese"
+                  },
+                  "enable_match": true,
+                  "indexes": [
+                    {
+                      "index_name": "IDX_BookInfo_BookName",
+                      "index_type": "AUTOINDEX",
+                      "indexParameterPairs": [
+                        {
+                          "key": "index_type",
+                          "value": "AUTOINDEX"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "bookVector",
+                  "data_type": 101,
+                  "description": "图书内容的向量",
+                  "is_primary_key": false,
+                  "is_partition_key": false,
+                  "nullable": false,
+                  "dim": 2,
+                  "indexes": [
+                    {
+                      "index_name": "IDX_BookInfo_BookVector",
+                      "index_type": "AUTOINDEX",
+                      "metric_type": "COSINE",
+                      "indexParameterPairs": [
+                        {
+                          "key": "index_type",
+                          "value": "AUTOINDEX"
+                        },
+                        {
+                          "key": "metric_type",
+                          "value": "COSINE"
+                        },
+                        {
+                          "key": "mmap.enabled",
+                          "value": "false"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "titleVector",
+                  "data_type": 101,
+                  "description": "图书标题的向量",
+                  "is_primary_key": false,
+                  "is_partition_key": false,
+                  "nullable": false,
+                  "dim": 4,
+                  "indexes": [
+                    {
+                      "index_name": "IDX_BookInfo_TitleVector",
+                      "index_type": "AUTOINDEX",
+                      "metric_type": "COSINE",
+                      "indexParameterPairs": [
+                        {
+                          "key": "index_type",
+                          "value": "AUTOINDEX"
+                        },
+                        {
+                          "key": "metric_type",
+                          "value": "COSINE"
+                        },
+                        {
+                          "key": "mmap.enabled",
+                          "value": "false"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "functions": [],
+              "consistency_level": "Bounded",
+              "shards_num": 1,
+              "enableDynamicField": false,
+              "properties": {
+                "timezone": "UTC"
+              }
+            }
+            </content>
+        </xmilvus>
+        
+    </xmilvuses>
+    
+</config>

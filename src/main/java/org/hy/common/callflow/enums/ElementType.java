@@ -29,6 +29,8 @@ public enum ElementType
     XSQL(       "XSQL"        ,"xsql"       ,"XSQL元素"),
     
     XCQL(       "XCQL"        ,"xcql"       ,"图谱元素"),
+    
+    XMilvus(    "XMILVUS"     ,"xmilvus"    ,"向量元素"),
                               
     Command(    "COMMAND"     ,"xcommand"   ,"命令元素"),
                               

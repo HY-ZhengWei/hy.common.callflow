@@ -30,6 +30,7 @@ import org.hy.common.callflow.language.GroovyConfig;
 import org.hy.common.callflow.language.JavaConfig;
 import org.hy.common.callflow.language.PythonConfig;
 import org.hy.common.callflow.language.ShellConfig;
+import org.hy.common.callflow.milvus.XMilvusConfig;
 import org.hy.common.callflow.minio.MinioConfig;
 import org.hy.common.callflow.nesting.MTConfig;
 import org.hy.common.callflow.nesting.NestingConfig;
@@ -97,6 +98,7 @@ public class ExportXml
         getInstance().addImportHead(ElementType.Api        .getXmlName() ,APIConfig.class);
         getInstance().addImportHead(ElementType.XSQL       .getXmlName() ,XSQLConfig.class);
         getInstance().addImportHead(ElementType.XCQL       .getXmlName() ,XCQLConfig.class);
+        getInstance().addImportHead(ElementType.XMilvus    .getXmlName() ,XMilvusConfig.class);
         getInstance().addImportHead(ElementType.Zip        .getXmlName() ,ZipConfig.class);
         getInstance().addImportHead(ElementType.Unzip      .getXmlName() ,UnzipConfig.class);
         getInstance().addImportHead(ElementType.Reduce     .getXmlName() ,ReduceConfig.class);

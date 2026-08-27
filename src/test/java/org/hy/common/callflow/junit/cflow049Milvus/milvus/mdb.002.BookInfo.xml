@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xmilvuses" class="java.util.ArrayList" />
+    <import name="xmilvus"   class="org.hy.common.callflow.milvus.XMilvus" />
+
+
+
+    <xmilvuses>
+    
+        <xmilvus id="XMilvusDB_Exists_BookInfo">
+            <comment>判定图书信息表是否存在</comment>
+            <milvus ref="Milvus" />                <!-- 类似于关系数据库的DB连接 -->
+            <type>Exists</type>
+            <content>TBookInfo</content>           <!-- 表名称。同时支持：库名称.表名称 -->
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Drop_BookInfo">
+            <comment>删除图书信息表</comment>
+            <milvus ref="Milvus" />
+            <type>Drop</type>
+            <content>TBookInfo</content>           <!-- 多个表用英文逗号分隔 -->
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Load_BookInfo">
+            <comment>加载图书信息表</comment>
+            <milvus ref="Milvus" />
+            <type>Load</type>
+            <content>TBookInfo</content>           <!-- 多个表用英文逗号分隔 -->
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Release_BookInfo">
+            <comment>释放图书信息表</comment>
+            <milvus ref="Milvus" />
+            <type>Release</type>
+            <content>TBookInfo</content>           <!-- 多个表用英文逗号分隔 -->
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Insert_BookInfo">
+            <comment>添加图书数据</comment>
+            <milvus ref="Milvus" />
+            <type>C</type>
+            <collection>TBookInfo</collection>
+            <content>
+            {
+                "id": ":ID",
+                "bookName": ":BookName",
+                "bookVector": [:VectorA ,:VectorB],
+                "titleVector": :TitleVector
+            }
+            </content>
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Select_BookInfo_ID">
+            <comment>主键查询图书</comment>
+            <milvus ref="Milvus" />
+            <type>R</type>
+            <collection>TBookInfo</collection>
+            <content>
+                <![CDATA[
+                id == :ID
+                ]]>
+            </content>
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Query_BookInfos">
+            <comment>标量查询，并转为指定的Java对象</comment>
+            <milvus ref="Milvus" />
+            <type>R</type>
+            <collection>TBookInfo</collection>
+            <content>
+                <![CDATA[
+                bookName LIKE "%:BookName%"
+                ]]>
+            </content>
+            
+            <result>
+                <row>org.hy.common.callflow.junit.cflow049Milvus.program.BookInfo</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Vector_BookInfos">
+            <comment>向量查询，并转为指定的Java对象</comment>
+            <milvus ref="Milvus" />
+            <type>R</type>
+            <collection>TBookInfo</collection>
+            <topK>3</topK>                                   <!-- 向量查询时返回的结果集数量 -->
+            <content>
+                <![CDATA[
+                bookVector == :BookVector
+                ]]>
+            </content>
+            
+            <result>
+                <row>org.hy.common.callflow.junit.cflow049Milvus.program.BookInfo</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Vectors_BookInfos">
+            <comment>多向量联合查询，并转为指定的Java对象</comment>
+            <milvus ref="Milvus" />
+            <type>R</type>
+            <collection>TBookInfo</collection>
+            <topK>3</topK>                                   <!-- 向量查询时返回的结果集数量 -->
+            <content>
+                <![CDATA[
+                bookVector  == :BookVector
+             && titleVector == :TitleVector
+                ]]>
+            </content>
+            
+            <result>
+                <row>org.hy.common.callflow.junit.cflow049Milvus.program.BookInfo</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+        </xmilvus>
+        
+        
+        
+        <xmilvus id="XMilvusDB_Del_BookInfo_ID">
+            <comment>删除一行数据</comment>
+            <milvus ref="Milvus" />
+            <type>D</type>
+            <collection>TBookInfo</collection>
+            <content>
+                <![CDATA[
+                id == :ID
+                ]]>
+            </content>
+        </xmilvus>
+        
+    </xmilvuses>
+    
+</config>

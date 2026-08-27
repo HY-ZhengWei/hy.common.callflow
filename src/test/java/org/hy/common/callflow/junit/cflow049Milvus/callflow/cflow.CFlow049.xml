@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：XCQL图谱元素 -->
+    <xconfig>
+    
+        <xmilvus id="XMilvus_CF049_多向量联合查询">
+            <comment>多向量联合查询，并转为指定的Java对象</comment>
+            <callXID>:XMilvusDB_Vectors_BookInfos</callXID>  <!-- 向量库操作对象的ID -->
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>RetVectorsMmultiple</returnID>         <!-- 定义返回结果的变量名称 -->
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_向量查询">
+            <comment>向量查询，并转为指定的Java对象</comment>
+            <callXID>:XMilvusDB_Vector_BookInfos</callXID>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>RetVectors</returnID> 
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_多向量联合查询" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_标量查询">
+            <comment>标量查询，并转为指定的Java对象</comment>
+            <callXID>:XMilvusDB_Query_BookInfos</callXID> 
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>RetBooks</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_向量查询" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+    
+        <xmilvus id="XMilvus_CF049_删除一行数据">
+            <comment>删除一行数据</comment>
+            <callXID>:XMilvusDB_Del_BookInfo_ID</callXID>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_标量查询" />
+                </succeed>
+            </route>
+        </xmilvus>
+    
+    
+        <xmilvus id="XMilvus_CF049_主键查询">
+            <comment>主键查询</comment>
+            <callXID>:XMilvusDB_Select_BookInfo_ID</callXID>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnOne>true</returnOne>                      <!-- 仅返回一行数据 -->
+            <returnID>RetID</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_删除一行数据" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_加载表">
+            <comment>加载图书信息表</comment>
+            <callXID>:XMilvusDB_Load_BookInfo</callXID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_主键查询" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_添加批量数据">
+            <comment>添加图书数据：批量添加数据</comment>
+            <callXID>:XMilvusDB_Insert_BookInfo</callXID>
+            <callParam>
+                <valueClass>java.util.List</valueClass>      <!-- 数据的变量类型。也是批量添加数据的关键 -->
+                <value>:Books</value>                        <!-- 数据的变量名称 -->
+            </callParam>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_加载表" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+    
+        <xmilvus id="XMilvus_CF049_添加数据">
+            <comment>添加图书数据：添加一条数据</comment>
+            <callXID>:XMilvusDB_Insert_BookInfo</callXID>
+            <callParam>
+                <value>:CallFlowContext</value>              <!-- 数据的变量名称 -->
+            </callParam>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_添加批量数据" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+    
+        <xmilvus id="XMilvus_CF049_释放表">
+            <comment>释放图书信息表</comment>
+            <callXID>:XMilvusDB_Release_BookInfo</callXID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_添加数据" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_创建表">
+            <comment>创建向量库集合：图书信息表</comment>
+            <callXID>:XMilvusDB_Create_BookInfo</callXID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_释放表" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_删除表">
+            <comment>删除图书信息表</comment>
+            <callXID>:XMilvusDB_Drop_BookInfo</callXID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_创建表" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xcondition id="XCondition_CF049_判断表是否存在">
+            <comment>判断表是否存在</comment>
+            <logical>AND</logical>                           <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
+            <conditionItem>
+                <valueClass>java.lang.Boolean</valueClass>   <!-- 定义变量类型 -->
+                <valueXIDA>:IsExists</valueXIDA>             <!-- 变量名称 -->
+            </conditionItem>
+            <route>
+                <if>                                         <!-- 真时的路由 -->
+                    <next ref="XMilvus_CF049_删除表" />
+                </if>
+                <else>                                       <!-- 假时的路由 -->
+                    <next ref="XMilvus_CF049_创建表" />
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xmilvus id="XMilvus_CF049_判断表是否存在">
+            <comment>判定图书信息表是否存在</comment>
+            <callXID>:XMilvusDB_Exists_BookInfo</callXID>
+            <returnID>IsExists</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XCondition_CF049_判断表是否存在" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+    </xconfig>
+    
+</config>

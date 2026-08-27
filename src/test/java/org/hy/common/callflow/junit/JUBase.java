@@ -66,7 +66,7 @@ public class JUBase
             v_XJson.setReturnNVL(false);
             
             //System.out.println(XJSON.format(v_XJson.toJson(i_ExecElement).toJSONString()));
-            System.out.println(v_XJson.toJson(i_ExecuteResult).toJSONString());
+            System.out.println(v_XJson.toJsonText(i_ExecuteResult));
         }
         catch (Exception exce)
         {
