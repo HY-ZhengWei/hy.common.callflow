@@ -54,6 +54,7 @@
     * [文传元素的举例](#文传元素的举例)
     * [存对元素的举例](#存对元素的举例)
     * [归纳元素的举例](#归纳元素的举例)
+    * [向量元素的举例](#向量元素的举例)
     * [占位符的举例](#占位符的举例)
 
 
@@ -1731,7 +1732,7 @@ ExecuteResult       v_Result  = CallFlow.execute(v_For ,v_Context);
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow041ThreeInOne) [返回目录](#目录)
 
-[__视频说明__](https://www.bilibili.com/video/BV1m1UsBBEuW/)
+[__视频说明__]( https://www.bilibili.com/video/BV1m1UsBBEuW/ )
 
 __编排图例演示__
 
@@ -3223,7 +3224,7 @@ ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
 
 [查看代码](src/test/java/org/hy/common/callflow/junit/cflow043XCQL) [返回目录](#目录)
 
-[__视频说明__](https://www.bilibili.com/video/BV1wzUqBwEsM/)
+[__视频说明__]( https://www.bilibili.com/video/BV1wzUqBwEsM/ )
 
 __编排图例演示__
 
@@ -3458,6 +3459,7 @@ Map<String ,Object> v_Context = new HashMap<String ,Object>();
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_XSQLC ,v_Context);
 ```
+
 
 
 
@@ -5270,6 +5272,559 @@ Map<String ,Object> v_Context = new HashMap<String ,Object>();
 
 // 执行编排。返回执行结果       
 ExecuteResult       v_Result  = CallFlow.execute(v_Minio ,v_Context);
+```
+
+
+
+
+
+向量元素的举例
+------
+
+[查看代码](src/test/java/org/hy/common/callflow/junit/cflow049Milvus) [返回目录](#目录)
+
+[__视频说明__]( https://www.bilibili.com/video/BV1ELtu6wEJt/ )
+
+__编排图例演示__
+
+![image](src/test/java/org/hy/common/callflow/junit/cflow049Milvus/JU_CFlow049.png)
+
+__编排配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xcallFlow" class="org.hy.common.callflow.common.CallFlowImports" />
+    
+    
+    
+    <!-- CFlow编排引擎配置：XMilvus向量元素 -->
+    <xconfig>
+    
+        <xmilvus id="XMilvus_CF049_多向量联合查询">
+            <comment>多向量联合查询，并转为指定的Java对象</comment>
+            <callXID>:XMilvusDB_Vectors_BookInfos</callXID>  <!-- 向量库操作对象的ID -->
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>RetVectorsMmultiple</returnID>         <!-- 定义返回结果的变量名称 -->
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_向量查询">
+            <comment>向量查询，并转为指定的Java对象</comment>
+            <callXID>:XMilvusDB_Vector_BookInfos</callXID>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>RetVectors</returnID> 
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_多向量联合查询" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_标量查询">
+            <comment>标量查询，并转为指定的Java对象</comment>
+            <callXID>:XMilvusDB_Query_BookInfos</callXID> 
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnID>RetBooks</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_向量查询" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_删除一行数据">
+            <comment>删除一行数据</comment>
+            <callXID>:XMilvusDB_Del_BookInfo_ID</callXID>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_标量查询" />
+                </succeed>
+            </route>
+        </xmilvus>
+    
+    
+        <xmilvus id="XMilvus_CF049_主键查询">
+            <comment>主键查询</comment>
+            <callXID>:XMilvusDB_Select_BookInfo_ID</callXID>
+            <callParam>
+                <value>:CallFlowContext</value>
+            </callParam>
+            <returnOne>true</returnOne>                      <!-- 仅返回一行数据 -->
+            <returnID>RetID</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_删除一行数据" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_加载表">
+            <comment>加载图书信息表</comment>
+            <callXID>:XMilvusDB_Load_BookInfo</callXID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_主键查询" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_添加批量数据">
+            <comment>图书表（向量库集合）：批量添加数据</comment>
+            <callXID>:XMilvusDB_Insert_BookInfo</callXID>
+            <callParam>
+                <valueClass>java.util.List</valueClass>      <!-- 数据的变量类型。也是批量添加数据的关键 -->
+                <value>:Books</value>                        <!-- 数据的变量名称。用户自定义的变量 -->
+            </callParam>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_加载表" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_添加数据">
+            <comment>图书表（向量库集合）：添加一条数据</comment>
+            <callXID>:XMilvusDB_Insert_BookInfo</callXID>    <!-- 向量库操作对象的ID -->
+            <callParam>
+                <value>:CallFlowContext</value>              <!-- 数据的变量名称。CallFlowContext是系统预设的上下文内容变量名称 -->
+            </callParam>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_添加批量数据" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+    
+        <xmilvus id="XMilvus_CF049_释放表">
+            <comment>释放图书信息表</comment>
+            <callXID>:XMilvusDB_Release_BookInfo</callXID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_添加数据" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_创建表">
+            <comment>创建向量库集合：图书信息表</comment>
+            <callXID>:XMilvusDB_Create_BookInfo</callXID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_释放表" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xmilvus id="XMilvus_CF049_删除表">
+            <comment>删除图书信息表</comment>
+            <callXID>:XMilvusDB_Drop_BookInfo</callXID>
+            <route>
+                <succeed> 
+                    <next ref="XMilvus_CF049_创建表" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+        
+        <xcondition id="XCondition_CF049_判断表是否存在">
+            <comment>判断表是否存在</comment>
+            <logical>AND</logical>                           <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
+            <conditionItem>
+                <valueClass>java.lang.Boolean</valueClass>   <!-- 定义变量类型 -->
+                <valueXIDA>:IsExists</valueXIDA>             <!-- 变量名称 -->
+            </conditionItem>
+            <route>
+                <if>                                         <!-- 真时的路由 -->
+                    <next ref="XMilvus_CF049_删除表" />
+                </if>
+                <else>                                       <!-- 假时的路由 -->
+                    <next ref="XMilvus_CF049_创建表" />
+                </else>
+            </route>
+        </xcondition>
+        
+        
+        <xmilvus id="XMilvus_CF049_判断表是否存在">
+            <comment>判定图书信息表是否存在</comment>
+            <callXID>:XMilvusDB_Exists_BookInfo</callXID>
+            <returnID>IsExists</returnID>
+            <route>
+                <succeed> 
+                    <next ref="XCondition_CF049_判断表是否存在" />
+                </succeed>
+            </route>
+        </xmilvus>
+        
+    </xconfig>
+    
+</config>
+```
+
+__XMilvus语法DDL模板配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xmilvusDBs" class="java.util.ArrayList" />
+    <import name="xmilvusDB"  class="org.hy.common.callflow.milvus.XMilvus" />
+
+
+
+    <!-- XMilvus语法DDL模板配置 -->
+    <xmilvusDBs>
+    
+        <xmilvusDB id="XMilvusDB_Create_BookInfo">
+            <comment>创建向量库集合：图书信息表</comment>
+            <milvus ref="Milvus" />
+            <type>Create</type>
+            <content>
+            {
+              "collection_name": "TBookInfo",
+              "description": "图书信息表",
+              "fields": [
+                {
+                  "name": "id",
+                  "data_type": 5,
+                  "description": "",
+                  "is_primary_key": true,
+                  "autoID": false,
+                  "is_partition_key": false,
+                  "nullable": false,
+                  "indexes": [
+                    {
+                      "index_name": "IDX_BookInfo_ID",
+                      "index_type": "AUTOINDEX",
+                      "indexParameterPairs": [
+                        {
+                          "key": "index_type",
+                          "value": "AUTOINDEX"
+                        },
+                        {
+                          "key": "mmap.enabled",
+                          "value": "false"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "bookName",
+                  "data_type": 21,
+                  "description": "图书名称",
+                  "is_primary_key": false,
+                  "is_partition_key": false,
+                  "nullable": false,
+                  "max_length": 200,
+                  "enable_analyzer": true,
+                  "analyzer_params": {
+                    "type": "chinese"
+                  },
+                  "enable_match": true,
+                  "indexes": [
+                    {
+                      "index_name": "IDX_BookInfo_BookName",
+                      "index_type": "AUTOINDEX",
+                      "indexParameterPairs": [
+                        {
+                          "key": "index_type",
+                          "value": "AUTOINDEX"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "bookVector",
+                  "data_type": 101,
+                  "description": "图书内容的向量",
+                  "is_primary_key": false,
+                  "is_partition_key": false,
+                  "nullable": false,
+                  "dim": 2,
+                  "indexes": [
+                    {
+                      "index_name": "IDX_BookInfo_BookVector",
+                      "index_type": "AUTOINDEX",
+                      "metric_type": "COSINE",
+                      "indexParameterPairs": [
+                        {
+                          "key": "index_type",
+                          "value": "AUTOINDEX"
+                        },
+                        {
+                          "key": "metric_type",
+                          "value": "COSINE"
+                        },
+                        {
+                          "key": "mmap.enabled",
+                          "value": "false"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "titleVector",
+                  "data_type": 101,
+                  "description": "图书标题的向量",
+                  "is_primary_key": false,
+                  "is_partition_key": false,
+                  "nullable": false,
+                  "dim": 4,
+                  "indexes": [
+                    {
+                      "index_name": "IDX_BookInfo_TitleVector",
+                      "index_type": "AUTOINDEX",
+                      "metric_type": "COSINE",
+                      "indexParameterPairs": [
+                        {
+                          "key": "index_type",
+                          "value": "AUTOINDEX"
+                        },
+                        {
+                          "key": "metric_type",
+                          "value": "COSINE"
+                        },
+                        {
+                          "key": "mmap.enabled",
+                          "value": "false"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "functions": [],
+              "consistency_level": "Bounded",
+              "shards_num": 1,
+              "enableDynamicField": false,
+              "properties": {
+                "timezone": "UTC"
+              }
+            }
+            </content>
+        </xmilvusDB>
+        
+    </xmilvusDBs>
+    
+</config>
+```
+
+__XMilvus语法DML模板配置__
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <import name="xmilvusDBs" class="java.util.ArrayList" />
+    <import name="xmilvusDB"  class="org.hy.common.callflow.milvus.XMilvus" />
+
+
+
+    <!-- milvus语法DML模板配置 -->
+    <xmilvusDBs>
+    
+        <xmilvusDB id="XMilvusDB_Exists_BookInfo">
+            <comment>判定图书信息表是否存在</comment>
+            <milvus ref="Milvus" />                <!-- 类似于关系数据库的DB连接 -->
+            <type>Exists</type>                    <!-- 操作类型：查询表存在 -->
+            <content>TBookInfo</content>           <!-- 表名称。同时支持：库名称.表名称 -->
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Drop_BookInfo">
+            <comment>删除图书信息表</comment>
+            <milvus ref="Milvus" />
+            <type>Drop</type>
+            <content>TBookInfo</content>           <!-- 多个表用英文逗号分隔 -->
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Load_BookInfo">
+            <comment>加载图书信息表</comment>
+            <milvus ref="Milvus" />
+            <type>Load</type>
+            <content>TBookInfo</content>           <!-- 多个表用英文逗号分隔 -->
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Release_BookInfo">
+            <comment>释放图书信息表</comment>
+            <milvus ref="Milvus" />
+            <type>Release</type>
+            <content>TBookInfo</content>           <!-- 多个表用英文逗号分隔 -->
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Insert_BookInfo">
+            <comment>添加图书数据</comment>
+            <milvus ref="Milvus" />                <!-- 类似于关系数据库的DB连接 -->
+            <type>C</type>                         <!-- 操作类型：插入数据 -->
+            <collection>TBookInfo</collection>     <!-- 表名称（向量库集合）。同时支持：库名称.表名称 -->
+            <content>                              <!-- Json格式，支持动态占位符 -->
+            {
+                "id": ":ID",
+                "bookName": ":BookName",
+                "bookVector": [:VectorA ,:VectorB],
+                "titleVector": :TitleVector
+            }
+            </content>                             <!-- :TitleVector 是4维度的向量数组 -->
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Select_BookInfo_ID">
+            <comment>主键查询图书</comment>
+            <milvus ref="Milvus" />
+            <type>R</type>
+            <collection>TBookInfo</collection>
+            <content>
+                <![CDATA[
+                id == :ID
+                ]]>
+            </content>
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Query_BookInfos">
+            <comment>标量查询，并转为指定的Java对象</comment>
+            <milvus ref="Milvus" />
+            <type>R</type>                         <!-- 操作类型：插入数据 -->
+            <collection>TBookInfo</collection>
+            <content>
+                <![CDATA[
+                bookName LIKE "%:BookName%"
+                ]]>
+            </content>
+            
+            <result>
+                <row>org.hy.common.callflow.junit.cflow049Milvus.program.BookInfo</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Vector_BookInfos">
+            <comment>向量查询，并转为指定的Java对象</comment>
+            <milvus ref="Milvus" />
+            <type>R</type>                                   <!-- 操作类型：插入数据 -->
+            <collection>TBookInfo</collection>
+            <topK>3</topK>                                   <!-- 向量查询时返回的结果集数量 -->
+            <content>
+                <![CDATA[
+                bookVector == :BookVector
+                ]]>
+            </content>
+            
+            <result>
+                <row>org.hy.common.callflow.junit.cflow049Milvus.program.BookInfo</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Vectors_BookInfos">
+            <comment>多向量联合查询，并转为指定的Java对象</comment>
+            <milvus ref="Milvus" />
+            <type>R</type>
+            <collection>TBookInfo</collection>
+            <topK>3</topK>                                   <!-- 向量查询时返回的结果集数量 -->
+            <content>
+                <![CDATA[
+                bookVector  == :BookVector
+             && titleVector == :TitleVector
+                ]]>
+            </content>
+            
+            <result>
+                <row>org.hy.common.callflow.junit.cflow049Milvus.program.BookInfo</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+        </xmilvusDB>
+        
+        
+        
+        <xmilvusDB id="XMilvusDB_Del_BookInfo_ID">
+            <comment>删除一行数据</comment>
+            <milvus ref="Milvus" />
+            <type>D</type>
+            <collection>TBookInfo</collection>
+            <content>
+                <![CDATA[
+                id == :ID
+                ]]>
+            </content>
+        </xmilvusDB>
+        
+    </xmilvusDBs>
+    
+</config>
+```
+
+__执行编排__
+
+```java
+// 初始化被编排的执行对象方法（按业务需要）
+XJava.putObject("XProgram" ,new Program());
+        
+// 获取编排中的首个元素
+XMilvusConfig       v_XMilvus = (XMilvusConfig) XJava.getObject("XMilvus_CF049_判断表是否存在");
+
+// 初始化上下文（可从中方便的获取中间运算信息，也可传NULL）
+Map<String ,Object> v_Context = new HashMap<String ,Object>();
+
+List<BookInfo> v_Books = new ArrayList<BookInfo>();
+for (int x=1; x<=10; x++)
+{
+    BookInfo v_Book = new BookInfo();
+    v_Book.setId(x + 1000);
+    v_Book.setBookName("爱丽丝漫游奇境记" + StringHelp.random(10 ,true ,true));
+    v_Book.setVectorA(x *  1.0F);
+    v_Book.setVectorB(x * -1.0F);
+    v_Book.setTitleVector(Help.toList(new Float[] {x * 1.0F ,x * 2.0F ,x * 3.0F ,x * 4.0F}));
+    v_Books.add(v_Book);
+}
+
+v_Context.put("ID"          ,1);
+v_Context.put("BookName"    ,"爱丽丝漫游奇境记");
+v_Context.put("VectorA"     ,1.0);
+v_Context.put("VectorB"     ,-1.0);
+v_Context.put("Books"       ,v_Books);
+v_Context.put("BookVector"  ,new Float[] {5.0F ,-5.0F});
+v_Context.put("TitleVector" ,new Float[] {1.0F ,2.0F ,3.0F ,4.0F});
+
+// 执行编排。返回执行结果       
+ExecuteResult       v_Result  = CallFlow.execute(v_XMilvus ,v_Context);
 ```
 
 

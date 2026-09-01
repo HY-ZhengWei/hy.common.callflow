@@ -2,14 +2,15 @@
 
 <config>
 
-    <import name="xmilvuses" class="java.util.ArrayList" />
-    <import name="xmilvus"   class="org.hy.common.callflow.milvus.XMilvus" />
+    <import name="xmilvusDBs" class="java.util.ArrayList" />
+    <import name="xmilvusDB"  class="org.hy.common.callflow.milvus.XMilvus" />
 
 
 
-    <xmilvuses>
+    <!-- XMilvus语法DDL模板配置 -->
+    <xmilvusDBs>
     
-        <xmilvus id="XMilvusDB_Create_BookInfo">
+        <xmilvusDB id="XMilvusDB_Create_BookInfo">
             <comment>创建向量库集合：图书信息表</comment>
             <milvus ref="Milvus" />
             <type>Create</type>
@@ -139,8 +140,8 @@
               }
             }
             </content>
-        </xmilvus>
+        </xmilvusDB>
         
-    </xmilvuses>
+    </xmilvusDBs>
     
 </config>

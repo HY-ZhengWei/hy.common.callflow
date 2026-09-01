@@ -6,7 +6,7 @@
     
     
     
-    <!-- CFlow编排引擎配置：XCQL图谱元素 -->
+    <!-- CFlow编排引擎配置：XMilvus向量元素 -->
     <xconfig>
     
         <xmilvus id="XMilvus_CF049_多向量联合查询">
@@ -48,7 +48,7 @@
             </route>
         </xmilvus>
         
-    
+        
         <xmilvus id="XMilvus_CF049_删除一行数据">
             <comment>删除一行数据</comment>
             <callXID>:XMilvusDB_Del_BookInfo_ID</callXID>
@@ -91,11 +91,11 @@
         
         
         <xmilvus id="XMilvus_CF049_添加批量数据">
-            <comment>添加图书数据：批量添加数据</comment>
+            <comment>图书表（向量库集合）：批量添加数据</comment>
             <callXID>:XMilvusDB_Insert_BookInfo</callXID>
             <callParam>
                 <valueClass>java.util.List</valueClass>      <!-- 数据的变量类型。也是批量添加数据的关键 -->
-                <value>:Books</value>                        <!-- 数据的变量名称 -->
+                <value>:Books</value>                        <!-- 数据的变量名称。用户自定义的变量 -->
             </callParam>
             <route>
                 <succeed> 
@@ -104,12 +104,12 @@
             </route>
         </xmilvus>
         
-    
+        
         <xmilvus id="XMilvus_CF049_添加数据">
-            <comment>添加图书数据：添加一条数据</comment>
-            <callXID>:XMilvusDB_Insert_BookInfo</callXID>
+            <comment>图书表（向量库集合）：添加一条数据</comment>
+            <callXID>:XMilvusDB_Insert_BookInfo</callXID>    <!-- 向量库操作对象的ID -->
             <callParam>
-                <value>:CallFlowContext</value>              <!-- 数据的变量名称 -->
+                <value>:CallFlowContext</value>              <!-- 数据的变量名称。CallFlowContext是系统预设的上下文内容变量名称 -->
             </callParam>
             <route>
                 <succeed> 
