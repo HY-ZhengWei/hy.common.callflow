@@ -4975,7 +4975,7 @@ __编排配置__
         
         
         <xminio id="XMinio_CF047_分享文件">
-            <comment>上传一个文件</comment>
+            <comment>分享文件</comment>
             <initXID>:XMinio_CF047_下载目录</initXID>          <!-- 用参考对象配置连接信息 -->
             <shareFile type="textarea">
                 Tools/Install_USB_Win11_11017_20_12302024_02062025.zip , 2D
