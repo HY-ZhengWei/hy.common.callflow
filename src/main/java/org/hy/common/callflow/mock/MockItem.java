@@ -12,8 +12,10 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.clone.CloneableCallFlow;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.callflow.enums.ExportType;
+import org.hy.common.callflow.enums.Logical;
 import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.file.IToXml;
+import org.hy.common.callflow.ifelse.ConditionConfig;
 import org.hy.common.db.DBSQL;
 
 
@@ -26,6 +28,7 @@ import org.hy.common.db.DBSQL;
  * @author      ZhengWei(HY)
  * @createDate  2025-11-06
  * @version     v1.0
+ *              v2.0  2026-09-30  添加：条件项或嵌套条件逻辑
  */
 public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
 {
@@ -45,6 +48,9 @@ public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
     /** 是否启用，已解释完成的占位符（性能有优化，仅内部使用） */
     private PartitionMap<String ,Integer> enablePlaceholders;
     
+    /** 条件项或嵌套条件逻辑 */
+    private ConditionConfig               condition;
+    
     /** 模拟数据。可以是数值、上下文变量、XID标识 */
     private String                        data;
     
@@ -62,6 +68,13 @@ public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
                              
     /** 最后修改时间 */   
     private Date                          updateTime;
+    
+    
+    
+    public MockItem()
+    {
+        this.condition = null;
+    }
 
     
     
@@ -84,9 +97,72 @@ public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
             return null;
         }
         
+        if ( this.allow(i_Context) <= -1 )
+        {
+            return null;
+        }
+        
         // 这里的默认值只能是空字符串，不能是NULL
         // 好处时，当条件逻辑元素在使用Mock时，就不用设置this.data属性
         return ValueHelp.getValueReplace(this.data ,this.dataPlaceholders ,null ,null ,i_Context);
+    }
+    
+    
+    
+    /**
+     * 允许判定。即：真判定
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-09-30
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return           出错异常时抛出异常
+     *                   返回判定结果 <= -1 时，表示假。
+     *                   返回判定结果 >=  1 时，表示真。
+     */
+    public int allow(Map<String ,Object> i_Context) throws Exception
+    {
+        if ( this.condition == null )
+        {
+            // 允许没有条件项，表示永远为真
+            return 1;
+        }
+        if ( this.condition.getLogical() == null )
+        {
+            throw new NullPointerException("MockItem logical [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] is null.");
+        }
+        if ( Logical.Switch.equals(this.condition.getLogical()) )
+        {
+            // 不支持Switch分支
+            throw new RuntimeException("MockItem items [" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "] Logical=Switch is not allowed.");
+        }
+        if ( Help.isNull(this.condition.getItems()) )
+        {
+            // 允许没有条件项，表示永远为真
+            return 1;
+        }
+        
+        return this.condition.allow(i_Context);
+    }
+    
+    
+    
+    /**
+     * 拒绝判定。即：假判定
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-09-30
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return           出错异常时抛出异常
+     *                   返回判定结果 <= -1 时，表示假。
+     *                   返回判定结果 >=  1 时，表示真。
+     */
+    public int reject(Map<String ,Object> i_Context) throws Exception
+    {
+        return allow(i_Context) * -1;
     }
     
     
@@ -125,8 +201,28 @@ public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
         }
         this.enable = i_Enable;
     }
+    
+    
+    /**
+     * 获取：条件项或嵌套条件逻辑
+     */
+    public ConditionConfig getCondition()
+    {
+        return condition;
+    }
 
     
+    /**
+     * 设置：条件项或嵌套条件逻辑
+     * 
+     * @param i_Condition 条件项或嵌套条件逻辑
+     */
+    public void setCondition(ConditionConfig i_Condition)
+    {
+        this.condition = i_Condition;
+    }
+
+
     /**
      * 获取：模拟数据。可以是数值、上下文变量、XID标识
      */
@@ -335,6 +431,10 @@ public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("enable"  ,this.enable));
             }
+            if ( this.condition != null && !Help.isNull(this.condition.getItems()) )
+            {
+                v_Xml.append(this.condition.toXml(i_Level + 2 ,i_SuperTreeID ,i_ExportType));
+            }
             if ( !Help.isNull(this.data) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("data"    ,this.data ,v_NewSpace));
@@ -434,6 +534,11 @@ public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
         v_Clone.updateUserID = this.updateUserID;
         v_Clone.createTime   = this.createTime == null ? null : new Date(this.createTime.getTime());
         v_Clone.updateTime   = this.updateTime == null ? null : new Date(this.updateTime.getTime());
+        
+        if ( this.condition != null )
+        {
+            v_Clone.condition = (ConditionConfig) this.condition.cloneMyOnly();
+        }
     }
 
 

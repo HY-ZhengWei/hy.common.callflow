@@ -6,7 +6,7 @@
 
     <groupId>cn.openapis</groupId>
     <artifactId>hy.common.callflow</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <packaging>jar</packaging>
 
     <name>cn.openapis.hy.common.callflow</name>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.file</artifactId>
-            <version>1.6.6</version>
+            <version>1.6.8</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -89,21 +89,21 @@
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.db</artifactId>
-            <version>2.8.9</version>
+            <version>2.9.1</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.xcql</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.2</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>cn.openapis</groupId>
             <artifactId>hy.common.xjava</artifactId>
-            <version>4.9.9</version>
+            <version>5.0.6</version>
             <scope>provided</scope>
         </dependency>
         
@@ -167,6 +167,20 @@
             <groupId>com.github.jnr</groupId>
             <artifactId>jnr-ffi</artifactId>
             <version>2.2.18</version>
+        </dependency>
+        
+        <!-- Prometheus：micrometer 注册表 -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.15.9</version>
+        </dependency>
+        
+        <!-- Prometheus：tomcat线程池指标 -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+            <version>1.15.9</version>
         </dependency>
         
         <dependency>
