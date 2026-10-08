@@ -75,6 +75,35 @@ public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
     {
         this.condition = null;
     }
+    
+    
+    
+    /**
+     * 是否模拟
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-10-08
+     * @version     v1.0
+     *
+     * @param i_Context
+     * @return
+     * @throws Exception
+     */
+    public boolean isMock(Map<String ,Object> i_Context) throws Exception
+    {
+        boolean v_Enable = (Boolean) ValueHelp.getValueReplace(this.enable ,this.enablePlaceholders ,Boolean.class ,Boolean.FALSE ,i_Context);
+        if ( !v_Enable )
+        {
+            return false;
+        }
+        
+        if ( this.allow(i_Context) <= -1 )
+        {
+            return false;
+        }
+        
+        return true;
+    }
 
     
     
@@ -91,13 +120,8 @@ public class MockItem implements IToXml ,CloneableCallFlow ,XJavaID
      */
     public Object mock(Map<String ,Object> i_Context) throws Exception
     {
-        boolean v_Enable = (Boolean) ValueHelp.getValueReplace(this.enable ,this.enablePlaceholders ,Boolean.class ,Boolean.FALSE ,i_Context);
-        if ( !v_Enable )
-        {
-            return null;
-        }
-        
-        if ( this.allow(i_Context) <= -1 )
+        boolean v_IsMock = this.isMock(i_Context);
+        if ( !v_IsMock )
         {
             return null;
         }

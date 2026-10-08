@@ -202,6 +202,91 @@ public class MockConfig
     
     
     /**
+     * 是否模拟
+     * 
+     *   注1：当有多个模拟数据均符合要求时，仅优先返回第一个。
+     *   注2：优先级为：模拟异常 > 模拟失败 > 模拟成功
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-10-08
+     * @version     v1.0
+     *
+     * @param i_Context  上下文类型的变量信息
+     * @return           没有符合要求的模拟数据时，返回NULL
+     * @throws Exception 
+     */
+    public boolean isMock(Map<String ,Object> i_Context) throws Exception
+    {
+        boolean v_IsMock = false;
+        
+        if ( !this.valid )
+        {
+            return v_IsMock;
+        }
+        
+        if ( !Help.isNull(this.exceptions) )
+        {
+            v_IsMock = this.isMock(i_Context ,this.exceptions);
+            if ( v_IsMock )
+            {
+                return v_IsMock;
+            }
+        }
+        
+        if ( !Help.isNull(this.faileds) )
+        {
+            v_IsMock = this.isMock(i_Context ,this.faileds);
+            if ( v_IsMock )
+            {
+                return v_IsMock;
+            }
+        }
+        
+        if ( !Help.isNull(this.succeeds) )
+        {
+            v_IsMock = this.isMock(i_Context ,this.succeeds);
+            if ( v_IsMock )
+            {
+                return v_IsMock;
+            }
+        }
+        
+        return v_IsMock;
+    }
+    
+    
+    
+    /**
+     * 是否模拟
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-10-08
+     * @version     v1.0
+     *
+     * @param i_Context    上下文类型的变量信息
+     * @param i_MockItems  模拟项的集合
+     * @return
+     * @throws Exception 
+     */
+    private boolean isMock(Map<String ,Object> i_Context ,List<MockItem> i_MockItems) throws Exception
+    {
+        boolean v_IsMock = false;
+        
+        for (MockItem v_MockItem : i_MockItems)
+        {
+            v_IsMock = v_MockItem.isMock(i_Context);
+            if ( v_IsMock )
+            {
+                return v_IsMock;
+            }
+        }
+        
+        return v_IsMock;
+    }
+    
+    
+    
+    /**
      * 运行时中获取模拟数据。
      * 
      *   注1：当有多个模拟数据均符合要求时，仅优先返回第一个。

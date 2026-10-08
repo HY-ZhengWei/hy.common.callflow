@@ -304,6 +304,31 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
     
     
     /**
+     * 是否模拟
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-10-08
+     * @version     v1.0
+     *
+     * @param io_Context  上下文类型的变量信息
+     * @return
+     */
+    protected boolean isMock(Map<String ,Object> io_Context)
+    {
+        try
+        {
+            return this.mock.isMock(io_Context);
+        }
+        catch (Exception exce)
+        {
+            $Logger.error(exce);
+            return false;
+        }
+    }
+    
+    
+    
+    /**
      * 运行时中获取模拟数据。
      * 
      * 建议：子类重写此方法
