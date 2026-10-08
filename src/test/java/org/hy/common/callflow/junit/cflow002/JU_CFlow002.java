@@ -9,6 +9,7 @@ import org.hy.common.callflow.CallFlow;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.junit.JUBase;
 import org.hy.common.callflow.junit.cflow002.program.Program;
+import org.hy.common.callflow.junit.cflow002.program.ExecuteEvent;
 import org.hy.common.callflow.node.NodeConfig;
 import org.hy.common.xml.XJava;
 import org.hy.common.xml.annotation.XType;
@@ -79,7 +80,7 @@ public class JU_CFlow002 extends JUBase
             return;
         }
         
-        ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context);
+        ExecuteResult v_Result = CallFlow.execute(v_FirstNode ,v_Context ,new ExecuteEvent());
         if ( v_Result.isSuccess() )
         {
             System.out.println("Success");

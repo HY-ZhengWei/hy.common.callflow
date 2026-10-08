@@ -27,11 +27,13 @@
             <comment>第二个环节，条件逻辑，按第一个环节的执行结果（真、假）控制编排的走向</comment>
             <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
             <conditionItem>
-                <valueClass>java.lang.String</valueClass>   <!-- 定义变量类型 -->
-                <valueXIDA>T</valueXIDA>                    <!-- 默认值 -->
+                <valueClass>java.lang.Boolean</valueClass>  <!-- 定义变量类型 -->
+                <valueXIDA>:IfElse.HY</valueXIDA>           
                 <comparer>==</comparer>                     <!-- 判定比较器（可以不用显式定义。默认为==） -->
-                <valueXIDB>:IfElse.name</valueXIDB>         <!-- 变量 -->
             </conditionItem>
+            <redoXID>:XCondition_CF002_1_1_Redo</redoXID>
+            <waitTime>1000</waitTime>
+            <counterMax>10</counterMax>
             <route>
                 <if>                                        <!-- 真时的路由 -->
                     <next ref="XNode_CF002_1_1_1" />
@@ -42,25 +44,41 @@
                     <comment>假时</comment>
                 </else>
             </route>
+        </xcondition>
+        
+        
+        <xnode id="XCondition_CF002_1_1_Redo">
+            <comment>第三个环节，为真时的走向</comment>
+            <callXID>:XProgram</callXID>
+            <callMethod>method_RetaMap</callMethod>
+            <returnID>IfElseNULL</returnID>                     <!-- 定义返回结果的变量名称 -->
             <mock>
                 <valid>true</valid>                         <!-- Mock模拟是否有效 -->
+                <dataClass>java.util.HashMap</dataClass>
                 <succeed>                                   <!-- Mock模拟成功时 -->
+                    <comment>模拟成功结果</comment>
                     <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
-                    <data>-1</data>                         <!-- Mock模拟结果为：假 -->
+                    <data>
+                    {
+                        "HY": true
+                    }
+                    </data>                          <!-- Mock模拟成功时的模拟数据 -->
                 </succeed>
             </mock>
-        </xcondition>
+        </xnode>
         
         
         <xapi id="XCFlow_LLMGate_Weather">
             <comment>天气查询</comment>
             <url>https://restapi.amap.com/v3/weather/weatherInfo?</url>
-            <param><![CDATA[key=a75b4788b5ceffd2761ba2fdd1b9b151&city=610400]]></param>
+            <param><![CDATA[key=a75b4788b5ceffd2761ba2fdd1b9b151&city=610100&extensions=base]]></param>
+            <!-- 
             <body>
             {
                 "name": :IfElse.name
             }
             </body>
+            -->
             <succeedFlag>"OK"</succeedFlag>
             <returnID>RetWeather</returnID>
             <route>
@@ -94,6 +112,15 @@
                 <succeed>                                   <!-- Mock模拟成功时 -->
                     <comment>模拟成功结果</comment>
                     <enable>:MockSucceed</enable>           <!-- Mock模拟成功时的生效变量 -->
+                    <condition>
+                        <logical>AND</logical>              <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
+                        <conditionItem>
+                            <valueClass>java.lang.Integer</valueClass>
+                            <valueXIDA>:NumParam</valueXIDA>
+                            <comparer>>=</comparer>         <!-- 判定比较器（可以不用显式定义。默认为==） -->
+                            <valueXIDB>10</valueXIDB>
+                        </conditionItem>
+                    </condition>
                     <data>
                     {
                         "name": "T",
