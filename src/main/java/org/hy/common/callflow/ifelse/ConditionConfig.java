@@ -936,7 +936,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         
         if ( !ExportType.UI.equals(i_ExportType) )
         {
-            if ( !Help.isNull(this.logical) )
+            if ( !Help.isNull(this.logical) && !Logical.And.equals(this.logical) )
             {
                 v_Xml.append(v_NewSpace).append(IToXml.toValue("logical" ,this.logical.getValue()));
             }
@@ -1158,7 +1158,7 @@ public class ConditionConfig extends ExecuteElement implements IfElse ,Cloneable
         {
             if ( v_Item instanceof ConditionItem )
             {
-                v_Clone.items.add((ConditionItem) ((ConditionItem) v_Item).cloneMyOnly());
+                v_Clone.items.add((ConditionItem)   ((ConditionItem)   v_Item).cloneMyOnly());
             }
             else if ( v_Item instanceof ConditionConfig )
             {

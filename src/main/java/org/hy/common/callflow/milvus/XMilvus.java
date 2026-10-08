@@ -157,7 +157,7 @@ public class XMilvus implements Comparable<XMilvus> ,XJavaID ,Cloneable
         v_Clone.setResult((MilvusResult) this.getResult().clone());
         v_Clone.setComment(              this.getComment());
         
-        // v_Clone.setXJavaID();                                       // 禁止深度克隆
+        v_Clone.setXJavaID(this.getXJavaID() + this.getObjectID());    // 克隆，但XID不同
         // v_Clone.setCreate();                                        // 禁止深度克隆
         
         return v_Clone;
