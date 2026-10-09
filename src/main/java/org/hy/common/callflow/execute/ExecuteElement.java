@@ -59,6 +59,7 @@ import org.hy.common.xml.log.Logger;
  *              v4.0  2025-10-09  添加：是否在初始时立即执行
  *              v4.1  2025-10-10  添加：是否在初始时延时执行
  *              v5.0  2025-11-18  添加：编排续跑。建议人：李浩
+ *              v6.0  2026-10-08  添加：是否模拟的判定
  */
 public abstract class ExecuteElement extends TotalNano implements IExecute ,Cloneable
 {
@@ -311,9 +312,11 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      * @version     v1.0
      *
      * @param io_Context  上下文类型的变量信息
-     * @return
+     * @return            Return.paramStr 表示模拟项的注释说明，仅在返回 true 时有效
+     *                    Return.paramInt 表示第几个模拟项，下标从1开始，仅在返回 true 时有效
+     *                    Return.paramObj 表示模拟类型（EXCEPTION、FAILED、SUCCEED）
      */
-    protected boolean isMock(Map<String ,Object> io_Context)
+    protected Return<String> isMock(Map<String ,Object> io_Context)
     {
         try
         {
@@ -322,7 +325,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         catch (Exception exce)
         {
             $Logger.error(exce);
-            return false;
+            return new Return<String>(false).setParamInt(0);
         }
     }
     
@@ -346,13 +349,18 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      */
     protected boolean mock(Map<String ,Object> io_Context ,long i_BeginTime ,ExecuteResult io_Result ,String i_JsonRootKey ,String i_DataClass) 
     {
+        Return<Object> v_MockData = null;
         try
         {
-            Object v_MockData = this.mock.mock(io_Context ,i_JsonRootKey ,i_DataClass);
-            if ( v_MockData != null )
+            v_MockData = this.mock.mock(io_Context ,i_JsonRootKey ,i_DataClass);
+            if ( v_MockData.getException() != null )
             {
-                io_Result.setResult(v_MockData);
-                io_Result.setExecuteLogic("Mock：" + io_Result.getExecuteLogic());
+                throw v_MockData.getException();
+            }
+            else if ( v_MockData.getParamObj() != null )
+            {
+                io_Result.setResult(v_MockData.getParamObj());
+                io_Result.setExecuteLogic("Mock：" + v_MockData.getParamStr() + "：" + io_Result.getExecuteLogic());
                 
                 this.refreshReturn(io_Context ,io_Result.getResult());
                 this.refreshStatus(io_Context ,io_Result.getStatus());
@@ -366,7 +374,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         }
         catch (MockException exce)
         {
-            io_Result.setExecuteLogic("Mock exception：" + io_Result.getExecuteLogic());
+            io_Result.setExecuteLogic("Mock exception：" + v_MockData.getParamStr() + "：" + io_Result.getExecuteLogic());
             io_Result.setException(exce);
             this.refreshStatus(io_Context ,io_Result.getStatus());
             return true;
@@ -398,13 +406,18 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
      */
     protected boolean mockRows(Map<String ,Object> io_Context ,long i_BeginTime ,ExecuteResult io_Result ,String i_Split) 
     {
+        Return<List<String>> v_MockData = null;
         try
         {
-            List<String> v_MockData = this.mock.mockRows(io_Context ,i_Split);
-            if ( v_MockData != null )
+            v_MockData = this.mock.mockRows(io_Context ,i_Split);
+            if ( v_MockData.getException() != null )
             {
-                io_Result.setResult(v_MockData);
-                io_Result.setExecuteLogic("Mock：" + io_Result.getExecuteLogic());
+                throw v_MockData.getException();
+            }
+            else if ( v_MockData.getParamObj() != null )
+            {
+                io_Result.setResult(v_MockData.getParamObj());
+                io_Result.setExecuteLogic("Mock：" + v_MockData.getParamStr() + "：" + io_Result.getExecuteLogic());
                 
                 this.refreshReturn(io_Context ,io_Result.getResult());
                 this.refreshStatus(io_Context ,io_Result.getStatus());
@@ -418,7 +431,7 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
         }
         catch (MockException exce)
         {
-            io_Result.setExecuteLogic("Mock exception：" + io_Result.getExecuteLogic());
+            io_Result.setExecuteLogic("Mock exception："+ v_MockData.getParamStr() + "：" + io_Result.getExecuteLogic());
             io_Result.setException(exce);
             this.refreshStatus(io_Context ,io_Result.getStatus());
             return true;

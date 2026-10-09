@@ -45,9 +45,9 @@
             <logical>AND</logical>                          <!-- 判定逻辑（可以不用显式定义。默认为AND） -->
             <conditionItem>
                 <valueClass>java.lang.Integer</valueClass>  <!-- 定义变量类型 -->
-                <valueXIDA>:Count</valueXIDA>               <!-- 默认值 -->
+                <valueXIDA>:Count</valueXIDA>               <!-- 变量 -->
                 <comparer><![CDATA[<=]]></comparer>         <!-- 判定比较器（可以不用显式定义。默认为==） -->
-                <valueXIDB>9</valueXIDB>                    <!-- 变量 -->
+                <valueXIDB>9</valueXIDB>                    <!-- 默认值 -->
             </conditionItem>
             <route>
                 <if>                                        <!-- 真时的路由 -->

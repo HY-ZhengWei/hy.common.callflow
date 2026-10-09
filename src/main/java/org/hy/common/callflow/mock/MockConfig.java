@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Help;
+import org.hy.common.Return;
 import org.hy.common.StringHelp;
 import org.hy.common.callflow.common.ValueHelp;
 import org.hy.common.xml.XJSON;
@@ -21,6 +22,8 @@ import org.hy.common.xml.log.Logger;
  * @createDate  2025-11-06
  * @version     v1.0
  *              v2.0  2026-06-03  添加：模拟执行用时的等待时长（单位：毫秒）。合作解决人：李浩 
+ *              v3.0  2026-10-08  添加：是否模拟的判定
+ *                                优化：模拟执行用时的等待，仅在模拟生效时才等待
  */
 public class MockConfig
 {
@@ -41,7 +44,7 @@ public class MockConfig
      */
     private boolean        valid;
     
-    /** 模拟执行用时的等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识 */
+    /** 模拟执行用时的等待时长（单位：毫秒）。仅在模拟生效时才等待。可以是数值、上下文变量、XID标识 */
     private String         waitTime;
     
     /** 
@@ -84,70 +87,76 @@ public class MockConfig
      * @param i_Context      上下文类型的变量信息
      * @param i_JsonRootKey  Json中子项的名称
      * @param i_DataClass    模拟数据类型
-     * @return               没有符合要求的模拟数据时，返回NULL
+     * @return               Return.paramStr  表示模拟项的注释说明，仅在返回 true 时有效
+     *                       Return.paramInt  表示第几个模拟项，下标从1开始，仅在返回 true 时有效
+     *                       Return.paramObj  表示模拟数据，没有符合要求的模拟数据时，返回NULL
+     *                       Return.exception 表示模拟异常
      * @throws Exception
      */
-    public Object mock(Map<String ,Object> i_Context ,String i_JsonRootKey ,String i_DataClass) throws Exception
+    public Return<Object> mock(Map<String ,Object> i_Context ,String i_JsonRootKey ,String i_DataClass) throws Exception
     {
         if ( !this.valid )
         {
-            return null;
+            return new Return<Object>(false).setParamInt(0).setParamStr("").setParamObj(null).setException(null);
         }
         
-        Long v_WaitTime = null;
-        if ( Help.isNumber(this.waitTime) )
+        Return<Object> v_Data = this.mock(i_Context);
+        if ( v_Data.getParamObj() == null )
         {
-            v_WaitTime = Long.valueOf(this.waitTime);
+            return v_Data;
         }
         else
         {
-            v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,0L ,i_Context);
-        }
-        
-        if ( v_WaitTime > 0 )
-        {
-            Thread.sleep(v_WaitTime ,0);
-        }
-        
-        Object v_Data = this.mock(i_Context);
-        if ( v_Data == null )
-        {
-            return null;
-        }
-        else if ( !Help.isNull(i_DataClass) || !Help.isNull(this.dataClass) )
-        {
-            Class<?> v_DataClass = Help.forName(Help.NVL(i_DataClass ,this.dataClass));
-            if ( v_Data.getClass().equals(v_DataClass) )
+            Long v_WaitTime = null;
+            if ( Help.isNumber(this.waitTime) )
             {
-                return v_Data;
+                v_WaitTime = Long.valueOf(this.waitTime);
             }
-            else if ( v_Data instanceof String )
+            else
             {
-                if ( Help.isBasicDataType(v_DataClass) )
+                v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,0L ,i_Context);
+            }
+            
+            if ( v_WaitTime > 0 )
+            {
+                Thread.sleep(v_WaitTime ,0);
+            }
+            
+            if ( !Help.isNull(i_DataClass) || !Help.isNull(this.dataClass) )
+            {
+                Class<?> v_DataClass = Help.forName(Help.NVL(i_DataClass ,this.dataClass));
+                if ( v_Data.getParamObj().getClass().equals(v_DataClass) )
                 {
-                    return Help.toObject(v_DataClass ,(String) v_Data);
+                    return v_Data;
                 }
-                else
+                else if ( v_Data.getParamObj() instanceof String )
                 {
-                    XJSON v_XJson = new XJSON();
-                    if ( Help.isNull(i_JsonRootKey) )
+                    if ( Help.isBasicDataType(v_DataClass) )
                     {
-                        return v_XJson.toJava((String) v_Data ,v_DataClass);
+                        return v_Data.setParamObj(Help.toObject(v_DataClass ,(String) v_Data.getParamObj()));
                     }
                     else
                     {
-                        return v_XJson.toJava((String) v_Data ,i_JsonRootKey ,v_DataClass);
+                        XJSON v_XJson = new XJSON();
+                        if ( Help.isNull(i_JsonRootKey) )
+                        {
+                            return v_Data.setParamObj(v_XJson.toJava((String) v_Data.getParamObj() ,v_DataClass));
+                        }
+                        else
+                        {
+                            return v_Data.setParamObj(v_XJson.toJava((String) v_Data.getParamObj() ,i_JsonRootKey ,v_DataClass));
+                        }
                     }
+                }
+                else
+                {
+                    return v_Data;
                 }
             }
             else
             {
                 return v_Data;
             }
-        }
-        else
-        {
-            return v_Data;
         }
     }
     
@@ -164,24 +173,42 @@ public class MockConfig
      *
      * @param i_Context      上下文类型的变量信息
      * @param i_Split        行分隔符
-     * @return               没有符合要求的模拟数据时，返回NULL
+     * @return               Return.paramStr  表示模拟项的注释说明，仅在返回 true 时有效
+     *                       Return.paramInt  表示第几个模拟项，下标从1开始，仅在返回 true 时有效
+     *                       Return.paramObj  表示模拟数据，没有符合要求的模拟数据时，返回NULL
+     *                       Return.exception 表示模拟异常
      * @throws Exception
      */
-    public List<String> mockRows(Map<String ,Object> i_Context ,String i_Split) throws Exception
+    public Return<List<String>> mockRows(Map<String ,Object> i_Context ,String i_Split) throws Exception
     {
         if ( !this.valid )
         {
-            return null;
+            return new Return<List<String>>(false).setParamInt(0).setParamStr("").setParamObj(null).setException(null);
         }
         
-        Object v_Data = this.mock(i_Context);
-        if ( v_Data == null )
+        Return<Object> v_Data = this.mock(i_Context);
+        if ( v_Data.getParamObj() == null )
         {
-            return null;
+            return new Return<List<String>>(v_Data.get()).setParamInt(v_Data.getParamInt()).setParamStr(v_Data.getParamStr()).setParamObj(null).setException(v_Data.getException());
         }
         else
         {
-            String       v_Text  = StringHelp.replaceAll(v_Data.toString() ,"\r\n" ,"\n");
+            Long v_WaitTime = null;
+            if ( Help.isNumber(this.waitTime) )
+            {
+                v_WaitTime = Long.valueOf(this.waitTime);
+            }
+            else
+            {
+                v_WaitTime = (Long) ValueHelp.getValue(this.waitTime ,Long.class ,0L ,i_Context);
+            }
+            
+            if ( v_WaitTime > 0 )
+            {
+                Thread.sleep(v_WaitTime ,0);
+            }
+            
+            String       v_Text  = StringHelp.replaceAll(v_Data.getParamObj().toString() ,"\r\n" ,"\n");
             List<String> v_Datas = new ArrayList<String>();
             int          v_Len   = i_Split.length();
             int          v_Old   = 0 - v_Len;
@@ -195,7 +222,7 @@ public class MockConfig
             }
             v_Datas.add(v_Text.substring(v_Old + v_Len).trim());
             
-            return v_Datas;
+            return new Return<List<String>>(v_Data.get()).setParamInt(v_Data.getParamInt()).setParamStr(v_Data.getParamStr()).setParamObj(v_Datas).setException(v_Data.getException());
         }
     }
     
@@ -212,22 +239,26 @@ public class MockConfig
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
-     * @return           没有符合要求的模拟数据时，返回NULL
+     * @return           Return.paramStr 表示模拟项的注释说明，仅在返回 true 时有效
+     *                   Return.paramInt 表示第几个模拟项，下标从1开始，仅在返回 true 时有效
+     *                   Return.paramObj 表示模拟类型（EXCEPTION、FAILED、SUCCEED）
      * @throws Exception 
      */
-    public boolean isMock(Map<String ,Object> i_Context) throws Exception
+    public Return<String> isMock(Map<String ,Object> i_Context) throws Exception
     {
-        boolean v_IsMock = false;
+        Return<String> v_IsMock = null;
         
         if ( !this.valid )
         {
+            v_IsMock = new Return<String>(false).setParamInt(0).setParamStr("").setParamObj("");
             return v_IsMock;
         }
         
         if ( !Help.isNull(this.exceptions) )
         {
             v_IsMock = this.isMock(i_Context ,this.exceptions);
-            if ( v_IsMock )
+            v_IsMock.paramObj = "EXCEPTION";
+            if ( v_IsMock.booleanValue() )
             {
                 return v_IsMock;
             }
@@ -236,7 +267,8 @@ public class MockConfig
         if ( !Help.isNull(this.faileds) )
         {
             v_IsMock = this.isMock(i_Context ,this.faileds);
-            if ( v_IsMock )
+            v_IsMock.paramObj = "FAILED";
+            if ( v_IsMock.booleanValue() )
             {
                 return v_IsMock;
             }
@@ -245,13 +277,14 @@ public class MockConfig
         if ( !Help.isNull(this.succeeds) )
         {
             v_IsMock = this.isMock(i_Context ,this.succeeds);
-            if ( v_IsMock )
+            v_IsMock.paramObj = "SUCCEED";
+            if ( v_IsMock.booleanValue() )
             {
                 return v_IsMock;
             }
         }
         
-        return v_IsMock;
+        return v_IsMock.setParamInt(0).setParamStr("").setParamObj("");
     }
     
     
@@ -265,23 +298,25 @@ public class MockConfig
      *
      * @param i_Context    上下文类型的变量信息
      * @param i_MockItems  模拟项的集合
-     * @return
+     * @return             Return.paramStr 表示模拟项的注释说明，仅在返回 true 时有效
+     *                     Return.paramInt 表示第几个模拟项，下标从1开始，仅在返回 true 时有效
      * @throws Exception 
      */
-    private boolean isMock(Map<String ,Object> i_Context ,List<MockItem> i_MockItems) throws Exception
+    private Return<String> isMock(Map<String ,Object> i_Context ,List<MockItem> i_MockItems) throws Exception
     {
-        boolean v_IsMock = false;
+        Return<String> v_Ret = new Return<String>(false).setParamInt(0).setParamStr("");
         
         for (MockItem v_MockItem : i_MockItems)
         {
-            v_IsMock = v_MockItem.isMock(i_Context);
+            v_Ret.paramInt++;
+            boolean v_IsMock = v_MockItem.isMock(i_Context);
             if ( v_IsMock )
             {
-                return v_IsMock;
+                return v_Ret.set(true).setParamStr(Help.NVL(v_MockItem.getComment()));
             }
         }
         
-        return v_IsMock;
+        return v_Ret.setParamInt(0).setParamStr("");
     }
     
     
@@ -297,26 +332,29 @@ public class MockConfig
      * @version     v1.0
      *
      * @param i_Context  上下文类型的变量信息
-     * @return           没有符合要求的模拟数据时，返回NULL
+     * @return           Return.paramStr  表示模拟项的注释说明，仅在返回 true 时有效
+     *                   Return.paramInt  表示第几个模拟项，下标从1开始，仅在返回 true 时有效
+     *                   Return.paramObj  表示模拟数据，没有符合要求的模拟数据时，返回NULL
+     *                   Return.exception 表示模拟异常
      * @throws Exception 
      */
-    private Object mock(Map<String ,Object> i_Context) throws Exception
+    private Return<Object> mock(Map<String ,Object> i_Context) throws Exception
     {
-        Object v_Data = null;
+        Return<Object> v_Data = null;
         
         if ( !Help.isNull(this.exceptions) )
         {
             v_Data = this.mock(i_Context ,this.exceptions);
-            if ( v_Data != null )
+            if ( v_Data.getParamObj() != null )
             {
-                throw new MockException("Mock exception：" + v_Data);
+                return v_Data.setException(new MockException("Mock exception：" + v_Data));
             }
         }
         
         if ( !Help.isNull(this.faileds) )
         {
             v_Data = this.mock(i_Context ,this.faileds);
-            if ( v_Data != null )
+            if ( v_Data.getParamObj() != null )
             {
                 return v_Data;
             }
@@ -325,7 +363,7 @@ public class MockConfig
         if ( !Help.isNull(this.succeeds) )
         {
             v_Data = this.mock(i_Context ,this.succeeds);
-            if ( v_Data != null )
+            if ( v_Data.getParamObj() != null )
             {
                 return v_Data;
             }
@@ -345,23 +383,26 @@ public class MockConfig
      *
      * @param i_Context    上下文类型的变量信息
      * @param i_MockItems  模拟项的集合
-     * @return             没有符合要求的模拟数据时，返回NULL
+     * @return             Return.paramStr 表示模拟项的注释说明，仅在返回 true 时有效
+     *                     Return.paramInt 表示第几个模拟项，下标从1开始，仅在返回 true 时有效
+     *                     Return.paramObj 表示模拟数据，没有符合要求的模拟数据时，返回NULL
      * @throws Exception 
      */
-    private Object mock(Map<String ,Object> i_Context ,List<MockItem> i_MockItems) throws Exception
+    private Return<Object> mock(Map<String ,Object> i_Context ,List<MockItem> i_MockItems) throws Exception
     {
-        Object v_Data = null;
+        Return<Object> v_Ret = new Return<Object>(false).setParamInt(0).setParamStr("").setParamObj(null);
         
         for (MockItem v_MockItem : i_MockItems)
         {
-            v_Data = v_MockItem.mock(i_Context);
+            v_Ret.paramInt++;
+            Object v_Data = v_MockItem.mock(i_Context);
             if ( v_Data != null )
             {
-                return v_Data;
+                return v_Ret.set(true).setParamStr(Help.NVL(v_MockItem.getComment())).setParamObj(v_Data);
             }
         }
         
-        return v_Data;
+        return v_Ret.setParamInt(0).setParamStr("").setParamObj(null);
     }
 
     
@@ -389,7 +430,7 @@ public class MockConfig
     
     
     /**
-     * 获取：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 获取：等待时长（单位：毫秒）。仅在模拟生效时才等待。可以是数值、上下文变量、XID标识
      */
     public String getWaitTime()
     {
@@ -399,9 +440,9 @@ public class MockConfig
 
     
     /**
-     * 设置：等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * 设置：等待时长（单位：毫秒）。仅在模拟生效时才等待。可以是数值、上下文变量、XID标识
      * 
-     * @param i_WaitTime 等待时长（单位：毫秒）。可以是数值、上下文变量、XID标识
+     * @param i_WaitTime 等待时长（单位：毫秒）。仅在模拟生效时才等待。可以是数值、上下文变量、XID标识
      */
     public void setWaitTime(String i_WaitTime)
     {
