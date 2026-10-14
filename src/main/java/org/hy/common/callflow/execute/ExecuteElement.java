@@ -355,10 +355,13 @@ public abstract class ExecuteElement extends TotalNano implements IExecute ,Clon
             v_MockData = this.mock.mock(io_Context ,i_JsonRootKey ,i_DataClass);
             if ( v_MockData.getException() != null )
             {
+                $Logger.info("Mock exception：" + v_MockData.getParamStr() + "：" + io_Result.getExecuteLogic() + " " + v_MockData.getParamObj());
                 throw v_MockData.getException();
             }
             else if ( v_MockData.getParamObj() != null )
             {
+                $Logger.info("Mock：" + v_MockData.getParamStr() + "：" + io_Result.getExecuteLogic() + " " + v_MockData.getParamObj());
+                
                 io_Result.setResult(v_MockData.getParamObj());
                 io_Result.setExecuteLogic("Mock：" + v_MockData.getParamStr() + "：" + io_Result.getExecuteLogic());
                 
