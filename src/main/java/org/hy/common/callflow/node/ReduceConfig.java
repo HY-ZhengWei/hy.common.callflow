@@ -39,7 +39,8 @@ import org.hy.common.xml.XJSON;
  * @author      ZhengWei(HY)
  * @createDate  2026-08-11
  * @version     v1.0
- *              v2.0  2026-10-19  添加：相同变量名称，重复向Map大集合中填值时，可按复本偏移量生成不同的变量名称添加，确保不相互覆盖。
+ *              v2.0  2026-10-19  添加：相同变量名称，重复向Map大集合中填值时，可按多复本偏移量生成不同的变量名称添加，确保不相互覆盖。
+ *                                添加：相同变量名称，指定使用第几个。如，仅使用首次出现的第一个。
  */
 public class ReduceConfig extends NodeConfig implements NodeConfigBase
 {
@@ -56,11 +57,28 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
     /** 归纳类型（1:Map；2:List；3:Set；4:Array；-1:自动识别）。当未指定时，将在运行时参考归纳原因自动识别 */
     private Integer              bigType;
     
-    /** 香酥偏移量的文本值 */
+    /** 多复本使用哪一个 */
+    private String               useWhichOneText;
+    
+    /** 
+     * 多复本使用哪一个（仅内部使用）。
+     *   Map.key为集合变量ID，
+     *   Map.Value为使用第几个复本。当小于此值时，使用当时最大的一个。最小下标从1开始
+     *   如：Map.value = 3 时，第一次出现 name = 1 时，使用值 1
+     *                       第二次出现 name = 2 时，使用值 2
+     *                       第三次出现 name = 3 时，使用值 3
+     *                       第四次出现 name = 4 时，使用值 3
+     *                       第数次出现 name = n 时，使用值 3
+     * 
+     * 优先级及高于 duplicateOffset
+     */
+    private Map<String ,Integer> useWhichOne;
+    
+    /** 多复本偏移量的文本值 */
     private String               duplicateOffsetText;
     
     /** 
-     * 复本偏移量。
+     * 多复本偏移量（仅内部使用）。
      *   Map.key为集合变量ID的前缀（并且不包括变量名称数字的部分，如：name1，仅写name），
      *   Map.Value为出现重复时每次的偏移量。
      *   如，偏移量为 1 时，第一次出现 name1 时，返回 name1
@@ -280,12 +298,42 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
         this.keyChange();
     }
 
+    
+    
+    /**
+     * 获取：多复本使用哪一个
+     */
+    public String getUseWhichOne()
+    {
+        return useWhichOneText;
+    }
+
 
     
     /**
-     * 获取：复本偏移量。
-     *   Map.key为集合变量ID的前缀（并且不包括变量名称数字的部分，如：name1，仅写name），
-     *   Map.Value为出现重复时每次的偏移量。
+     * 设置：多复本使用哪一个
+     * 
+     * @param i_UseWhichOne 多复本使用哪一个
+     */
+    @SuppressWarnings("unchecked")
+    public void setUseWhichOne(String i_UseWhichOne)
+    {
+        this.useWhichOneText = i_UseWhichOne;
+        
+        if ( !Help.isNull(this.duplicateOffsetText) )
+        {
+            XJSON v_XJson = new XJSON();
+            this.useWhichOne = (Map<String ,Integer>) v_XJson.toJava(this.duplicateOffsetText);
+        }
+        
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
+
+    /**
+     * 获取：多复本偏移量。
      */
     public String getDuplicateOffset()
     {
@@ -295,11 +343,9 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
 
     
     /**
-     * 设置：复本偏移量。
-     *   Map.key为集合变量ID的前缀（并且不包括变量名称数字的部分，如：name1，仅写name），
-     *   Map.Value为出现重复时每次的偏移量。
+     * 设置：多复本偏移量。
      * 
-     * @param i_DuplicateOffset  复本偏移量。
+     * @param i_DuplicateOffset  多复本偏移量。
      */
     @SuppressWarnings("unchecked")
     public void setDuplicateOffset(String i_DuplicateOffset)
@@ -777,6 +823,23 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
     private void addElement(Map<String ,Object> io_BigMap ,Map<String ,Long> io_Duplicate ,Object i_Element ,String i_ElementID)
     {
         String v_ElementID = i_ElementID;
+        if ( !Help.isNull(this.useWhichOne) )
+        {
+            Integer v_UseWhichOne = this.useWhichOne.get(i_ElementID);
+            if ( v_UseWhichOne != null )
+            {
+                int v_UseMax = Help.min(v_UseWhichOne ,1);
+                int v_DCount = Help.NVL(io_Duplicate.get(i_ElementID) ,1L).intValue();
+                
+                if ( v_DCount <= v_UseMax )
+                {
+                    io_Duplicate.put(v_ElementID ,v_DCount + 1L);
+                    io_BigMap.put(i_ElementID ,i_Element);
+                }
+                return;
+            }
+        }
+        
         if ( !Help.isNull(this.duplicateOffset) && io_BigMap.containsKey(i_ElementID) )
         {
             List<Object> v_IDTextNum = StringHelp.splitTextNumber(i_ElementID);
@@ -798,12 +861,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
             Integer v_DOffset = this.duplicateOffset.get(v_DKey);
             if ( v_DOffset != null )
             {
-                v_DCount = io_Duplicate.get(i_ElementID);
-                if ( v_DCount == null )
-                {
-                    v_DCount = 1L;
-                }
-                
+                v_DCount    = Help.NVL(io_Duplicate.get(i_ElementID) ,1L);
                 v_ElementID = v_DKey + (v_DInit + v_DCount * v_DOffset);
                 io_Duplicate.put(i_ElementID ,v_DCount + 1L);
             }
@@ -839,19 +897,23 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
         
         if ( !Help.isNull(this.getIds()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("ids"      ,this.getIds()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("ids"             ,this.getIds()));
         }
         if ( !Help.isNull(this.getIdPrefix()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("idPrefix" ,this.getIdPrefix()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("idPrefix"        ,this.getIdPrefix()));
         }
         if ( !Help.isNull(this.getIdSuffix()) )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("idSuffix" ,this.getIdSuffix()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("idSuffix"        ,this.getIdSuffix()));
         }
         if ( !Help.isNull(this.getBigType()) && this.getBigType() >= 1 )
         {
-            io_Xml.append(v_NewSpace).append(IToXml.toValue("bigType"  ,this.getBigType()));
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("bigType"         ,this.getBigType()));
+        }
+        if ( !Help.isNull(this.getUseWhichOne()) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("useWhichOne"     ,this.getUseWhichOne()));
         }
         if ( !Help.isNull(this.getDuplicateOffset()) )
         {
@@ -1093,6 +1155,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
         v_Clone.idSuffix    = this.idSuffix;
         v_Clone.bigType     = this.bigType;
         
+        v_Clone.setUseWhichOne(    this.useWhichOneText);
         v_Clone.setDuplicateOffset(this.duplicateOffsetText);
         
         if ( !Help.isNull(this.callParams) )
@@ -1143,6 +1206,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
         v_Clone.idSuffix    = this.idSuffix;
         v_Clone.bigType     = this.bigType;
         
+        v_Clone.setUseWhichOne(    this.useWhichOneText);
         v_Clone.setDuplicateOffset(this.duplicateOffsetText);
         
         if ( !Help.isNull(this.callParams) )
