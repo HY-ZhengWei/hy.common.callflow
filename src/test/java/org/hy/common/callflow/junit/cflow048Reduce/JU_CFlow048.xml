@@ -176,10 +176,17 @@
     
         <xreduce id="XReduce_CF048_Map_归纳">
             <ids>                      <!-- 要归纳的集合变量ID。多个ID间用英文逗号分隔，将每变量ID前要用占位符:冒号。区分大小写 -->
-                :RetMapA 
+                :RetMapA
                ,:RetMapB
                ,:RetC
+               ,:RetMapA
+               ,:RetMapA
             </ids>
+            <duplicateOffset>
+                {
+                    "MA": 10
+                }
+            </duplicateOffset>
             <returnID>RetABC</returnID>
             <route>
                 <succeed> 

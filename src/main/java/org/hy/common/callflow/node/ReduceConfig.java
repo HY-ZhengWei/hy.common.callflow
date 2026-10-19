@@ -20,6 +20,7 @@ import org.hy.common.callflow.execute.ExecuteElement;
 import org.hy.common.callflow.execute.ExecuteResult;
 import org.hy.common.callflow.file.IToXml;
 import org.hy.common.db.DBSQL;
+import org.hy.common.xml.XJSON;
 
 
 
@@ -38,21 +39,38 @@ import org.hy.common.db.DBSQL;
  * @author      ZhengWei(HY)
  * @createDate  2026-08-11
  * @version     v1.0
+ *              v2.0  2026-10-19  添加：相同变量名称，重复向Map大集合中填值时，可按复本偏移量生成不同的变量名称添加，确保不相互覆盖。
  */
 public class ReduceConfig extends NodeConfig implements NodeConfigBase
 {
     
     /** 要归纳的集合变量ID。多个ID间用英文逗号分隔，将每变量ID前要用占位符:冒号。区分大小写 */
-    private String  ids;
+    private String               ids;
     
     /** 要归纳的集合变量ID的前缀符合条件的要求。不要写占位符:冒号。区分大小写 */
-    private String  idPrefix;
+    private String               idPrefix;
     
     /** 要归纳的集合变量ID的后缀符合条件的要求。不要写占位符:冒号。区分大小写 */
-    private String  idSuffix;
+    private String               idSuffix;
     
     /** 归纳类型（1:Map；2:List；3:Set；4:Array；-1:自动识别）。当未指定时，将在运行时参考归纳原因自动识别 */
-    private Integer bigType;
+    private Integer              bigType;
+    
+    /** 香酥偏移量的文本值 */
+    private String               duplicateOffsetText;
+    
+    /** 
+     * 复本偏移量。
+     *   Map.key为集合变量ID的前缀（并且不包括变量名称数字的部分，如：name1，仅写name），
+     *   Map.Value为出现重复时每次的偏移量。
+     *   如，偏移量为 1 时，第一次出现 name1 时，返回 name1
+     *                  第二次出现 name1 时，返回 name2
+     *                  第三次出现 name1 时，返回 name3 
+     *                  第一次出现 name  时，返回 name
+     *                  第二次出现 name  时，返回 name1
+     *                  第三次出现 name  时，返回 name2
+     */
+    private Map<String ,Integer> duplicateOffset;
     
     
     
@@ -263,6 +281,42 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
     }
 
 
+    
+    /**
+     * 获取：复本偏移量。
+     *   Map.key为集合变量ID的前缀（并且不包括变量名称数字的部分，如：name1，仅写name），
+     *   Map.Value为出现重复时每次的偏移量。
+     */
+    public String getDuplicateOffset()
+    {
+        return this.duplicateOffsetText;
+    }
+
+
+    
+    /**
+     * 设置：复本偏移量。
+     *   Map.key为集合变量ID的前缀（并且不包括变量名称数字的部分，如：name1，仅写name），
+     *   Map.Value为出现重复时每次的偏移量。
+     * 
+     * @param i_DuplicateOffset  复本偏移量。
+     */
+    @SuppressWarnings("unchecked")
+    public void setDuplicateOffset(String i_DuplicateOffset)
+    {
+        this.duplicateOffsetText = i_DuplicateOffset;
+        
+        if ( !Help.isNull(this.duplicateOffsetText) )
+        {
+            XJSON v_XJson = new XJSON();
+            this.duplicateOffset = (Map<String ,Integer>) v_XJson.toJava(this.duplicateOffsetText);
+        }
+        
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+
+
 
     /**
      * 设置XJava池中对象的ID标识。此方法不用用户调用设置值，是自动的。
@@ -389,7 +443,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
-     * 创建压缩文件
+     * 归纳
      * 
      * @author      ZhengWei(HY)
      * @createDate  2026-08-11
@@ -400,11 +454,12 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
      */
     public Object reduce(Map<String ,Object> i_Context)
     {
-        int                 v_Count   = 0;
-        int                 v_BigType = this.getBigType();
-        Map<String ,Object> v_BigMap  = new LinkedHashMap<String ,Object>();
-        List<Object>        v_BigList = new ArrayList<Object>();
-        Set<Object>         v_BigSet  = new LinkedHashSet<Object>();
+        int                 v_Count     = 0;
+        int                 v_BigType   = this.getBigType();
+        Map<String ,Object> v_BigMap    = new LinkedHashMap<String ,Object>();
+        List<Object>        v_BigList   = new ArrayList<Object>();
+        Set<Object>         v_BigSet    = new LinkedHashSet<Object>();
+        Map<String ,Long>   v_Duplicate = new HashMap<String ,Long>();  // 相同变量名称出现的次数
         
         if ( !Help.isNull(this.getIds()) )
         {
@@ -423,7 +478,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
                     continue;
                 }
                 
-                int v_AddRet = this.addBig(v_BigType ,v_BigMap ,v_BigList ,v_BigSet ,v_Datas ,v_ID);
+                int v_AddRet = this.addBig(v_BigType ,v_BigMap ,v_BigList ,v_BigSet ,v_Duplicate ,v_Datas ,v_ID);
                 if ( v_AddRet >= 1 )
                 {
                     v_BigType = v_AddRet;
@@ -446,7 +501,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
                 if ( v_ID.startsWith(this.getIdPrefix())
                   && v_ID.endsWith(  this.getIdSuffix()) )
                 {
-                    int v_AddRet = this.addBig(v_BigType ,v_BigMap ,v_BigList ,v_BigSet ,v_Datas ,v_ID);
+                    int v_AddRet = this.addBig(v_BigType ,v_BigMap ,v_BigList ,v_BigSet ,v_Duplicate ,v_Datas ,v_ID);
                     if ( v_AddRet >= 1 )
                     {
                         v_BigType = v_AddRet;
@@ -468,7 +523,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
                 String v_ID = v_Item.getKey();
                 if ( v_ID.startsWith(this.getIdPrefix()) )
                 {
-                    int v_AddRet = this.addBig(v_BigType ,v_BigMap ,v_BigList ,v_BigSet ,v_Datas ,v_ID);
+                    int v_AddRet = this.addBig(v_BigType ,v_BigMap ,v_BigList ,v_BigSet ,v_Duplicate ,v_Datas ,v_ID);
                     if ( v_AddRet >= 1 )
                     {
                         v_BigType = v_AddRet;
@@ -490,7 +545,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
                 String v_ID = v_Item.getKey();
                 if ( v_ID.endsWith(this.getIdSuffix()) )
                 {
-                    int v_AddRet = this.addBig(v_BigType ,v_BigMap ,v_BigList ,v_BigSet ,v_Datas ,v_ID);
+                    int v_AddRet = this.addBig(v_BigType ,v_BigMap ,v_BigList ,v_BigSet ,v_Duplicate ,v_Datas ,v_ID);
                     if ( v_AddRet >= 1 )
                     {
                         v_BigType = v_AddRet;
@@ -499,6 +554,9 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
                 }
             }
         }
+        
+        v_Duplicate.clear();
+        v_Duplicate = null;
         
         if ( v_Count <= 0 )
         {
@@ -566,19 +624,20 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
      * @createDate  2026-08-11
      * @version     v1.0
      *
-     * @param i_BigType   大集合的类型。1:Map；2:List；3:Set；4:Array；其它无效
-     * @param io_BigMap   大集合的Map类型
-     * @param io_BigList  大集合的List类型，同时兼容数组类型
-     * @param io_BigSet   大集合的Set类型
-     * @param i_Datas     小集合数据
-     * @param i_DatasID   小集合数据的变量ID
-     * @return            正确归纳时，返回大集合的类型。
-     *                    异常时，返回-1；
-     *                      异常情况1：首个小集合i_Datas，不是Map、List、Set、Array类型时
-     *                      异常情况2：小集合类型与大集合类型不一致时
+     * @param i_BigType     大集合的类型。1:Map；2:List；3:Set；4:Array；其它无效
+     * @param io_BigMap     大集合的Map类型
+     * @param io_BigList    大集合的List类型，同时兼容数组类型
+     * @param io_BigSet     大集合的Set类型
+     * @param io_Duplicate  相同变量名称出现的次数。Map.key 为变量名称，Map.value 为已经归纳到大集合中的次数。
+     * @param i_Datas       小集合数据
+     * @param i_DatasID     小集合数据的变量ID
+     * @return              正确归纳时，返回大集合的类型。
+     *                      异常时，返回-1；
+     *                        异常情况1：首个小集合i_Datas，不是Map、List、Set、Array类型时
+     *                        异常情况2：小集合类型与大集合类型不一致时
      */
     @SuppressWarnings("unchecked")
-    private int addBig(int i_BigType ,Map<String ,Object> io_BigMap ,List<Object> io_BigList ,Set<Object> io_BigSet ,Object i_Datas ,String i_DatasID)
+    private int addBig(int i_BigType ,Map<String ,Object> io_BigMap ,List<Object> io_BigList ,Set<Object> io_BigSet ,Map<String ,Long> io_Duplicate ,Object i_Datas ,String i_DatasID)
     {
         int v_BigType = i_BigType;
         if ( v_BigType <= 0 )
@@ -606,17 +665,23 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
             }
         }
         
+        // 1:Map
         if ( v_BigType == 1 )
         {
             if ( MethodReflect.isExtendImplement(i_Datas ,Map.class) )
             {
-                io_BigMap.putAll((Map<String ,Object>) i_Datas);
+                Map<String ,Object> v_Datas = (Map<String ,Object>) i_Datas;
+                for (Map.Entry<String ,Object> v_Item : v_Datas.entrySet())
+                {
+                    this.addElement(io_BigMap ,io_Duplicate ,v_Item.getValue() ,v_Item.getKey());
+                }
             }
             else
             {
-                io_BigMap.put(i_DatasID ,i_Datas);
+                this.addElement(io_BigMap ,io_Duplicate ,i_Datas ,i_DatasID);
             }
         }
+        // 2:List
         else if ( v_BigType == 2 )
         {
             if ( MethodReflect.isExtendImplement(i_Datas ,Map.class) )
@@ -641,6 +706,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
                 io_BigList.add(i_Datas);
             }
         }
+        // 3:Set
         else if ( v_BigType == 3 )
         {
             if ( MethodReflect.isExtendImplement(i_Datas ,Map.class) )
@@ -665,6 +731,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
                 io_BigSet.add(i_Datas);
             }
         }
+        // 4:Array
         else if ( v_BigType == 4 )
         {
             if ( MethodReflect.isExtendImplement(i_Datas ,Map.class) )
@@ -691,6 +758,58 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
         }
         
         return v_BigType;
+    }
+    
+    
+    
+    /**
+     * 集合中每个元素项向统一的大集合中归纳
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-10-19
+     * @version     v1.0
+     *
+     * @param io_BigMap     大集合的Map类型
+     * @param io_Duplicate  相同变量名称出现的次数。Map.key 为变量名称，Map.value 为已经归纳到大集合中的次数。
+     * @param i_Element     元素数据
+     * @param i_ElementID   元素的变量ID
+     */
+    private void addElement(Map<String ,Object> io_BigMap ,Map<String ,Long> io_Duplicate ,Object i_Element ,String i_ElementID)
+    {
+        String v_ElementID = i_ElementID;
+        if ( !Help.isNull(this.duplicateOffset) && io_BigMap.containsKey(i_ElementID) )
+        {
+            List<Object> v_IDTextNum = StringHelp.splitTextNumber(i_ElementID);
+            String       v_DKey      = null;  // 变量前缀文本
+            Long         v_DInit     = 0L;    // 变量后缀数字
+            Long         v_DCount    = 0L;    // 重复次数
+            
+            if ( v_IDTextNum.size() == 2 && v_IDTextNum.get(1) instanceof Long )
+            {
+                v_DKey  = v_IDTextNum.get(0).toString();
+                v_DInit = (Long) v_IDTextNum.get(1);
+            }
+            else
+            {
+                v_DKey  = i_ElementID;
+                v_DInit = 0L;
+            }
+            
+            Integer v_DOffset = this.duplicateOffset.get(v_DKey);
+            if ( v_DOffset != null )
+            {
+                v_DCount = io_Duplicate.get(i_ElementID);
+                if ( v_DCount == null )
+                {
+                    v_DCount = 1L;
+                }
+                
+                v_ElementID = v_DKey + (v_DInit + v_DCount * v_DOffset);
+                io_Duplicate.put(i_ElementID ,v_DCount + 1L);
+            }
+        }
+        
+        io_BigMap.put(v_ElementID ,i_Element);
     }
     
     
@@ -733,6 +852,10 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
         if ( !Help.isNull(this.getBigType()) && this.getBigType() >= 1 )
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("bigType"  ,this.getBigType()));
+        }
+        if ( !Help.isNull(this.getDuplicateOffset()) )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("duplicateOffset" ,this.getDuplicateOffset()));
         }
     }
     
@@ -970,6 +1093,8 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
         v_Clone.idSuffix    = this.idSuffix;
         v_Clone.bigType     = this.bigType;
         
+        v_Clone.setDuplicateOffset(this.duplicateOffsetText);
+        
         if ( !Help.isNull(this.callParams) )
         {
             v_Clone.callParams = new ArrayList<NodeParam>();
@@ -1017,6 +1142,8 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
         v_Clone.idPrefix    = this.idPrefix;
         v_Clone.idSuffix    = this.idSuffix;
         v_Clone.bigType     = this.bigType;
+        
+        v_Clone.setDuplicateOffset(this.duplicateOffsetText);
         
         if ( !Help.isNull(this.callParams) )
         {
