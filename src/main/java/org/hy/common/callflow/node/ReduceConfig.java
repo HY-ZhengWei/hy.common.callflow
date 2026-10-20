@@ -57,11 +57,11 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
     /** 归纳类型（1:Map；2:List；3:Set；4:Array；-1:自动识别）。当未指定时，将在运行时参考归纳原因自动识别 */
     private Integer              bigType;
     
-    /** 多复本使用哪一个 */
+    /** 多复本使用哪一个版本 */
     private String               useWhichOneText;
     
     /** 
-     * 多复本使用哪一个（仅内部使用）。
+     * 多复本使用哪一个版本（仅内部使用）。
      *   Map.key为集合变量ID，
      *   Map.Value为使用第几个复本。当小于此值时，使用当时最大的一个。最小下标从1开始
      *   如：Map.value = 3 时，第一次出现 name = 1 时，使用值 1
@@ -74,11 +74,11 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
      */
     private Map<String ,Integer> useWhichOne;
     
-    /** 多复本偏移量的文本值 */
+    /** 多复本重名自动偏移量的文本值 */
     private String               duplicateOffsetText;
     
     /** 
-     * 多复本偏移量（仅内部使用）。
+     * 多复本重名自动偏移量（仅内部使用）。
      *   Map.key为集合变量ID的前缀（并且不包括变量名称数字的部分，如：name1，仅写name），
      *   Map.Value为出现重复时每次的偏移量。
      *   如，偏移量为 1 时，第一次出现 name1 时，返回 name1
@@ -301,7 +301,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
     
     
     /**
-     * 获取：多复本使用哪一个
+     * 获取：多复本使用哪一个版本
      */
     public String getUseWhichOne()
     {
@@ -311,19 +311,19 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
 
     
     /**
-     * 设置：多复本使用哪一个
+     * 设置：多复本使用哪一个版本
      * 
-     * @param i_UseWhichOne 多复本使用哪一个
+     * @param i_UseWhichOne 多复本使用哪一个版本
      */
     @SuppressWarnings("unchecked")
     public void setUseWhichOne(String i_UseWhichOne)
     {
         this.useWhichOneText = i_UseWhichOne;
         
-        if ( !Help.isNull(this.duplicateOffsetText) )
+        if ( !Help.isNull(this.useWhichOneText) )
         {
             XJSON v_XJson = new XJSON();
-            this.useWhichOne = (Map<String ,Integer>) v_XJson.toJava(this.duplicateOffsetText);
+            this.useWhichOne = (Map<String ,Integer>) v_XJson.toJava(this.useWhichOneText);
         }
         
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
@@ -333,7 +333,7 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
 
 
     /**
-     * 获取：多复本偏移量。
+     * 获取：多复本重名自动偏移量。
      */
     public String getDuplicateOffset()
     {
@@ -343,9 +343,9 @@ public class ReduceConfig extends NodeConfig implements NodeConfigBase
 
     
     /**
-     * 设置：多复本偏移量。
+     * 设置：多复本重名自动偏移量。
      * 
-     * @param i_DuplicateOffset  多复本偏移量。
+     * @param i_DuplicateOffset  多复本重名自动偏移量。
      */
     @SuppressWarnings("unchecked")
     public void setDuplicateOffset(String i_DuplicateOffset)
