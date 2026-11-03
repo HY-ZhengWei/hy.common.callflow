@@ -368,10 +368,11 @@ public class SelfLoop extends ExecuteElement
         // 循环元素：当没有下一个循环的元素时，退出循环
         if ( v_ExecObject instanceof ForConfig )
         {
-            ForConfig v_For = (ForConfig) v_ExecObject;
-            if ( !v_For.hasNext(io_Context) )
+            ForConfig      v_For     = (ForConfig) v_ExecObject;
+            Return<String> v_HasNext = v_For.hasNext(io_Context);
+            if ( !v_HasNext.booleanValue() )
             {
-                ExecuteResult v_Result = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.refXID ,this.toString(io_Context));
+                ExecuteResult v_Result = new ExecuteResult(CallFlow.getNestingLevel(io_Context) ,this.getTreeID(i_SuperTreeID) ,this.refXID ,this.toString(io_Context) + " " + v_HasNext.paramStr);
                 return v_Result.setResult(false);   // ForConfig 中有设置结果为 true
             }
         }
