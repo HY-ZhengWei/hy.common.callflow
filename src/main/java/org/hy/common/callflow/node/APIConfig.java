@@ -35,6 +35,7 @@ import org.hy.common.xml.log.Logger;
  *              v4.0  2026-05-11  添加：是否自动填充问号(?)
  *              v4.1  2026-05-13  添加：支持PUT方式
  *              v5.0  2026-06-03  添加：接口请求头中添加 编排执行实例ID。方便检索同一编排发起的全部接口请求。
+ *              v6.0  2026-11-03  添加：读取数据超时时，允许尝试1次的重做
  */
 public class APIConfig extends NodeConfig implements NodeConfigBase
 {
@@ -126,6 +127,7 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         this.callObject.setToUnicode(false);
         this.callObject.setRequestType(XHttp.$Request_Type_Get);
         this.callObject.setHaveQuestionMark(false);
+        this.callObject.setReadTimeoutRedo(1);
         
         XJava.putObject(v_XHttpXID ,this.callObject);
         this.setCallXID(v_XHttpXID);
@@ -432,6 +434,30 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
     public void setReadTimeout(int i_ReadTimeout)
     {
         this.callObject.setReadTimeout(i_ReadTimeout);
+        this.reset(this.getRequestTotal() ,this.getSuccessTotal());
+        this.keyChange();
+    }
+    
+    
+    
+    /**
+     * 获取：读取数据超时时重做次数。默认值：1
+     */
+    public int getReadTimeoutRedo()
+    {
+        return this.callObject.getReadTimeout();
+    }
+
+
+    
+    /**
+     * 设置：读取数据超时时重做次数。默认值：1
+     * 
+     * @param i_ReadTimeoutRedo 读取数据超时时重做次数。默认值：1
+     */
+    public void setReadTimeoutRedo(int i_ReadTimeoutRedo)
+    {
+        this.callObject.setReadTimeoutRedo(i_ReadTimeoutRedo);
         this.reset(this.getRequestTotal() ,this.getSuccessTotal());
         this.keyChange();
     }
@@ -999,6 +1025,10 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("readTimeout" ,this.getReadTimeout()));
         }
+        if ( this.getReadTimeoutRedo() != 1 )
+        {
+            io_Xml.append(v_NewSpace).append(IToXml.toValue("readTimeoutRedo" ,this.getReadTimeoutRedo()));
+        }
         if ( !Help.isNull(this.returnClass) )
         {
             io_Xml.append(v_NewSpace).append(IToXml.toValue("returnClass" ,this.returnClass));
@@ -1094,20 +1124,21 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         APIConfig v_Clone = new APIConfig();
         
         this.cloneMyOnly(v_Clone);
-        v_Clone.setContext(       this.getContext());
-        v_Clone.setContentType(   this.getContentType());
-        v_Clone.setUrl(           this.getUrl());
-        v_Clone.setParam(         this.getParam());
-        v_Clone.setBody(          this.getBody());
-        v_Clone.setHead(          this.getHead());
-        v_Clone.setRequestType(   this.getRequestType()); 
-        v_Clone.setConnectTimeout(this.getConnectTimeout());
-        v_Clone.setReadTimeout(   this.getReadTimeout());
-        v_Clone.setTimeout(       this.getTimeout());
-        v_Clone.setReturnClass(   this.getReturnClass());
-        v_Clone.setReturnClassKey(this.getReturnClassKey());
-        v_Clone.setSucceedFlag(   this.getSucceedFlag());
-        v_Clone.setShowLog(       this.getShowLog());
+        v_Clone.setContext(        this.getContext());
+        v_Clone.setContentType(    this.getContentType());
+        v_Clone.setUrl(            this.getUrl());
+        v_Clone.setParam(          this.getParam());
+        v_Clone.setBody(           this.getBody());
+        v_Clone.setHead(           this.getHead());
+        v_Clone.setRequestType(    this.getRequestType()); 
+        v_Clone.setConnectTimeout( this.getConnectTimeout());
+        v_Clone.setReadTimeout(    this.getReadTimeout());
+        v_Clone.setReadTimeoutRedo(this.getReadTimeoutRedo());
+        v_Clone.setTimeout(        this.getTimeout());
+        v_Clone.setReturnClass(    this.getReturnClass());
+        v_Clone.setReturnClassKey( this.getReturnClassKey());
+        v_Clone.setSucceedFlag(    this.getSucceedFlag());
+        v_Clone.setShowLog(        this.getShowLog());
         
         return v_Clone;
     }
@@ -1140,20 +1171,21 @@ public class APIConfig extends NodeConfig implements NodeConfigBase
         APIConfig v_Clone = (APIConfig) io_Clone;
         ((ExecuteElement) this).clone(v_Clone ,i_ReplaceXID ,i_ReplaceByXID ,i_AppendXID ,io_XIDObjects);
         
-        v_Clone.setContext(       this.getContext());
-        v_Clone.setContentType(   this.getContentType());
-        v_Clone.setUrl(           this.getUrl());
-        v_Clone.setParam(         this.getParam());
-        v_Clone.setBody(          this.getBody());
-        v_Clone.setHead(          this.getHead());
-        v_Clone.setRequestType(   this.getRequestType()); 
-        v_Clone.setConnectTimeout(this.getConnectTimeout());
-        v_Clone.setReadTimeout(   this.getReadTimeout());
-        v_Clone.setTimeout(       this.getTimeout());
-        v_Clone.setReturnClass(   this.getReturnClass());
-        v_Clone.setReturnClassKey(this.getReturnClassKey());
-        v_Clone.setSucceedFlag(   this.getSucceedFlag());
-        v_Clone.setShowLog(       this.getShowLog());
+        v_Clone.setContext(        this.getContext());
+        v_Clone.setContentType(    this.getContentType());
+        v_Clone.setUrl(            this.getUrl());
+        v_Clone.setParam(          this.getParam());
+        v_Clone.setBody(           this.getBody());
+        v_Clone.setHead(           this.getHead());
+        v_Clone.setRequestType(    this.getRequestType()); 
+        v_Clone.setConnectTimeout( this.getConnectTimeout());
+        v_Clone.setReadTimeout(    this.getReadTimeout());
+        v_Clone.setReadTimeoutRedo(this.getReadTimeoutRedo());
+        v_Clone.setTimeout(        this.getTimeout());
+        v_Clone.setReturnClass(    this.getReturnClass());
+        v_Clone.setReturnClassKey( this.getReturnClassKey());
+        v_Clone.setSucceedFlag(    this.getSucceedFlag());
+        v_Clone.setShowLog(        this.getShowLog());
     }
     
     
