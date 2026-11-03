@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.hy.common.Date;
 import org.hy.common.Help;
+import org.hy.common.IteratorSnapshot;
 import org.hy.common.MethodReflect;
 import org.hy.common.Return;
 import org.hy.common.StringHelp;
@@ -54,6 +55,7 @@ import org.hy.common.xml.log.Logger;
  *              v5.1  2025-10-23  修正：循环元素自身也有可能结束循环。如，集合循环下，集合对象为空
  *              v6.0  2025-11-18  添加：编排续跑（主动重做）
  *              v7.0  2026-06-04  添加：第二次循环时，判定是否是新的集合。新集合可能是后面的节点跳出For循环后，重新开始了新的For循环。合作解决人：王力
+ *              v8.0  2026-11-03  添加：快照迭代器的工作模式。此模式下允许外界在保存上下文时，不会破坏上下文中迭代器的数据。合作解决为：李浩
  */
 public class ForConfig extends ExecuteElement implements Cloneable
 {
@@ -510,8 +512,8 @@ public class ForConfig extends ExecuteElement implements Cloneable
                 // 集合循环： for (elementID : end)
                 if ( MethodReflect.isExtendImplement(v_End ,List.class) )
                 {
-                    List<?>     v_List     = (List<?>) v_End;
-                    Iterator<?> v_Iterator = null;
+                    List<?>             v_List     = (List<?>) v_End;
+                    IteratorSnapshot<?> v_Iterator = null;
                     if ( Help.isNull(v_List) )
                     {
                         v_Result.setResult(false);
@@ -522,14 +524,15 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     if ( v_OldIndex != null )
                     {
                         v_Index    = v_OldIndex + 1;
-                        v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                        v_Iterator = this.getIteratorSnapshot(io_Context ,v_IteratorID);
                     }
                     else
                     {
-                        v_Iterator = v_List.iterator();
+                        v_Iterator = new IteratorSnapshot<>(v_List.iterator());
                         io_Context.put(v_IteratorID ,v_Iterator);
                     }
                     
+                    v_Iterator.trueMode();          // 真迭代器
                     if ( !v_Iterator.hasNext() )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " List.hasNext() error."));
@@ -538,11 +541,12 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     }
                     
                     v_Element = v_Iterator.next();
+                    v_Iterator.snapshotMode();      // 快照迭代器
                 }
                 else if ( MethodReflect.isExtendImplement(v_End ,Set.class) )
                 {
-                    Set<?>      v_Set      = (Set<?>) v_End;
-                    Iterator<?> v_Iterator = null;
+                    Set<?>              v_Set      = (Set<?>) v_End;
+                    IteratorSnapshot<?> v_Iterator = null;
                     if ( Help.isNull(v_Set) )
                     {
                         v_Result.setResult(false);
@@ -553,14 +557,15 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     if ( v_OldIndex != null )
                     {
                         v_Index    = v_OldIndex + 1;
-                        v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                        v_Iterator = this.getIteratorSnapshot(io_Context ,v_IteratorID);
                     }
                     else
                     {
-                        v_Iterator = v_Set.iterator();
+                        v_Iterator = new IteratorSnapshot<>(v_Set.iterator());
                         io_Context.put(v_IteratorID ,v_Iterator);
                     }
                     
+                    v_Iterator.trueMode();          // 真迭代器
                     if ( !v_Iterator.hasNext() )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Set.hasNext() error."));
@@ -569,11 +574,12 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     }
                     
                     v_Element = v_Iterator.next();
+                    v_Iterator.snapshotMode();      // 快照迭代器
                 }
                 else if ( MethodReflect.isExtendImplement(v_End ,Collection.class) )
                 {
-                    Collection<?> v_Collection = (Collection<?>) v_End;
-                    Iterator<?>   v_Iterator   = null;
+                    Collection<?>       v_Collection = (Collection<?>) v_End;
+                    IteratorSnapshot<?> v_Iterator   = null;
                     if ( Help.isNull(v_Collection) )
                     {
                         v_Result.setResult(false);
@@ -584,14 +590,15 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     if ( v_OldIndex != null )
                     {
                         v_Index    = v_OldIndex + 1;
-                        v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                        v_Iterator = this.getIteratorSnapshot(io_Context ,v_IteratorID);
                     }
                     else
                     {
-                        v_Iterator = v_Collection.iterator();
+                        v_Iterator = new IteratorSnapshot<>(v_Collection.iterator());
                         io_Context.put(v_IteratorID ,v_Iterator);
                     }
                     
+                    v_Iterator.trueMode();          // 真迭代器
                     if ( !v_Iterator.hasNext() )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Collection.hasNext() error."));
@@ -600,11 +607,12 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     }
                     
                     v_Element = v_Iterator.next();
+                    v_Iterator.snapshotMode();      // 快照迭代器
                 }
                 else if ( MethodReflect.isExtendImplement(v_End ,Map.class) )
                 {
-                    Map<? ,?>   v_Map      = (Map<? ,?>) v_End;
-                    Iterator<?> v_Iterator = null;
+                    Map<? ,?>           v_Map      = (Map<? ,?>) v_End;
+                    IteratorSnapshot<?> v_Iterator = null;
                     if ( Help.isNull(v_Map) )
                     {
                         v_Result.setResult(false);
@@ -615,14 +623,15 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     if ( v_OldIndex != null )
                     {
                         v_Index    = v_OldIndex + 1;
-                        v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                        v_Iterator = this.getIteratorSnapshot(io_Context ,v_IteratorID);
                     }
                     else
                     {
-                        v_Iterator = v_Map.entrySet().iterator();
+                        v_Iterator = new IteratorSnapshot<>(v_Map.entrySet().iterator());
                         io_Context.put(v_IteratorID ,v_Iterator);
                     }
                     
+                    v_Iterator.trueMode();          // 真迭代器
                     if ( !v_Iterator.hasNext() )
                     {
                         v_Result.setException(new IndexOutOfBoundsException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s " + this.end + " Map.hasNext() error."));
@@ -631,6 +640,7 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     }
                     
                     v_Element = v_Iterator.next();
+                    v_Iterator.snapshotMode();      // 快照迭代器
                 }
                 else if ( Help.isArray(v_End) )
                 {
@@ -766,18 +776,19 @@ public class ForConfig extends ExecuteElement implements Cloneable
      * @version     v1.0
      *
      * @param io_Context  上下文类型的变量信息
-     * @return
+     * @return            Return.paramStr 表示消息文本
      */
-    public boolean hasNext(Map<String ,Object> io_Context)
+    public Return<String> hasNext(Map<String ,Object> io_Context)
     {
-        String  v_WorkID      = CallFlow.getWorkID(io_Context);
-        String  v_Prefix      = v_WorkID + "@" + this.getXid() + "@For@";
-        String  v_IndexID     = v_Prefix + "index";
-        String  v_IteratorID  = v_Prefix + "iterator";
-        String  v_ListID      = v_Prefix + "listID";
-        Integer v_ListHashOld = (Integer) io_Context.get(v_ListID);
-        Integer v_OldIndex    = (Integer) io_Context.get(v_IndexID);
-        int     v_Index       = 0;
+        String         v_WorkID      = CallFlow.getWorkID(io_Context);
+        String         v_Prefix      = v_WorkID + "@" + this.getXid() + "@For@";
+        String         v_IndexID     = v_Prefix + "index";
+        String         v_IteratorID  = v_Prefix + "iterator";
+        String         v_ListID      = v_Prefix + "listID";
+        Integer        v_ListHashOld = (Integer) io_Context.get(v_ListID);
+        Integer        v_OldIndex    = (Integer) io_Context.get(v_IndexID);
+        int            v_Index       = 0;
+        Return<String> v_Ret         = new Return<String>(true);
         
         // 集合循环
         if ( Help.isNull(this.start) )
@@ -789,14 +800,16 @@ public class ForConfig extends ExecuteElement implements Cloneable
             }
             catch (Exception exce)
             {
-                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
-                return false;
+                String v_Error = "ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error.";
+                $Logger.error(v_Error ,exce);
+                return v_Ret.set(false).paramStr(v_Error);
             }
             
             if ( v_End == null )
             {
-                $Logger.error(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
-                return false;
+                String v_Error = "XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null.";
+                $Logger.error(new NullPointerException(v_Error));
+                return v_Ret.set(false).paramStr(v_Error);
             }
             
             if ( v_ListHashOld != null )
@@ -822,71 +835,71 @@ public class ForConfig extends ExecuteElement implements Cloneable
             // 集合循环： for (elementID : end)
             if ( MethodReflect.isExtendImplement(v_End ,List.class) )
             {
-                List<?>     v_List     = (List<?>) v_End;
-                Iterator<?> v_Iterator = null;
+                List<?>             v_List     = (List<?>) v_End;
+                IteratorSnapshot<?> v_Iterator = null;
                 if ( v_OldIndex != null )
                 {
                     v_Index    = v_OldIndex + 1;
-                    v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                    v_Iterator = this.getIteratorSnapshot(io_Context ,v_IteratorID);
                 }
                 else
                 {
-                    v_Iterator = v_List.iterator();
+                    v_Iterator = new IteratorSnapshot<>(v_List.iterator());
                     io_Context.put(v_IteratorID ,v_Iterator);
                 }
                 
-                return v_Iterator.hasNext();
+                return v_Ret.set(v_Iterator.hasNext());
             }
             else if ( MethodReflect.isExtendImplement(v_End ,Set.class) )
             {
-                Set<?>      v_Set      = (Set<?>) v_End;
-                Iterator<?> v_Iterator = null;
+                Set<?>              v_Set      = (Set<?>) v_End;
+                IteratorSnapshot<?> v_Iterator = null;
                 if ( v_OldIndex != null )
                 {
                     v_Index    = v_OldIndex + 1;
-                    v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                    v_Iterator = this.getIteratorSnapshot(io_Context ,v_IteratorID);
                 }
                 else
                 {
-                    v_Iterator = v_Set.iterator();
+                    v_Iterator = new IteratorSnapshot<>(v_Set.iterator());
                     io_Context.put(v_IteratorID ,v_Iterator);
                 }
                 
-                return v_Iterator.hasNext();
+                return v_Ret.set(v_Iterator.hasNext());
             }
             else if ( MethodReflect.isExtendImplement(v_End ,Collection.class) )
             {
-                Collection<?> v_Collection = (Collection<?>) v_End;
-                Iterator<?>   v_Iterator   = null;
+                Collection<?>       v_Collection = (Collection<?>) v_End;
+                IteratorSnapshot<?> v_Iterator   = null;
                 if ( v_OldIndex != null )
                 {
                     v_Index    = v_OldIndex + 1;
-                    v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                    v_Iterator = this.getIteratorSnapshot(io_Context ,v_IteratorID);
                 }
                 else
                 {
-                    v_Iterator = v_Collection.iterator();
+                    v_Iterator = new IteratorSnapshot<>(v_Collection.iterator());
                     io_Context.put(v_IteratorID ,v_Iterator);
                 }
                 
-                return v_Iterator.hasNext();
+                return v_Ret.set(v_Iterator.hasNext());
             }
             else if ( MethodReflect.isExtendImplement(v_End ,Map.class) )
             {
-                Map<? ,?>   v_Map      = (Map<? ,?>) v_End;
-                Iterator<?> v_Iterator = null;
+                Map<? ,?>           v_Map      = (Map<? ,?>) v_End;
+                IteratorSnapshot<?> v_Iterator = null;
                 if ( v_OldIndex != null )
                 {
                     v_Index    = v_OldIndex + 1;
-                    v_Iterator = (Iterator<?>) io_Context.get(v_IteratorID);
+                    v_Iterator = this.getIteratorSnapshot(io_Context ,v_IteratorID);
                 }
                 else
                 {
-                    v_Iterator = v_Map.entrySet().iterator();
+                    v_Iterator = new IteratorSnapshot<>(v_Map.entrySet().iterator());
                     io_Context.put(v_IteratorID ,v_Iterator);
                 }
                 
-                return v_Iterator.hasNext();
+                return v_Ret.set(v_Iterator.hasNext());
             }
             else if ( Help.isArray(v_End) )
             {
@@ -896,12 +909,13 @@ public class ForConfig extends ExecuteElement implements Cloneable
                     v_Index = v_OldIndex + 1;
                 }
                 
-                return v_Len > v_Index;
+                return v_Ret.set(v_Len > v_Index);
             }
             else
             {
-                $Logger.error(new RuntimeException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is not list."));
-                return false;
+                String v_Error = "XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is not list.";
+                $Logger.error(new RuntimeException(v_Error));
+                return v_Ret.set(false).setParamStr(v_Error);
             }
         }
         // 数值循环
@@ -914,13 +928,15 @@ public class ForConfig extends ExecuteElement implements Cloneable
             }
             catch (Exception exce)
             {
-                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start[" + this.start + "] error." ,exce);
-                return false;
+                String v_Error = "ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start[" + this.start + "] error.";
+                $Logger.error(v_Error ,exce);
+                return v_Ret.set(false).setParamStr(v_Error);
             }
             if ( v_Start == null )
             {
-                $Logger.error(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start is null."));
-                return false;
+                String v_Error = "XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s start is null.";
+                $Logger.error(new NullPointerException(v_Error));
+                return v_Ret.set(false).setParamStr(v_Error);
             }
             
             Integer v_End = null;
@@ -930,13 +946,15 @@ public class ForConfig extends ExecuteElement implements Cloneable
             }
             catch (Exception exce)
             {
-                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error." ,exce);
-                return false;
+                String v_Error = "ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end[" + this.end + "] error.";
+                $Logger.error(v_Error ,exce);
+                return v_Ret.set(false).setParamStr(v_Error);
             }
             if ( v_End == null )
             {
-                $Logger.error(new NullPointerException("XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null."));
-                return false;
+                String v_Error = "XID[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s end is null.";
+                $Logger.error(new NullPointerException(v_Error));
+                return v_Ret.set(false).setParamStr(v_Error);
             }
             
             Integer v_Step = null;
@@ -946,8 +964,9 @@ public class ForConfig extends ExecuteElement implements Cloneable
             }
             catch (Exception exce)
             {
-                $Logger.error("ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error." ,exce);
-                return false;
+                String v_Error = "ForConfig[" + Help.NVL(this.xid) + ":" + Help.NVL(this.comment) + "]'s step[" + this.step + "] error.";
+                $Logger.error(v_Error ,exce);
+                return v_Ret.set(false).setParamStr(v_Error);
             }
             
             // 数值循环： for (start .. end)
@@ -961,7 +980,33 @@ public class ForConfig extends ExecuteElement implements Cloneable
                 v_Index = v_Start;
             }
             
-            return v_End >= v_Index;
+            return v_Ret.set(v_End >= v_Index);
+        }
+    }
+    
+    
+    
+    /**
+     * 获取快照迭代器
+     * 
+     * @author      ZhengWei(HY)
+     * @createDate  2026-11-03
+     * @version     v1.0
+     *
+     * @param i_Context      上下文类型的变量信息
+     * @param i_IteratorID   迭代器ID
+     * @return
+     */
+    private IteratorSnapshot<?> getIteratorSnapshot(Map<String ,Object> i_Context ,String i_IteratorID)
+    {
+        Object v_IteratorOld = i_Context.get(i_IteratorID);
+        if ( v_IteratorOld instanceof IteratorSnapshot )
+        {
+            return (IteratorSnapshot<?>) v_IteratorOld;
+        }
+        else
+        {
+            return new IteratorSnapshot<>((Iterator<?>) v_IteratorOld);
         }
     }
     
